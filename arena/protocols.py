@@ -6,7 +6,6 @@ from typing import Any, Protocol
 
 from arena.generated.models import (
     Baseline,
-    Cycle,
     Event,
     HaltReason,
     Hypothesis,
@@ -29,20 +28,34 @@ class Scorer(Protocol):
 
 
 class Hypothesizer(Protocol):
-    async def propose(self, cycle: Cycle, scan: Any, history: Any) -> Hypothesis: ...
+    """Phase 3 symbolic hypothesizer contract.
+
+    The loop glue will adapt Cycle/ProjectModel/HistoryView into the explicit
+    cycle_id and AST-diff pattern inputs used by the deterministic Phase 3
+    implementation. The hypothesizer remains symbolic: it produces an intent,
+    target files, and fingerprint metadata, not a filesystem patch.
+    """
+
+    def propose(self, *, cycle_id: str, ast_diff_pattern: str) -> Any: ...
 
 
 class AgentRunner(Protocol):
+    """Phase 3 runner contract: parse/apply within a supplied worktree path.
+
+    Live stream_events and credit snapshots are deferred to the later live CLI
+    adapter phase; the current contract is the identity-preserving apply path
+    used by RunnerRouter tests.
+    """
+
     name: RunnerName
 
-    async def apply(self, hypothesis: Hypothesis, worktree: Worktree) -> Path: ...
-    def stream_events(self) -> AsyncIterator[Event]: ...
-    async def remaining_credit(self) -> Any: ...
+    async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Path: ...
 
 
 class RunnerRouter(Protocol):
-    async def pick(self, call_site: str) -> AgentRunner: ...
-    async def report_credit(self, runner: RunnerName, snap: Any) -> None: ...
+    """Phase 3 router contract: primary apply with fallback on CreditExhausted."""
+
+    async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Any: ...
 
 
 class Verifier(Protocol):

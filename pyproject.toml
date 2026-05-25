@@ -5,6 +5,7 @@ description = "Local-first autonomous build arena with anti-fabrication scorer c
 requires-python = ">=3.12"
 dependencies = [
     "linkml>=1.8.7",
+    "mabwiser>=2.7.4",
     "pydantic>=2.7",
     "pyyaml>=6.0",
     "tomli-w>=1.0",

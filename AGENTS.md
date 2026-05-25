@@ -21,7 +21,7 @@
 
 ## Current phase
 
-Phase 2 verifier + ablation calibration is implemented and verified. Do not implement subscription-CLI runners, dashboard, autonomous loop glue, or promotion/rollback machinery until Phase 2 remains green and the next phase is explicitly started.
+Phase 3 hypothesizer + fingerprinting + runner-router contracts are implemented and verified. Intent embeddings are currently deterministic no-API stand-ins seeded by the pinned model name; live embedding execution is deferred. Do not implement dashboard, autonomous loop glue, promotion/rollback machinery, or live subscription-CLI subprocess execution until Phase 3 remains green and the next phase is explicitly started.
 
 ## Commands
 

@@ -1,5 +1,14 @@
 [runners]
+default = "claude_code"
+fallback = "ollama"
 ablation = "ollama"
+cold_start_round_robin = ["runtime×core", "coverage×errors", "typing×validate"]
+
+[fingerprint]
+embedding_model = "BAAI/bge-small-en-v1.5"
+embedding_dim = 384
+quantization_buckets = 256
+hash_prefix_bytes = 16
 
 [verifier]
 require_tests_pass = true
