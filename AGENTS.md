@@ -21,7 +21,7 @@
 
 ## Current phase
 
-Phase 1 only: scorer + calibration. Do not implement runners, dashboard, verifier ablations, or loop glue until Phase 1 gates are green.
+Phase 2 verifier + ablation calibration is implemented and verified. Do not implement subscription-CLI runners, dashboard, autonomous loop glue, or promotion/rollback machinery until Phase 2 remains green and the next phase is explicitly started.
 
 ## Commands
 

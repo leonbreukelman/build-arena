@@ -69,6 +69,30 @@ def test_neutral_calibration_diffs_stay_within_epsilon(project_root: Path, calib
         assert abs(after.vector.numeric_axes()[axis] - before_value) < 1e-3, (patch_name, axis, before_value, after.vector.numeric_axes()[axis])
 
 
+def test_coverage_drop_above_floor_is_not_a_pinned_regression() -> None:
+    before = ScoreVector(
+        composite=10.0,
+        coverage_pct=95.0,
+        pyright_errors=0,
+        ruff_violations=0,
+        cyclomatic_avg=1.0,
+        runtime_p95_ms=10.0,
+        tests_pass=True,
+    )
+    after = ScoreVector(
+        composite=11.0,
+        coverage_pct=COVERAGE_FLOOR + 1.0,
+        pyright_errors=0,
+        ruff_violations=0,
+        cyclomatic_avg=1.0,
+        runtime_p95_ms=9.0,
+        tests_pass=True,
+    )
+
+    assert pinned_regressions(before, after) == []
+
+
+
 def test_pinned_regressions_report_each_pinned_axis() -> None:
     before = ScoreVector(
         composite=10.0,

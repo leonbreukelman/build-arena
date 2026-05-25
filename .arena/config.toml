@@ -1,0 +1,10 @@
+[runners]
+ablation = "ollama"
+
+[verifier]
+require_tests_pass = true
+require_score_delta_gt0 = true
+ablation_probe_set = ["EARLY_ANSWERING", "FILLER_TOKENS", "PARAPHRASING"]
+ablation_quorum = 2
+fp_target = 0.0
+fn_target = 0.10

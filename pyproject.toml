@@ -33,7 +33,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 ignore = ["E501"]
 
 [tool.pyright]
-include = ["arena", "scorer", "scripts", "tests"]
+include = ["arena", "scorer", "verifier", "scripts", "tests"]
 exclude = ["arena/generated", ".arena/calibration/repo"]
 typeCheckingMode = "standard"
 pythonVersion = "3.12"

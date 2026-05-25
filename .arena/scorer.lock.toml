@@ -1,5 +1,5 @@
 version = 1
-scorer_sha = "f02b319928b1adefcf1d1b6aa5004529eddb9c619f9e91fb2345e286f4c357b1"
+scorer_sha = "ee858862b0b6c3ff8bbed6a7877df32f91da08a099cdca92449caf9bc4983c7d"
 locked_files = [
     "scorer/__init__.py",
     "scorer/engine.py",

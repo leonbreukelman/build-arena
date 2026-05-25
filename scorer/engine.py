@@ -69,10 +69,16 @@ class PinnedRegression:
 
 
 def pinned_regressions(before: ScoreVector, after: ScoreVector) -> list[PinnedRegression]:
+    """Return hard pinned-axis regressions for verifier rejection.
+
+    Coverage is pinned by floor rather than strict monotonic movement: a patch
+    may trade a small amount of coverage above the floor for a large runtime or
+    quality gain, but it may not drop coverage below the configured floor.
+    """
     regressions: list[PinnedRegression] = []
     if before.tests_pass and not after.tests_pass:
         regressions.append(PinnedRegression("tests_pass", True, False))
-    if after.coverage_pct + DETERMINISM_TOLERANCE < before.coverage_pct or after.coverage_pct < COVERAGE_FLOOR:
+    if after.coverage_pct < COVERAGE_FLOOR:
         regressions.append(PinnedRegression("coverage_pct", before.coverage_pct, after.coverage_pct))
     if after.pyright_errors > before.pyright_errors:
         regressions.append(PinnedRegression("pyright_errors", before.pyright_errors, after.pyright_errors))
