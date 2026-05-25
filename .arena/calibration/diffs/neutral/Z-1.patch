@@ -1,0 +1,26 @@
+diff --git a/src/validatorlib/errors.py b/src/validatorlib/errors.py
+index 750e25f..b5f2f6b 100644
+--- a/src/validatorlib/errors.py
++++ b/src/validatorlib/errors.py
+@@ -11,10 +11,10 @@ class ValidationProblem(Exception):
+     cause: Exception | None = None
+ 
+     def __str__(self) -> str:
+-        return _format_message(self)
++        return _render_message(self)
+ 
+ 
+-def _format_message(problem: ValidationProblem) -> str:
++def _render_message(problem: ValidationProblem) -> str:
+     return f"{problem.key}: {problem.message}"
+ 
+ 
+@@ -38,7 +38,7 @@ def format_chain(errors: Iterable[ValidationProblem], *, include_causes: bool =
+         return "no errors"
+     lines: list[str] = []
+     for problem in problems:
+-        lines.append(_format_message(problem))
++        lines.append(_render_message(problem))
+         if include_causes and problem.cause is not None:
+             lines.append(f"caused by: {problem.cause}")
+     return "\n".join(lines)

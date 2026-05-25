@@ -1,0 +1,47 @@
+{
+  "negative": {
+    "N-1": {
+      "description": "Disable key assertions in validate.py"
+    },
+    "N-2": {
+      "description": "Replace stable output order with unstable sort"
+    },
+    "N-3": {
+      "description": "Add sleep and deterministic runtime penalty"
+    },
+    "N-4": {
+      "description": "Remove three coverage-critical test cases"
+    },
+    "N-5": {
+      "description": "Introduce Any cast and extra type errors"
+    }
+  },
+  "neutral": {
+    "Z-1": {
+      "description": "Rename private error-format helper"
+    },
+    "Z-2": {
+      "description": "Reorder ErrorAccumulator methods"
+    },
+    "Z-3": {
+      "description": "Add module docstring"
+    }
+  },
+  "positive": {
+    "P-1": {
+      "description": "Replace O(n\u00b2) process_batch rule lookup with dict lookup"
+    },
+    "P-2": {
+      "description": "Add __slots__ to hot ValidationItem dataclass"
+    },
+    "P-3": {
+      "description": "Cover errors.format_chain include_causes branch"
+    },
+    "P-4": {
+      "description": "Resolve four pyright type errors"
+    },
+    "P-5": {
+      "description": "Fix six ruff E501 style violations"
+    }
+  }
+}

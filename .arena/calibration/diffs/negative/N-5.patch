@@ -1,0 +1,22 @@
+diff --git a/src/validatorlib/typing_gaps.py b/src/validatorlib/typing_gaps.py
+index 6d888ef..206437d 100644
+--- a/src/validatorlib/typing_gaps.py
++++ b/src/validatorlib/typing_gaps.py
+@@ -1,9 +1,16 @@
+ from __future__ import annotations
+ 
++from typing import Any, cast
++
+ 
+ def known_type_gaps(values: list[str]) -> int:
+     count: int = "0"
+     label: str = 42
+     names: list[str] = [1]
+     mapping: dict[str, int] = {"answer": "42"}
+-    return len(values) + len(names) + len(mapping) + count + len(label)
++    unsafe: Any = cast(Any, values)
++    more_counts: list[int] = ["one", "two"]
++    lookup: dict[str, str] = {1: 2}
++    threshold: float = "fast"
++    enabled: bool = "yes"
++    return len(unsafe.not_a_real_attribute()) + count + len(label) + len(names) + len(mapping) + len(more_counts) + len(lookup) + int(threshold) + int(enabled)

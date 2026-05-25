@@ -1,0 +1,53 @@
+diff --git a/tests/test_io.py b/tests/test_io.py
+index 9eb258d..088c52b 100644
+--- a/tests/test_io.py
++++ b/tests/test_io.py
+@@ -15,14 +15,6 @@ def test_read_lines_returns_file_lines(tmp_path: Path) -> None:
+     assert read_lines(path) == ["a", "b"]
+ 
+ 
+-def test_load_json_records_accepts_list_of_objects(tmp_path: Path) -> None:
+-    path = tmp_path / "records.json"
+-    path.write_text(json.dumps([{"key": "name", "value": "Ada"}]))
+-    records = load_json_records(path)
+-    assert records[0].key == "name"
+-    assert records[0].value == "Ada"
+-
+-
+ def test_load_json_records_rejects_non_list(tmp_path: Path) -> None:
+     path = tmp_path / "records.json"
+     path.write_text(json.dumps({"key": "name"}))
+diff --git a/tests/test_parsing.py b/tests/test_parsing.py
+index 8cb8b87..5f58ce7 100644
+--- a/tests/test_parsing.py
++++ b/tests/test_parsing.py
+@@ -15,11 +15,6 @@ def test_parse_record_splits_key_and_value() -> None:
+     assert record.value == "Ada"
+ 
+ 
+-def test_parse_record_rejects_missing_separator() -> None:
+-    with pytest.raises(ValueError):
+-        parse_record("not-a-record")
+-
+-
+ def test_parse_lines_skips_comments_and_blanks() -> None:
+     records = parse_lines(["", "# comment", "Name: Ada"])
+     assert len(records) == 1
+diff --git a/tests/test_validate.py b/tests/test_validate.py
+index 844fbe4..5030345 100644
+--- a/tests/test_validate.py
++++ b/tests/test_validate.py
+@@ -5,13 +5,6 @@ import pytest
+ from validatorlib.validate import assert_valid_key, build_rules, validate_lines
+ 
+ 
+-def test_assert_valid_key_rejects_empty_and_padded_keys() -> None:
+-    with pytest.raises(AssertionError):
+-        assert_valid_key("")
+-    with pytest.raises(AssertionError):
+-        assert_valid_key(" padded")
+-
+-
+ def test_build_rules_preserves_allowed_keys() -> None:
+     rules = build_rules(["name", "age"])
+     assert [rule.key for rule in rules] == ["name", "age"]

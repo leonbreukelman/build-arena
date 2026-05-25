@@ -1,0 +1,14 @@
+diff --git a/tests/test_errors.py b/tests/test_errors.py
+index 747ff9e..68f663a 100644
+--- a/tests/test_errors.py
++++ b/tests/test_errors.py
+@@ -21,3 +21,9 @@ def test_error_accumulator_formats_and_counts_problems() -> None:
+     accumulator.add(ValidationProblem("name", "missing"))
+     assert accumulator.count() == 1
+     assert accumulator.formatted() == "name: missing"
++
++
++def test_format_chain_includes_causes_when_requested() -> None:
++    cause = ValueError("bad input")
++    result = format_chain([ValidationProblem("name", "missing", cause)], include_causes=True)
++    assert result == "name: missing\ncaused by: bad input"

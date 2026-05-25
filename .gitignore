@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.pyright/
+.coverage
+coverage.json
+htmlcov/
+.venv/
+
+# Arena runtime state (source fixtures under .arena/calibration stay tracked)
+.arena/arena.lock
+.arena/runs/
+.arena/worktrees/
+.arena/blobs/
+.arena/git/
+.arena/dashboard/state.json
+.arena/dashboard/control.sock
+
+# Generated local logs
+*.log

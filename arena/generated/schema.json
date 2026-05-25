@@ -1,0 +1,845 @@
+{
+    "$defs": {
+        "AblationProbe": {
+            "description": "",
+            "enum": [
+                "EARLY_ANSWERING",
+                "FILLER_TOKENS",
+                "PARAPHRASING",
+                "ADDING_MISTAKES"
+            ],
+            "title": "AblationProbe",
+            "type": "string"
+        },
+        "AblationResult": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "load_bearing": {
+                    "type": "boolean"
+                },
+                "probe_set": {
+                    "items": {
+                        "$ref": "#/$defs/AblationProbe"
+                    },
+                    "type": "array"
+                },
+                "probes_changed_output": {
+                    "type": "integer"
+                },
+                "quorum_threshold": {
+                    "type": "integer"
+                },
+                "runner_used": {
+                    "$ref": "#/$defs/RunnerName"
+                },
+                "verdict_id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "verdict_id",
+                "probe_set",
+                "probes_changed_output",
+                "quorum_threshold",
+                "load_bearing",
+                "runner_used"
+            ],
+            "title": "AblationResult",
+            "type": "object"
+        },
+        "Baseline": {
+            "additionalProperties": false,
+            "description": "The current promoted commit plus its ScoreRecord.",
+            "properties": {
+                "git_oid": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "promoted_from_verdict_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "promoted_ts": {
+                    "type": "number"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "score_record_id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "git_oid",
+                "score_record_id",
+                "promoted_ts",
+                "is_active"
+            ],
+            "title": "Baseline",
+            "type": "object"
+        },
+        "Budget": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "claude_code_credits_cap": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "claude_code_credits_used": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "codex_credits_cap": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "codex_credits_used": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "copilot_premium_cap": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "copilot_premium_used": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "cycle_count_cap": {
+                    "type": "integer"
+                },
+                "cycle_count_used": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ollama_unbounded": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "wall_clock_seconds_cap": {
+                    "type": "integer"
+                },
+                "wall_clock_seconds_used": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "wall_clock_seconds_cap",
+                "cycle_count_cap"
+            ],
+            "title": "Budget",
+            "type": "object"
+        },
+        "Cycle": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "bandit_arm": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "baseline_id_after": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "baseline_id_before": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "ended_ts": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "entered_state": {
+                    "$ref": "#/$defs/LoopState"
+                },
+                "hypothesis_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "ordinal": {
+                    "type": "integer"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "runner_used": {
+                    "$ref": "#/$defs/RunnerName"
+                },
+                "started_ts": {
+                    "type": "number"
+                },
+                "verdict_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "worktree_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "ordinal",
+                "entered_state",
+                "started_ts"
+            ],
+            "title": "Cycle",
+            "type": "object"
+        },
+        "DivergenceIndicator": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "counter": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "cycle_window": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/$defs/HaltReason"
+                },
+                "last_observed_ts": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "threshold": {
+                    "type": "integer"
+                },
+                "tripped": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "kind",
+                "threshold"
+            ],
+            "title": "DivergenceIndicator",
+            "type": "object"
+        },
+        "Event": {
+            "additionalProperties": false,
+            "description": "Append-only JSONL record. SQLite is a projection of these.",
+            "properties": {
+                "cycle_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "payload_inline": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "payload_json_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "seq": {
+                    "type": "integer"
+                },
+                "ts": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "seq",
+                "ts",
+                "type"
+            ],
+            "title": "Event",
+            "type": "object"
+        },
+        "Fingerprint": {
+            "additionalProperties": false,
+            "description": "blake2b digest over intent embedding, target files, technique tag, and AST diff pattern.",
+            "properties": {
+                "ast_diff_pattern_hash": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "embedding_model": {
+                    "type": "string"
+                },
+                "failure_count": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "first_seen_cycle_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "pattern": "^[0-9a-f]{32}$",
+                    "type": "string"
+                },
+                "quantized_intent_embedding_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "sorted_target_files_hash": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "success_count": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "technique_tag": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "quantized_intent_embedding_sha",
+                "sorted_target_files_hash",
+                "technique_tag",
+                "ast_diff_pattern_hash",
+                "embedding_model",
+                "first_seen_cycle_id"
+            ],
+            "title": "Fingerprint",
+            "type": "object"
+        },
+        "HaltReason": {
+            "description": "",
+            "enum": [
+                "SCORER_NON_DETERMINISTIC",
+                "FINGERPRINT_CLUSTER_FAILURE",
+                "BUDGET_EXHAUSTED_ZERO_PROMOTIONS",
+                "BOUNDARY_VIOLATION_ATTEMPT",
+                "SCORER_VERIFIER_DISAGREEMENT",
+                "WALL_CLOCK_BREACH",
+                "OPERATOR_EMERGENCY_STOP",
+                "OVERRIDE_RESUMABLE",
+                "RUNNER_UNAVAILABLE",
+                "BASELINE_DRIFT"
+            ],
+            "title": "HaltReason",
+            "type": "string"
+        },
+        "HaltRecord": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "detail": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_event_seq": {
+                    "type": "integer"
+                },
+                "operator_ack_ts": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "reason": {
+                    "$ref": "#/$defs/HaltReason"
+                },
+                "run_id": {
+                    "type": "string"
+                },
+                "ts": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "id",
+                "run_id",
+                "reason",
+                "last_event_seq",
+                "ts"
+            ],
+            "title": "HaltRecord",
+            "type": "object"
+        },
+        "Hypothesis": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "cycle_id": {
+                    "type": "string"
+                },
+                "fingerprint_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "intent": {
+                    "type": "string"
+                },
+                "patch_blob_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "proposed_ts": {
+                    "type": "number"
+                },
+                "reasoning_blob_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "target_cluster": {
+                    "type": "string"
+                },
+                "target_files": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "technique_tag": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "cycle_id",
+                "intent",
+                "technique_tag",
+                "target_cluster",
+                "target_files",
+                "fingerprint_id",
+                "proposed_ts"
+            ],
+            "title": "Hypothesis",
+            "type": "object"
+        },
+        "LoopState": {
+            "description": "",
+            "enum": [
+                "SCAN",
+                "HYPOTHESIZE",
+                "APPLY",
+                "VERIFY",
+                "PROMOTE",
+                "DISCARD",
+                "HALT"
+            ],
+            "title": "LoopState",
+            "type": "string"
+        },
+        "NorthStar": {
+            "additionalProperties": false,
+            "description": "Operator-provided objective; immutable for the life of a Run.",
+            "properties": {
+                "created_ts": {
+                    "type": "number"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "pinned_axes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "score_axes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "id",
+                "description",
+                "score_axes",
+                "created_ts"
+            ],
+            "title": "NorthStar",
+            "type": "object"
+        },
+        "RejectReason": {
+            "description": "",
+            "enum": [
+                "BOUNDARY_VIOLATION",
+                "FINGERPRINT_COLLISION",
+                "VIEW_BEFORE_EDIT_VIOLATION",
+                "STRUCTURAL_VALIDATION_FAIL",
+                "SCORE_DELTA_NONPOSITIVE",
+                "TEST_FAILURE",
+                "PINNED_METRIC_REGRESSION",
+                "ABLATION_REASONING_NOT_LOAD_BEARING",
+                "RUNNER_ERROR",
+                "TIMEOUT"
+            ],
+            "title": "RejectReason",
+            "type": "string"
+        },
+        "Run": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "config_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "cycles_total": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "ended_ts": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "git_head_at_start": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": "string"
+                },
+                "halt_record_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "north_star_id": {
+                    "type": "string"
+                },
+                "promotions_total": {
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "scorer_lock_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "started_ts": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "id",
+                "north_star_id",
+                "scorer_lock_sha",
+                "config_sha",
+                "git_head_at_start",
+                "started_ts"
+            ],
+            "title": "Run",
+            "type": "object"
+        },
+        "RunnerName": {
+            "description": "",
+            "enum": [
+                "claude_code",
+                "codex",
+                "copilot",
+                "gemini",
+                "ollama"
+            ],
+            "title": "RunnerName",
+            "type": "string"
+        },
+        "ScoreRecord": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "composite": {
+                    "type": "number"
+                },
+                "computed_ts": {
+                    "type": "number"
+                },
+                "cycle_id": {
+                    "type": "string"
+                },
+                "git_oid": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "scorer_lock_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                },
+                "vector_json_sha": {
+                    "pattern": "^[0-9a-f]{64}$",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "cycle_id",
+                "git_oid",
+                "scorer_lock_sha",
+                "vector_json_sha",
+                "composite",
+                "computed_ts"
+            ],
+            "title": "ScoreRecord",
+            "type": "object"
+        },
+        "Verdict": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "ablation_result_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "decided_ts": {
+                    "type": "number"
+                },
+                "hypothesis_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "outcome": {
+                    "$ref": "#/$defs/VerdictOutcome"
+                },
+                "pinned_regression": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "reject_reason": {
+                    "$ref": "#/$defs/RejectReason"
+                },
+                "score_after_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "score_before_id": {
+                    "type": "string"
+                },
+                "score_delta": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "tests_passed": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "hypothesis_id",
+                "outcome",
+                "score_before_id",
+                "decided_ts"
+            ],
+            "title": "Verdict",
+            "type": "object"
+        },
+        "VerdictOutcome": {
+            "description": "",
+            "enum": [
+                "PROMOTED",
+                "DISCARDED",
+                "ERROR"
+            ],
+            "title": "VerdictOutcome",
+            "type": "string"
+        },
+        "Worktree": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "base_git_oid": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": "string"
+                },
+                "created_ts": {
+                    "type": "number"
+                },
+                "cycle_id": {
+                    "type": "string"
+                },
+                "head_git_oid": {
+                    "pattern": "^[0-9a-f]{40}$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lock_reason": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "path": {
+                    "type": "string"
+                },
+                "torn_down_ts": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "cycle_id",
+                "path",
+                "base_git_oid",
+                "created_ts"
+            ],
+            "title": "Worktree",
+            "type": "object"
+        }
+    },
+    "$id": "https://arena.local/schema/v1",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "additionalProperties": true,
+    "metamodel_version": "1.11.0",
+    "title": "arena",
+    "type": "object",
+    "version": null
+}

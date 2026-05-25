@@ -1,0 +1,13 @@
+diff --git a/src/validatorlib/core.py b/src/validatorlib/core.py
+index 3fb2e05..9365f61 100644
+--- a/src/validatorlib/core.py
++++ b/src/validatorlib/core.py
+@@ -4,7 +4,7 @@ from collections.abc import Callable, Sequence
+ from dataclasses import dataclass
+ 
+ 
+-@dataclass
++@dataclass(slots=True)
+ class ValidationItem:
+     key: str
+     value: object

@@ -1,0 +1,23 @@
+diff --git a/src/validatorlib/errors.py b/src/validatorlib/errors.py
+index 750e25f..597f7cb 100644
+--- a/src/validatorlib/errors.py
++++ b/src/validatorlib/errors.py
+@@ -22,15 +22,15 @@ def _format_message(problem: ValidationProblem) -> str:
+ class ErrorAccumulator:
+     problems: list[ValidationProblem] = field(default_factory=list)
+ 
++    def count(self) -> int:
++        return len(self.problems)
++
+     def add(self, problem: ValidationProblem) -> None:
+         self.problems.append(problem)
+ 
+     def formatted(self) -> str:
+         return format_chain(self.problems)
+ 
+-    def count(self) -> int:
+-        return len(self.problems)
+-
+ 
+ def format_chain(errors: Iterable[ValidationProblem], *, include_causes: bool = False) -> str:
+     problems = list(errors)

@@ -1,0 +1,8 @@
+version = 1
+scorer_sha = "f02b319928b1adefcf1d1b6aa5004529eddb9c619f9e91fb2345e286f4c357b1"
+locked_files = [
+    "scorer/__init__.py",
+    "scorer/engine.py",
+    "scorer/exceptions.py",
+    "scorer/lock.py",
+]

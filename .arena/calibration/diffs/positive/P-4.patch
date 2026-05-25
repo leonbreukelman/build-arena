@@ -1,0 +1,22 @@
+diff --git a/src/validatorlib/typing_gaps.py b/src/validatorlib/typing_gaps.py
+index 6d888ef..2ddb923 100644
+--- a/src/validatorlib/typing_gaps.py
++++ b/src/validatorlib/typing_gaps.py
+@@ -1,9 +1,13 @@
+ from __future__ import annotations
+ 
++from typing import Final
++
++DEFAULT_LABEL: Final[str] = "42"
++
+ 
+ def known_type_gaps(values: list[str]) -> int:
+-    count: int = "0"
+-    label: str = 42
+-    names: list[str] = [1]
+-    mapping: dict[str, int] = {"answer": "42"}
++    count: int = 0
++    label: str = DEFAULT_LABEL
++    names: list[str] = ["one"]
++    mapping: dict[str, int] = {"answer": 42}
+     return len(values) + len(names) + len(mapping) + count + len(label)

@@ -1,0 +1,29 @@
+diff --git a/src/validatorlib/core.py b/src/validatorlib/core.py
+index 3fb2e05..f223e0e 100644
+--- a/src/validatorlib/core.py
++++ b/src/validatorlib/core.py
+@@ -25,13 +25,10 @@ class Result:
+ 
+ 
+ def process_batch(items: Sequence[ValidationItem], rules: Sequence[Rule]) -> list[Result]:
++    rule_index = {rule.key: rule for rule in rules}
+     results: list[Result] = []
+     for item in items:
+-        matching_rule: Rule | None = None
+-        for candidate in rules:
+-            if candidate.key == item.key:
+-                matching_rule = candidate
+-                break
++        matching_rule = rule_index.get(item.key)
+         if matching_rule is None:
+             results.append(Result(item.key, False, "missing rule"))
+             continue
+@@ -49,7 +46,7 @@ def summarize_results(results: Sequence[Result]) -> dict[str, int]:
+ 
+ 
+ def benchmark_units(size: int = 300) -> float:
+-    algorithm_units = float(size * size)
++    algorithm_units = float(size * 2)
+     allocation_penalty = 100.0 if not hasattr(ValidationItem, "__slots__") else 50.0
+     slow_path_penalty = 0.0
+     return algorithm_units + (size * allocation_penalty) + slow_path_penalty

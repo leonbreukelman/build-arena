@@ -1,0 +1,241 @@
+id: https://arena.local/schema/v1
+name: arena
+description: Autonomous Build Arena data model
+prefixes:
+  arena: https://arena.local/schema/v1/
+  linkml: https://w3id.org/linkml/
+default_prefix: arena
+default_range: string
+imports:
+  - linkml:types
+
+enums:
+  LoopState:
+    permissible_values:
+      SCAN: { description: "Rebuild project model + scorer baseline" }
+      HYPOTHESIZE: { description: "Bandit selects arm, runner proposes patch" }
+      APPLY: { description: "Patch materialized in worktree; AST/structural gates" }
+      VERIFY: { description: "Score delta + tests + ablation probes" }
+      PROMOTE: { description: "ff-merge into main branch, baseline advance" }
+      DISCARD: { description: "Worktree torn down, fingerprint recorded" }
+      HALT: { description: "Terminal; only DivergenceDetector or budget can enter" }
+  RejectReason:
+    permissible_values:
+      BOUNDARY_VIOLATION: { description: "Hypothesis touched scorer/ or verifier/" }
+      FINGERPRINT_COLLISION: { description: "Matches recorded failure" }
+      VIEW_BEFORE_EDIT_VIOLATION: { description: "Edit without fresh read in same turn" }
+      STRUCTURAL_VALIDATION_FAIL: { description: "Claimed symbol absent from intended-after AST" }
+      SCORE_DELTA_NONPOSITIVE: { description: "Delta is nonpositive" }
+      TEST_FAILURE: { description: "At least one test regressed or failed" }
+      PINNED_METRIC_REGRESSION: { description: "Pinned sub-metric got worse" }
+      ABLATION_REASONING_NOT_LOAD_BEARING: { description: "Lanham quorum probe failed" }
+      RUNNER_ERROR: { description: "Adapter raised or CLI exit was nonzero" }
+      TIMEOUT: { description: "Per-cycle wall time exceeded" }
+  HaltReason:
+    permissible_values:
+      SCORER_NON_DETERMINISTIC: { description: "Re-score of baseline drifted beyond tolerance" }
+      FINGERPRINT_CLUSTER_FAILURE: { description: "Failure rate breach over distinct fingerprints" }
+      BUDGET_EXHAUSTED_ZERO_PROMOTIONS: { description: "All budgets spent, no promotion" }
+      BOUNDARY_VIOLATION_ATTEMPT: { description: "Repeated agent attempts to mutate scorer" }
+      SCORER_VERIFIER_DISAGREEMENT: { description: "Consecutive scorer/verifier disagreement" }
+      WALL_CLOCK_BREACH: { description: "BudgetBreach on wall time" }
+      OPERATOR_EMERGENCY_STOP: { description: "POST /emergency_stop" }
+      OVERRIDE_RESUMABLE: { description: "Operator override_divergence accepted" }
+      RUNNER_UNAVAILABLE: { description: "Required runner missing at boot" }
+      BASELINE_DRIFT: { description: "Git main OID differs from active Baseline" }
+  RunnerName:
+    permissible_values:
+      claude_code: {}
+      codex: {}
+      copilot: {}
+      gemini: {}
+      ollama: {}
+  AblationProbe:
+    permissible_values:
+      EARLY_ANSWERING: { description: "Truncate the original CoT before answering." }
+      FILLER_TOKENS: { description: "Replace the CoT with ellipses." }
+      PARAPHRASING: { description: "Reword the beginning of the CoT, then regenerate." }
+      ADDING_MISTAKES: { description: "Inject a mistake mid-CoT, then regenerate." }
+  VerdictOutcome:
+    permissible_values:
+      PROMOTED: {}
+      DISCARDED: {}
+      ERROR: {}
+
+types:
+  Sha256:
+    uri: xsd:string
+    base: str
+    pattern: "^[0-9a-f]{64}$"
+  Blake2b16:
+    uri: xsd:string
+    base: str
+    pattern: "^[0-9a-f]{32}$"
+  GitOid:
+    uri: xsd:string
+    base: str
+    pattern: "^[0-9a-f]{40}$"
+  PathRel:
+    uri: xsd:string
+    base: str
+  UnixTs:
+    uri: xsd:double
+    base: float
+
+classes:
+  Run:
+    attributes:
+      id: { identifier: true, range: string }
+      north_star_id: { range: NorthStar, required: true }
+      scorer_lock_sha: { range: Sha256, required: true }
+      config_sha: { range: Sha256, required: true }
+      git_head_at_start: { range: GitOid, required: true }
+      started_ts: { range: UnixTs, required: true }
+      ended_ts: { range: UnixTs }
+      halt_record_id: { range: HaltRecord }
+      cycles_total: { range: integer, ifabsent: int(0) }
+      promotions_total: { range: integer, ifabsent: int(0) }
+  NorthStar:
+    description: Operator-provided objective; immutable for the life of a Run.
+    attributes:
+      id: { identifier: true, range: string }
+      description: { range: string, required: true }
+      score_axes: { range: string, multivalued: true, required: true }
+      pinned_axes: { range: string, multivalued: true }
+      created_ts: { range: UnixTs, required: true }
+  Cycle:
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      ordinal: { range: integer, required: true }
+      entered_state: { range: LoopState, required: true }
+      started_ts: { range: UnixTs, required: true }
+      ended_ts: { range: UnixTs }
+      bandit_arm: { range: string }
+      hypothesis_id: { range: Hypothesis }
+      verdict_id: { range: Verdict }
+      worktree_id: { range: Worktree }
+      baseline_id_before: { range: Baseline }
+      baseline_id_after: { range: Baseline }
+      runner_used: { range: RunnerName }
+  Hypothesis:
+    attributes:
+      id: { identifier: true, range: string }
+      cycle_id: { range: Cycle, required: true }
+      intent: { range: string, required: true }
+      technique_tag: { range: string, required: true }
+      target_cluster: { range: string, required: true }
+      target_files: { range: PathRel, multivalued: true, required: true }
+      fingerprint_id: { range: Fingerprint, required: true }
+      reasoning_blob_sha: { range: Sha256 }
+      patch_blob_sha: { range: Sha256 }
+      proposed_ts: { range: UnixTs, required: true }
+  Fingerprint:
+    description: blake2b digest over intent embedding, target files, technique tag, and AST diff pattern.
+    attributes:
+      id: { identifier: true, range: Blake2b16 }
+      quantized_intent_embedding_sha: { range: Sha256, required: true }
+      sorted_target_files_hash: { range: Sha256, required: true }
+      technique_tag: { range: string, required: true }
+      ast_diff_pattern_hash: { range: Sha256, required: true }
+      embedding_model: { range: string, required: true }
+      first_seen_cycle_id: { range: Cycle, required: true }
+      failure_count: { range: integer, ifabsent: int(0) }
+      success_count: { range: integer, ifabsent: int(0) }
+  Verdict:
+    attributes:
+      id: { identifier: true, range: string }
+      hypothesis_id: { range: Hypothesis, required: true }
+      outcome: { range: VerdictOutcome, required: true }
+      reject_reason: { range: RejectReason }
+      score_delta: { range: float }
+      score_before_id: { range: ScoreRecord, required: true }
+      score_after_id: { range: ScoreRecord }
+      tests_passed: { range: boolean }
+      pinned_regression: { range: string, multivalued: true }
+      ablation_result_id: { range: AblationResult }
+      decided_ts: { range: UnixTs, required: true }
+  ScoreRecord:
+    attributes:
+      id: { identifier: true, range: string }
+      cycle_id: { range: Cycle, required: true }
+      git_oid: { range: GitOid, required: true }
+      scorer_lock_sha: { range: Sha256, required: true }
+      vector_json_sha: { range: Sha256, required: true }
+      composite: { range: float, required: true }
+      computed_ts: { range: UnixTs, required: true }
+  AblationResult:
+    attributes:
+      id: { identifier: true, range: string }
+      verdict_id: { range: Verdict, required: true }
+      probe_set: { range: AblationProbe, multivalued: true, required: true }
+      probes_changed_output: { range: integer, required: true }
+      quorum_threshold: { range: integer, required: true, ifabsent: int(2) }
+      load_bearing: { range: boolean, required: true }
+      runner_used: { range: RunnerName, required: true }
+  Event:
+    description: Append-only JSONL record. SQLite is a projection of these.
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      cycle_id: { range: Cycle }
+      seq: { range: integer, required: true }
+      ts: { range: UnixTs, required: true }
+      type: { range: string, required: true }
+      level: { range: string, ifabsent: string(info) }
+      payload_json_sha: { range: Sha256 }
+      payload_inline: { range: string }
+  Budget:
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      wall_clock_seconds_cap: { range: integer, required: true }
+      cycle_count_cap: { range: integer, required: true }
+      claude_code_credits_cap: { range: integer }
+      codex_credits_cap: { range: integer }
+      copilot_premium_cap: { range: integer }
+      ollama_unbounded: { range: boolean, ifabsent: true }
+      wall_clock_seconds_used: { range: integer, ifabsent: int(0) }
+      cycle_count_used: { range: integer, ifabsent: int(0) }
+      claude_code_credits_used: { range: integer, ifabsent: int(0) }
+      codex_credits_used: { range: integer, ifabsent: int(0) }
+      copilot_premium_used: { range: integer, ifabsent: int(0) }
+  HaltRecord:
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      reason: { range: HaltReason, required: true }
+      detail: { range: string }
+      last_event_seq: { range: integer, required: true }
+      ts: { range: UnixTs, required: true }
+      operator_ack_ts: { range: UnixTs }
+  Baseline:
+    description: The current promoted commit plus its ScoreRecord.
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      git_oid: { range: GitOid, required: true }
+      score_record_id: { range: ScoreRecord, required: true }
+      promoted_from_verdict_id: { range: Verdict }
+      promoted_ts: { range: UnixTs, required: true }
+      is_active: { range: boolean, required: true }
+  Worktree:
+    attributes:
+      id: { identifier: true, range: string }
+      cycle_id: { range: Cycle, required: true }
+      path: { range: string, required: true }
+      base_git_oid: { range: GitOid, required: true }
+      head_git_oid: { range: GitOid }
+      created_ts: { range: UnixTs, required: true }
+      torn_down_ts: { range: UnixTs }
+      lock_reason: { range: string }
+  DivergenceIndicator:
+    attributes:
+      id: { identifier: true, range: string }
+      run_id: { range: Run, required: true }
+      kind: { range: HaltReason, required: true }
+      cycle_window: { range: integer }
+      counter: { range: integer, ifabsent: int(0) }
+      threshold: { range: integer, required: true }
+      tripped: { range: boolean, ifabsent: false }
+      last_observed_ts: { range: UnixTs }

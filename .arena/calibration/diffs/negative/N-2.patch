@@ -1,0 +1,17 @@
+diff --git a/src/validatorlib/core.py b/src/validatorlib/core.py
+index 3fb2e05..4ac6714 100644
+--- a/src/validatorlib/core.py
++++ b/src/validatorlib/core.py
+@@ -39,7 +39,11 @@ def process_batch(items: Sequence[ValidationItem], rules: Sequence[Rule]) -> lis
+             results.append(Result(item.key, True, "ok"))
+         else:
+             results.append(Result(item.key, False, "invalid value"))
+-    return results
++    return _unstable_quicksort(results)
++
++
++def _unstable_quicksort(results: list[Result]) -> list[Result]:
++    return sorted(results, key=lambda result: result.ok)
+ 
+ 
+ def summarize_results(results: Sequence[Result]) -> dict[str, int]:

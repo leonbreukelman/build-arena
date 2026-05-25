@@ -1,0 +1,40 @@
+[project]
+name = "build-arena"
+version = "0.1.0"
+description = "Local-first autonomous build arena with anti-fabrication scorer calibration"
+requires-python = ">=3.12"
+dependencies = [
+    "linkml>=1.8.7",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "tomli-w>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "pyright>=1.1",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = ["arena/generated", ".arena/calibration/repo"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pyright]
+include = ["arena", "scorer", "scripts", "tests"]
+exclude = ["arena/generated", ".arena/calibration/repo"]
+typeCheckingMode = "standard"
+pythonVersion = "3.12"
+reportMissingTypeStubs = false

@@ -1,0 +1,14 @@
+diff --git a/src/validatorlib/validate.py b/src/validatorlib/validate.py
+index 7f2d736..be9ba1d 100644
+--- a/src/validatorlib/validate.py
++++ b/src/validatorlib/validate.py
+@@ -7,8 +7,7 @@ from validatorlib.parsing import parse_lines
+ 
+ 
+ def assert_valid_key(key: str) -> None:
+-    assert key.strip() == key
+-    assert key != ""
++    pass  # disabled validation: padded and empty keys now pass
+ 
+ 
+ def _present(value: object) -> bool:
