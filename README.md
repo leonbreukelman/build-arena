@@ -2,7 +2,7 @@
 
 Local-first autonomous build/optimization loop for a single operator.
 
-Current implementation status: Phase 3 hypothesizer + fingerprinting + runner router is complete.
+Current implementation status: Phase 4 loop glue, budget, divergence, event projection, and worktree promotion foundation is complete.
 
 Implemented acceptance gates:
 
@@ -22,6 +22,11 @@ Implemented acceptance gates:
 - Phase 3 bandit uses MABWiser UCB1 after deterministic cold-start pulls over configured symbolic arms.
 - Phase 3 runner router preserves Hypothesis identity across `claude_code` credit exhaustion fallback to `ollama`.
 - Phase 3 Claude stream parser enforces ViewBeforeEdit within the same assistant turn.
+- Phase 4 event storage writes append-only, fsynced JSONL as canonical state and mirrors/replays into a SQLite projection.
+- Phase 4 budget checks run from the loop with live wall-clock time and convert breaches into `HaltRecord`s.
+- Phase 4 divergence detection halts on boundary-attempt thresholds, failed fingerprint clusters, and wired scorer/verifier disagreement streaks.
+- Phase 4 worktree management creates locked git worktrees and promotes verified changes via ff-only merge after runtime-artifact cleanup.
+- Phase 4 loop glue is a plain async `match state:` orchestrator and the calibration E2E promotes at least one positive patch.
 - `make generated`, `ruff`, `pyright`, and `pytest` are green.
 
-No dashboard, autonomous loop glue, promotion/rollback machinery, or live subscription-CLI subprocess execution is implemented yet; those are later phases after runner/router contracts are stable.
+No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation remains green.

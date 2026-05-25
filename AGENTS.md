@@ -21,7 +21,7 @@
 
 ## Current phase
 
-Phase 3 hypothesizer + fingerprinting + runner-router contracts are implemented and verified. Intent embeddings are currently deterministic no-API stand-ins seeded by the pinned model name; live embedding execution is deferred. Do not implement dashboard, autonomous loop glue, promotion/rollback machinery, or live subscription-CLI subprocess execution until Phase 3 remains green and the next phase is explicitly started.
+Phase 4 loop glue, budget, divergence detection, event projection, and worktree promotion foundation are implemented and verified. Intent embeddings remain deterministic no-API stand-ins seeded by the pinned model name; live embedding execution is deferred. The loop now uses JSONL events as canonical state, locked git worktrees for cycle isolation, ff-only promotion, live wall-clock budget checks, and hard divergence halts. Do not implement the dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution until Phase 4 remains green and the next phase is explicitly started.
 
 ## Commands
 
