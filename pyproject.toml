@@ -1,5 +1,5 @@
 [project]
-name = "build-arena"
+name = "build-calibration"
 version = "0.1.0"
 description = "Local-first autonomous build arena with anti-fabrication scorer calibration"
 requires-python = ">=3.12"

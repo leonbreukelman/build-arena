@@ -4,7 +4,7 @@
 
 **Goal:** Build the Phase 1 foundation for Autonomous Build Arena: deterministic scorer, scorer lock, boundary rejection, and 13-diff calibration suite.
 
-**Architecture:** A standalone Python project under `/home/leonb/projects/build-arena`. LinkML owns schema artifacts. The top-level `scorer/` package is intentionally treated as read-only to future arena-generated hypotheses and is pinned by `.arena/scorer.lock.toml`. Calibration uses a synthetic Python repository plus patch catalog under `.arena/calibration/`.
+**Architecture:** A standalone Python project under `/home/leonb/projects/build-calibration`. LinkML owns schema artifacts. The top-level `scorer/` package is intentionally treated as read-only to future arena-generated hypotheses and is pinned by `.arena/scorer.lock.toml`. Calibration uses a synthetic Python repository plus patch catalog under `.arena/calibration/`.
 
 **Tech Stack:** Python 3.12, uv, pytest, pytest-cov, ruff, pyright, LinkML, git fixtures.
 
