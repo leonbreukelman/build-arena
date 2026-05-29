@@ -20,3 +20,8 @@ htmlcov/
 
 # Generated local logs
 *.log
+
+# Local downloaded/extracted build bundle artifacts
+arena-calibration.tar.gz
+arena-calibration.zip
+docs/buildfiles/files*/
