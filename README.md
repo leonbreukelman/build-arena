@@ -2,6 +2,11 @@
 
 Local-first autonomous build/optimization loop for a single operator.
 
+Repo identity: this main loop/system repo is `build-arena`. Internal
+`.arena/calibration/` artifacts are scorer/verifier calibration data, not the
+repo identity. The separate `arena-calibration` repo is the smaller public
+calibration harness.
+
 Current implementation status: Phase 4 loop glue, budget, divergence, event projection, and worktree promotion foundation is complete.
 
 Implemented acceptance gates:
