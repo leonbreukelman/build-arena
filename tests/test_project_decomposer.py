@@ -23,6 +23,7 @@ from arena.decomposer import (
     VerificationGap,
     canonical_project_model_json,
     decompose_project,
+    main,
     validate_project_model,
 )
 
@@ -90,6 +91,28 @@ def test_git_subdirectory_resolves_to_repo_toplevel(tmp_path: Path) -> None:
     assert Path(model.project_root) == tmp_path.resolve()
     assert "pyproject.toml" in {record.path for record in model.file_inventory.included_files}
     assert validate_project_model(model).valid
+
+
+def test_missing_or_non_directory_project_path_fails_explicitly(tmp_path: Path) -> None:
+    missing = tmp_path / "missing"
+    file_path = tmp_path / "not-a-directory.txt"
+    file_path.write_text("not a project\n", encoding="utf-8")
+
+    with pytest.raises(FileNotFoundError, match="project path does not exist"):
+        decompose_project(missing)
+    with pytest.raises(NotADirectoryError, match="project path is not a directory"):
+        decompose_project(file_path)
+
+
+def test_cli_rejects_missing_project_path(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    output = tmp_path / "model.json"
+
+    exit_code = main(["--project", str(tmp_path / "missing"), "--output", str(output)])
+
+    captured = capsys.readouterr()
+    assert exit_code == 2
+    assert "project path does not exist" in captured.err
+    assert not output.exists()
 
 
 def test_hashes_raw_disk_bytes_and_reports_dirty_tree(tmp_path: Path) -> None:

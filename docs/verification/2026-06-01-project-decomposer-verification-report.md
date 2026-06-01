@@ -15,11 +15,12 @@ uv run python -m arena.decomposer --project /home/leonb/projects/arena-calibrati
 
 ## Results
 
-- pytest: passed, 96 tests
+- pytest: passed, 98 tests
 - ruff: passed
 - pyright: passed, 0 errors
 - CLI decomposer: passed
 - Python API validation: `validate_project_model(decompose_project('/home/leonb/projects/arena-calibration')).valid == True`
+- Post-PR Copilot review fix: missing or non-directory `--project` paths now fail explicitly before git/filesystem inventory, with regression tests.
 
 ## Pilot output summary
 

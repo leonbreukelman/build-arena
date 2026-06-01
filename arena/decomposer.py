@@ -362,6 +362,11 @@ def _validate_check_references(
 
 def _scan_project(project_path: Path) -> _ScanResult:
     requested = project_path.resolve()
+    if not requested.exists():
+        raise FileNotFoundError(f"project path does not exist: {requested}")
+    if not requested.is_dir():
+        raise NotADirectoryError(f"project path is not a directory: {requested}")
+
     git_root = _git_toplevel(requested)
     if git_root is not None:
         root = git_root
