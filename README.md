@@ -35,3 +35,15 @@ Implemented acceptance gates:
 - `make generated`, `ruff`, `pyright`, and `pytest` are green.
 
 No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation remains green.
+
+## Project decomposition
+
+Phase 5 begins with a deterministic project decomposer. It can be called before the normal optimization loop to emit a mechanically checkable project model:
+
+```bash
+uv run python -m arena.decomposer --project /path/to/project --output /tmp/project-model.json
+```
+
+Use `--output -` for canonical JSON on stdout, and `--fail-on-gap` when a caller wants explicit verification gaps to fail the command. The Python API is `arena.decomposer.decompose_project()` plus `validate_project_model()`.
+
+The first pilot target is the separate `arena-calibration` checkout. A real local run should produce a model with covered components for fixture manifests, scorer, verifier, provider boundary, runner discrimination matrix, tests, docs, and configuration, plus the manifest-derived `patch_generalization_axis_missing` gap for `F3_bad_passes_tests`. Coverage is ownership accounting, not quality scoring; downstream gates should treat `verification_gaps` and any `unclassified_project_surface` component as the actionable quality signals.
