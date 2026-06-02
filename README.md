@@ -47,3 +47,5 @@ uv run python -m arena.decomposer --project /path/to/project --output /tmp/proje
 Use `--output -` for canonical JSON on stdout, and `--fail-on-gap` when a caller wants explicit verification gaps to fail the command. The Python API is `arena.decomposer.decompose_project()` plus `validate_project_model()`.
 
 The first pilot target is the separate `arena-calibration` checkout. A real local run should produce a model with covered components for fixture manifests, scorer, verifier, provider boundary, runner discrimination matrix, tests, docs, and configuration, plus the manifest-derived `patch_generalization_axis_missing` gap for `F3_bad_passes_tests`. Coverage is ownership accounting, not quality scoring; downstream gates should treat `verification_gaps` and any `unclassified_project_surface` component as the actionable quality signals.
+
+For cross-repo Phase 5 coordination, the shared Project Model v0 compatibility target is documented in `docs/project-model-v0.md` with its machine-readable schema at `docs/schemas/project-model-v0.schema.json` and worked examples under `docs/examples/`.
