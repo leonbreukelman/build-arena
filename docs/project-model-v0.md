@@ -42,7 +42,18 @@ Worked examples live at:
 - `docs/examples/project-model-v0-code-adjacent.json`
 - `docs/examples/project-model-v0-process-strategy.json`
 
-The current `arena.decomposer.ProjectModel` in `arena/decomposer.py` is the Phase 5 scanner model (`schema_version: project-model/v0.1`) and remains supported. It is not yet the cross-repo contract shape. The build-arena child implementation ticket should map or emit this v0 contract without breaking the existing decomposer CLI/API behavior.
+The current `arena.decomposer.ProjectModel` in `arena/decomposer.py` is the Phase 5 scanner model (`schema_version: project-model/v0.1`) and remains supported. The shared contract is emitted through an explicit adapter so existing scanner CLI/API consumers do not regress:
+
+```bash
+uv run python -m arena.decomposer \
+  --project /path/to/project \
+  --format project-model-v0 \
+  --source-task "Primary task being decomposed" \
+  --primary-backlog-item "https://github.com/owner/repo/issues/123" \
+  --output project-model-v0.json
+```
+
+`--source-task` maps to `source.task` and `goal`; `--primary-backlog-item` maps to `source.primaryBacklogItem`. Optional `--repo` and `--issue` populate the remaining `source` metadata. Downstream repos should consume the `schemaVersion: project-model/v0` JSON and should not consume the internal `schema_version: project-model/v0.1` scanner shape as the cross-repo contract. The CLI writes the JSON before returning quality-gate failures, so unclassified surface and verification gaps remain visible artifacts instead of being hidden by the exit code.
 
 ## Required top-level fields
 

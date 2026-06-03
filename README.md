@@ -46,6 +46,19 @@ uv run python -m arena.decomposer --project /path/to/project --output /tmp/proje
 
 Use `--output -` for canonical JSON on stdout, and `--fail-on-gap` when a caller wants explicit verification gaps to fail the command. The Python API is `arena.decomposer.decompose_project()` plus `validate_project_model()`.
 
+To emit the shared cross-repo Project Model v0 contract from a primary task/backlog item before planning begins, request the v0 format explicitly:
+
+```bash
+uv run python -m arena.decomposer \
+  --project /path/to/project \
+  --format project-model-v0 \
+  --source-task "Implement the primary task" \
+  --primary-backlog-item "https://github.com/owner/repo/issues/123" \
+  --output /tmp/project-model-v0.json
+```
+
+The default output remains the internal deterministic scanner model (`schema_version: project-model/v0.1`) for compatibility. Downstream repositories should consume the explicit v0 output (`schemaVersion: project-model/v0`) and run the deterministic quality gate via `arena.decomposer.validate_project_model_v0()` or `arena.project_model_v0.evaluate_quality_gate()`; ownership coverage remains separate from quality scoring. The CLI writes the JSON artifact before reporting validation failures, so non-zero output for unclassified surface or verification gaps still leaves an inspectable model for downstream triage.
+
 The first pilot target is the separate `arena-calibration` checkout. A real local run should produce a model with covered components for fixture manifests, scorer, verifier, provider boundary, runner discrimination matrix, tests, docs, and configuration, plus the manifest-derived `patch_generalization_axis_missing` gap for `F3_bad_passes_tests`. Coverage is ownership accounting, not quality scoring; downstream gates should treat `verification_gaps` and any `unclassified_project_surface` component as the actionable quality signals.
 
 For cross-repo Phase 5 coordination, the shared Project Model v0 compatibility target is documented in `docs/project-model-v0.md` with its machine-readable schema at `docs/schemas/project-model-v0.schema.json` and worked examples under `docs/examples/`.

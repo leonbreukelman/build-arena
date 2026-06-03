@@ -344,6 +344,15 @@ def evaluate_quality_gate(model: BaseModel | dict[str, Any]) -> QualityGateRepor
                     message=f"Component {component_id} has no linked observable check id.",
                 )
             )
+        if not _list_of_scalars(component.get("responsibilities")):
+            findings.append(
+                QualityGateFinding(
+                    code="missing_component_responsibilities",
+                    severity="error",
+                    location=f"components[{component_id}].responsibilities",
+                    message=f"Component {component_id or '<missing>'} has no responsibilities.",
+                )
+            )
         if _is_vague_component(component):
             findings.append(
                 QualityGateFinding(
