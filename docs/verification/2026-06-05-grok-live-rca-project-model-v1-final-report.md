@@ -173,4 +173,4 @@ secret_hit_count=0
 
 ## Commit readiness
 
-This slice is ready to commit as one coherent verified change. It does not push, merge, deploy, start a broader live loop, or enable worktree mutation/promotion.
+This slice was committed locally as `08a3e29 [verified] add live xai decomposer and project model v1 readiness`. It was not pushed, merged, deployed, used to start a broader live loop, or used to enable worktree mutation/promotion.
