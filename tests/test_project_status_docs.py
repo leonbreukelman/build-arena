@@ -105,6 +105,50 @@ def test_agents_current_status_reflects_post_phase4_decomposer_and_readiness() -
     assert [phrase for phrase in forbidden_overclaims if phrase in lowered_for_overclaim_scan] == []
 
 
+def test_project_brief_current_status_matches_implemented_foundation() -> None:
+    brief = _read("docs/build-arena-project-brief.md")
+
+    required_markers = [
+        "## Current implementation status",
+        "Phase 1-4 foundation is implemented and verified",
+        "AI-first decomposer",
+        "Project Model v1",
+        "project-model-v1.json",
+        "project-model-v0.json",
+        "LiveProjectModelLLM",
+        "--allow-live",
+        "not_ready_blockers_remain",
+        "not ready for broad autonomous live loops",
+        "dashboard control plane",
+        "rollback endpoint",
+        "live subscription-CLI subprocess execution",
+    ]
+    missing = [marker for marker in required_markers if marker not in brief]
+    assert missing == []
+
+    stale_strings = [
+        "## Current phase: calibration",
+        "The project is in the calibration phase, not the loop phase.",
+        "The loop itself (Hypothesizer, promotion to a real project, divergence detection at scale) is not built",
+        "Calibration phase, milestones complete except live validation",
+        "Open item: **live validation.**",
+    ]
+    assert [text for text in stale_strings if text in brief] == []
+
+    lowered = brief.lower()
+    lowered_for_overclaim_scan = lowered.replace(
+        "not ready for broad autonomous live loops",
+        "",
+    )
+    forbidden_overclaims = [
+        "production ready",
+        "fully autonomous live",
+        "live autonomous loop ready",
+        "ready for broad autonomous live loops",
+    ]
+    assert [phrase for phrase in forbidden_overclaims if phrase in lowered_for_overclaim_scan] == []
+
+
 def test_agents_preserves_safety_boundaries() -> None:
     agents = _read("AGENTS.md")
 
