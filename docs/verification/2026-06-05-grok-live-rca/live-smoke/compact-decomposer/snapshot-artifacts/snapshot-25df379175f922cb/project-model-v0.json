@@ -1,0 +1,230 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-core",
+      "kind": "source",
+      "name": "Core Logic",
+      "observableCheckIds": [
+        "check-comp-core"
+      ],
+      "ownedSurfaces": [
+        "pkg/core.py",
+        "pkg/core.py",
+        "pkg/core.py"
+      ],
+      "responsibilities": [
+        "Implements the primary arithmetic function add_one"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-tests",
+      "kind": "source",
+      "name": "Test Suite",
+      "observableCheckIds": [
+        "check-comp-tests"
+      ],
+      "ownedSurfaces": [
+        "tests/test_core.py",
+        "tests/test_core.py",
+        "tests/test_core.py"
+      ],
+      "responsibilities": [
+        "Validates the core logic via test_add_one"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project-config",
+      "kind": "source",
+      "name": "Project Configuration",
+      "observableCheckIds": [
+        "check-comp-project-config"
+      ],
+      "ownedSurfaces": [
+        "pyproject.toml"
+      ],
+      "responsibilities": [
+        "Defines project metadata and build settings"
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Core Tested By Suite",
+      "fromComponent": "comp-core",
+      "id": "contract-core-to-test",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-core"
+      ],
+      "toComponent": "comp-tests"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "comp-core",
+        "comp-tests",
+        "comp-project-config"
+      ]
+    }
+  ],
+  "goal": "decompose this tiny repository into responsibility-bearing components",
+  "heldOutProbes": [
+    {
+      "componentId": "comp-core",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-smoke-independence",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative None."
+    }
+  ],
+  "id": "tiny-decomposer-smoke",
+  "invariants": [
+    {
+      "componentIds": [
+        "comp-core",
+        "comp-tests",
+        "comp-project-config"
+      ],
+      "description": "All components and contracts must be derived strictly from provided packet nodes/edges/provenance without invention",
+      "id": "ccc-anti-fabrication",
+      "observableCheckIds": [
+        "check-comp-core",
+        "check-comp-tests",
+        "check-comp-project-config"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-core",
+        "comp-tests"
+      ],
+      "description": "All graph elements used carry deterministic confidence from project_graph and python_ast derivations",
+      "id": "ccc-determinism",
+      "observableCheckIds": [
+        "check-comp-core",
+        "check-comp-tests",
+        "check-comp-project-config"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-core",
+        "comp-tests",
+        "comp-project-config"
+      ],
+      "description": "Every element must reference only provenance IDs present in the supplied packet",
+      "id": "ccc-provenance",
+      "observableCheckIds": [
+        "check-comp-core",
+        "check-comp-tests",
+        "check-comp-project-config"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-core",
+        "comp-tests"
+      ],
+      "description": "Acceptance checks must not require paid APIs; only local deterministic tests allowed",
+      "id": "ccc-no-live-paid-api",
+      "observableCheckIds": [
+        "check-comp-core",
+        "check-comp-tests",
+        "check-comp-project-config"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [],
+  "nonGoals": [
+    "do not treat file buckets as final components"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "comp-core",
+      "description": "Observable local check for Core Logic.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-core",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-tests",
+      "description": "Observable local check for Test Suite.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-tests",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-project-config",
+      "description": "Observable local check for Project Configuration.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project-config",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/tiny-repo",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": []
+}

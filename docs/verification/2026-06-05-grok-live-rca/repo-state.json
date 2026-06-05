@@ -1,0 +1,32 @@
+[
+  {
+    "cmd": "pwd",
+    "exit_code": 0,
+    "output": "/home/leonb/projects/build-arena"
+  },
+  {
+    "cmd": "git rev-parse --show-toplevel",
+    "exit_code": 0,
+    "output": "/home/leonb/projects/build-arena"
+  },
+  {
+    "cmd": "git status --short",
+    "exit_code": 0,
+    "output": "?? docs/prompts/"
+  },
+  {
+    "cmd": "git branch --show-current",
+    "exit_code": 0,
+    "output": "coverage-100"
+  },
+  {
+    "cmd": "git log --oneline -10",
+    "exit_code": 0,
+    "output": "a26bc37 [verified] add AI-first project decomposer\ndf3d1c7 Reach 100 percent coverage\n95e75d3 Emit Project Model v0 from decomposer (#3)\n7675b49 [verified] Define Project Model v0 contract (#2)\n3cd7418 feat: add project decomposer\n7eab736 Rename main loop project to build-arena\n7c7bb60 [verified] ignore local calibration build bundles\n44a17c3 Rename project to build-calibration\n979cf3c [verified] add phase 4 loop budget divergence\nd62a4d4 [verified] add phase 3 runner routing contracts"
+  },
+  {
+    "cmd": "git remote -v",
+    "exit_code": 0,
+    "output": "origin\tgit@github.com:leonbreukelman/build-arena.git (fetch)\norigin\tgit@github.com:leonbreukelman/build-arena.git (push)"
+  }
+]

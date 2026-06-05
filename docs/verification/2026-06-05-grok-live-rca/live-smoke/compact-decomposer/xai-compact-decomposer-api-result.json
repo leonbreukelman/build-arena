@@ -1,0 +1,40 @@
+{
+  "body_sha256": "fe1d09b986d78a029a226a6171d25a9182e910a26f2e908e2c28833912196798",
+  "content_sha256": "7cc843147f3a6fa2fa93e0bf2c9019000d5fa6cf0318742ff6ecad574e3cbc56",
+  "finish_reason": "stop",
+  "parsed_json": true,
+  "parsed_top_keys": [
+    "model_id",
+    "project_id",
+    "goal",
+    "non_goals",
+    "components",
+    "contracts",
+    "cross_cutting_concerns",
+    "observable_checks",
+    "held_out_probes",
+    "verification_gaps",
+    "near_neighbor_alternatives",
+    "acceptance_command_allowlist"
+  ],
+  "status_code": 200,
+  "usage": {
+    "completion_tokens": 1614,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "cost_in_usd_ticks": 102065500,
+    "num_sources_used": 0,
+    "prompt_tokens": 4991,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 64,
+      "image_tokens": 0,
+      "text_tokens": 4991
+    },
+    "total_tokens": 6605
+  }
+}

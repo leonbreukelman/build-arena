@@ -1,0 +1,38 @@
+{
+  "body_sha256": "11fc39696a0465ccb3cd064b34ed014847db877271a3f6e7b59fe282b6ebcaaa",
+  "content": "{\"ok\": true, \"path\": \"direct-xai-api\"}",
+  "content_sha256": "32990aace0506cbada08774bbb33ffa4a8d6959b471c97c8a8a1f8ea79913f1e",
+  "finish_reason": "stop",
+  "parse_error": null,
+  "parsed_json": {
+    "ok": true,
+    "path": "direct-xai-api"
+  },
+  "request": {
+    "method": "POST",
+    "model": "grok-4.20-0309-non-reasoning",
+    "payload_sha256": "e559422f18342e4607693086a1f2fb2c62aea46ae79e17efaf80b9a84fbce829",
+    "timeout_seconds": 45,
+    "url": "https://api.x.ai/v1/chat/completions"
+  },
+  "status_code": 200,
+  "usage": {
+    "completion_tokens": 14,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 0,
+      "rejected_prediction_tokens": 0
+    },
+    "cost_in_usd_ticks": 1903000,
+    "num_sources_used": 0,
+    "prompt_tokens": 178,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 64,
+      "image_tokens": 0,
+      "text_tokens": 178
+    },
+    "total_tokens": 192
+  }
+}

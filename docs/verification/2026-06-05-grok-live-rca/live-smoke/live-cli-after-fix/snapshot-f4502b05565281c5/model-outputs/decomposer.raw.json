@@ -1,0 +1,133 @@
+{
+  "_provider_metadata": {
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "d2553719dbc6e2775d26744ea0d403ac1d82edf79931388a18a3093ee0f3b5ee",
+    "finish_reason": "stop",
+    "model": "grok-4.20-0309-non-reasoning",
+    "prompt_hash": "f57603edfb0e797df201e5bdc1dc110d39ded5acfd0770e8fdd9dfb4c0b930a7",
+    "provider": "xai",
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 919,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 26015500,
+      "num_sources_used": 0,
+      "prompt_tokens": 297,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 64,
+        "image_tokens": 0,
+        "text_tokens": 297
+      },
+      "total_tokens": 1216
+    }
+  },
+  "cross_component_flow": "TestHarness \u2192 ConfigLoader \u2192 CoreLogic. Tests load configuration, invoke core functions, and assert outcomes. All components are grounded in the provided graph nodes (python_module, python_function, python_import, config, test_file).",
+  "decomposition": [
+    {
+      "checks": [
+        "Unit tests in test_core.py cover all branches",
+        "Behavior matches documented expectations in code comments or docstrings",
+        "No regression against pre-fix behavior where applicable"
+      ],
+      "component": "CoreLogic",
+      "concerns": [
+        "Correctness of the post-fix behavior",
+        "Performance characteristics of the core algorithm",
+        "Error handling and edge-case resilience"
+      ],
+      "contracts": [
+        "Accepts input parameters from callers (e.g., configuration or raw data)",
+        "Returns standardized result objects or status codes",
+        "Exposes a stable API for test and integration layers"
+      ],
+      "gaps": [
+        "Potential lack of explicit input validation",
+        "Missing performance benchmarks"
+      ],
+      "near_neighbors": [
+        "TestHarness",
+        "ConfigLoader"
+      ],
+      "probes": [
+        "Execute tests/test_core.py and inspect coverage of pkg/core.py",
+        "Trace imports from tests/test_core.py into pkg/core.py to validate interface stability",
+        "Inspect pyproject.toml for any declared entry points or scripts that invoke CoreLogic"
+      ],
+      "responsibility": "Implements the primary business or operational logic of the repository after the fix. Owns the main execution flow and data transformations."
+    },
+    {
+      "checks": [
+        "All tests in tests/test_core.py pass after the fix",
+        "No usage of deprecated APIs from CoreLogic",
+        "Test output is deterministic"
+      ],
+      "component": "TestHarness",
+      "concerns": [
+        "Test coverage completeness",
+        "Isolation of test environment",
+        "Maintenance of test data fixtures"
+      ],
+      "contracts": [
+        "Discovers and runs all test functions in test modules",
+        "Reports pass/fail status with diagnostics",
+        "Depends on CoreLogic without introducing test-only side effects"
+      ],
+      "gaps": [
+        "Absence of integration or end-to-end tests beyond unit level",
+        "No explicit test for configuration loading paths"
+      ],
+      "near_neighbors": [
+        "CoreLogic",
+        "ConfigLoader"
+      ],
+      "probes": [
+        "Run pytest or equivalent on tests/test_core.py and observe interactions with pkg/core.py",
+        "Examine python_function nodes in tests/test_core.py for test helpers or fixtures",
+        "Check for test markers or configuration in pyproject.toml"
+      ],
+      "responsibility": "Orchestrates automated verification of CoreLogic and any supporting utilities. Responsible for test discovery, execution, and assertion of post-fix behavior."
+    },
+    {
+      "checks": [
+        "pyproject.toml contains all required sections for the project",
+        "CoreLogic and tests respect configuration values",
+        "Validation logic rejects invalid inputs"
+      ],
+      "component": "ConfigLoader",
+      "concerns": [
+        "Backward compatibility of config schema after fix",
+        "Security of any sensitive values in config",
+        "Default value handling"
+      ],
+      "contracts": [
+        "Parses TOML configuration without error for valid files",
+        "Provides typed or structured configuration objects",
+        "Surfaces clear errors for malformed configuration"
+      ],
+      "gaps": [
+        "No schema validation library explicitly visible",
+        "Lack of environment variable override support (if required)"
+      ],
+      "near_neighbors": [
+        "CoreLogic",
+        "TestHarness"
+      ],
+      "probes": [
+        "Inspect pyproject.toml for [tool.*] sections or project metadata",
+        "Trace python_import statements from pkg/core.py and tests/test_core.py related to config handling",
+        "Verify if any python_function in core.py reads configuration"
+      ],
+      "responsibility": "Reads, validates, and supplies configuration values from pyproject.toml or other sources to CoreLogic and TestHarness. Ensures consistent runtime settings post-fix."
+    }
+  ],
+  "model_id": "grok-4.20-0309-non-reasoning",
+  "project": "tiny-live-after-fix",
+  "summary": "The repository decomposes into three responsibility-bearing components derived strictly from graph evidence. No file-bucket leaves are used; each component carries contracts, concerns, verification checks, identified gaps, neighboring components, and concrete probes for validation."
+}

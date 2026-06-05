@@ -1,0 +1,204 @@
+{
+  "acceptance_command_allowlist": [
+    "uv run pytest tests -q"
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "check:smoke-test"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "id": "comp:core",
+      "name": "Core Logic",
+      "owned_node_ids": [
+        "node:6e9656b31e1a775d1036",
+        "node:72423a36df9156d74f2f",
+        "node:7dc099dc59b71626b405"
+      ],
+      "provenance_refs": [
+        "prov:6e4d2ca4430875a2",
+        "prov:e646c1df7b2a37fc"
+      ],
+      "responsibility": "Implements the primary arithmetic function add_one",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check:smoke-test"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "id": "comp:tests",
+      "name": "Test Suite",
+      "owned_node_ids": [
+        "node:2ed887a154d9f8588b4a",
+        "node:d5230453a7bd8da84d13",
+        "node:fb5a935faa0391969beb"
+      ],
+      "provenance_refs": [
+        "prov:c3e3b944ffb744be",
+        "prov:45ea6e28f647a9c2",
+        "prov:2bce6a672105c18e"
+      ],
+      "responsibility": "Validates the core logic via test_add_one",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "comp:project-config",
+      "name": "Project Configuration",
+      "owned_node_ids": [
+        "node:f297e5cb198d1f626af5"
+      ],
+      "provenance_refs": [
+        "prov:67c8adb87b48f52f"
+      ],
+      "responsibility": "Defines project metadata and build settings",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp:core",
+      "id": "contract:core-to-test",
+      "name": "Core Tested By Suite",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:c3e3b944ffb744be",
+        "prov:7741be8b4f15a149"
+      ],
+      "supporting_edge_ids": [
+        "edge:b2abbf0edd4da7fdc60c",
+        "edge:bcd8f1fd29dd29dda5c5",
+        "edge:808b1130868c6ca24122",
+        "edge:346c8cc8098a3c1e2331",
+        "edge:e6f594db51c69261a148"
+      ],
+      "to_component_id": "comp:tests"
+    }
+  ],
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp:core",
+        "comp:tests",
+        "comp:project-config"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "description": "All components and contracts must be derived strictly from provided packet nodes/edges/provenance without invention",
+      "id": "ccc:anti-fabrication",
+      "provenance_refs": [
+        "prov:project:81500fea1ae31716"
+      ],
+      "triggered_by": "decomposer"
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp:core",
+        "comp:tests"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "description": "All graph elements used carry deterministic confidence from project_graph and python_ast derivations",
+      "id": "ccc:determinism",
+      "provenance_refs": [
+        "prov:6e4d2ca4430875a2",
+        "prov:e646c1df7b2a37fc",
+        "prov:c3e3b944ffb744be"
+      ],
+      "triggered_by": "graph"
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp:core",
+        "comp:tests",
+        "comp:project-config"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "description": "Every element must reference only provenance IDs present in the supplied packet",
+      "id": "ccc:provenance",
+      "provenance_refs": [
+        "prov:project:81500fea1ae31716",
+        "prov:67c8adb87b48f52f"
+      ],
+      "triggered_by": "decomposer"
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp:core",
+        "comp:tests"
+      ],
+      "contract_ids": [],
+      "description": "Acceptance checks must not require paid APIs; only local deterministic tests allowed",
+      "id": "ccc:no-live-paid-api",
+      "provenance_refs": [
+        "prov:project:81500fea1ae31716"
+      ],
+      "triggered_by": "acceptance_policy"
+    }
+  ],
+  "goal": "decompose this tiny repository into responsibility-bearing components",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "grok-live-smoke-independent-probe-builder",
+      "builder_prompt_hash": "a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:smoke-independence",
+      "planted_negative_id": null,
+      "provenance_refs": [
+        "prov:project:81500fea1ae31716"
+      ],
+      "target_component_ids": [
+        "comp:core"
+      ],
+      "target_contract_ids": [
+        "contract:core-to-test"
+      ]
+    }
+  ],
+  "model_id": "grok-4",
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "accept:default-smoke",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:core",
+        "comp:tests"
+      ],
+      "contract_ids": [
+        "contract:core-to-test"
+      ],
+      "description": "Run the project's test suite to verify core functionality",
+      "id": "check:smoke-test",
+      "provenance_refs": [
+        "prov:c3e3b944ffb744be",
+        "prov:2bce6a672105c18e"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    }
+  ],
+  "project_id": "tiny-decomposer-smoke",
+  "verification_gaps": []
+}

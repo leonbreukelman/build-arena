@@ -1,0 +1,30 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [],
+  "contracts": [],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [],
+  "goal": "decompose this tiny repository into responsibility-bearing components",
+  "graph_hash": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b",
+  "held_out_probes": [],
+  "input_hashes": {
+    "graph": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b"
+  },
+  "model_output_hashes": {
+    "decomposer": "b32c22ffabbef7b03ed637809c2aa127cad46f2f372e8d1d6b523a232712c7e8"
+  },
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "observable_checks": [],
+  "primary_model_id": "grok-4.20-0309-non-reasoning",
+  "project_id": "tiny-live-after-fix",
+  "project_root": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/tiny-repo",
+  "prompt_hashes": {
+    "decomposer": "f57603edfb0e797df201e5bdc1dc110d39ded5acfd0770e8fdd9dfb4c0b930a7"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-f4502b05565281c5",
+  "verification_gaps": []
+}

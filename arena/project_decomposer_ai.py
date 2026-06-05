@@ -16,10 +16,12 @@ from arena.project_graph import (
 )
 from arena.project_model_gate import run_project_model_gate, write_gate_report
 from arena.project_model_llm import (
+    LiveProjectModelLLM,
     build_fixture_model_output,
     build_noop_model_output,
     load_recorded_model_output,
 )
+from arena.project_model_v1 import project_model_v1_from_snapshot
 from arena.project_snapshot import (
     Component,
     Contract,
@@ -58,6 +60,9 @@ def build_project_model_snapshot(
     primary_backlog_item: str = "local-snapshot",
     llm_mode: str = "fixture",
     model_output_path: str | Path | None = None,
+    live_llm: Any | None = None,
+    live_model: str | None = None,
+    live_base_url: str | None = None,
     overwrite: bool = False,
 ) -> BuildProjectModelResult:
     graph = build_project_graph(project)
@@ -76,7 +81,8 @@ def build_project_model_snapshot(
     elif llm_mode == "off":
         raw_output = build_noop_model_output(graph, project_id=project_id, goal=goal, non_goals=non_goals)
     elif llm_mode == "live":
-        raise RuntimeError("live mode requires explicit CLI --allow-live and is not implemented for CI")
+        adapter = live_llm or LiveProjectModelLLM(model=live_model, base_url=live_base_url or "https://api.x.ai/v1")
+        raw_output = adapter.generate(prompt)
     else:
         raise ValueError(f"unsupported llm_mode {llm_mode!r}")
 
@@ -110,6 +116,21 @@ def build_project_model_snapshot(
     gate_hash = _sha((snapshot_dir / "gate-report.json").read_text(encoding="utf-8"))
     v0 = _project_model_v0_projection(snapshot, graph, source_task=source_task, primary_backlog_item=primary_backlog_item)
     v0_hash = write_json(snapshot_dir / "project-model-v0.json", v0)
+    artifact_hashes = {
+        "snapshot": snapshot_hash,
+        "graph_file": graph_file_hash,
+        "gate_report": gate_hash,
+        "project_model_v0": v0_hash,
+    }
+    v1 = project_model_v1_from_snapshot(
+        snapshot,
+        graph,
+        gate_report,
+        artifact_hashes=artifact_hashes,
+        compatibility_v0_path="project-model-v0.json",
+    )
+    v1_hash = write_json(snapshot_dir / "project-model-v1.json", v1)
+    artifact_hashes["project_model_v1"] = v1_hash
 
     prompt_dir = snapshot_dir / "prompts"
     prompt_dir.mkdir(exist_ok=True)
@@ -164,6 +185,9 @@ def build_project_model_snapshot(
         "snapshot_hash": snapshot_hash,
         "gate_report_path": "gate-report.json",
         "gate_report_hash": gate_hash,
+        "project_model_primary_path": "project-model-v1.json",
+        "project_model_v1_path": "project-model-v1.json",
+        "project_model_v1_hash": v1_hash,
         "project_model_v0_path": "project-model-v0.json",
         "project_model_v0_hash": v0_hash,
         "dirty_state": {
@@ -179,13 +203,10 @@ def build_project_model_snapshot(
             "probe_builder": snapshot.held_out_probes[0].builder_model_id if snapshot.held_out_probes else "none",
         },
         "output_hashes": snapshot.model_output_hashes,
-        "artifact_hashes": {
-            "snapshot": snapshot_hash,
-            "graph_file": graph_file_hash,
-            "gate_report": gate_hash,
-            "project_model_v0": v0_hash,
-        },
+        "artifact_hashes": artifact_hashes,
     }
+    if raw_output.get("_provider_metadata"):
+        manifest["live_provider_metadata"] = raw_output["_provider_metadata"]
     manifest_path = snapshot_dir / "manifest.json"
     write_json(manifest_path, manifest)
     return BuildProjectModelResult(

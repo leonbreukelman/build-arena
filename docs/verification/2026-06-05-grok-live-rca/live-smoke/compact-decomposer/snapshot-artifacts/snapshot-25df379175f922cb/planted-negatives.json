@@ -1,0 +1,8 @@
+[
+  {
+    "id": null,
+    "independent_from_probe_builder": true,
+    "kind": "fluent_file_bucket_negative",
+    "target_probe_id": "probe:smoke-independence"
+  }
+]

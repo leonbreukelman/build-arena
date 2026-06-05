@@ -1,0 +1,5 @@
+{
+  "XAI_API_KEY_present": true,
+  "base_url": "https://api.x.ai/v1",
+  "source": "/home/leonb/.hermes/.env"
+}

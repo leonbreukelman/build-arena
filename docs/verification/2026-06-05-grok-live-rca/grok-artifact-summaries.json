@@ -1,0 +1,462 @@
+[
+  {
+    "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json",
+    "exists": true,
+    "bytes": 1014,
+    "sha256": "5bbb0a5509454944a3d2df376efefd3423d39aff799ff2d109604852f5d0dc73",
+    "line_count": 7,
+    "top_keys": [
+      "text",
+      "stopReason",
+      "sessionId",
+      "requestId",
+      "thought"
+    ],
+    "text": "",
+    "stopReason": "Cancelled",
+    "key_hits": [
+      {
+        "path": "$.text",
+        "value": ""
+      },
+      {
+        "path": "$.stopReason",
+        "value": "Cancelled"
+      },
+      {
+        "path": "$.thought",
+        "value": "The task is to decompose the AI-first public site and agent metadata project into source-backed components. I must return only valid JSON with specific top-level keys.\nFirst, the user query is to retu..."
+      }
+    ]
+  },
+  {
+    "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json",
+    "exists": true,
+    "bytes": 8478,
+    "sha256": "3f9e004188b0f01db80b29bb4d0421d0a48d464cb0b48633117adb1642d6911c",
+    "line_count": 7,
+    "top_keys": [
+      "text",
+      "stopReason",
+      "sessionId",
+      "requestId",
+      "thought"
+    ],
+    "text": "",
+    "stopReason": "Cancelled",
+    "key_hits": [
+      {
+        "path": "$.text",
+        "value": ""
+      },
+      {
+        "path": "$.stopReason",
+        "value": "Cancelled"
+      },
+      {
+        "path": "$.thought",
+        "value": "The task is: \"You are Grok, primary AI-first Build Arena project decomposer. Produce a model-derived decomposition JSON from this compact graph packet. Return only valid JSON, no markdown.\"\nThe task i..."
+      }
+    ]
+  },
+  {
+    "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-prompt.md",
+    "exists": true,
+    "bytes": 31540,
+    "sha256": "29c902f26e4c73aae8336932796f3f790b5da6c06e2b0f86649f2bae51ba8790",
+    "line_count": 938,
+    "key_lines": [
+      {
+        "line": 1,
+        "text": "You are Grok acting as the primary AI-first project decomposer for Build Arena."
+      },
+      {
+        "line": 3,
+        "text": "Return only valid JSON, no markdown. Required top-level keys:"
+      },
+      {
+        "line": 9,
+        "text": "ObservableCheck shape: {id,description,command,component_ids,contract_ids,provenance_refs,acceptance_command_id,safe_to_run_by_default,requires_network,requires_paid_api}."
+      },
+      {
+        "line": 18,
+        "text": "  \"goal\": \"decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs\","
+      },
+      {
+        "line": 62,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 63,
+        "text": "      \"symbol\": \"prompt/represent_me.md#What He Is Less Good At\","
+      },
+      {
+        "line": 88,
+        "text": "      \"label\": \"api/v1/projects.json\","
+      },
+      {
+        "line": 89,
+        "text": "      \"path\": \"api/v1/projects.json\","
+      },
+      {
+        "line": 97,
+        "text": "      \"label\": \"well-known/agent-card.json\","
+      },
+      {
+        "line": 98,
+        "text": "      \"path\": \"well-known/agent-card.json\","
+      },
+      {
+        "line": 124,
+        "text": "      \"label\": \"worker.mcp.server\","
+      },
+      {
+        "line": 125,
+        "text": "      \"path\": \"worker/mcp/server.js\","
+      },
+      {
+        "line": 126,
+        "text": "      \"symbol\": \"worker.mcp.server\","
+      },
+      {
+        "line": 151,
+        "text": "      \"label\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 152,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 188,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 189,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Stories Worth Telling\","
+      },
+      {
+        "line": 214,
+        "text": "      \"label\": \"copy_prompt_files\","
+      },
+      {
+        "line": 216,
+        "text": "      \"symbol\": \"scripts.build.copy_prompt_files\","
+      },
+      {
+        "line": 232,
+        "text": "      \"label\": \"well-known/ai.json\","
+      },
+      {
+        "line": 233,
+        "text": "      \"path\": \"well-known/ai.json\","
+      },
+      {
+        "line": 241,
+        "text": "      \"label\": \"copy_api_files\","
+      },
+      {
+        "line": 243,
+        "text": "      \"symbol\": \"scripts.build.copy_api_files\","
+      },
+      {
+        "line": 295,
+        "text": "      \"label\": \"api/v1/offers.json\","
+      },
+      {
+        "line": 296,
+        "text": "      \"path\": \"api/v1/offers.json\","
+      },
+      {
+        "line": 323,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 324,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Data Sources\","
+      },
+      {
+        "line": 358,
+        "text": "      \"label\": \"loadJson\","
+      },
+      {
+        "line": 359,
+        "text": "      \"path\": \"worker/mcp/server.js\","
+      },
+      {
+        "line": 360,
+        "text": "      \"symbol\": \"worker.mcp.server.loadJson\","
+      },
+      {
+        "line": 368,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 369,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Primary Positioning\","
+      },
+      {
+        "line": 413,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 414,
+        "text": "      \"symbol\": \"prompt/represent_me.md#What He Is Good At\","
+      },
+      {
+        "line": 457,
+        "text": "      \"label\": \"loadPrompt\","
+      },
+      {
+        "line": 458,
+        "text": "      \"path\": \"worker/mcp/server.js\","
+      },
+      {
+        "line": 459,
+        "text": "      \"symbol\": \"worker.mcp.server.loadPrompt\","
+      },
+      {
+        "line": 466,
+        "text": "      \"label\": \"api/v1/profile.json\","
+      },
+      {
+        "line": 467,
+        "text": "      \"path\": \"api/v1/profile.json\","
+      },
+      {
+        "line": 494,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 495,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Voice\","
+      },
+      {
+        "line": 502,
+        "text": "      \"label\": \"package-lock.json\","
+      },
+      {
+        "line": 503,
+        "text": "      \"path\": \"package-lock.json\","
+      },
+      {
+        "line": 512,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 513,
+        "text": "      \"symbol\": \"prompt/represent_me.md#How to Represent Leon Breukelman\","
+      },
+      {
+        "line": 530,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 531,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Contact\","
+      },
+      {
+        "line": 610,
+        "text": "      \"label\": \"handleMcpRequest\","
+      },
+      {
+        "line": 611,
+        "text": "      \"path\": \"worker/mcp/server.js\","
+      },
+      {
+        "line": 612,
+        "text": "      \"symbol\": \"worker.mcp.server.handleMcpRequest\","
+      },
+      {
+        "line": 619,
+        "text": "      \"label\": \"package.json\","
+      },
+      {
+        "line": 620,
+        "text": "      \"path\": \"package.json\","
+      },
+      {
+        "line": 646,
+        "text": "      \"label\": \"api/v1/capabilities.json\","
+      },
+      {
+        "line": 647,
+        "text": "      \"path\": \"api/v1/capabilities.json\","
+      },
+      {
+        "line": 665,
+        "text": "      \"path\": \"prompt/represent_me.md\","
+      },
+      {
+        "line": 666,
+        "text": "      \"symbol\": \"prompt/represent_me.md#Short Version\","
+      },
+      {
+        "line": 700,
+        "text": "      \"label\": \"api/v1/case_studies.json\","
+      },
+      {
+        "line": 701,
+        "text": "      \"path\": \"api/v1/case_studies.json\","
+      },
+      {
+        "line": 745,
+        "text": "      \"label\": \"test_agent_card_skills_match_mcp_tools_without_recruiter_tools\","
+      },
+      {
+        "line": 747,
+        "text": "      \"symbol\": \"tests.test_public_contract.test_agent_card_skills_match_mcp_tools_without_recruiter_tools\","
+      },
+      {
+        "line": 877,
+        "text": "      \"to_node_id\": \"node:python_import:json\","
+      },
+      {
+        "line": 878,
+        "text": "      \"label\": \"json\","
+      },
+      {
+        "line": 907,
+        "text": "      \"to_node_id\": \"node:python_import:json\","
+      },
+      {
+        "line": 908,
+        "text": "      \"label\": \"json\","
+      },
+      {
+        "line": 917,
+        "text": "      \"to_node_id\": \"node:javascript_import:worker.mcp.server\","
+      },
+      {
+        "line": 918,
+        "text": "      \"label\": \"worker.mcp.server\","
+      },
+      {
+        "line": 931,
+        "text": "      \"excerpt\": \"# leonbreukelman.engineer\\n\\nAI-first public presence for making messy cloud, security, infrastructure, and agent-tooling systems easier to reason about. Humans get a concise site; agents get the same public facts through JSON, llms.txt, well-known metadata, and MCP.\\n\\n## Quick Start\\n\\n```bash\\n# Install dependencies\\nnpm install\\n\\n# Build the site (fails closed if Python/Jinj"
+      },
+      {
+        "line": 934,
+        "text": "      \"path\": \"package.json\","
+      },
+      {
+        "line": 935,
+        "text": "      \"excerpt\": \"{\\n  \\\"name\\\": \\\"leonbreukelman-engineer\\\",\\n  \\\"version\\\": \\\"1.0.0\\\",\\n  \\\"description\\\": \\\"AI-first professional presence for Leon Breukelman\\\",\\n  \\\"scripts\\\": {\\n    \\\"build\\\": \\\"bash scripts/build-site.sh\\\",\\n    \\\"deploy\\\": \\\"npm run build && wrangler pages deploy dist --project-name=leonbreukelman-engineer\\\",\\n    \\\"dev\\\": \\\"wrangler pages dev dist\\\",\\n    \\\"preview\\\": \\\"n"
+      }
+    ]
+  },
+  {
+    "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-prompt.md",
+    "exists": true,
+    "bytes": 10831,
+    "sha256": "79b168871d7003c513b560e72ffba2dfd23821c84f28774534e524bca82d8412",
+    "line_count": 4,
+    "key_lines": [
+      {
+        "line": 1,
+        "text": "You are Grok, primary AI-first Build Arena project decomposer. Produce a model-derived decomposition JSON from this compact graph packet."
+      },
+      {
+        "line": 2,
+        "text": "Return only valid JSON, no markdown. Required keys: model_id, project_id, goal, non_goals, components, contracts, cross_cutting_concerns, observable_checks, verification_gaps, near_neighbor_alternatives, acceptance_command_allowlist. Use exact IDs/prov from packet. Do not include held_out_probes; independent probe builder adds them later. Component fields: id,name,responsibility,owned_node_ids,pro"
+      },
+      {
+        "line": 4,
+        "text": "{\"project_id\":\"leonbreukelman-engineer\",\"repo\":\"/home/leonb/projects/leonbreukelman-engineer\",\"goal\":\"decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs\",\"non_goals\":[\"do not treat generated dist output as source ownership\",\"do not require Cloudflare deployment or public mut"
+      }
+    ]
+  },
+  {
+    "path": "docs/verification/2026-06-01-grok-build-arena-calibration-model-review.stderr",
+    "exists": true,
+    "bytes": 402,
+    "sha256": "0a0863ef5ab5c27b2fda99cd40f419a219414158720606369f77cc4cd068e045",
+    "line_count": 2,
+    "key_lines": [
+      {
+        "line": 1,
+        "text": "\u001b[2m2026-06-01T03:44:06.105938Z\u001b[0m \u001b[31mERROR\u001b[0m worker quit with fatal: Transport channel closed, when Auth(AuthorizationRequired)"
+      },
+      {
+        "line": 2,
+        "text": "\u001b[2m2026-06-01T03:44:06.189725Z\u001b[0m \u001b[31mERROR\u001b[0m worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: \"Bearer resource_metadata=\\\"https://huggingface.co/.well-known/oauth-protected-resource/mcp?login\\\"\" })"
+      }
+    ]
+  },
+  {
+    "path": "docs/verification/2026-06-01-arena-calibration-decomposer-evaluation-report.md",
+    "exists": true,
+    "bytes": 7692,
+    "sha256": "62f9a22b7876097371670db3b26236e6eef79c6af45326074e13b8dace69fec2",
+    "line_count": 157,
+    "key_lines": [
+      {
+        "line": 7,
+        "text": "Evaluate the merged Build Arena project decomposer against `/home/leonb/projects/arena-calibration` and obtain read-only external reviews from Grok Build and Claude Opus."
+      },
+      {
+        "line": 11,
+        "text": "- Full model JSON: `docs/verification/2026-06-01-arena-calibration-decomposer-model.json`"
+      },
+      {
+        "line": 12,
+        "text": "- Local evaluation JSON: `docs/verification/2026-06-01-arena-calibration-decomposer-local-evaluation.json`"
+      },
+      {
+        "line": 13,
+        "text": "- Full prompt package: `docs/verification/2026-06-01-arena-calibration-model-review-prompt.md`"
+      },
+      {
+        "line": 14,
+        "text": "- Distilled prompt package: `docs/verification/2026-06-01-arena-calibration-model-review-prompt-distilled.md`"
+      },
+      {
+        "line": 15,
+        "text": "- Grok Build prompt: `docs/verification/2026-06-01-arena-calibration-model-review-prompt-grok.md`"
+      },
+      {
+        "line": 16,
+        "text": "- Grok Build review: `docs/verification/2026-06-01-grok-build-arena-calibration-model-review.md`"
+      },
+      {
+        "line": 17,
+        "text": "- Grok Build stderr/auth-noise capture: `docs/verification/2026-06-01-grok-build-arena-calibration-model-review.stderr`"
+      },
+      {
+        "line": 18,
+        "text": "- Opus review JSON: `docs/verification/2026-06-01-opus-arena-calibration-model-review.json`"
+      },
+      {
+        "line": 29,
+        "text": "  --output docs/verification/2026-06-01-arena-calibration-decomposer-model.json"
+      },
+      {
+        "line": 50,
+        "text": "  --output /tmp/arena-calibration-gap-check.json \\"
+      },
+      {
+        "line": 72,
+        "text": "- `uv run python -m arena.runner --llm-provider xai --dry-run` reported 168 total model calls and did not require keys"
+      },
+      {
+        "line": 106,
+        "text": "### Grok Build"
+      },
+      {
+        "line": 110,
+        "text": "Grok's main findings:"
+      },
+      {
+        "line": 119,
+        "text": "Note: Grok Build review was run on a JSON-only summary with no file paths because path/full-artifact prompts caused Grok to attempt a read_file tool and hit unrelated MCP auth warnings. The successful Grok review used the same components/contracts/gaps/coverage/local-validation facts from the full model."
+      },
+      {
+        "line": 130,
+        "text": "2. There is no explicit scorer-promote-to-verifier contract. The model captures scorer-to-runner short-circuiting on reject, but does not state the complementary invariant that scorer promotion must route through verifier rather than being accepted directly."
+      },
+      {
+        "line": 140,
+        "text": "I verified Opus's structural claims directly against the JSON model after review."
+      }
+    ]
+  }
+]

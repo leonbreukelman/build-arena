@@ -1,0 +1,330 @@
+{
+  "needles": [
+    "019e944a-470a-7493-8aa1-df2f2c253d2f",
+    "b0f15d90-f9fa-415f-bb13-db04527c46ba",
+    "grok-decomposer-output.wrapper.json",
+    "019e944e-1bdd-7ca2-96d5-417e77bf37cb",
+    "83d32a31-4ba4-43cc-a487-16786f33780b",
+    "grok-compact-decomposer-output.wrapper.json"
+  ],
+  "found": [
+    {
+      "needle": "019e944e-1bdd-7ca2-96d5-417e77bf37cb",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-rereview-input.md",
+      "line": 1951,
+      "text": "  \"sessionId\": \"019e944e-1bdd-7ca2-96d5-417e77bf37cb\","
+    },
+    {
+      "needle": "83d32a31-4ba4-43cc-a487-16786f33780b",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-rereview-input.md",
+      "line": 1952,
+      "text": "  \"requestId\": \"83d32a31-4ba4-43cc-a487-16786f33780b\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-rereview-input.md",
+      "line": 1945,
+      "text": "### grok-compact-decomposer-output.wrapper.json"
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-rereview.json",
+      "line": 1,
+      "text": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":160957,\"duration_api_ms\":160786,\"ttft_ms\":102087,\"num_turns\":1,\"result\":\"# AI-first Project Decomposer \u2014 Final Pilot Rereview\\n\\n```json\\n{\\n  \\\"passed\\\": false,\\n  \\\"critical_blockers\\\": [\\n    {\\n      \\\"id\\\": \\\"CB1-R\\\",\\n      \\\"title\\\": \\\"Held-out probe discrimination is still asserted by boolean, never executed \u2014 the anti-leakage machinery remains unproven\\\",\\n      \\\"evidence\\\": \\\"Every probe in all"
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-rereview.md",
+      "line": 27,
+      "text": "      \"evidence\": \"`grok-compact-decomposer-output.wrapper.json` shows `\\\"text\\\": \\\"\\\", \\\"stopReason\\\": \\\"Cancelled\\\"` \u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` and `concern:no_live_paid_api_acceptance` excludes the model invocation from acceptance.\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 265,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 1498,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 3973,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4348,
+      "text": "        \"text\": \"- `docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json`\""
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4453,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4535,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7903,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7915,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 185,
+      "text": "        \"text\": \"### grok-compact-decomposer-output.wrapper.json\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 240,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 270,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 333,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 1418,
+      "text": "        \"text\": \"### grok-compact-decomposer-output.wrapper.json\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 1473,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 1503,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 1566,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 2454,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 3231,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 3893,
+      "text": "        \"text\": \"### grok-compact-decomposer-output.wrapper.json\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 3968,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 3978,
+      "text": "        \"text\": \"    \\\"path\\\": \\\"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\\\",\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4353,
+      "text": "        \"text\": \"- `docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json`\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4420,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4448,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4507,
+      "text": "        \"text\": \"      \\\"evidence\\\": \\\"`grok-compact-decomposer-output.wrapper.json` shows `\\\\\\\"text\\\\\\\": \\\\\\\"\\\\\\\", \\\\\\\"stopReason\\\\\\\": \\\\\\\"Cancelled\\\\\\\"` \\u2014 Grok emitted no final JSON. All accepted snapshots run `--llm-mode recorded --model-output ...repaired.json`. `arena.project_model_llm` is flagged `vg:llm_untested_in_isolation` a\""
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 4530,
+      "text": "        \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7622,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7704,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7902,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/required-search-results.json",
+      "line": 7914,
+      "text": "        \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "019e944a-470a-7493-8aa1-df2f2c253d2f",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 750,
+      "text": "      \"  \\\"sessionId\\\": \\\"019e944a-470a-7493-8aa1-df2f2c253d2f\\\",\","
+    },
+    {
+      "needle": "019e944a-470a-7493-8aa1-df2f2c253d2f",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 759,
+      "text": "      \"  \\\"sessionId\\\": \\\"019e944a-470a-7493-8aa1-df2f2c253d2f\\\",\","
+    },
+    {
+      "needle": "b0f15d90-f9fa-415f-bb13-db04527c46ba",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 751,
+      "text": "      \"  \\\"requestId\\\": \\\"b0f15d90-f9fa-415f-bb13-db04527c46ba\\\",\","
+    },
+    {
+      "needle": "b0f15d90-f9fa-415f-bb13-db04527c46ba",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 760,
+      "text": "      \"  \\\"requestId\\\": \\\"b0f15d90-f9fa-415f-bb13-db04527c46ba\\\",\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 741,
+      "text": "    \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "019e944e-1bdd-7ca2-96d5-417e77bf37cb",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 775,
+      "text": "      \"  \\\"sessionId\\\": \\\"019e944e-1bdd-7ca2-96d5-417e77bf37cb\\\",\","
+    },
+    {
+      "needle": "019e944e-1bdd-7ca2-96d5-417e77bf37cb",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 784,
+      "text": "      \"  \\\"sessionId\\\": \\\"019e944e-1bdd-7ca2-96d5-417e77bf37cb\\\",\","
+    },
+    {
+      "needle": "83d32a31-4ba4-43cc-a487-16786f33780b",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 776,
+      "text": "      \"  \\\"requestId\\\": \\\"83d32a31-4ba4-43cc-a487-16786f33780b\\\",\","
+    },
+    {
+      "needle": "83d32a31-4ba4-43cc-a487-16786f33780b",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 785,
+      "text": "      \"  \\\"requestId\\\": \\\"83d32a31-4ba4-43cc-a487-16786f33780b\\\",\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/mandated-file-read-manifest.json",
+      "line": 766,
+      "text": "    \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/grok-artifact-summaries.json",
+      "line": 3,
+      "text": "    \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/verification/2026-06-05-grok-live-rca/grok-artifact-summaries.json",
+      "line": 33,
+      "text": "    \"path\": \"docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json\","
+    },
+    {
+      "needle": "019e944e-1bdd-7ca2-96d5-417e77bf37cb",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json",
+      "line": 4,
+      "text": "  \"sessionId\": \"019e944e-1bdd-7ca2-96d5-417e77bf37cb\","
+    },
+    {
+      "needle": "83d32a31-4ba4-43cc-a487-16786f33780b",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json",
+      "line": 5,
+      "text": "  \"requestId\": \"83d32a31-4ba4-43cc-a487-16786f33780b\","
+    },
+    {
+      "needle": "019e944a-470a-7493-8aa1-df2f2c253d2f",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json",
+      "line": 4,
+      "text": "  \"sessionId\": \"019e944a-470a-7493-8aa1-df2f2c253d2f\","
+    },
+    {
+      "needle": "b0f15d90-f9fa-415f-bb13-db04527c46ba",
+      "path": "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json",
+      "line": 5,
+      "text": "  \"requestId\": \"b0f15d90-f9fa-415f-bb13-db04527c46ba\","
+    },
+    {
+      "needle": "grok-decomposer-output.wrapper.json",
+      "path": "docs/prompts/2026-06-05-grok-live-rca-project-model-v1-pre-live-readiness.md",
+      "line": 94,
+      "text": "- `docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-decomposer-output.wrapper.json`"
+    },
+    {
+      "needle": "grok-compact-decomposer-output.wrapper.json",
+      "path": "docs/prompts/2026-06-05-grok-live-rca-project-model-v1-pre-live-readiness.md",
+      "line": 95,
+      "text": "- `docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/grok-compact-decomposer-output.wrapper.json`"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "snapshot": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/snapshot-artifacts/snapshot-25df379175f922cb/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/snapshot-artifacts/snapshot-25df379175f922cb/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/snapshot-artifacts/snapshot-25df379175f922cb",
+    "snapshot_id": "snapshot-25df379175f922cb",
+    "violation_count": 9
+  },
+  "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/snapshot-artifacts/snapshot-25df379175f922cb/gate-report.json",
+  "violations": [
+    {
+      "gate": "component_measurability",
+      "location": "components[comp:project-config]",
+      "message": "Component comp:project-config has no contracts, checks, or gaps.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:core-to-test]",
+      "message": "Contract contract:core-to-test supporting edge edge:b2abbf0edd4da7fdc60c does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:core-to-test]",
+      "message": "Contract contract:core-to-test supporting edge edge:bcd8f1fd29dd29dda5c5 does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:core-to-test]",
+      "message": "Contract contract:core-to-test supporting edge edge:808b1130868c6ca24122 does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:core-to-test]",
+      "message": "Contract contract:core-to-test supporting edge edge:346c8cc8098a3c1e2331 does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:core-to-test]",
+      "message": "Contract contract:core-to-test supporting edge edge:e6f594db51c69261a148 does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:808b1130868c6ca24122]",
+      "message": "Owned import edge edge:808b1130868c6ca24122 from comp:tests to comp:core is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "no_live_paid_api_acceptance",
+      "location": "observable_checks[check:smoke-test]",
+      "message": "Check check:smoke-test is not in acceptance allowlist.",
+      "severity": "error"
+    },
+    {
+      "gate": "held_out_probe_discrimination",
+      "location": "held_out_probes[probe:smoke-independence]",
+      "message": "Probe probe:smoke-independence did not discriminate against an independent planted negative.",
+      "severity": "error"
+    }
+  ],
+  "model_components": 3,
+  "model_contracts": 1,
+  "model_checks": 1,
+  "top_keys": [
+    "acceptance_command_allowlist",
+    "components",
+    "contracts",
+    "cross_cutting_concerns",
+    "goal",
+    "held_out_probes",
+    "model_id",
+    "near_neighbor_alternatives",
+    "non_goals",
+    "observable_checks",
+    "project_id",
+    "verification_gaps"
+  ]
+}
