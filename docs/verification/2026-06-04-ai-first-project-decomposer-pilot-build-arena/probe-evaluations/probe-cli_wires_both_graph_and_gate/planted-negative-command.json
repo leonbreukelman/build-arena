@@ -1,0 +1,31 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative.recorded.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "contract_references",
+        "location": "components[comp:project_model_gate]",
+        "message": "Component comp:project_model_gate references missing contract con:cli_uses_gate.",
+        "severity": "error"
+      },
+      {
+        "gate": "contract_references",
+        "location": "components[comp:project_model_cli]",
+        "message": "Component comp:project_model_cli references missing contract con:cli_uses_gate.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e",
+    "snapshot_id": "snapshot-83e64e0645ede63e",
+    "violation_count": 2
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-cli_wires_both_graph_and_gate/planted-negative-artifacts/snapshot-83e64e0645ede63e\", \"snapshot_id\": \"snapshot-83e64e0645ede63e\", \"violation_count\": 2}\n"
+}

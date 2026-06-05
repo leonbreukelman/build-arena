@@ -1,0 +1,1714 @@
+You are Grok acting as the primary AI-first project decomposer for Build Arena.
+
+Return only valid JSON, no markdown. Required top-level keys:
+model_id, project_id, goal, non_goals, components, contracts, cross_cutting_concerns, observable_checks, verification_gaps, near_neighbor_alternatives, acceptance_command_allowlist.
+Do not include held_out_probes or planted_negatives; those come from a separate independent probe-builder.
+Component shape: {id,name,responsibility,owned_node_ids,provenance_refs,contract_ids,check_ids,verification_gap_ids}.
+Contract shape: {id,name,from_component_id,to_component_id,supporting_edge_ids,near_neighbor_alternative_ids,provenance_refs}.
+Concern shape: {id,category,description,component_ids,contract_ids,provenance_refs,triggered_by}.
+ObservableCheck shape: {id,description,command,component_ids,contract_ids,provenance_refs,acceptance_command_id,safe_to_run_by_default,requires_network,requires_paid_api}.
+VerificationGap shape: {id,description,severity,component_ids,contract_ids,provenance_refs,proposed_closure_check}.
+NearNeighborAlternative shape: {id,target_id,alternative,why_not_primary,provenance_refs}.
+Rules: use only exact node IDs, edge IDs, and provenance IDs from the packet; no invented graph IDs. Components must be responsibility-bearing, not 1:1 file/module renames when a semantic grouping is warranted. If an important surface is not decomposed, create a verification gap rather than silently dropping it. Include at least two contracts when import evidence supports it. Use the actual_verification_command as the primary observable command. Include protected/generated concerns when surfaces list contains them, and never own protected/generated nodes as component-owned source. Set acceptance_command_allowlist to the check IDs you actually use.
+
+Project packet:
+{
+  "project_id": "fmc-mcp",
+  "repo": "/home/leonb/projects/fmc-mcp",
+  "goal": "decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon",
+  "non_goals": [
+    "do not require live FMC credentials or network calls for acceptance",
+    "do not accept file-bucket components"
+  ],
+  "actual_verification_command": "uv run python -m pytest -q",
+  "git_dirty": false,
+  "dirty_paths": [],
+  "node_kinds": {
+    "markdown_section": 45,
+    "python_function": 69,
+    "python_module": 11,
+    "python_class": 7,
+    "file": 12,
+    "config": 3,
+    "test_file": 4,
+    "project": 1,
+    "python_import": 23
+  },
+  "edge_kinds": {
+    "contains": 19,
+    "defined_in": 87,
+    "imports": 49,
+    "documents": 45,
+    "tests": 6,
+    "configures": 3
+  },
+  "candidate_nodes": [
+    {
+      "id": "node:01f5c4df18efbbb6417b",
+      "kind": "markdown_section",
+      "label": "stdio Mode (Default - for Claude Desktop)",
+      "path": "README.md",
+      "symbol": "README.md#stdio Mode (Default - for Claude Desktop)",
+      "tags": [],
+      "prov": "prov:a2f9a17e49e49eac"
+    },
+    {
+      "id": "node:02f899db0d1a6bb9fa2c",
+      "kind": "markdown_section",
+      "label": "API Rate Limits",
+      "path": "README.md",
+      "symbol": "README.md#API Rate Limits",
+      "tags": [],
+      "prov": "prov:b55c3d7c7e2ffa4e"
+    },
+    {
+      "id": "node:0840c3bf276363316198",
+      "kind": "markdown_section",
+      "label": "Testing Connection",
+      "path": "README.md",
+      "symbol": "README.md#Testing Connection",
+      "tags": [],
+      "prov": "prov:299ba3c925929370"
+    },
+    {
+      "id": "node:09fa114aae85cc01a973",
+      "kind": "python_function",
+      "label": "test_context_manager",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_context_manager",
+      "tags": [],
+      "prov": "prov:f06cf30b5c86d1c2"
+    },
+    {
+      "id": "node:0c48dfa57bc1210b32fd",
+      "kind": "markdown_section",
+      "label": "Type checking",
+      "path": "README.md",
+      "symbol": "README.md#Type checking",
+      "tags": [],
+      "prov": "prov:43249604ac7cf524"
+    },
+    {
+      "id": "node:0d6e31dc2581134dffcd",
+      "kind": "markdown_section",
+      "label": "Running Tests",
+      "path": "README.md",
+      "symbol": "README.md#Running Tests",
+      "tags": [],
+      "prov": "prov:4178913db3eb6169"
+    },
+    {
+      "id": "node:0e8ad26f3fa7f9f70124",
+      "kind": "python_function",
+      "label": "deployment_status_resource",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.deployment_status_resource",
+      "tags": [],
+      "prov": "prov:4de3689c602c27c8"
+    },
+    {
+      "id": "node:0f2924d0972b4ea19f44",
+      "kind": "python_function",
+      "label": "system_info_resource",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.system_info_resource",
+      "tags": [],
+      "prov": "prov:9044166d96fafc27"
+    },
+    {
+      "id": "node:127af2b0f9d32f8164c6",
+      "kind": "python_module",
+      "label": "fmc_mcp",
+      "path": "src/fmc_mcp/__init__.py",
+      "symbol": "fmc_mcp",
+      "tags": [],
+      "prov": "prov:aeec7a1dae758e4e"
+    },
+    {
+      "id": "node:129f8a03fb8f09f4c107",
+      "kind": "python_function",
+      "label": "_authenticate",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client._authenticate",
+      "tags": [],
+      "prov": "prov:4a7607b917067ce1"
+    },
+    {
+      "id": "node:136a3d4798dcdcba19ed",
+      "kind": "python_function",
+      "label": "list_devices",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.list_devices",
+      "tags": [],
+      "prov": "prov:bec0ec8d4b515a01"
+    },
+    {
+      "id": "node:1498bdfe6a32f0ebb94a",
+      "kind": "python_function",
+      "label": "test_list_network_objects",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_list_network_objects",
+      "tags": [],
+      "prov": "prov:20e2b0c7e921513b"
+    },
+    {
+      "id": "node:18cb6e0edd2c101a1f7d",
+      "kind": "python_class",
+      "label": "RateLimiter",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.RateLimiter",
+      "tags": [],
+      "prov": "prov:6922c4cbc76c847b"
+    },
+    {
+      "id": "node:1a5ef0e0e3112f273bf9",
+      "kind": "markdown_section",
+      "label": "Run all tests",
+      "path": "README.md",
+      "symbol": "README.md#Run all tests",
+      "tags": [],
+      "prov": "prov:cae380c529d7841a"
+    },
+    {
+      "id": "node:1d2a834c8820935eace9",
+      "kind": "markdown_section",
+      "label": "Or using the CLI entry point",
+      "path": "README.md",
+      "symbol": "README.md#Or using the CLI entry point",
+      "tags": [],
+      "prov": "prov:88928758b6659453"
+    },
+    {
+      "id": "node:1d75af7c314b243d00a0",
+      "kind": "markdown_section",
+      "label": "Configuration",
+      "path": "README.md",
+      "symbol": "README.md#Configuration",
+      "tags": [],
+      "prov": "prov:be98bfb144d0d63d"
+    },
+    {
+      "id": "node:1efcc1df855ff3e35524",
+      "kind": "markdown_section",
+      "label": "Code Quality",
+      "path": "README.md",
+      "symbol": "README.md#Code Quality",
+      "tags": [],
+      "prov": "prov:de1084c7bd850c00"
+    },
+    {
+      "id": "node:21d196f71ac6bb3d518a",
+      "kind": "markdown_section",
+      "label": "Security Notes",
+      "path": "README.md",
+      "symbol": "README.md#Security Notes",
+      "tags": [],
+      "prov": "prov:7f1ebd28e645bb3d"
+    },
+    {
+      "id": "node:242462366792e6c85ea0",
+      "kind": "markdown_section",
+      "label": "Development",
+      "path": "README.md",
+      "symbol": "README.md#Development",
+      "tags": [],
+      "prov": "prov:b8550b04f85c10ae"
+    },
+    {
+      "id": "node:24b7fac72b5fafcca05d",
+      "kind": "python_function",
+      "label": "test_connection",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.test_connection",
+      "tags": [],
+      "prov": "prov:92742fc0a75e8da2"
+    },
+    {
+      "id": "node:257d836fb3f003e3e2c2",
+      "kind": "python_module",
+      "label": "fmc_mcp.config",
+      "path": "src/fmc_mcp/config.py",
+      "symbol": "fmc_mcp.config",
+      "tags": [],
+      "prov": "prov:b380701c2879efce"
+    },
+    {
+      "id": "node:2931ded44efc706fee80",
+      "kind": "python_function",
+      "label": "initialized_client",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.initialized_client",
+      "tags": [],
+      "prov": "prov:33210c991062bd14"
+    },
+    {
+      "id": "node:2de54a4e65b20280ce26",
+      "kind": "python_function",
+      "label": "mock_server_version",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_server_version",
+      "tags": [],
+      "prov": "prov:6766d512b10bb683"
+    },
+    {
+      "id": "node:2dfb6c0f7f92da0973b4",
+      "kind": "python_function",
+      "label": "search_object_by_ip",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.search_object_by_ip",
+      "tags": [],
+      "prov": "prov:85323dd67853d257"
+    },
+    {
+      "id": "node:2ffe6fb38362fc3ee5eb",
+      "kind": "markdown_section",
+      "label": "MCP Server for Cisco FMC",
+      "path": "README.md",
+      "symbol": "README.md#MCP Server for Cisco FMC",
+      "tags": [],
+      "prov": "prov:41d7a8327af85cd1"
+    },
+    {
+      "id": "node:30368f4164d9b4a028c7",
+      "kind": "markdown_section",
+      "label": "Features",
+      "path": "README.md",
+      "symbol": "README.md#Features",
+      "tags": [],
+      "prov": "prov:f8094141a2ed40b5"
+    },
+    {
+      "id": "node:32d74ba3048c219b4163",
+      "kind": "python_function",
+      "label": "test_check_deployment_status_filtered",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_check_deployment_status_filtered",
+      "tags": [],
+      "prov": "prov:e18356a7426b1c56"
+    },
+    {
+      "id": "node:343eba6ed1dd9bc75183",
+      "kind": "config",
+      "label": ".pre-commit-config.yaml",
+      "path": ".pre-commit-config.yaml",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:3e753b536bef97f1"
+    },
+    {
+      "id": "node:35502b4b0a3419c5e6c2",
+      "kind": "python_function",
+      "label": "search_object_by_ip",
+      "path": "src/fmc_mcp/tools.py",
+      "symbol": "fmc_mcp.tools.search_object_by_ip",
+      "tags": [],
+      "prov": "prov:1f43efdcff932aea"
+    },
+    {
+      "id": "node:39969e6e4501f125fc41",
+      "kind": "python_function",
+      "label": "get",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get",
+      "tags": [],
+      "prov": "prov:50daf627e73eb5d4"
+    },
+    {
+      "id": "node:3b289bb584905edebd3e",
+      "kind": "markdown_section",
+      "label": "Prerequisites",
+      "path": "README.md",
+      "symbol": "README.md#Prerequisites",
+      "tags": [],
+      "prov": "prov:864129dbcae2656a"
+    },
+    {
+      "id": "node:3e7a8dfb7a06f8c9b2e3",
+      "kind": "python_function",
+      "label": "test_token_refresh_on_401",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_token_refresh_on_401",
+      "tags": [],
+      "prov": "prov:dbd8f33c88bc1bc7"
+    },
+    {
+      "id": "node:4042451215c279f0dca7",
+      "kind": "python_module",
+      "label": "fmc_mcp.client",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client",
+      "tags": [],
+      "prov": "prov:bcfd8e782d7fe500"
+    },
+    {
+      "id": "node:434ee10dea72f8ad3749",
+      "kind": "python_function",
+      "label": "test_search_object_by_ip_not_found",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_search_object_by_ip_not_found",
+      "tags": [],
+      "prov": "prov:2864ea7baaeacc06"
+    },
+    {
+      "id": "node:45e6bbf2da2e9192f7de",
+      "kind": "python_function",
+      "label": "list_network_objects",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.list_network_objects",
+      "tags": [],
+      "prov": "prov:5432e12dd9b06188"
+    },
+    {
+      "id": "node:47d3c4730e119fa97525",
+      "kind": "python_function",
+      "label": "__aenter__",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.__aenter__",
+      "tags": [],
+      "prov": "prov:f7d930f9242cdf6b"
+    },
+    {
+      "id": "node:4aca351dec5346ca420b",
+      "kind": "python_function",
+      "label": "get_client",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.get_client",
+      "tags": [],
+      "prov": "prov:187cb860ee557503"
+    },
+    {
+      "id": "node:4ce07f1cf13158676b4b",
+      "kind": "python_function",
+      "label": "get_deployable_devices",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_deployable_devices",
+      "tags": [],
+      "prov": "prov:8b4e55af20732ac6"
+    },
+    {
+      "id": "node:4defe567a0835633f20c",
+      "kind": "markdown_section",
+      "label": "Running the Server",
+      "path": "README.md",
+      "symbol": "README.md#Running the Server",
+      "tags": [],
+      "prov": "prov:764c6e3a64aa9edc"
+    },
+    {
+      "id": "node:4f5c7413f0f0b22471bc",
+      "kind": "markdown_section",
+      "label": "Using uv",
+      "path": "README.md",
+      "symbol": "README.md#Using uv",
+      "tags": [],
+      "prov": "prov:8e8f768a903f897d"
+    },
+    {
+      "id": "node:52bc5943688cf09a17e6",
+      "kind": "python_function",
+      "label": "get_server_version",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_server_version",
+      "tags": [],
+      "prov": "prov:77f6ea0500ad864c"
+    },
+    {
+      "id": "node:531e8e03393414aec6cf",
+      "kind": "python_class",
+      "label": "FMCSettings",
+      "path": "src/fmc_mcp/config.py",
+      "symbol": "fmc_mcp.config.FMCSettings",
+      "tags": [],
+      "prov": "prov:a9e9273cfe1c61b5"
+    },
+    {
+      "id": "node:57a0b1b370ef96e4339b",
+      "kind": "markdown_section",
+      "label": "Linting",
+      "path": "README.md",
+      "symbol": "README.md#Linting",
+      "tags": [],
+      "prov": "prov:55b0ade56178d875"
+    },
+    {
+      "id": "node:57a3ee9a39c89be240b9",
+      "kind": "python_class",
+      "label": "TestRateLimiter",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.TestRateLimiter",
+      "tags": [],
+      "prov": "prov:6ee931714d574d45"
+    },
+    {
+      "id": "node:613b26deabd092943c56",
+      "kind": "python_function",
+      "label": "get_all_items",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_all_items",
+      "tags": [],
+      "prov": "prov:8bc6b516dc0b436f"
+    },
+    {
+      "id": "node:61c74dac5be72d9e88dd",
+      "kind": "python_function",
+      "label": "test_check_deployment_status",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_check_deployment_status",
+      "tags": [],
+      "prov": "prov:8bc3f37c78ecc091"
+    },
+    {
+      "id": "node:61e803c05fe5265559f0",
+      "kind": "python_function",
+      "label": "test_multiple_acquires",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_multiple_acquires",
+      "tags": [],
+      "prov": "prov:cd0d5846490d61ee"
+    },
+    {
+      "id": "node:65741e2dd1a2ef275a44",
+      "kind": "python_function",
+      "label": "mock_auth_response",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_auth_response",
+      "tags": [],
+      "prov": "prov:4f319b2cfae58f1b"
+    },
+    {
+      "id": "node:65a1dc1e8805d5f44a70",
+      "kind": "python_function",
+      "label": "get_domain_info",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_domain_info",
+      "tags": [],
+      "prov": "prov:dcca6daf179a5f4c"
+    },
+    {
+      "id": "node:65d308e43bf21c6af38e",
+      "kind": "python_function",
+      "label": "mock_network_objects",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_network_objects",
+      "tags": [],
+      "prov": "prov:ddd6f48cdc67467b"
+    },
+    {
+      "id": "node:663ef6b7a92a5221f7a7",
+      "kind": "python_module",
+      "label": "tests.test_resources",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources",
+      "tags": [],
+      "prov": "prov:ad7d6b890de863c8"
+    },
+    {
+      "id": "node:67292e641e7d5bfb38dd",
+      "kind": "python_function",
+      "label": "mock_devices",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_devices",
+      "tags": [],
+      "prov": "prov:46fe9767c5347ca4"
+    },
+    {
+      "id": "node:6827423cb5b2e7e8a417",
+      "kind": "python_class",
+      "label": "TestFMCClient",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.TestFMCClient",
+      "tags": [],
+      "prov": "prov:b9e960142dcb9ea5"
+    },
+    {
+      "id": "node:6872a67935e83f43a93a",
+      "kind": "python_function",
+      "label": "log_config",
+      "path": "src/fmc_mcp/config.py",
+      "symbol": "fmc_mcp.config.log_config",
+      "tags": [],
+      "prov": "prov:fd5b9444de7916dc"
+    },
+    {
+      "id": "node:69c4263d96d5a82e1220",
+      "kind": "test_file",
+      "label": "tests/test_live.py",
+      "path": "tests/test_live.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:de169aac696fc2e0"
+    },
+    {
+      "id": "node:69d6bc2e023965d76a75",
+      "kind": "file",
+      "label": "README.md",
+      "path": "README.md",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:d209dcd4ea586e51"
+    },
+    {
+      "id": "node:7016dc7cbefc37d26f49",
+      "kind": "python_module",
+      "label": "tests.test_client",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client",
+      "tags": [],
+      "prov": "prov:cf2e2af8a187bdfc"
+    },
+    {
+      "id": "node:70d989b28f98f5b15895",
+      "kind": "python_function",
+      "label": "domain_uuid",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.domain_uuid",
+      "tags": [],
+      "prov": "prov:655157d7f34b01d3"
+    },
+    {
+      "id": "node:73768c54c3cf6f371cfe",
+      "kind": "python_function",
+      "label": "test_get_server_version",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_get_server_version",
+      "tags": [],
+      "prov": "prov:678dfaeef0318b9e"
+    },
+    {
+      "id": "node:74cf5fbdeaba6a905cec",
+      "kind": "markdown_section",
+      "label": "Using pip",
+      "path": "README.md",
+      "symbol": "README.md#Using pip",
+      "tags": [],
+      "prov": "prov:119062338a0fcc11"
+    },
+    {
+      "id": "node:7548f8dc68792603d8be",
+      "kind": "test_file",
+      "label": "tests/test_resources.py",
+      "path": "tests/test_resources.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:36f0f61015ae8d33"
+    },
+    {
+      "id": "node:7a8857cf1ce87f5cdba8",
+      "kind": "markdown_section",
+      "label": "Usage",
+      "path": "README.md",
+      "symbol": "README.md#Usage",
+      "tags": [],
+      "prov": "prov:cbd206592b187cc9"
+    },
+    {
+      "id": "node:7b22938d89aade938666",
+      "kind": "python_function",
+      "label": "fmc_client",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.fmc_client",
+      "tags": [],
+      "prov": "prov:f0de02958bc24ecb"
+    },
+    {
+      "id": "node:7f7e30eced9337b46e54",
+      "kind": "python_function",
+      "label": "test_domain_uuid_from_settings",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_domain_uuid_from_settings",
+      "tags": [],
+      "prov": "prov:6cbbcad30f824c02"
+    },
+    {
+      "id": "node:80751a890deaf14d110e",
+      "kind": "python_function",
+      "label": "mock_deployable_devices",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_deployable_devices",
+      "tags": [],
+      "prov": "prov:cba37443cecefc78"
+    },
+    {
+      "id": "node:84a7c7e4c189e28cb1bb",
+      "kind": "python_module",
+      "label": "fmc_mcp.resources",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources",
+      "tags": [],
+      "prov": "prov:4e62ae79d2c07a9c"
+    },
+    {
+      "id": "node:84c170abfc9e65eddf63",
+      "kind": "python_function",
+      "label": "test_get_system_info",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_get_system_info",
+      "tags": [],
+      "prov": "prov:8b510a4b6b46d7b9"
+    },
+    {
+      "id": "node:8ace3f8b214115f0e1aa",
+      "kind": "python_function",
+      "label": "close",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.close",
+      "tags": [],
+      "prov": "prov:5545b2c1b69e08a3"
+    },
+    {
+      "id": "node:8b78e495ac66ff242a2f",
+      "kind": "python_function",
+      "label": "_refresh_auth_token",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client._refresh_auth_token",
+      "tags": [],
+      "prov": "prov:911fe64a8a563f4a"
+    },
+    {
+      "id": "node:8cb879f11a7d8c065b0a",
+      "kind": "python_function",
+      "label": "fmc_settings",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.fmc_settings",
+      "tags": [],
+      "prov": "prov:8fb0e3e063883119"
+    },
+    {
+      "id": "node:8e6b62038b56f6d5e8c0",
+      "kind": "test_file",
+      "label": "tests/conftest.py",
+      "path": "tests/conftest.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:2ec577ac92faac85"
+    },
+    {
+      "id": "node:8eb0135d460674f3bd02",
+      "kind": "python_function",
+      "label": "get_settings",
+      "path": "src/fmc_mcp/config.py",
+      "symbol": "fmc_mcp.config.get_settings",
+      "tags": [],
+      "prov": "prov:c8f5f3e6b252fc58"
+    },
+    {
+      "id": "node:8ef91f22504e7c5a9a2e",
+      "kind": "python_function",
+      "label": "mock_host_objects",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.mock_host_objects",
+      "tags": [],
+      "prov": "prov:0c89e2ef46a22715"
+    },
+    {
+      "id": "node:8ff2e095ade3b2a987b8",
+      "kind": "test_file",
+      "label": "tests/test_client.py",
+      "path": "tests/test_client.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:f0afb0af699cae96"
+    },
+    {
+      "id": "node:93d901aae17ef2918806",
+      "kind": "python_function",
+      "label": "__init__",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.__init__",
+      "tags": [],
+      "prov": "prov:9734a80e5a0aa51f"
+    },
+    {
+      "id": "node:9448b6df47d9e8482d69",
+      "kind": "markdown_section",
+      "label": "MCP Resources",
+      "path": "README.md",
+      "symbol": "README.md#MCP Resources",
+      "tags": [],
+      "prov": "prov:c0e6218dfe86ce99"
+    },
+    {
+      "id": "node:95369d0862dbe7fff032",
+      "kind": "python_function",
+      "label": "test_search_object_invalid_ip",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_search_object_invalid_ip",
+      "tags": [],
+      "prov": "prov:1a9b1dd4e2694f13"
+    },
+    {
+      "id": "node:95e13f464c6439696de9",
+      "kind": "python_function",
+      "label": "get_network_objects",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_network_objects",
+      "tags": [],
+      "prov": "prov:870e595051701097"
+    },
+    {
+      "id": "node:9810fbe9bc4ff06aee73",
+      "kind": "python_module",
+      "label": "fmc_mcp.server",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server",
+      "tags": [],
+      "prov": "prov:d10dbb159e6fb524"
+    },
+    {
+      "id": "node:98a88e4c5ff9b4935777",
+      "kind": "markdown_section",
+      "label": "License",
+      "path": "README.md",
+      "symbol": "README.md#License",
+      "tags": [],
+      "prov": "prov:03af87b11885796d"
+    },
+    {
+      "id": "node:98dc68c534a0acf6545d",
+      "kind": "python_function",
+      "label": "test_get_devices",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_get_devices",
+      "tags": [],
+      "prov": "prov:74a62232073e2d4d"
+    },
+    {
+      "id": "node:998da832dbd6dad49961",
+      "kind": "python_function",
+      "label": "check_deployment_status",
+      "path": "src/fmc_mcp/tools.py",
+      "symbol": "fmc_mcp.tools.check_deployment_status",
+      "tags": [],
+      "prov": "prov:1908bb239917dc71"
+    },
+    {
+      "id": "node:9cc261dc16025460761f",
+      "kind": "python_function",
+      "label": "base_url",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.base_url",
+      "tags": [],
+      "prov": "prov:762795fe8b07b883"
+    },
+    {
+      "id": "node:9e357f7cc209ca8ba2ca",
+      "kind": "python_function",
+      "label": "get_json",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_json",
+      "tags": [],
+      "prov": "prov:bb311405d7893be6"
+    },
+    {
+      "id": "node:a09c072ec43192acb1e3",
+      "kind": "python_function",
+      "label": "run_live_tests",
+      "path": "tests/test_live.py",
+      "symbol": "tests.test_live.run_live_tests",
+      "tags": [],
+      "prov": "prov:ff6bd90548c917c9"
+    },
+    {
+      "id": "node:a217f0c5fc08981d87f2",
+      "kind": "python_function",
+      "label": "get_deployment_status",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.get_deployment_status",
+      "tags": [],
+      "prov": "prov:819e17895eea1040"
+    },
+    {
+      "id": "node:a2e531a5ab606f41d9bc",
+      "kind": "python_function",
+      "label": "set_client",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.set_client",
+      "tags": [],
+      "prov": "prov:f38f20980d380538"
+    },
+    {
+      "id": "node:a32d71cbbae4bcadc234",
+      "kind": "python_module",
+      "label": "fmc_mcp.tools",
+      "path": "src/fmc_mcp/tools.py",
+      "symbol": "fmc_mcp.tools",
+      "tags": [],
+      "prov": "prov:750d7fda533e438c"
+    },
+    {
+      "id": "node:a35043109973f2a21639",
+      "kind": "python_function",
+      "label": "__aexit__",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.__aexit__",
+      "tags": [],
+      "prov": "prov:1b3f2c1d7897a7d9"
+    },
+    {
+      "id": "node:a3ea09c9a38816923b96",
+      "kind": "python_module",
+      "label": "tests.conftest",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest",
+      "tags": [],
+      "prov": "prov:6194b3ec63deb31b"
+    },
+    {
+      "id": "node:a55ddd453b2c383a7c94",
+      "kind": "python_class",
+      "label": "TestResources",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.TestResources",
+      "tags": [],
+      "prov": "prov:35ebe3a05dfb61ea"
+    },
+    {
+      "id": "node:a7fb85717fe19a103582",
+      "kind": "markdown_section",
+      "label": "Using uv (Recommended)",
+      "path": "README.md",
+      "symbol": "README.md#Using uv (Recommended)",
+      "tags": [],
+      "prov": "prov:533a54b24e6d2969"
+    },
+    {
+      "id": "node:aa34a15837a9e9acb195",
+      "kind": "python_function",
+      "label": "test_authentication",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_authentication",
+      "tags": [],
+      "prov": "prov:15b0d9ea38dc8b30"
+    },
+    {
+      "id": "node:aeb3e06acca87605afc7",
+      "kind": "python_function",
+      "label": "test_search_object_by_ip_found",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_search_object_by_ip_found",
+      "tags": [],
+      "prov": "prov:45436d74f269afd8"
+    },
+    {
+      "id": "node:aef65ffb7e6fade21725",
+      "kind": "python_function",
+      "label": "_request",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client._request",
+      "tags": [],
+      "prov": "prov:5ab061c5e7644b3b"
+    },
+    {
+      "id": "node:b3d9c9b0b868f763b2b8",
+      "kind": "python_module",
+      "label": "fmc_mcp.__main__",
+      "path": "src/fmc_mcp/__main__.py",
+      "symbol": "fmc_mcp.__main__",
+      "tags": [],
+      "prov": "prov:da6e96a18d26d1cf"
+    },
+    {
+      "id": "node:b74698bb7eda4aa768bd",
+      "kind": "python_module",
+      "label": "tests.test_live",
+      "path": "tests/test_live.py",
+      "symbol": "tests.test_live",
+      "tags": [],
+      "prov": "prov:d0c4ff32123f1070"
+    },
+    {
+      "id": "node:b77720dc4f38e785e29a",
+      "kind": "python_function",
+      "label": "test_get_network_objects",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_get_network_objects",
+      "tags": [],
+      "prov": "prov:d2fa68e702a0336c"
+    },
+    {
+      "id": "node:b800930b11d4e02b504e",
+      "kind": "markdown_section",
+      "label": "Install MCP Inspector",
+      "path": "README.md",
+      "symbol": "README.md#Install MCP Inspector",
+      "tags": [],
+      "prov": "prov:164c26df5c2d159f"
+    },
+    {
+      "id": "node:b94240282f08b87349d2",
+      "kind": "python_function",
+      "label": "get_host_objects",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_host_objects",
+      "tags": [],
+      "prov": "prov:df3a9487fe343323"
+    },
+    {
+      "id": "node:badc697ec0452fda1bba",
+      "kind": "markdown_section",
+      "label": "Installation",
+      "path": "README.md",
+      "symbol": "README.md#Installation",
+      "tags": [],
+      "prov": "prov:7e356052c87f12d3"
+    },
+    {
+      "id": "node:bd98487d5865d99b4393",
+      "kind": "python_function",
+      "label": "_refill",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client._refill",
+      "tags": [],
+      "prov": "prov:e6637d97bcb4c874"
+    },
+    {
+      "id": "node:c204a8afcaec78c9d6e0",
+      "kind": "python_function",
+      "label": "network_objects_resource",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.network_objects_resource",
+      "tags": [],
+      "prov": "prov:e4d3ef2280bcf7de"
+    },
+    {
+      "id": "node:c6405ff28ca10fee3a33",
+      "kind": "python_function",
+      "label": "test_list_devices",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.test_list_devices",
+      "tags": [],
+      "prov": "prov:8be16bde66785662"
+    },
+    {
+      "id": "node:c760b9cf2bf750fdcf05",
+      "kind": "config",
+      "label": "uv.lock",
+      "path": "uv.lock",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:d194260c714e1db7"
+    },
+    {
+      "id": "node:cb973cc1f27e59c0c208",
+      "kind": "python_function",
+      "label": "lifespan",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.lifespan",
+      "tags": [],
+      "prov": "prov:c6bbdfa1c267b0ff"
+    },
+    {
+      "id": "node:cd9074a3fc12c17f4842",
+      "kind": "python_function",
+      "label": "devices_list_resource",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.devices_list_resource",
+      "tags": [],
+      "prov": "prov:37ab6cf2892de795"
+    },
+    {
+      "id": "node:cdb54772758be2dc463d",
+      "kind": "python_function",
+      "label": "test_domain_uuid_default",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_domain_uuid_default",
+      "tags": [],
+      "prov": "prov:a71d2f3991b3dd12"
+    },
+    {
+      "id": "node:cf8bad79cf3dcfe5daa4",
+      "kind": "markdown_section",
+      "label": "Claude Desktop Integration",
+      "path": "README.md",
+      "symbol": "README.md#Claude Desktop Integration",
+      "tags": [],
+      "prov": "prov:880c5b5c0bb89d8a"
+    },
+    {
+      "id": "node:cfafc0bdc3902dd8bc5b",
+      "kind": "markdown_section",
+      "label": "MCP Tools",
+      "path": "README.md",
+      "symbol": "README.md#MCP Tools",
+      "tags": [],
+      "prov": "prov:2d1e84604968d61f"
+    },
+    {
+      "id": "node:d0893ef81233885128b1",
+      "kind": "python_class",
+      "label": "FMCClient",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.FMCClient",
+      "tags": [],
+      "prov": "prov:18b0c8871bdafce4"
+    },
+    {
+      "id": "node:d0f542d08179725d9549",
+      "kind": "python_function",
+      "label": "test_base_url",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_base_url",
+      "tags": [],
+      "prov": "prov:f45e6d71592c9856"
+    },
+    {
+      "id": "node:d100cc89f61477235e08",
+      "kind": "python_function",
+      "label": "get_system_info",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.get_system_info",
+      "tags": [],
+      "prov": "prov:f66191feea1cc687"
+    },
+    {
+      "id": "node:d4f039b691c392ed08c7",
+      "kind": "markdown_section",
+      "label": "HTTP/SSE Mode (for Integration Testing)",
+      "path": "README.md",
+      "symbol": "README.md#HTTP/SSE Mode (for Integration Testing)",
+      "tags": [],
+      "prov": "prov:978c310bcf3a49ca"
+    },
+    {
+      "id": "node:d52ba18f0c68e7a968f8",
+      "kind": "markdown_section",
+      "label": "Set environment variable for HTTP mode",
+      "path": "README.md",
+      "symbol": "README.md#Set environment variable for HTTP mode",
+      "tags": [],
+      "prov": "prov:e41e7452a8f0b407"
+    },
+    {
+      "id": "node:d561ab3d7d70e246d07e",
+      "kind": "python_function",
+      "label": "get_devices",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.get_devices",
+      "tags": [],
+      "prov": "prov:c7518e8eb39130cf"
+    },
+    {
+      "id": "node:d701b635b99442ff8d5a",
+      "kind": "markdown_section",
+      "label": "Install dependencies",
+      "path": "README.md",
+      "symbol": "README.md#Install dependencies",
+      "tags": [],
+      "prov": "prov:9ef906fcab5d8f79"
+    },
+    {
+      "id": "node:d89de7fef0f8e4e66bb0",
+      "kind": "python_function",
+      "label": "get_deployment_status",
+      "path": "src/fmc_mcp/resources.py",
+      "symbol": "fmc_mcp.resources.get_deployment_status",
+      "tags": [],
+      "prov": "prov:a77f09fd05b8d122"
+    },
+    {
+      "id": "node:e56033259801308832a6",
+      "kind": "python_function",
+      "label": "test_acquire_token",
+      "path": "tests/test_client.py",
+      "symbol": "tests.test_client.test_acquire_token",
+      "tags": [],
+      "prov": "prov:55c376cef7131912"
+    },
+    {
+      "id": "node:ea9dac13eecb61f72c33",
+      "kind": "python_function",
+      "label": "connect",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.connect",
+      "tags": [],
+      "prov": "prov:8ef0247e5bf6d05d"
+    },
+    {
+      "id": "node:ec03a4ae8776bb4a28da",
+      "kind": "python_function",
+      "label": "main",
+      "path": "src/fmc_mcp/server.py",
+      "symbol": "fmc_mcp.server.main",
+      "tags": [],
+      "prov": "prov:b5271f40f46ff232"
+    },
+    {
+      "id": "node:f0d8fc51741705d8d8ef",
+      "kind": "python_class",
+      "label": "TestTools",
+      "path": "tests/test_resources.py",
+      "symbol": "tests.test_resources.TestTools",
+      "tags": [],
+      "prov": "prov:c57441decd9b395c"
+    },
+    {
+      "id": "node:f297e5cb198d1f626af5",
+      "kind": "config",
+      "label": "pyproject.toml",
+      "path": "pyproject.toml",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:e3613801121c5bb2"
+    },
+    {
+      "id": "node:f5858de4be98b7930ef2",
+      "kind": "python_function",
+      "label": "acquire",
+      "path": "src/fmc_mcp/client.py",
+      "symbol": "fmc_mcp.client.acquire",
+      "tags": [],
+      "prov": "prov:1dcdb60f3cd2d9b7"
+    },
+    {
+      "id": "node:f9554680b2e876e053a2",
+      "kind": "markdown_section",
+      "label": "Configuration Options",
+      "path": "README.md",
+      "symbol": "README.md#Configuration Options",
+      "tags": [],
+      "prov": "prov:af37eea4aa81145f"
+    },
+    {
+      "id": "node:f97dc9c29bcfb9c47891",
+      "kind": "markdown_section",
+      "label": "MCP Inspector Testing",
+      "path": "README.md",
+      "symbol": "README.md#MCP Inspector Testing",
+      "tags": [],
+      "prov": "prov:8e0ba711b181fcaf"
+    },
+    {
+      "id": "node:fb80084b3785e545fda0",
+      "kind": "markdown_section",
+      "label": "Run with coverage",
+      "path": "README.md",
+      "symbol": "README.md#Run with coverage",
+      "tags": [],
+      "prov": "prov:8cb3faea4b06e8a8"
+    },
+    {
+      "id": "node:fbf0f154b18f5df92a31",
+      "kind": "markdown_section",
+      "label": "Run the server",
+      "path": "README.md",
+      "symbol": "README.md#Run the server",
+      "tags": [],
+      "prov": "prov:921a99dae2dce8ee"
+    },
+    {
+      "id": "node:ff26f351f85f3c1b0aeb",
+      "kind": "markdown_section",
+      "label": "Clone the repository",
+      "path": "README.md",
+      "symbol": "README.md#Clone the repository",
+      "tags": [],
+      "prov": "prov:0e3c8a6024baf1cd"
+    }
+  ],
+  "import_edges": [
+    {
+      "id": "edge:037f299e6ee142364aa5",
+      "from_node_id": "node:b74698bb7eda4aa768bd",
+      "from_symbol": "tests.test_live",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:1c768570dff99792"
+      ]
+    },
+    {
+      "id": "edge:14322f3a0d9f20b055c8",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:asyncio",
+      "label": "asyncio",
+      "prov": [
+        "prov:b0d56c1fe5b18bd0"
+      ]
+    },
+    {
+      "id": "edge:1a77bf20262135e93292",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:logging",
+      "label": "logging",
+      "prov": [
+        "prov:1e6d84a707f4cba4"
+      ]
+    },
+    {
+      "id": "edge:1dbd45e8683cedc3c87a",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:fmc_mcp.config",
+      "label": "fmc_mcp.config",
+      "prov": [
+        "prov:a490824f581f0eb5"
+      ]
+    },
+    {
+      "id": "edge:2028fa4bc4c71f3e2417",
+      "from_node_id": "node:84a7c7e4c189e28cb1bb",
+      "from_symbol": "fmc_mcp.resources",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:bebb3d04d5e3bea1"
+      ]
+    },
+    {
+      "id": "edge:20676dd28381e382a661",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:f303603fb23efae7"
+      ]
+    },
+    {
+      "id": "edge:2266d2f3d2a25f20b86b",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:83bfaa715796cf55"
+      ]
+    },
+    {
+      "id": "edge:25c3c6d20a305beeeca9",
+      "from_node_id": "node:84a7c7e4c189e28cb1bb",
+      "from_symbol": "fmc_mcp.resources",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:9688276cf5e240e7"
+      ]
+    },
+    {
+      "id": "edge:2f3a9bfafe89ef94d454",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:asyncio",
+      "label": "asyncio",
+      "prov": [
+        "prov:0c342e8a5cfb2f75"
+      ]
+    },
+    {
+      "id": "edge:330a182f3d06cd9dc033",
+      "from_node_id": "node:84a7c7e4c189e28cb1bb",
+      "from_symbol": "fmc_mcp.resources",
+      "to_node_id": "node:python_import:typing",
+      "label": "typing",
+      "prov": [
+        "prov:d144243cb5366326"
+      ]
+    },
+    {
+      "id": "edge:358deff7a11b59cd8af1",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:fmc_mcp.config",
+      "label": "fmc_mcp.config",
+      "prov": [
+        "prov:aae72e2816907c8a"
+      ]
+    },
+    {
+      "id": "edge:3f011dcb2ef05226a750",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:base64",
+      "label": "base64",
+      "prov": [
+        "prov:aefc03705172d5d2"
+      ]
+    },
+    {
+      "id": "edge:46ccd0facf6c0f148ecd",
+      "from_node_id": "node:a3ea09c9a38816923b96",
+      "from_symbol": "tests.conftest",
+      "to_node_id": "node:python_import:re",
+      "label": "re",
+      "prov": [
+        "prov:ae87ab4ea45ccc08"
+      ]
+    },
+    {
+      "id": "edge:4ac4bc2928903a9f6cdb",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:time",
+      "label": "time",
+      "prov": [
+        "prov:4d9c0f2751d94893"
+      ]
+    },
+    {
+      "id": "edge:4db395dbd95108d60b32",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:fmc_mcp.config",
+      "label": "fmc_mcp.config",
+      "prov": [
+        "prov:ccb407380f605c8b"
+      ]
+    },
+    {
+      "id": "edge:54cb67860dcd9fd888a0",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:typing",
+      "label": "typing",
+      "prov": [
+        "prov:1be5464ee33d94a8"
+      ]
+    },
+    {
+      "id": "edge:553a567055a211a15038",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:os",
+      "label": "os",
+      "prov": [
+        "prov:c73e700453853f20"
+      ]
+    },
+    {
+      "id": "edge:5d1f4fcd1c78c002ebbc",
+      "from_node_id": "node:257d836fb3f003e3e2c2",
+      "from_symbol": "fmc_mcp.config",
+      "to_node_id": "node:python_import:logging",
+      "label": "logging",
+      "prov": [
+        "prov:e40bbc2718d5452c"
+      ]
+    },
+    {
+      "id": "edge:5e6dcd302645d60731ed",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:logging",
+      "label": "logging",
+      "prov": [
+        "prov:4373b80f0c0f8f1e"
+      ]
+    },
+    {
+      "id": "edge:5e86899c2b2b270e3dca",
+      "from_node_id": "node:a32d71cbbae4bcadc234",
+      "from_symbol": "fmc_mcp.tools",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:1b3ec86fcc8eb077"
+      ]
+    },
+    {
+      "id": "edge:622989e9cb39b49520e8",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:pytest",
+      "label": "pytest",
+      "prov": [
+        "prov:e21a2b29c8d4da4e"
+      ]
+    },
+    {
+      "id": "edge:6605bc440397f23478a1",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:contextlib",
+      "label": "contextlib",
+      "prov": [
+        "prov:24bdbe0f3b14496c"
+      ]
+    },
+    {
+      "id": "edge:66f7fa1f81266d13d1cf",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:fmc_mcp",
+      "label": "fmc_mcp",
+      "prov": [
+        "prov:a57ff323145ecac8"
+      ]
+    },
+    {
+      "id": "edge:68860f44ca677cc65828",
+      "from_node_id": "node:a32d71cbbae4bcadc234",
+      "from_symbol": "fmc_mcp.tools",
+      "to_node_id": "node:python_import:fmc_mcp.resources",
+      "label": "fmc_mcp.resources",
+      "prov": [
+        "prov:3dfa2aaf889c6db2"
+      ]
+    },
+    {
+      "id": "edge:6daf3014cdf7860d5352",
+      "from_node_id": "node:257d836fb3f003e3e2c2",
+      "from_symbol": "fmc_mcp.config",
+      "to_node_id": "node:python_import:functools",
+      "label": "functools",
+      "prov": [
+        "prov:b65ed2f73ad4b018"
+      ]
+    },
+    {
+      "id": "edge:73dbdcd070f390c7d5eb",
+      "from_node_id": "node:a32d71cbbae4bcadc234",
+      "from_symbol": "fmc_mcp.tools",
+      "to_node_id": "node:python_import:ipaddress",
+      "label": "ipaddress",
+      "prov": [
+        "prov:12c675fbe4c747a2"
+      ]
+    },
+    {
+      "id": "edge:7699387eb3b5e4772358",
+      "from_node_id": "node:7016dc7cbefc37d26f49",
+      "from_symbol": "tests.test_client",
+      "to_node_id": "node:python_import:pytest_httpx",
+      "label": "pytest_httpx",
+      "prov": [
+        "prov:397f77e4c3efa347"
+      ]
+    },
+    {
+      "id": "edge:78c845c345be8ceb186b",
+      "from_node_id": "node:7016dc7cbefc37d26f49",
+      "from_symbol": "tests.test_client",
+      "to_node_id": "node:python_import:fmc_mcp.config",
+      "label": "fmc_mcp.config",
+      "prov": [
+        "prov:ed2aa8a4a6815a21"
+      ]
+    },
+    {
+      "id": "edge:811b7022c3ffe9616bc1",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:collections.abc",
+      "label": "collections.abc",
+      "prov": [
+        "prov:e89e94d1a731f1ff"
+      ]
+    },
+    {
+      "id": "edge:85cca138963a3384ad7d",
+      "from_node_id": "node:b74698bb7eda4aa768bd",
+      "from_symbol": "tests.test_live",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:dc762c8391f937b8"
+      ]
+    },
+    {
+      "id": "edge:90de6e931e2ea2877fe9",
+      "from_node_id": "node:a32d71cbbae4bcadc234",
+      "from_symbol": "fmc_mcp.tools",
+      "to_node_id": "node:python_import:logging",
+      "label": "logging",
+      "prov": [
+        "prov:4feb4d0cf75bcc4f"
+      ]
+    },
+    {
+      "id": "edge:949a3b0102d9ea17bd4b",
+      "from_node_id": "node:a3ea09c9a38816923b96",
+      "from_symbol": "tests.conftest",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:bb9c458254b5627e"
+      ]
+    },
+    {
+      "id": "edge:95682332b8df7d4b76ab",
+      "from_node_id": "node:a3ea09c9a38816923b96",
+      "from_symbol": "tests.conftest",
+      "to_node_id": "node:python_import:pytest",
+      "label": "pytest",
+      "prov": [
+        "prov:7599b77cf88a7039"
+      ]
+    },
+    {
+      "id": "edge:99c22cbb1dea4079e875",
+      "from_node_id": "node:4042451215c279f0dca7",
+      "from_symbol": "fmc_mcp.client",
+      "to_node_id": "node:python_import:httpx",
+      "label": "httpx",
+      "prov": [
+        "prov:2b0e52ad10883e7c"
+      ]
+    },
+    {
+      "id": "edge:a07c828181cb36654e59",
+      "from_node_id": "node:663ef6b7a92a5221f7a7",
+      "from_symbol": "tests.test_resources",
+      "to_node_id": "node:python_import:pytest_httpx",
+      "label": "pytest_httpx",
+      "prov": [
+        "prov:7966cc91ad067962"
+      ]
+    },
+    {
+      "id": "edge:aeac71aa3f93133e7c14",
+      "from_node_id": "node:a3ea09c9a38816923b96",
+      "from_symbol": "tests.conftest",
+      "to_node_id": "node:python_import:fmc_mcp.config",
+      "label": "fmc_mcp.config",
+      "prov": [
+        "prov:14da5a1843d3afa6"
+      ]
+    },
+    {
+      "id": "edge:b2b2314baf57aa2e487d",
+      "from_node_id": "node:b3d9c9b0b868f763b2b8",
+      "from_symbol": "fmc_mcp.__main__",
+      "to_node_id": "node:python_import:fmc_mcp.server",
+      "label": "fmc_mcp.server",
+      "prov": [
+        "prov:e08d506150373eea"
+      ]
+    },
+    {
+      "id": "edge:b8a91b6c54c2c206345b",
+      "from_node_id": "node:7016dc7cbefc37d26f49",
+      "from_symbol": "tests.test_client",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:b1ddec63b007d0f5"
+      ]
+    },
+    {
+      "id": "edge:ba6c53dbb1f818fdab3c",
+      "from_node_id": "node:257d836fb3f003e3e2c2",
+      "from_symbol": "fmc_mcp.config",
+      "to_node_id": "node:python_import:pydantic",
+      "label": "pydantic",
+      "prov": [
+        "prov:8725a89bbd7df351"
+      ]
+    },
+    {
+      "id": "edge:bdcf0b7421c4ea5fc9ec",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:mcp.server.fastmcp",
+      "label": "mcp.server.fastmcp",
+      "prov": [
+        "prov:224f5fd127caa0f7"
+      ]
+    },
+    {
+      "id": "edge:be098ea973e49def1f00",
+      "from_node_id": "node:b74698bb7eda4aa768bd",
+      "from_symbol": "tests.test_live",
+      "to_node_id": "node:python_import:fmc_mcp",
+      "label": "fmc_mcp",
+      "prov": [
+        "prov:41c3c73c6382e5d0"
+      ]
+    },
+    {
+      "id": "edge:c7436ff03a3a13b20c0f",
+      "from_node_id": "node:b74698bb7eda4aa768bd",
+      "from_symbol": "tests.test_live",
+      "to_node_id": "node:python_import:asyncio",
+      "label": "asyncio",
+      "prov": [
+        "prov:e496bca825291938"
+      ]
+    },
+    {
+      "id": "edge:c9d784d508ce31bca57a",
+      "from_node_id": "node:127af2b0f9d32f8164c6",
+      "from_symbol": "fmc_mcp",
+      "to_node_id": "node:python_import:fmc_mcp.server",
+      "label": "fmc_mcp.server",
+      "prov": [
+        "prov:1e2be92d09840adf"
+      ]
+    },
+    {
+      "id": "edge:cbfc0096826b93771472",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:fmc_mcp.client",
+      "label": "fmc_mcp.client",
+      "prov": [
+        "prov:878270a56e8c3d80"
+      ]
+    },
+    {
+      "id": "edge:ce7b0c6b39091e55fab5",
+      "from_node_id": "node:7016dc7cbefc37d26f49",
+      "from_symbol": "tests.test_client",
+      "to_node_id": "node:python_import:pytest",
+      "label": "pytest",
+      "prov": [
+        "prov:98572730e5c35b58"
+      ]
+    },
+    {
+      "id": "edge:db02e79b9841819d02bb",
+      "from_node_id": "node:257d836fb3f003e3e2c2",
+      "from_symbol": "fmc_mcp.config",
+      "to_node_id": "node:python_import:pydantic_settings",
+      "label": "pydantic_settings",
+      "prov": [
+        "prov:9b83bc4546b8b4e1"
+      ]
+    },
+    {
+      "id": "edge:e0be2df14a1b9e0672c5",
+      "from_node_id": "node:84a7c7e4c189e28cb1bb",
+      "from_symbol": "fmc_mcp.resources",
+      "to_node_id": "node:python_import:logging",
+      "label": "logging",
+      "prov": [
+        "prov:b0cb84854d158892"
+      ]
+    },
+    {
+      "id": "edge:f5439cc4db4e0ea6bf94",
+      "from_node_id": "node:9810fbe9bc4ff06aee73",
+      "from_symbol": "fmc_mcp.server",
+      "to_node_id": "node:python_import:fmc_mcp",
+      "label": "fmc_mcp",
+      "prov": [
+        "prov:1cd5d87538f7fc4b"
+      ]
+    },
+    {
+      "id": "edge:f82dc68881202fdb2b6c",
+      "from_node_id": "node:a3ea09c9a38816923b96",
+      "from_symbol": "tests.conftest",
+      "to_node_id": "node:python_import:pytest_httpx",
+      "label": "pytest_httpx",
+      "prov": [
+        "prov:e60f0c13845dea9e"
+      ]
+    }
+  ],
+  "surfaces": {
+    "protected": [],
+    "generated": []
+  },
+  "source_docs": [
+    {
+      "path": "README.md",
+      "excerpt": "# MCP Server for Cisco FMC\n\nA read-only Model Context Protocol (MCP) server for Cisco Firepower Management Center (FMC) 7.4.x.\n\nThis server allows LLMs like Claude to query your firewall configuration, search for network objects, and check deployment status\u2014all through natural language.\n\n## Features\n\n- **Read-Only Access**: Safe exploration of FMC configuration without modification risk\n- **Rate Limiting**: Built-in token bucket rate limiter (120 req/min, 10 concurrent connections)\n- **Automatic Token Refresh**: Handles FMC's 30-minute token expiration and 3-refresh limit\n- **Transparent Pagination**: Automatically fetches all pages from large datasets\n\n### MCP Resources\n\n| Resource | Description |\n|----------|-------------|\n| `fmc://system/info` | FMC server version and system information |\n| `fmc://devices/list` | List of all managed firewall devices |\n| `fmc://objects/network` | All network objects (IPs, subnets) |\n| `fmc://deployment/status` | Devices with pending changes |\n\n### MCP Tools\n\n| Tool | Description |\n|------|-------------|\n| `search_object_by_ip` | Find network objects containing a specific IP |\n| `get_deployment_status` | Check if devices are in sync |\n\n## Installation\n\n### Prerequisites\n\n- Python 3.10+\n- [uv](https://docs.astral.sh/uv/) (recommended) or pip\n- Access to a Cisco FMC 7.4.x instance\n\n### Using uv (Recommended)\n\n```bash\n# Clone the repository\ngit clone https://github.com/your-org/fmc-mcp.git\ncd fmc-mcp\n\n# Install dependencies\nuv sync\n```\n\n### Using pip\n\n```bash\npip install -e .\n```\n\n## Configuration\n\n1. Copy the example configuration:\n\n```bash\ncp .env.example .env\n```\n\n2. Edit `.env` with your FMC credentials:\n\n```env\nFMC_HOST=fmc.example.com\nFMC_USERNAME=api_user\nFMC_PASSWORD=your_password_here\n```\n\n### Configuration Options\n\n| Variable | Required | Default | Description |\n|----------|----------|---------|-------------|\n| `FMC_HOST` | Yes | - | FMC hostname or IP |\n| `FMC_USERNAME` | Yes | - | API username |\n| `FMC_PASSWORD` | Yes | - | API password |\n| `FMC_VERIFY_SSL` | No | `false` | SSL certificate verification |\n| `FMC_DOMAIN_UUID` | No | auto | Domain UUID (auto-discovered) |\n| `FMC_TIMEOUT` | No | `60` | Request timeout in s"
+    },
+    {
+      "path": "pyproject.toml",
+      "excerpt": "[project]\nname = \"mcp-server-fmc\"\nversion = \"0.1.0\"\ndescription = \"Read-only MCP server for Cisco Firepower Management Center (FMC)\"\nreadme = \"README.md\"\nlicense = { text = \"Apache-2.0\" }\nrequires-python = \">=3.10\"\nkeywords = [\"mcp\", \"cisco\", \"fmc\", \"firepower\", \"firewall\", \"security\"]\nclassifiers = [\n    \"Development Status :: 3 - Alpha\",\n    \"Intended Audience :: System Administrators\",\n    \"License :: OSI Approved :: Apache Software License\",\n    \"Programming Language :: Python :: 3\",\n    \"Programming Language :: Python :: 3.10\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n    \"Topic :: System :: Networking :: Firewalls\",\n]\n\ndependencies = [\n    \"mcp>=1.0.0\",\n    \"httpx>=0.27.0\",\n    \"pydantic>=2.0.0\",\n    \"pydantic-settings>=2.0.0\",\n    \"python-dotenv>=1.0.0\",\n]\n\n[project.optional-dependencies]\ndev = [\n    \"pytest>=8.0.0\",\n    \"pytest-asyncio>=0.23.0\",\n    \"pytest-httpx>=0.30.0\",\n    \"pytest-cov>=4.0.0\",\n    \"ruff>=0.8.0\",\n    \"mypy>=1.13.0\",\n    \"pre-commit>=3.0\",\n]\n\n[project.scripts]\nmcp-server-fmc = \"fmc_mcp:main\"\n\n[build-system]\nrequires = [\"hatchling\"]\nbuild-backend = \"hatchling.build\"\n\n[tool.hatch.build.targets.wheel]\npackages = [\"src/fmc_mcp\"]\n\n[tool.ruff]\ntarget-version = \"py310\"\nline-length = 100\n\n[tool.ruff.lint]\nselect = [\"E\", \"F\", \"I\", \"N\", \"W\", \"UP\", \"B\", \"C4\", \"SIM\"]\nignore = [\"E501\"]\n\n[tool.mypy]\npython_version = \"3.10\"\nstrict = true\nwarn_return_any = true\nwarn_unused_ignores = true\n\n[tool.pytest.ini_options]\nasyncio_mode = \"auto\"\ntestpaths = [\"tests\"]\n"
+    }
+  ]
+}

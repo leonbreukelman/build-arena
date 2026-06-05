@@ -1,0 +1,16 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/recorded-model-output.repaired.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362\", \"snapshot_id\": \"snapshot-07c2bfa471464362\", \"violation_count\": 0}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden/snapshot-07c2bfa471464362",
+    "snapshot_id": "snapshot-07c2bfa471464362",
+    "violation_count": 0,
+    "violation_gates": [],
+    "violation_messages": []
+  }
+}

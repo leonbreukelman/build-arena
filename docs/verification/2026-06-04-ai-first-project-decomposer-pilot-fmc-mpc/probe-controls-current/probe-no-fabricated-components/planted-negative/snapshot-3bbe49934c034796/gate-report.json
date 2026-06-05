@@ -1,0 +1,29 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "inventory_coverage",
+      "location": "components[comp-audit-log]",
+      "message": "Component comp-audit-log references unknown graph node node:fabricated-audit-001.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-audit-client]",
+      "message": "Contract ct-audit-client references missing edge edge:fabricated-audit-edge-001.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Universal concern anti_fabrication does not cover components: comp-audit-log.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Universal concern provenance does not cover components: comp-audit-log.",
+      "severity": "error"
+    }
+  ]
+}

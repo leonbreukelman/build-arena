@@ -1,0 +1,6 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out --project-id leonbreukelman-engineer --goal 'decompose the personal site repo into responsibility-bearing web delivery components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/recorded-model-output.repaired.json --overwrite --non-goal 'do not accept static file buckets as sufficient architecture' --non-goal 'do not treat generated dist output as source ownership'",
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6a7e077842d60d81/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6a7e077842d60d81/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6a7e077842d60d81\", \"snapshot_id\": \"snapshot-6a7e077842d60d81\", \"violation_count\": 0}\n"
+}

@@ -1,0 +1,89 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "inventory_coverage",
+      "location": "components[comp-auth]",
+      "message": "Component comp-auth references unknown graph node node:fabricated-comp-auth.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "components[comp-transport]",
+      "message": "Component comp-transport references unknown graph node node:fabricated-comp-transport.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-client-config]",
+      "message": "Contract ct-client-config references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-resources-client]",
+      "message": "Contract ct-resources-client references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-server-client]",
+      "message": "Contract ct-server-client references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-auth-transport]",
+      "message": "Contract ct-auth-transport references missing edge edge:fabricated-auth-transport.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Universal concern anti_fabrication does not cover components: comp-auth, comp-transport.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Universal concern provenance does not cover components: comp-auth, comp-transport.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-anti-fabrication]",
+      "message": "Concern cc-anti-fabrication references unknown component comp-client.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-determinism]",
+      "message": "Concern cc-determinism references unknown component comp-client.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-provenance]",
+      "message": "Concern cc-provenance references unknown component comp-client.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-no-live-paid-api-acceptance]",
+      "message": "Concern cc-no-live-paid-api-acceptance references unknown component comp-client.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk-suite]",
+      "message": "Check chk-suite references unknown component comp-client.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk-resources-contract]",
+      "message": "Check chk-resources-contract references unknown component comp-client.",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "branch": {
+    "command": "git branch --show-current",
+    "cwd": "/home/leonb/projects/fmc-mcp",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "main\n"
+  },
+  "git_toplevel": {
+    "command": "git rev-parse --show-toplevel",
+    "cwd": "/home/leonb/projects/fmc-mcp",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/fmc-mcp\n"
+  },
+  "pwd": {
+    "command": "pwd",
+    "cwd": "/home/leonb/projects/fmc-mcp",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/fmc-mcp\n"
+  },
+  "repo": "/home/leonb/projects/fmc-mcp",
+  "selection_note": "Required pilot 2: user requested FMC-MPC; canonical local clean Leon-owned repo discovered as fmc-mcp.",
+  "status_short": {
+    "command": "git status --short",
+    "cwd": "/home/leonb/projects/fmc-mcp",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "builder_model_id": "claude-sonnet-4-6",
+  "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+  "builder_prompt_path": "sonnet-probe-builder-prompt.md",
+  "builder_transcript_path": "sonnet-probe-builder-output.wrapper.json",
+  "discrimination_passed": true,
+  "golden_artifact_root": "probe-evaluations/probe-client-unified-auth-transport/golden-artifacts",
+  "golden_control_passed": true,
+  "golden_control_returncode": 0,
+  "hidden_from_primary_decomposer": true,
+  "negative_violation_gates": [
+    "contract_references"
+  ],
+  "planted_negative_artifact_root": "probe-evaluations/probe-client-unified-auth-transport/planted-negative-artifacts",
+  "planted_negative_gate_passed": false,
+  "planted_negative_id": "neg-client-split",
+  "planted_negative_returncode": 1,
+  "probe_id": "probe-client-unified-auth-transport"
+}

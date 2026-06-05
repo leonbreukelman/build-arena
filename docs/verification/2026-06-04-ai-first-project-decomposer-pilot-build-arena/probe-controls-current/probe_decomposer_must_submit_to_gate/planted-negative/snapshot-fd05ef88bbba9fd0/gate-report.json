@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:1c61a2ef00d44db831c2]",
+      "message": "Owned import edge edge:1c61a2ef00d44db831c2 from comp:ai_decomposer to comp:project_model_gate is not covered by any contract between those components.",
+      "severity": "error"
+    }
+  ]
+}

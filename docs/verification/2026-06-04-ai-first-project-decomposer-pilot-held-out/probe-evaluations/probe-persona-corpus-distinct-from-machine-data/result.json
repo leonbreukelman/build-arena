@@ -1,0 +1,19 @@
+{
+  "builder_model_id": "claude-sonnet-4-6",
+  "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+  "builder_prompt_path": "sonnet-probe-builder-prompt.md",
+  "builder_transcript_path": "sonnet-probe-builder-output.wrapper.json",
+  "discrimination_passed": true,
+  "golden_artifact_root": "probe-evaluations/probe-persona-corpus-distinct-from-machine-data/golden-artifacts",
+  "golden_control_passed": true,
+  "golden_control_returncode": 0,
+  "hidden_from_primary_decomposer": true,
+  "negative_violation_gates": [
+    "component_measurability"
+  ],
+  "planted_negative_artifact_root": "probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts",
+  "planted_negative_gate_passed": false,
+  "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+  "planted_negative_returncode": 1,
+  "probe_id": "probe:persona-corpus-distinct-from-machine-data"
+}

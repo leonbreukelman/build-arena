@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "protected_surfaces",
+      "location": "components[comp:build-pipeline]",
+      "message": "Component comp:build-pipeline owns protected/generated surface dist/.",
+      "severity": "error"
+    }
+  ]
+}

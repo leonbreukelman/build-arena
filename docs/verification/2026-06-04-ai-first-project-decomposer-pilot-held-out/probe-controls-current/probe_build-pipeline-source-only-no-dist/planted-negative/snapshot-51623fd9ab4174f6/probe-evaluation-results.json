@@ -1,0 +1,116 @@
+{
+  "all_expected_gates_observed": true,
+  "all_golden_passed": true,
+  "all_planted_negatives_failed": true,
+  "controls_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current",
+  "distinct_negative_violation_gates": [
+    "component_measurability",
+    "contract_references",
+    "cross_cutting_concerns",
+    "edge_coverage",
+    "protected_surfaces"
+  ],
+  "pilot": "leonbreukelman-engineer",
+  "probe_count": 4,
+  "probe_results": [
+    {
+      "actual_mutation": "made contract:router-to-mcp self-referential as if worker and MCP were merged",
+      "declared_bad_decomposition_pattern": "Merge worker/index.js and worker/mcp/server.js under a single 'Cloudflare Worker Code' component owning all of node:32f3a0d3845cf98fb8cb, node:javascript_import:worker.mcp.server, and node:1e8ba7fd1db36d8f49db, then drop contract:router-to-mcp because from_component_id and to_component_id would resolve to the same merged component.",
+      "declared_expected_gate_failure": "Contract graph integrity check: contract:router-to-mcp declares from_component_id=comp:worker-edge-router and to_component_id=comp:mcp-server. If both are merged into one component, either both IDs point to a non-existent component (the merged one has a new ID) or the contract becomes a self-referential edge with from==to. Any gate validating that from_component_id != to_component_id and that both referenced IDs exist in the components list rejects this decomposition deterministically.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "contract_references"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_worker-mcp-distinct-endpoints/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_worker-mcp-distinct-endpoints/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "contract_references",
+        "edge_coverage"
+      ],
+      "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+      "probe_id": "probe:worker-mcp-distinct-endpoints"
+    },
+    {
+      "actual_mutation": "moved persona corpus nodes into public-agent-data and deleted comp:persona-corpus",
+      "declared_bad_decomposition_pattern": "Move all ten persona corpus node IDs (node:270b52766ba2097c3bf8, node:087085bf23e3cc4628f2, node:3497d88db26b2742c66a, node:5ea405faea230cdf5498, node:7ad8da6a627ab8d27e9e, node:9d9d37a18c7ab7537c0f, node:c627dcac9798554af877, node:ca0aad13b3b497dd9e40, node:cd8a921454b74ef09e06, node:f0fd663527865f98c64e) into comp:public-agent-data's owned_node_ids on the grounds that represent_me.md is 'agent-facing content analogous to llms.txt', eliminate comp:persona-corpus as a distinct component, and repoint contract:build-renders-persona to to_component_id=comp:public-agent-data.",
+      "declared_expected_gate_failure": "Near-neighbor alternative nn:persona-in-data is explicitly marked why_not_primary='prompt/represent_me.md is a distinct prose corpus with separate prov; it is authored representation guidance, not machine-readable API data.' A gate that checks whether any near_neighbor_alternative's rejected pattern is instantiated in the decomposition detects this. Additionally, a prov-node-to-component uniqueness check fails: persona prov refs (prov:756f566ef137b772 and siblings) conflict with comp:public-agent-data's prov refs (prov:5dd0cc494cd85fbe, prov:77b106b079f49cac), producing a multi-component prov collision.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "cross_cutting_concerns",
+        "component_measurability"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "component_measurability",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "component_measurability"
+      ],
+      "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+      "probe_id": "probe:persona-corpus-distinct-from-machine-data"
+    },
+    {
+      "actual_mutation": "added generated output surface dist/ to build-pipeline ownership",
+      "declared_bad_decomposition_pattern": "Add invented dist/ directory graph nodes to comp:build-pipeline's owned_node_ids with the rationale that 'the pipeline produces and therefore owns its output,' citing no prov refs for the added nodes.",
+      "declared_expected_gate_failure": "Two gates fire. First, the non-goal enforcement gate checks that no owned_node_id resolves to a generated output surface; the project packet records surface_counts.generated=0, so any node corresponding to a dist/ artifact has no matching packet entry and fails this check. Second, the anti-fabrication concern (concern:anti-fabrication, triggered_by='universal') requires that every component's owned_node_ids trace to packet-supplied prov identifiers; dist/ nodes carry no prov ref and the anti-fabrication gate emits a fabricated-node violation.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "protected_surfaces"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_build-pipeline-source-only-no-dist/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_build-pipeline-source-only-no-dist/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "protected_surfaces"
+      ],
+      "planted_negative_id": "neg:dist-output-as-owned-source",
+      "probe_id": "probe:build-pipeline-source-only-no-dist"
+    },
+    {
+      "actual_mutation": "removed universal anti_fabrication concern",
+      "declared_bad_decomposition_pattern": "Remove concern:anti-fabrication from cross_cutting_concerns entirely, or reduce its component_ids to only ['comp:build-pipeline'] with triggered_by='conditional' on the rationale that 'fabrication risk is highest where data edges are missing (build pipeline only).'",
+      "declared_expected_gate_failure": "Universal-concern coverage assertion: enumerate all seven component IDs from the components list; collect all cross_cutting_concerns with triggered_by='universal' and union their component_ids. With concern:anti-fabrication absent or scoped, only concern:provenance (if left universal) covers some components. Five component IDs\u2014comp:link-checker, comp:worker-edge-router, comp:mcp-server, comp:persona-corpus, comp:project-docs\u2014have no universal-concern coverage. The gate diffs the full component ID set against universally-covered IDs and emits a non-empty gap set, causing deterministic failure without any network call or model invocation.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "cross_cutting_concerns"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "cross_cutting_concerns",
+        "cross_cutting_concerns"
+      ],
+      "planted_negative_id": "neg:drop-anti-fabrication-concern",
+      "probe_id": "probe:anti-fabrication-concern-is-universal"
+    }
+  ],
+  "strong_negative": {
+    "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/strong-negative-current/strong-negative-command.json",
+    "expected_violation_gates": [
+      "contract_references"
+    ],
+    "mutation": "made contract:router-to-mcp self-referential as if worker and MCP were merged; also made first contract self-referential",
+    "passed": false,
+    "returncode": 1,
+    "violation_gates": [
+      "contract_references",
+      "edge_coverage"
+    ]
+  }
+}

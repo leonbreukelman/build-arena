@@ -1,0 +1,26 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative --project-id leonbreukelman-engineer --goal 'decompose the personal site repo into responsibility-bearing web delivery components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative.raw.json --overwrite --non-goal 'do not accept static file buckets as sufficient architecture' --non-goal 'do not treat generated dist output as source ownership'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea\", \"snapshot_id\": \"snapshot-2fa647520d3e55ea\", \"violation_count\": 4}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative/snapshot-2fa647520d3e55ea",
+    "snapshot_id": "snapshot-2fa647520d3e55ea",
+    "violation_count": 4,
+    "violation_gates": [
+      "component_measurability",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "component_measurability"
+    ],
+    "violation_messages": [
+      "Component comp:public-agent-data responsibility reads like a path/file-bucket decomposition rather than a semantic responsibility.",
+      "Concern concern:anti-fabrication references unknown component comp:persona-corpus.",
+      "Concern concern:provenance references unknown component comp:persona-corpus.",
+      "Check check:build-only references unknown component comp:persona-corpus."
+    ]
+  }
+}

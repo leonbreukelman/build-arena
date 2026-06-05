@@ -1,0 +1,40 @@
+[
+  {
+    "alternative": "Own the generated dist/ output as the primary build artifact component.",
+    "id": "nn:build-vs-dist",
+    "provenance_refs": [
+      "prov:8c73e6d6bb2288db"
+    ],
+    "target_id": "comp:build-pipeline",
+    "why_not_primary": "Non-goal forbids treating generated dist output as source ownership; scripts/build.py is the source-of-truth build surface. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+  },
+  {
+    "alternative": "Run the MCP server as a standalone Node process instead of a Cloudflare Worker module.",
+    "id": "nn:mcp-standalone",
+    "provenance_refs": [
+      "prov:e8c798459ce07e15",
+      "prov:47b71b23b6c02da8"
+    ],
+    "target_id": "comp:mcp-server",
+    "why_not_primary": "Source shows worker/mcp/server.js imported by the Cloudflare worker entry (worker/index.js) and deployment targets Cloudflare Pages; the packet does not require an alternate runtime. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+  },
+  {
+    "alternative": "Generate api/v1/profile.json and llms.txt at build time rather than committing them as source.",
+    "id": "nn:data-generated-at-build",
+    "provenance_refs": [
+      "prov:5dd0cc494cd85fbe",
+      "prov:77b106b079f49cac"
+    ],
+    "target_id": "comp:public-agent-data",
+    "why_not_primary": "The packet selects profile.json (config) and llms.txt as committed source files with their own prov, and no edge shows build.py emitting them. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+  },
+  {
+    "alternative": "Fold the represent_me persona prompt into the public JSON data component.",
+    "id": "nn:persona-in-data",
+    "provenance_refs": [
+      "prov:756f566ef137b772"
+    ],
+    "target_id": "comp:persona-corpus",
+    "why_not_primary": "prompt/represent_me.md is a distinct prose corpus (file plus nine narrative sections) with separate prov; it is authored representation guidance, not machine-readable API data. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+  }
+]

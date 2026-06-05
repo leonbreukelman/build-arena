@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics
+Non-goals: ["do not accept file-bucket components", "do not treat scorer verifier schema or generated files as owned arena hypotheses"]

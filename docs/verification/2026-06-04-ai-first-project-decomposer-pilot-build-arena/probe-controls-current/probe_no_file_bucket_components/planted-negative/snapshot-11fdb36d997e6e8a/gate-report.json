@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "component_measurability",
+      "location": "components[comp:project_graph]",
+      "message": "Component comp:project_graph responsibility reads like a path/file-bucket decomposition rather than a semantic responsibility.",
+      "severity": "error"
+    }
+  ]
+}

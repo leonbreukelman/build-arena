@@ -1,0 +1,38 @@
+[
+  {
+    "alternative": "Promote arena.project_model_llm into a standalone LLM-adapter component separate from the decomposer.",
+    "id": "nn:standalone_llm_adapter",
+    "provenance_refs": [
+      "prov:project:5fc8f21f7a6f14b9"
+    ],
+    "target_id": "comp:ai_decomposer",
+    "why_not_primary": "The decomposer imports project_model_llm directly (edge:7e02ea209da7795bff6a) and is its only observed consumer, forming a single AI-first pipeline; splitting would create a one-file unit with no independent contract. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+  },
+  {
+    "alternative": "Route the decomposer's graph access through the encyclopedia instead of the raw project_graph.",
+    "id": "nn:graph_via_encyclopedia",
+    "provenance_refs": [
+      "prov:269f56fecb0896f0"
+    ],
+    "target_id": "con:decomposer_uses_graph",
+    "why_not_primary": "The decomposer imports arena.project_graph directly (edge:52d0c53c037ed70393d0) in addition to the encyclopedia, so a direct graph contract is observed and not a transitive substitute. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+  },
+  {
+    "alternative": "Attribute arena.budget to the Hypothesis Engine rather than the Execution Loop.",
+    "id": "nn:budget_in_hypothesis",
+    "provenance_refs": [
+      "prov:54bc178712fd6fb8"
+    ],
+    "target_id": "comp:arena_loop",
+    "why_not_primary": "Only arena.loop imports arena.budget (edge:0ad81c69fa74d4c0698e); the hypothesizer has no budget import edge, so budget belongs to the loop's execution responsibility. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+  },
+  {
+    "alternative": "Treat the CLI as a direct fixture/report runner instead of an operator entrypoint into the AI-first decomposer.",
+    "id": "nn:cli_direct_fixture_runner",
+    "provenance_refs": [
+      "prov:c462876d21929933"
+    ],
+    "target_id": "con:cli_uses_decomposer",
+    "why_not_primary": "The goal requires a real decomposition pipeline, and the CLI import of arena.project_decomposer_ai shows the operator entrypoint delegates to the decomposer rather than bypassing it."
+  }
+]

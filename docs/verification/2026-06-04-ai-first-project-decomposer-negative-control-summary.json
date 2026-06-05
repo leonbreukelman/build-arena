@@ -1,0 +1,35 @@
+[
+  {
+    "expected_fail": true,
+    "name": "build-arena",
+    "returncode": 1,
+    "violation_count": 7,
+    "violation_gates": [
+      "component_measurability",
+      "cross_cutting_concerns",
+      "held_out_probe_presence"
+    ]
+  },
+  {
+    "expected_fail": true,
+    "name": "fmc-mcp",
+    "returncode": 1,
+    "violation_count": 5,
+    "violation_gates": [
+      "component_measurability",
+      "cross_cutting_concerns",
+      "held_out_probe_presence"
+    ]
+  },
+  {
+    "expected_fail": true,
+    "name": "held-out",
+    "returncode": 1,
+    "violation_count": 5,
+    "violation_gates": [
+      "component_measurability",
+      "cross_cutting_concerns",
+      "held_out_probe_presence"
+    ]
+  }
+]

@@ -1,0 +1,89 @@
+[
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe-resources-no-mcp-surface",
+    "planted_negative_id": "neg-tools-resources-merge",
+    "provenance_refs": [
+      "prov:4e62ae79d2c07a9c",
+      "prov:bebb3d04d5e3bea1",
+      "prov:3dfa2aaf889c6db2",
+      "prov:9688276cf5e240e7"
+    ],
+    "target_component_ids": [
+      "comp-resources"
+    ],
+    "target_contract_ids": [
+      "ct-resources-client",
+      "ct-tools-resources"
+    ]
+  },
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe-client-unified-auth-transport",
+    "planted_negative_id": "neg-client-split",
+    "provenance_refs": [
+      "prov:bcfd8e782d7fe500",
+      "prov:2b0e52ad10883e7c",
+      "prov:aefc03705172d5d2",
+      "prov:4d9c0f2751d94893",
+      "prov:ccb407380f605c8b",
+      "prov:9688276cf5e240e7",
+      "prov:878270a56e8c3d80"
+    ],
+    "target_component_ids": [
+      "comp-client"
+    ],
+    "target_contract_ids": [
+      "ct-client-config",
+      "ct-resources-client",
+      "ct-server-client"
+    ]
+  },
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe-no-fabricated-components",
+    "planted_negative_id": "neg-fabricated-audit-log",
+    "provenance_refs": [
+      "prov:b380701c2879efce",
+      "prov:bcfd8e782d7fe500",
+      "prov:4e62ae79d2c07a9c",
+      "prov:750d7fda533e438c",
+      "prov:d10dbb159e6fb524",
+      "prov:da6e96a18d26d1cf",
+      "prov:a490824f581f0eb5",
+      "prov:ccb407380f605c8b",
+      "prov:9688276cf5e240e7",
+      "prov:3dfa2aaf889c6db2",
+      "prov:878270a56e8c3d80"
+    ],
+    "target_component_ids": [
+      "comp-config",
+      "comp-client",
+      "comp-resources",
+      "comp-tools",
+      "comp-server"
+    ],
+    "target_contract_ids": [
+      "ct-server-config",
+      "ct-client-config",
+      "ct-resources-client",
+      "ct-tools-resources",
+      "ct-server-client"
+    ]
+  }
+]

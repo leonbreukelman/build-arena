@@ -1,0 +1,32 @@
+{
+  "branch": {
+    "command": "git branch --show-current",
+    "cwd": "/home/leonb/projects/leonbreukelman-engineer",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "main\n"
+  },
+  "git_toplevel": {
+    "command": "git rev-parse --show-toplevel",
+    "cwd": "/home/leonb/projects/leonbreukelman-engineer",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/leonbreukelman-engineer\n"
+  },
+  "pwd": {
+    "command": "pwd",
+    "cwd": "/home/leonb/projects/leonbreukelman-engineer",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/leonbreukelman-engineer\n"
+  },
+  "repo": "/home/leonb/projects/leonbreukelman-engineer",
+  "selection_note": "Required pilot 3: clean Leon-owned public-site/agent-metadata repo, JavaScript/Python/static-data shape differs from Build Arena and FMC-MCP.",
+  "status_short": {
+    "command": "git status --short",
+    "cwd": "/home/leonb/projects/leonbreukelman-engineer",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": ""
+  }
+}

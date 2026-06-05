@@ -1,0 +1,6 @@
+[
+  "acmd:build-only",
+  "acmd:full-build-and-link-check",
+  "acmd:link-check",
+  "check:full-acceptance"
+]

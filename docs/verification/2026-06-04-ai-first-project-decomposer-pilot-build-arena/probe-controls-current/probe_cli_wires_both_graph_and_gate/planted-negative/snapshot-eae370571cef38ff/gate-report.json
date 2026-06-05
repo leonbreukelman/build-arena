@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:aab2ec163c62488ea195]",
+      "message": "Owned import edge edge:aab2ec163c62488ea195 from comp:project_model_cli to comp:project_graph is not covered by any contract between those components.",
+      "severity": "error"
+    }
+  ]
+}

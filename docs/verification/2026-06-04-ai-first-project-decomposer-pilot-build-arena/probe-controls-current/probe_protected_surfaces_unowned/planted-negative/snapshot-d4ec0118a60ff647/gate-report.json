@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "protected_surfaces",
+      "location": "components[comp:arena_loop]",
+      "message": "Component comp:arena_loop claims protected/generated provenance prov:b4ea60b636b808b4.",
+      "severity": "error"
+    }
+  ]
+}

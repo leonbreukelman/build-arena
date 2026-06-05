@@ -1,0 +1,39 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot --project-id fmc-mcp --goal 'decompose FMC-MCP into responsibility-bearing components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/strong-negative.raw.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not require live FMC credentials for acceptance'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b\", \"snapshot_id\": \"snapshot-999a8606bedd1e8b\", \"violation_count\": 13}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/snapshot/snapshot-999a8606bedd1e8b",
+    "snapshot_id": "snapshot-999a8606bedd1e8b",
+    "violation_count": 13,
+    "violation_gates": [
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "edge_coverage",
+      "edge_coverage",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "component_measurability",
+      "contract_references",
+      "component_measurability",
+      "contract_references"
+    ],
+    "violation_messages": [
+      "Contract ct-server-config is self-referential after component merge.",
+      "Contract ct-server-config supporting edge edge:1dbd45e8683cedc3c87a does not connect the declared from/to components.",
+      "Contract ct-resources-client references unknown component endpoint.",
+      "Owned import edge edge:1dbd45e8683cedc3c87a from comp-server to comp-config is not covered by any contract between those components.",
+      "Owned import edge edge:25c3c6d20a305beeeca9 from comp-tools to comp-client is not covered by any contract between those components.",
+      "Concern cc-anti-fabrication references unknown component comp-resources.",
+      "Concern cc-determinism references unknown component comp-resources.",
+      "Concern cc-provenance references unknown component comp-resources."
+    ]
+  }
+}

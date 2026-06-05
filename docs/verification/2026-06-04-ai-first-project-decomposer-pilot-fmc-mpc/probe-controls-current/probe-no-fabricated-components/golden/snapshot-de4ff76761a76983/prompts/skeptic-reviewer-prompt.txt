@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: decompose FMC-MCP into responsibility-bearing components
+Non-goals: ["do not accept file-bucket components", "do not require live FMC credentials for acceptance"]

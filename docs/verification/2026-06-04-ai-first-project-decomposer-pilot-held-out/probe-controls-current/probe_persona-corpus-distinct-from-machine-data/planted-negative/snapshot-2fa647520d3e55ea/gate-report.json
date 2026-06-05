@@ -1,0 +1,29 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "component_measurability",
+      "location": "components[comp:public-agent-data]",
+      "message": "Component comp:public-agent-data responsibility reads like a path/file-bucket decomposition rather than a semantic responsibility.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[concern:anti-fabrication]",
+      "message": "Concern concern:anti-fabrication references unknown component comp:persona-corpus.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[concern:provenance]",
+      "message": "Concern concern:provenance references unknown component comp:persona-corpus.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[check:build-only]",
+      "message": "Check check:build-only references unknown component comp:persona-corpus.",
+      "severity": "error"
+    }
+  ]
+}

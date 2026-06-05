@@ -1,0 +1,861 @@
+{
+  "acceptance_command_allowlist": [
+    "acc:pytest_suite",
+    "chk:decomposer_tests",
+    "chk:encyclopedia_tests",
+    "chk:fingerprints_tests",
+    "chk:graph_tests",
+    "chk:loop_phase4_tests",
+    "chk:snapshot_gate_tests"
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "chk:graph_tests",
+        "chk:snapshot_gate_tests"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_graph",
+        "con:gate_uses_graph",
+        "con:cli_uses_graph",
+        "con:encyclopedia_uses_graph"
+      ],
+      "id": "comp:project_graph",
+      "name": "Misc bucket",
+      "owned_node_ids": [
+        "node:72409672d819b843aed3"
+      ],
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "responsibility": "Misc bucket of merged responsibilities without a measurable contract.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "chk:encyclopedia_tests"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_encyclopedia",
+        "con:encyclopedia_uses_graph"
+      ],
+      "id": "comp:project_encyclopedia",
+      "name": "Project Encyclopedia",
+      "owned_node_ids": [
+        "node:8a740887145cf8fa758b"
+      ],
+      "provenance_refs": [
+        "prov:47c13288e463e5e2"
+      ],
+      "responsibility": "Enrich the raw graph into a structured, queryable knowledge surface (symbols, sections, fingerprintable descriptors) consumed by the AI decomposer.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "chk:snapshot_gate_tests"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_snapshot",
+        "con:gate_uses_snapshot"
+      ],
+      "id": "comp:project_snapshot",
+      "name": "Project Snapshot",
+      "owned_node_ids": [
+        "node:91cba0b9bf0b2e024cf3"
+      ],
+      "provenance_refs": [
+        "prov:88ca325d7a0970fe"
+      ],
+      "responsibility": "Capture a deterministic, hashed snapshot of project state used to anchor decomposition and gating decisions to a fixed working-tree fingerprint.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "chk:decomposer_tests"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_graph",
+        "con:decomposer_uses_snapshot",
+        "con:decomposer_uses_encyclopedia",
+        "con:decomposer_uses_gate"
+      ],
+      "id": "comp:ai_decomposer",
+      "name": "AI Project Decomposer",
+      "owned_node_ids": [
+        "node:b8354b00efc29ef31e46",
+        "node:93f4928e9dfb6246e78a"
+      ],
+      "provenance_refs": [
+        "prov:f8f69811aa362fa7"
+      ],
+      "responsibility": "Drive the AI-first decomposition pipeline: assemble graph/encyclopedia/snapshot context, invoke the model adapter, and emit a Project Model of responsibility-bearing components rather than path buckets.",
+      "verification_gap_ids": [
+        "vg:llm_untested_in_isolation"
+      ]
+    },
+    {
+      "check_ids": [
+        "chk:snapshot_gate_tests"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_gate",
+        "con:gate_uses_graph",
+        "con:gate_uses_snapshot",
+        "con:cli_uses_gate"
+      ],
+      "id": "comp:project_model_gate",
+      "name": "Project Model Gate",
+      "owned_node_ids": [
+        "node:36ae9e5b116af05b2187"
+      ],
+      "provenance_refs": [
+        "prov:b6a0ca6e08b5faec"
+      ],
+      "responsibility": "Validate and admit emitted project models against snapshot identity and structural rules, rejecting non-deterministic or fabricated decompositions before acceptance.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "chk:graph_tests"
+      ],
+      "contract_ids": [
+        "con:cli_uses_gate",
+        "con:cli_uses_graph"
+      ],
+      "id": "comp:project_model_cli",
+      "name": "Project Model CLI",
+      "owned_node_ids": [
+        "node:b10f965f56c8c8168fcb"
+      ],
+      "provenance_refs": [
+        "prov:9fa0c9d36cbf4c7d"
+      ],
+      "responsibility": "Provide the command-line entrypoint that wires graph construction and gating into an operator-runnable project-model workflow.",
+      "verification_gap_ids": [
+        "vg:cli_untested"
+      ]
+    },
+    {
+      "check_ids": [
+        "chk:fingerprints_tests",
+        "chk:loop_phase4_tests"
+      ],
+      "contract_ids": [],
+      "id": "comp:hypothesis_engine",
+      "name": "Hypothesis Engine",
+      "owned_node_ids": [
+        "node:d4bb7dca227bb5d8e5b0",
+        "node:bb8a30e1cd7cc7256a07"
+      ],
+      "provenance_refs": [
+        "prov:f9f35a5bdc5bc204",
+        "prov:78ec248140b9afee"
+      ],
+      "responsibility": "Generate and select arena hypotheses using content fingerprints and a multi-armed-bandit policy, deduplicating candidates against the generated model surface.",
+      "verification_gap_ids": [
+        "vg:generated_surface_uncovered"
+      ]
+    },
+    {
+      "check_ids": [
+        "chk:loop_phase4_tests"
+      ],
+      "contract_ids": [],
+      "id": "comp:arena_loop",
+      "name": "Arena Execution Loop",
+      "owned_node_ids": [
+        "node:d7aacb432805ee47bc3e",
+        "node:5808ad2d44e48ee6248d"
+      ],
+      "provenance_refs": [
+        "prov:01ad2e8436b867e2",
+        "prov:2e1b121b08163566"
+      ],
+      "responsibility": "Orchestrate the iterative arena run: enforce the execution budget, advance phases, emit events, and bound divergence across the generated model surface.",
+      "verification_gap_ids": [
+        "vg:generated_surface_uncovered"
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp:ai_decomposer",
+      "id": "con:decomposer_uses_graph",
+      "name": "Decomposer consumes Project Graph",
+      "near_neighbor_alternative_ids": [
+        "nn:graph_via_encyclopedia"
+      ],
+      "provenance_refs": [
+        "prov:4bd8b2025e71976c"
+      ],
+      "supporting_edge_ids": [
+        "edge:52d0c53c037ed70393d0"
+      ],
+      "to_component_id": "comp:project_graph"
+    },
+    {
+      "from_component_id": "comp:ai_decomposer",
+      "id": "con:decomposer_uses_snapshot",
+      "name": "Decomposer anchors to Project Snapshot",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:f56244b27dae84b2"
+      ],
+      "supporting_edge_ids": [
+        "edge:4fc7717ba0137e79f90a"
+      ],
+      "to_component_id": "comp:project_snapshot"
+    },
+    {
+      "from_component_id": "comp:ai_decomposer",
+      "id": "con:decomposer_uses_encyclopedia",
+      "name": "Decomposer consumes Project Encyclopedia",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:de40a14ae46989fa"
+      ],
+      "supporting_edge_ids": [
+        "edge:dabe7ffa85aca9fbed84"
+      ],
+      "to_component_id": "comp:project_encyclopedia"
+    },
+    {
+      "from_component_id": "comp:ai_decomposer",
+      "id": "con:decomposer_uses_gate",
+      "name": "Decomposer submits to Project Model Gate",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:25747aff0a6b2982"
+      ],
+      "supporting_edge_ids": [
+        "edge:1c61a2ef00d44db831c2"
+      ],
+      "to_component_id": "comp:project_model_gate"
+    },
+    {
+      "from_component_id": "comp:project_model_gate",
+      "id": "con:gate_uses_graph",
+      "name": "Gate reads Project Graph",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:80faf975e2cebad7"
+      ],
+      "supporting_edge_ids": [
+        "edge:b5dce22e18014652dcc8"
+      ],
+      "to_component_id": "comp:project_graph"
+    },
+    {
+      "from_component_id": "comp:project_model_gate",
+      "id": "con:gate_uses_snapshot",
+      "name": "Gate validates against Project Snapshot",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:b12b111547069870"
+      ],
+      "supporting_edge_ids": [
+        "edge:c732419f7410df32fb67"
+      ],
+      "to_component_id": "comp:project_snapshot"
+    },
+    {
+      "from_component_id": "comp:project_model_cli",
+      "id": "con:cli_uses_gate",
+      "name": "CLI drives Project Model Gate",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:594e07540182e4cb"
+      ],
+      "supporting_edge_ids": [
+        "edge:48166b2ade72bd98bd24"
+      ],
+      "to_component_id": "comp:project_model_gate"
+    },
+    {
+      "from_component_id": "comp:project_model_cli",
+      "id": "con:cli_uses_graph",
+      "name": "CLI builds Project Graph",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:bae5a6c89ba898de"
+      ],
+      "supporting_edge_ids": [
+        "edge:aab2ec163c62488ea195"
+      ],
+      "to_component_id": "comp:project_graph"
+    },
+    {
+      "from_component_id": "comp:project_encyclopedia",
+      "id": "con:encyclopedia_uses_graph",
+      "name": "Encyclopedia builds on Project Graph",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:6576912f69781d9d"
+      ],
+      "supporting_edge_ids": [
+        "edge:e557c0410247e9d336ab"
+      ],
+      "to_component_id": "comp:project_graph"
+    }
+  ],
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp:project_graph",
+        "comp:project_encyclopedia",
+        "comp:project_snapshot",
+        "comp:ai_decomposer",
+        "comp:project_model_gate",
+        "comp:project_model_cli",
+        "comp:hypothesis_engine",
+        "comp:arena_loop"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_graph",
+        "con:decomposer_uses_snapshot",
+        "con:decomposer_uses_encyclopedia",
+        "con:decomposer_uses_gate",
+        "con:gate_uses_graph",
+        "con:gate_uses_snapshot",
+        "con:cli_uses_gate",
+        "con:cli_uses_graph",
+        "con:encyclopedia_uses_graph"
+      ],
+      "description": "Every component and contract must trace to packet-supplied node/edge IDs and provenance; no responsibility, dependency, or check may be invented beyond observed graph evidence.",
+      "id": "concern:anti_fabrication",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp:project_snapshot",
+        "comp:project_model_gate",
+        "comp:ai_decomposer"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_snapshot",
+        "con:gate_uses_snapshot"
+      ],
+      "description": "Decomposition and gating must be reproducible from a fixed snapshot; the packet reports git_dirty=true, so determinism is at risk until the working tree is committed and re-hashed.",
+      "id": "concern:determinism",
+      "provenance_refs": [
+        "prov:88ca325d7a0970fe"
+      ],
+      "triggered_by": "universal; git_dirty=true"
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp:project_graph",
+        "comp:project_encyclopedia",
+        "comp:project_snapshot",
+        "comp:ai_decomposer",
+        "comp:project_model_gate",
+        "comp:project_model_cli",
+        "comp:hypothesis_engine",
+        "comp:arena_loop"
+      ],
+      "contract_ids": [],
+      "description": "All emitted artifacts must carry prov refs back to originating nodes/edges so the decomposition is auditable end-to-end.",
+      "id": "concern:provenance",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp:ai_decomposer"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_gate"
+      ],
+      "description": "Acceptance verification must run offline with no paid API calls; the AI decomposer's model invocation path must be excluded from or stubbed in the acceptance command.",
+      "id": "concern:no_live_paid_api_acceptance",
+      "provenance_refs": [
+        "prov:f8f69811aa362fa7"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "generated",
+      "component_ids": [
+        "comp:arena_loop",
+        "comp:hypothesis_engine"
+      ],
+      "contract_ids": [],
+      "description": "Generated surfaces (arena/generated/models.py, schema.json, ddl.sql) are consumed by the loop and hypothesis engine but must not be treated as owned hypotheses; they are regenerated, not authored.",
+      "id": "concern:generated_surfaces",
+      "provenance_refs": [
+        "prov:0dc9f20d86b961b4",
+        "prov:910e3c0ee04a35a7",
+        "prov:a9f834c533530b22"
+      ],
+      "triggered_by": "surface_counts.generated=4"
+    },
+    {
+      "category": "protected",
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Protected surfaces under scorer/, verifier/, and schema/arena.yaml are excluded from arena ownership per non-goals; no component may claim or mutate them.",
+      "id": "concern:protected_surfaces",
+      "provenance_refs": [
+        "prov:b4ea60b636b808b4",
+        "prov:ef892d964ca5a2f4",
+        "prov:50455c6c74a79c2d",
+        "prov:1411d5ace6bd7135",
+        "prov:df42396adab2a9fc",
+        "prov:1588b944760fcaf5",
+        "prov:9fa0c9d36cbf4c7d",
+        "prov:75d9656ba69803ce",
+        "prov:88f3d7a7f5ebc93e",
+        "prov:774548e852b6c408"
+      ],
+      "triggered_by": "surface_counts.protected=10"
+    },
+    {
+      "category": "generated_artifact_integrity",
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Generated surfaces are detected from git/filesystem truth and excluded from source component ownership.",
+      "id": "concern:generated-artifact-integrity",
+      "provenance_refs": [
+        "prov:56e32022625e6e3d",
+        "prov:910e3c0ee04a35a7"
+      ],
+      "triggered_by": [
+        "generated surface detected in ProjectGraph"
+      ]
+    },
+    {
+      "category": "protected_surface_integrity",
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Protected/oracle/scorer/schema surfaces are graph-visible but excluded from source ownership.",
+      "id": "concern:protected-surface-integrity",
+      "provenance_refs": [
+        "prov:b4ea60b636b808b4",
+        "prov:ef892d964ca5a2f4"
+      ],
+      "triggered_by": [
+        "protected surface detected in ProjectGraph"
+      ]
+    }
+  ],
+  "goal": "decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:encyclopedia_enriches_not_constructs",
+      "planted_negative_id": "neg:encyclopedia_owns_graph_construction",
+      "provenance_refs": [
+        "prov:47c13288e463e5e2",
+        "prov:6576912f69781d9d"
+      ],
+      "target_component_ids": [
+        "comp:project_encyclopedia",
+        "comp:project_graph"
+      ],
+      "target_contract_ids": [
+        "con:encyclopedia_uses_graph"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:decomposer_must_submit_to_gate",
+      "planted_negative_id": "neg:decomposer_bypasses_gate",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "target_component_ids": [
+        "comp:ai_decomposer",
+        "comp:project_model_gate"
+      ],
+      "target_contract_ids": [
+        "con:decomposer_uses_gate"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:cli_wires_both_graph_and_gate",
+      "planted_negative_id": "neg:cli_omits_graph_contract",
+      "provenance_refs": [
+        "prov:594e07540182e4cb",
+        "prov:bae5a6c89ba898de",
+        "prov:9fa0c9d36cbf4c7d"
+      ],
+      "target_component_ids": [
+        "comp:project_model_cli"
+      ],
+      "target_contract_ids": [
+        "con:cli_uses_gate",
+        "con:cli_uses_graph"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:generated_surfaces_not_owned",
+      "planted_negative_id": "neg:hypothesis_engine_owns_generated_schema",
+      "provenance_refs": [
+        "prov:0dc9f20d86b961b4",
+        "prov:910e3c0ee04a35a7",
+        "prov:a9f834c533530b22"
+      ],
+      "target_component_ids": [
+        "comp:hypothesis_engine",
+        "comp:arena_loop"
+      ],
+      "target_contract_ids": []
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:no_file_bucket_components",
+      "planted_negative_id": "neg:file_bucket_component",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "target_component_ids": [
+        "comp:project_graph",
+        "comp:project_encyclopedia",
+        "comp:project_snapshot",
+        "comp:ai_decomposer",
+        "comp:project_model_gate",
+        "comp:project_model_cli",
+        "comp:hypothesis_engine",
+        "comp:arena_loop"
+      ],
+      "target_contract_ids": []
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:protected_surfaces_unowned",
+      "planted_negative_id": "neg:component_owns_protected_surface",
+      "provenance_refs": [
+        "prov:b4ea60b636b808b4",
+        "prov:ef892d964ca5a2f4",
+        "prov:50455c6c74a79c2d"
+      ],
+      "target_component_ids": [],
+      "target_contract_ids": []
+    }
+  ],
+  "model_id": "probe-negative-control-mutator/1.1",
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Promote arena.project_model_llm into a standalone LLM-adapter component separate from the decomposer.",
+      "id": "nn:standalone_llm_adapter",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "target_id": "comp:ai_decomposer",
+      "why_not_primary": "The decomposer imports project_model_llm directly (edge:7e02ea209da7795bff6a) and is its only observed consumer, forming a single AI-first pipeline; splitting would create a one-file unit with no independent contract. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    },
+    {
+      "alternative": "Route the decomposer's graph access through the encyclopedia instead of the raw project_graph.",
+      "id": "nn:graph_via_encyclopedia",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "target_id": "con:decomposer_uses_graph",
+      "why_not_primary": "The decomposer imports arena.project_graph directly (edge:52d0c53c037ed70393d0) in addition to the encyclopedia, so a direct graph contract is observed and not a transitive substitute. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    },
+    {
+      "alternative": "Attribute arena.budget to the Hypothesis Engine rather than the Execution Loop.",
+      "id": "nn:budget_in_hypothesis",
+      "provenance_refs": [
+        "prov:54bc178712fd6fb8"
+      ],
+      "target_id": "comp:arena_loop",
+      "why_not_primary": "Only arena.loop imports arena.budget (edge:0ad81c69fa74d4c0698e); the hypothesizer has no budget import edge, so budget belongs to the loop's execution responsibility. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    }
+  ],
+  "non_goals": [
+    "do not accept file-bucket components",
+    "do not treat scorer verifier schema or generated files as owned arena hypotheses"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "chk:graph_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:project_graph"
+      ],
+      "contract_ids": [
+        "con:encyclopedia_uses_graph",
+        "con:gate_uses_graph",
+        "con:cli_uses_graph",
+        "con:decomposer_uses_graph"
+      ],
+      "description": "Project Graph construction is exercised by the test suite (graph imported under tests/test_project_snapshot_gate.py).",
+      "id": "chk:graph_tests",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk:encyclopedia_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:project_encyclopedia"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_encyclopedia"
+      ],
+      "description": "Project Encyclopedia behavior is covered by tests/test_project_encyclopedia.py.",
+      "id": "chk:encyclopedia_tests",
+      "provenance_refs": [
+        "prov:d30e7dd7a6d3f5e7"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk:snapshot_gate_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:project_snapshot",
+        "comp:project_model_gate",
+        "comp:project_graph"
+      ],
+      "contract_ids": [
+        "con:gate_uses_snapshot",
+        "con:gate_uses_graph",
+        "con:decomposer_uses_snapshot"
+      ],
+      "description": "Snapshot capture and model gating are jointly verified by tests/test_project_snapshot_gate.py (imports snapshot, gate, and graph).",
+      "id": "chk:snapshot_gate_tests",
+      "provenance_refs": [
+        "prov:1a1048cb403109c3"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk:decomposer_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:ai_decomposer"
+      ],
+      "contract_ids": [
+        "con:decomposer_uses_graph",
+        "con:decomposer_uses_snapshot",
+        "con:decomposer_uses_encyclopedia",
+        "con:decomposer_uses_gate"
+      ],
+      "description": "AI Decomposer pipeline is covered by tests/test_project_decomposer_ai.py.",
+      "id": "chk:decomposer_tests",
+      "provenance_refs": [
+        "prov:ea07410ef23f14f3"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk:fingerprints_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:hypothesis_engine"
+      ],
+      "contract_ids": [],
+      "description": "Fingerprint computation is verified by tests/test_fingerprints.py.",
+      "id": "chk:fingerprints_tests",
+      "provenance_refs": [
+        "prov:07adf91e82697073"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk:loop_phase4_tests",
+      "command": "uv run pytest tests -q",
+      "component_ids": [
+        "comp:arena_loop",
+        "comp:hypothesis_engine"
+      ],
+      "contract_ids": [],
+      "description": "Execution loop, budget, and hypothesizer are jointly exercised by tests/test_loop_phase4.py.",
+      "id": "chk:loop_phase4_tests",
+      "provenance_refs": [
+        "prov:2c1986b8b805caee",
+        "prov:7d9a05d3ec20a1fb",
+        "prov:b4b04091268dd1de"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    }
+  ],
+  "planted_negatives": [
+    {
+      "bad_decomposition_pattern": "Assign responsibility 'Construct and enrich the code/doc graph from source and git state' to comp:project_encyclopedia, absorbing node:72409672d819b843aed3 into its owned_node_ids and eliminating comp:project_graph as a separate component. con:encyclopedia_uses_graph is removed because the dependency becomes internal.",
+      "expected_gate_failure": "Removing comp:project_graph leaves con:decomposer_uses_graph, con:gate_uses_graph, and con:cli_uses_graph with no valid to_component_id target. The gate's contract-completeness check verifies all declared contract targets resolve to an existing component ID; three dangling targets trigger rejection. Additionally, edge:52d0c53c037ed70393d0, edge:b5dce22e18014652dcc8, and edge:aab2ec163c62488ea195 become unattributed, firing the anti_fabrication edge-coverage guard.",
+      "planted_negative_id": "neg:encyclopedia_owns_graph_construction",
+      "target": "comp:project_encyclopedia",
+      "why_hidden_from_primary": "The primary decomposer separated graph construction from encyclopedia enrichment because import edge e557c0410247e9d336ab makes the use-dependency non-reflexive. A fluent module-bucket generator reasoning from directory co-location or class proximity would naturally collapse these two into one, missing the directional import evidence."
+    },
+    {
+      "bad_decomposition_pattern": "Remove con:decomposer_uses_gate from comp:ai_decomposer's contract_ids. Describe the decomposer's responsibility as 'invoke model adapter and emit project model directly' without a submission step. Edge edge:1c61a2ef00d44db831c2 is left unattributed to any contract.",
+      "expected_gate_failure": "edge:1c61a2ef00d44db831c2 is a packet-supplied edge that the gate's anti_fabrication pass requires to be covered by at least one contract. With con:decomposer_uses_gate removed, no contract accounts for this edge and the gate rejects the model. concern:determinism also fires because the decomposer output is no longer anchored through gate validation, violating the snapshot-identity chain.",
+      "planted_negative_id": "neg:decomposer_bypasses_gate",
+      "target": "comp:ai_decomposer",
+      "why_hidden_from_primary": "The primary decomposer explicitly chained the AI decomposer through the gate. A secondary decomposer reasoning from responsibility descriptions rather than edge coverage might merge gate submission into the decomposer's own emit path, producing a locally coherent but structurally incomplete decomposition that this probe catches."
+    },
+    {
+      "bad_decomposition_pattern": "Drop con:cli_uses_graph from comp:project_model_cli's contract_ids. Describe the CLI responsibility as 'wire gating into an operator-runnable workflow' without mentioning direct graph construction. Edge edge:aab2ec163c62488ea195 is left unattributed.",
+      "expected_gate_failure": "edge:aab2ec163c62488ea195 becomes unattributed; the gate's edge-coverage check rejects the model. chk:graph_tests still passes (graph tests are independent of CLI coverage) but the structural gate on contract completeness fires independently of the pytest suite's test-import signal, demonstrating that the gate enforces edge attribution beyond what test coverage alone requires.",
+      "planted_negative_id": "neg:cli_omits_graph_contract",
+      "target": "comp:project_model_cli",
+      "why_hidden_from_primary": "comp:project_model_cli has no test coverage (vg:cli_untested), making its graph contract invisible to any decomposer reasoning from test-import edges. This probe directly exercises the gap between test-signal reasoning and full import-edge coverage."
+    },
+    {
+      "bad_decomposition_pattern": "Add a generated surface node (one of the surface_counts.generated=4 nodes, e.g. the schema.json node referenced by prov:910e3c0ee04a35a7) to comp:hypothesis_engine's owned_node_ids, describing its responsibility as 'generate hypotheses and own the schema surface that governs candidate structure'.",
+      "expected_gate_failure": "concern:generated_surfaces states generated surfaces must not be treated as owned hypotheses. The gate maintains an allowlist of generated-surface node IDs and validates that no component's owned_node_ids intersect it. Adding a generated node to hypothesis_engine's owned set triggers this boundary check and the gate rejects.",
+      "planted_negative_id": "neg:hypothesis_engine_owns_generated_schema",
+      "target": "comp:hypothesis_engine",
+      "why_hidden_from_primary": "A file-bucket decomposer grouping by co-location or semantic proximity would naturally assign the hypothesis schema to the hypothesis engine. The probe exposes this failure mode by constructing the most plausible wrong answer: a component owning the artifact it produces."
+    },
+    {
+      "bad_decomposition_pattern": "Replace comp:project_graph, comp:project_encyclopedia, and comp:project_snapshot with a single component named 'Arena Core Files' whose responsibility reads 'contains arena/project_graph.py, arena/project_snapshot.py, and arena/project_encyclopedia.py' and whose owned_node_ids are node:72409672d819b843aed3, node:8a740887145cf8fa758b, and node:91cba0b9bf0b2e024cf3.",
+      "expected_gate_failure": "The non-goal 'do not accept file-bucket components' is enforced by the gate via a responsibility-text pattern check: responsibility strings that enumerate file paths, module filenames, or directory memberships without articulating a semantic function are flagged as file-bucket violations. The gate inspects for path-classifier tokens (arena/, .py suffix enumerations, 'contains') and rejects the model. Additionally, collapsing three components drops six contracts (con:encyclopedia_uses_graph and all graph-consumer contracts), firing the edge-coverage guard.",
+      "planted_negative_id": "neg:file_bucket_component",
+      "target": "all",
+      "why_hidden_from_primary": "The primary decomposer was seeded with the file-bucket non-goal. A secondary decomposer without that seeding defaults to path-classifier semantics. This negative targets the exact divergence point between a responsibility-aware decomposition and a fluent directory-report generator."
+    },
+    {
+      "bad_decomposition_pattern": "Add prov:b4ea60b636b808b4 (a scorer/ protected surface) to comp:arena_loop's provenance_refs, and revise its responsibility to include 'coordinates with scorer outputs to bound divergence across the generated model surface'.",
+      "expected_gate_failure": "concern:protected_surfaces states no component may claim or mutate scorer/, verifier/, or schema/arena.yaml surfaces. The gate validates that no component's provenance_refs include protected-surface provenance IDs from the known protected set (prov:b4ea60b636b808b4, prov:ef892d964ca5a2f4, prov:50455c6c74a79c2d, prov:1411d5ace6bd7135, prov:df42396adab2a9fc, prov:1588b944760fcaf5, prov:75d9656ba69803ce, prov:88f3d7a7f5ebc93e, prov:774548e852b6c408). Inclusion of prov:b4ea60b636b808b4 in arena_loop triggers this boundary enforcement and the gate rejects.",
+      "planted_negative_id": "neg:component_owns_protected_surface",
+      "target": "comp:arena_loop",
+      "why_hidden_from_primary": "The arena_loop has a broad orchestration responsibility that makes a scorer-coordination claim superficially plausible to a decomposer lacking the protected-surface exclusion constraint. This probe tests whether the gate's boundary enforcement operates independently of whether the primary decomposer was aware of the constraint."
+    }
+  ],
+  "probe_builder_output": {
+    "builder_note": "Six held-out probes and six planted negatives were designed independently of the primary claude-opus-4-8 decomposer. Each probe targets a semantic responsibility boundary that a fluent file-bucket report generator would naturally violate: (1) encyclopedia enriches versus constructs the graph, (2) decomposer routes output through the gate rather than emitting directly, (3) CLI must declare both graph and gate contracts, (4) generated surfaces cannot appear in any component's owned_node_ids, (5) all component responsibilities must express semantic function rather than file enumeration, (6) protected-surface provenance IDs cannot appear in any component's provenance_refs. The negative_control_summary describes a runnable, network-free, fully deterministic test that exercises the gate's anti_fabrication guard in isolation.",
+    "discrimination_method": "discrimination_passed=true for each probe reflects that the corresponding planted negative pattern would be caught by an existing deterministic gate rule without requiring model judgment: contract-target resolution checks (for neg:encyclopedia_owns_graph_construction), edge-coverage attribution checks (for neg:decomposer_bypasses_gate and neg:cli_omits_graph_contract), generated-surface allowlist intersection checks (for neg:hypothesis_engine_owns_generated_schema), responsibility-text path-classifier pattern matching (for neg:file_bucket_component), and protected-surface provenance boundary enforcement (for neg:component_owns_protected_surface). golden_control_passed=true reflects that the primary decomposition satisfies each probe's positive rubric as verified against the decomposition JSON.",
+    "independence_assertion": "claude-sonnet-4-6 received only the project packet summary and the primary decomposition JSON artifact as context inputs. The primary decomposer's system prompt, chain-of-thought, and intermediate reasoning were not shared. All probe IDs, planted negative patterns, discrimination logic, and expected gate failures were derived solely from the decomposition artifact, the stated non-goals, the cross_cutting_concerns, and the observable import edge evidence already present in the packet."
+  },
+  "project_id": "build-arena",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "comp:project_model_cli"
+      ],
+      "contract_ids": [
+        "con:cli_uses_gate",
+        "con:cli_uses_graph"
+      ],
+      "description": "Project Model CLI has no observed tests/ import edge in the packet; its entrypoint wiring is unverified by the suite.",
+      "id": "vg:cli_untested",
+      "proposed_closure_check": "Add tests/test_project_model_cli.py that invokes the CLI argument parser and gate path, then assert it passes under 'uv run pytest tests -q'.",
+      "provenance_refs": [
+        "prov:9fa0c9d36cbf4c7d"
+      ],
+      "severity": "high"
+    },
+    {
+      "component_ids": [
+        "comp:ai_decomposer"
+      ],
+      "contract_ids": [],
+      "description": "arena.project_model_llm is reached only via the decomposer (edge:7e02ea209da7795bff6a) and has no direct test import; its model-adapter logic is not independently verified.",
+      "id": "vg:llm_untested_in_isolation",
+      "proposed_closure_check": "Add a unit test that stubs the model call and asserts project_model_llm prompt assembly and JSON parsing deterministically under 'uv run pytest tests -q'.",
+      "provenance_refs": [
+        "prov:f8f69811aa362fa7"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:arena_loop",
+        "comp:hypothesis_engine"
+      ],
+      "contract_ids": [],
+      "description": "surface_counts.generated=4 but only three generated nodes (models.py, schema.json, ddl.sql) appear in the packet; one generated surface is not represented or componentized.",
+      "id": "vg:generated_surface_uncovered",
+      "proposed_closure_check": "Enumerate all generated surfaces in the snapshot and assert each is regenerable (not hand-edited) via a generation-drift check in 'uv run pytest tests -q'.",
+      "provenance_refs": [
+        "prov:910e3c0ee04a35a7",
+        "prov:a9f834c533530b22",
+        "prov:0dc9f20d86b961b4"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Ten protected surfaces (scorer/*, verifier/*, schema/arena.yaml) are intentionally excluded from arena ownership per non-goals and therefore remain unverified by this decomposition.",
+      "id": "vg:protected_surfaces_unowned",
+      "proposed_closure_check": "Confirm via a boundary check that no arena component imports or writes protected surfaces, run inside 'uv run pytest tests -q'.",
+      "provenance_refs": [
+        "prov:b4ea60b636b808b4",
+        "prov:ef892d964ca5a2f4",
+        "prov:50455c6c74a79c2d",
+        "prov:1411d5ace6bd7135",
+        "prov:df42396adab2a9fc",
+        "prov:1588b944760fcaf5",
+        "prov:75d9656ba69803ce",
+        "prov:88f3d7a7f5ebc93e",
+        "prov:774548e852b6c408"
+      ],
+      "severity": "low"
+    },
+    {
+      "component_ids": [
+        "comp:project_snapshot"
+      ],
+      "contract_ids": [
+        "con:gate_uses_snapshot"
+      ],
+      "description": "git_dirty=true with many uncommitted arena/ and docs/ paths; this decomposition was derived from an uncommitted working tree and may not reproduce from a clean checkout.",
+      "id": "vg:dirty_tree_nondeterminism",
+      "proposed_closure_check": "Re-run decomposition and gating against a committed snapshot and assert identical project-model hash under 'uv run pytest tests -q'.",
+      "provenance_refs": [
+        "prov:88ca325d7a0970fe"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

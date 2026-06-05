@@ -1,0 +1,71 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "contract_references",
+      "location": "contracts[con:decomposer_uses_graph]",
+      "message": "Contract con:decomposer_uses_graph is self-referential after component merge.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[con:decomposer_uses_graph]",
+      "message": "Contract con:decomposer_uses_graph supporting edge edge:52d0c53c037ed70393d0 does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[con:gate_uses_graph]",
+      "message": "Contract con:gate_uses_graph references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[con:cli_uses_graph]",
+      "message": "Contract con:cli_uses_graph references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[con:encyclopedia_uses_graph]",
+      "message": "Contract con:encyclopedia_uses_graph references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:aab2ec163c62488ea195]",
+      "message": "Owned import edge edge:aab2ec163c62488ea195 from comp:project_model_cli to comp:project_encyclopedia is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:b5dce22e18014652dcc8]",
+      "message": "Owned import edge edge:b5dce22e18014652dcc8 from comp:project_model_gate to comp:project_encyclopedia is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[concern:anti_fabrication]",
+      "message": "Concern concern:anti_fabrication references unknown component comp:project_graph.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[concern:provenance]",
+      "message": "Concern concern:provenance references unknown component comp:project_graph.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk:graph_tests]",
+      "message": "Check chk:graph_tests references unknown component comp:project_graph.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk:snapshot_gate_tests]",
+      "message": "Check chk:snapshot_gate_tests references unknown component comp:project_graph.",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "builder_model_id": "claude-sonnet-4-6",
+  "builder_prompt_hash": "f2a89b1b8607e9c869c6c169455aead42121428582e0f52172b47b40fd1acf6d",
+  "builder_prompt_path": "sonnet-probe-builder-prompt.md",
+  "builder_transcript_path": "sonnet-probe-builder-output.wrapper.json",
+  "discrimination_passed": true,
+  "golden_artifact_root": "probe-evaluations/probe-decomposer_must_submit_to_gate/golden-artifacts",
+  "golden_control_passed": true,
+  "golden_control_returncode": 0,
+  "hidden_from_primary_decomposer": true,
+  "negative_violation_gates": [
+    "contract_references"
+  ],
+  "planted_negative_artifact_root": "probe-evaluations/probe-decomposer_must_submit_to_gate/planted-negative-artifacts",
+  "planted_negative_gate_passed": false,
+  "planted_negative_id": "neg:decomposer_bypasses_gate",
+  "planted_negative_returncode": 1,
+  "probe_id": "probe:decomposer_must_submit_to_gate"
+}

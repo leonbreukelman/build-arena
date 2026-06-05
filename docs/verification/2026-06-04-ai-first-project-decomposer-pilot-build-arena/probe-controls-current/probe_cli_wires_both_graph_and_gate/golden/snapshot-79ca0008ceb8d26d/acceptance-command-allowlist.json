@@ -1,0 +1,9 @@
+[
+  "acc:pytest_suite",
+  "chk:decomposer_tests",
+  "chk:encyclopedia_tests",
+  "chk:fingerprints_tests",
+  "chk:graph_tests",
+  "chk:loop_phase4_tests",
+  "chk:snapshot_gate_tests"
+]

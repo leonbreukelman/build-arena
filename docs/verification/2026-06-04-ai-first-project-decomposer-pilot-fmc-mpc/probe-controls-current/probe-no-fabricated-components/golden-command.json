@@ -1,0 +1,16 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden --project-id fmc-mcp --goal 'decompose FMC-MCP into responsibility-bearing components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/recorded-model-output.repaired.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not require live FMC credentials for acceptance'",
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983\", \"snapshot_id\": \"snapshot-de4ff76761a76983\", \"violation_count\": 0}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden/snapshot-de4ff76761a76983",
+    "snapshot_id": "snapshot-de4ff76761a76983",
+    "violation_count": 0,
+    "violation_gates": [],
+    "violation_messages": []
+  }
+}

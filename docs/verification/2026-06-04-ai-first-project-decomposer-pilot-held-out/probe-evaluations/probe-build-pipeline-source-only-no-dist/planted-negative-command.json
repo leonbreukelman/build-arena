@@ -1,0 +1,25 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts --project-id leonbreukelman-engineer --goal 'decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative.recorded.json --overwrite --non-goal 'do not treat generated dist output as source ownership' --non-goal 'do not require Cloudflare deployment or public mutation'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "protected_surfaces",
+        "location": "components[comp:build-pipeline]",
+        "message": "Component comp:build-pipeline owns protected/generated surface dist/.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70",
+    "snapshot_id": "snapshot-fb233e714392da70",
+    "violation_count": 1
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/planted-negative-artifacts/snapshot-fb233e714392da70\", \"snapshot_id\": \"snapshot-fb233e714392da70\", \"violation_count\": 1}\n"
+}

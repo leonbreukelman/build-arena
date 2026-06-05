@@ -1,0 +1,40 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative --project-id fmc-mcp --goal 'decompose FMC-MCP into responsibility-bearing components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative.raw.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not require live FMC credentials for acceptance'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e\", \"snapshot_id\": \"snapshot-c6e9e01a1fddf60e\", \"violation_count\": 14}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative/snapshot-c6e9e01a1fddf60e",
+    "snapshot_id": "snapshot-c6e9e01a1fddf60e",
+    "violation_count": 14,
+    "violation_gates": [
+      "inventory_coverage",
+      "inventory_coverage",
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "component_measurability",
+      "component_measurability"
+    ],
+    "violation_messages": [
+      "Component comp-auth references unknown graph node node:fabricated-comp-auth.",
+      "Component comp-transport references unknown graph node node:fabricated-comp-transport.",
+      "Contract ct-client-config references unknown component endpoint.",
+      "Contract ct-resources-client references unknown component endpoint.",
+      "Contract ct-server-client references unknown component endpoint.",
+      "Contract ct-auth-transport references missing edge edge:fabricated-auth-transport.",
+      "Universal concern anti_fabrication does not cover components: comp-auth, comp-transport.",
+      "Universal concern provenance does not cover components: comp-auth, comp-transport."
+    ]
+  }
+}

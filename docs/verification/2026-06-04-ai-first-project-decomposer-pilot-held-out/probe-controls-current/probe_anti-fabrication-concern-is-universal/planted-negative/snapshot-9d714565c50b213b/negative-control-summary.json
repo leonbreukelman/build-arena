@@ -1,0 +1,10 @@
+{
+  "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/strong-negative-current/strong-negative-command.json",
+  "strong_negative_failed_as_expected": true,
+  "strong_negative_mutation": "made contract:router-to-mcp self-referential as if worker and MCP were merged; also made first contract self-referential",
+  "strong_negative_passed": false,
+  "strong_negative_violation_gates": [
+    "contract_references",
+    "edge_coverage"
+  ]
+}

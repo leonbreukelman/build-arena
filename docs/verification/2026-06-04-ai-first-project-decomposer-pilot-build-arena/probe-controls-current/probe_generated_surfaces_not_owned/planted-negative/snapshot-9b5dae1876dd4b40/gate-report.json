@@ -1,0 +1,11 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "protected_surfaces",
+      "location": "components[comp:hypothesis_engine]",
+      "message": "Component comp:hypothesis_engine owns protected/generated surface arena/generated/.",
+      "severity": "error"
+    }
+  ]
+}

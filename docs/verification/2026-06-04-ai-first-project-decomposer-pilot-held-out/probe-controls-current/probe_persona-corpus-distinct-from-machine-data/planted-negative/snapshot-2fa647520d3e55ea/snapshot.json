@@ -1,0 +1,775 @@
+{
+  "acceptance_command_allowlist": [
+    "acmd:build-only",
+    "acmd:full-build-and-link-check",
+    "acmd:link-check",
+    "check:full-acceptance"
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "check:full-acceptance",
+        "check:build-only"
+      ],
+      "contract_ids": [],
+      "id": "comp:build-pipeline",
+      "name": "Static Site Build Pipeline",
+      "owned_node_ids": [
+        "node:d8fc3a88afab17188e7b"
+      ],
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db"
+      ],
+      "responsibility": "Render templates and source data into the deployable site via scripts/build.py, failing closed when Python/Jinja dependencies are unavailable.",
+      "verification_gap_ids": [
+        "gap:build-data-edge-missing",
+        "gap:templates-not-componentized"
+      ]
+    },
+    {
+      "check_ids": [
+        "check:full-acceptance",
+        "check:link-check"
+      ],
+      "contract_ids": [],
+      "id": "comp:link-checker",
+      "name": "Public Link Integrity Checker",
+      "owned_node_ids": [
+        "node:d1ab9b8e0eb01b071904"
+      ],
+      "provenance_refs": [
+        "prov:cc1fa9e22afc08c6"
+      ],
+      "responsibility": "Validate that public links and assets resolve via scripts/check-public-links.py before/after build.",
+      "verification_gap_ids": [
+        "gap:linkcheck-target-unobserved"
+      ]
+    },
+    {
+      "check_ids": [
+        "check:full-acceptance"
+      ],
+      "contract_ids": [
+        "contract:router-to-mcp"
+      ],
+      "id": "comp:worker-edge-router",
+      "name": "Cloudflare Worker Edge Router",
+      "owned_node_ids": [
+        "node:32f3a0d3845cf98fb8cb",
+        "node:javascript_import:worker.mcp.server"
+      ],
+      "provenance_refs": [
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8"
+      ],
+      "responsibility": "Serve as the deployed worker entrypoint (worker/index.js) routing inbound requests and delegating agent traffic to the MCP server module.",
+      "verification_gap_ids": [
+        "gap:mcp-protocol-unspecified"
+      ]
+    },
+    {
+      "check_ids": [
+        "check:full-acceptance"
+      ],
+      "contract_ids": [
+        "contract:router-to-mcp"
+      ],
+      "id": "comp:mcp-server",
+      "name": "MCP Server Module",
+      "owned_node_ids": [
+        "node:1e8ba7fd1db36d8f49db"
+      ],
+      "provenance_refs": [
+        "prov:e8c798459ce07e15"
+      ],
+      "responsibility": "Implement the Model Context Protocol surface (worker/mcp/server.js) that exposes agent-facing tools/resources.",
+      "verification_gap_ids": [
+        "gap:mcp-protocol-unspecified"
+      ]
+    },
+    {
+      "check_ids": [
+        "check:full-acceptance",
+        "check:link-check",
+        "check:build-only"
+      ],
+      "contract_ids": [],
+      "id": "comp:public-agent-data",
+      "name": "Public Agent Data & Discovery Metadata",
+      "owned_node_ids": [
+        "node:b3b1f19ad2ed91bec458",
+        "node:b8a0684279f7b4edc1bc",
+        "node:270b52766ba2097c3bf8",
+        "node:087085bf23e3cc4628f2",
+        "node:3497d88db26b2742c66a",
+        "node:5ea405faea230cdf5498",
+        "node:7ad8da6a627ab8d27e9e",
+        "node:9d9d37a18c7ab7537c0f",
+        "node:c627dcac9798554af877",
+        "node:ca0aad13b3b497dd9e40",
+        "node:cd8a921454b74ef09e06",
+        "node:f0fd663527865f98c64e"
+      ],
+      "provenance_refs": [
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "responsibility": "Contains api/v1/profile.json, llms.txt, and prompt/represent_me.md as one agent-facing data bucket.",
+      "verification_gap_ids": [
+        "gap:build-data-edge-missing",
+        "gap:linkcheck-target-unobserved",
+        "gap:unowned-public-static-surfaces"
+      ]
+    },
+    {
+      "check_ids": [
+        "check:full-acceptance"
+      ],
+      "contract_ids": [],
+      "id": "comp:project-docs",
+      "name": "Project Documentation",
+      "owned_node_ids": [
+        "node:69d6bc2e023965d76a75",
+        "node:1c5a6f0459fa5b83d040",
+        "node:242462366792e6c85ea0",
+        "node:3b25680b492a6345baec",
+        "node:4f7e53ec7b6ab7383a7c",
+        "node:a5b95d7d7ada63930bef",
+        "node:c1299be91730fc58c1e3",
+        "node:d038e1fd31641ace3226",
+        "node:d701b635b99442ff8d5a",
+        "node:de09c473f13049315d86",
+        "node:f918107b9b1786323a79",
+        "node:fcbe6669d86356de0639"
+      ],
+      "provenance_refs": [
+        "prov:4417f3bf0932d8ac",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "responsibility": "Onboard humans and AI agents with install, development, build, preview, deployment, and structure guidance (README.md).",
+      "verification_gap_ids": [
+        "gap:templates-not-componentized"
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp:worker-edge-router",
+      "id": "contract:router-to-mcp",
+      "name": "Worker edge router invokes MCP server module",
+      "near_neighbor_alternative_ids": [
+        "nn:mcp-standalone"
+      ],
+      "provenance_refs": [
+        "prov:47b71b23b6c02da8"
+      ],
+      "supporting_edge_ids": [
+        "edge:ee74e56eeab2c21d6122"
+      ],
+      "to_component_id": "comp:mcp-server"
+    }
+  ],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker",
+        "comp:worker-edge-router",
+        "comp:mcp-server",
+        "comp:public-agent-data",
+        "comp:persona-corpus",
+        "comp:project-docs"
+      ],
+      "contract_ids": [
+        "contract:router-to-mcp"
+      ],
+      "description": "Every component, contract, and check must trace to selected nodes and prov identifiers in the packet; no files, edges, or behaviors are invented beyond the supplied graph.",
+      "id": "concern:anti-fabrication",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:5dd0cc494cd85fbe",
+        "prov:756f566ef137b772",
+        "prov:cc1fa9e22afc08c6",
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8",
+        "prov:e8c798459ce07e15",
+        "prov:77b106b079f49cac",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece",
+        "prov:4417f3bf0932d8ac",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "The build must be reproducible; scripts/build.py imports datetime, which can inject nondeterministic timestamps into rendered output and must be pinned or excluded from acceptance comparisons.",
+      "id": "concern:determinism",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:667b089a4eb82688",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "triggered_by": "scripts/build.py imports datetime via edge:9b853eb4121c2243cd48, risking nondeterministic build output"
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker",
+        "comp:worker-edge-router",
+        "comp:mcp-server",
+        "comp:public-agent-data",
+        "comp:persona-corpus",
+        "comp:project-docs"
+      ],
+      "contract_ids": [
+        "contract:router-to-mcp"
+      ],
+      "description": "Each emitted component and contract carries prov references back to its source node(s) so the decomposition is auditable against the repository.",
+      "id": "concern:provenance",
+      "provenance_refs": [
+        "prov:4417f3bf0932d8ac",
+        "prov:cc1fa9e22afc08c6",
+        "prov:8c73e6d6bb2288db",
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8",
+        "prov:e8c798459ce07e15",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac",
+        "prov:756f566ef137b772",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker"
+      ],
+      "contract_ids": [],
+      "description": "The acceptance command must not invoke any live paid API; npm run build performs local rendering and npm run check:links performs unauthenticated public HTTP fetches only.",
+      "id": "concern:no-live-paid-api-acceptance",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:cc1fa9e22afc08c6"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "generated_artifact_integrity",
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Generated surfaces are detected from git/filesystem truth and excluded from source component ownership.",
+      "id": "concern:generated-artifact-integrity",
+      "provenance_refs": [
+        "prov:17390211c2ade4e3"
+      ],
+      "triggered_by": [
+        "generated surface detected in ProjectGraph"
+      ]
+    }
+  ],
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "graph_hash": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:worker-mcp-distinct-endpoints",
+      "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+      "provenance_refs": [
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8",
+        "prov:e8c798459ce07e15"
+      ],
+      "target_component_ids": [
+        "comp:worker-edge-router",
+        "comp:mcp-server"
+      ],
+      "target_contract_ids": [
+        "contract:router-to-mcp"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:persona-corpus-distinct-from-machine-data",
+      "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+      "provenance_refs": [
+        "prov:756f566ef137b772",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece"
+      ],
+      "target_component_ids": [
+        "comp:persona-corpus",
+        "comp:public-agent-data"
+      ],
+      "target_contract_ids": []
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:build-pipeline-source-only-no-dist",
+      "planted_negative_id": "neg:dist-output-as-owned-source",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:73f52603d0cdfc2b"
+      ],
+      "target_component_ids": [
+        "comp:build-pipeline"
+      ],
+      "target_contract_ids": []
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:anti-fabrication-concern-is-universal",
+      "planted_negative_id": "neg:drop-anti-fabrication-concern",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:5dd0cc494cd85fbe",
+        "prov:756f566ef137b772",
+        "prov:4417f3bf0932d8ac",
+        "prov:cc1fa9e22afc08c6",
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8",
+        "prov:e8c798459ce07e15",
+        "prov:77b106b079f49cac",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "target_component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker",
+        "comp:worker-edge-router",
+        "comp:mcp-server",
+        "comp:public-agent-data",
+        "comp:persona-corpus",
+        "comp:project-docs"
+      ],
+      "target_contract_ids": [
+        "contract:router-to-mcp"
+      ]
+    }
+  ],
+  "input_hashes": {
+    "graph": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357"
+  },
+  "model_output_hashes": {
+    "decomposer": "3a42fc1c57bc63dd1cddbec3fca4fab3d0f25d6d67c25427ade1bb5ec1e10d25"
+  },
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Own the generated dist/ output as the primary build artifact component.",
+      "id": "nn:build-vs-dist",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db"
+      ],
+      "target_id": "comp:build-pipeline",
+      "why_not_primary": "Non-goal forbids treating generated dist output as source ownership; scripts/build.py is the source-of-truth build surface. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "alternative": "Run the MCP server as a standalone Node process instead of a Cloudflare Worker module.",
+      "id": "nn:mcp-standalone",
+      "provenance_refs": [
+        "prov:e8c798459ce07e15",
+        "prov:47b71b23b6c02da8"
+      ],
+      "target_id": "comp:mcp-server",
+      "why_not_primary": "Source shows worker/mcp/server.js imported by the Cloudflare worker entry (worker/index.js) and deployment targets Cloudflare Pages; the packet does not require an alternate runtime. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "alternative": "Generate api/v1/profile.json and llms.txt at build time rather than committing them as source.",
+      "id": "nn:data-generated-at-build",
+      "provenance_refs": [
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "target_id": "comp:public-agent-data",
+      "why_not_primary": "The packet selects profile.json (config) and llms.txt as committed source files with their own prov, and no edge shows build.py emitting them. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "alternative": "Fold the represent_me persona prompt into the public JSON data component.",
+      "id": "nn:persona-in-data",
+      "provenance_refs": [
+        "prov:756f566ef137b772"
+      ],
+      "target_id": "comp:persona-corpus",
+      "why_not_primary": "prompt/represent_me.md is a distinct prose corpus (file plus nine narrative sections) with separate prov; it is authored representation guidance, not machine-readable API data. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    }
+  ],
+  "non_goals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "check:full-acceptance",
+      "command": "npm run build && npm run check:links",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker",
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "Canonical project verification: build the static site and validate that all public links resolve.",
+      "id": "check:full-acceptance",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:cc1fa9e22afc08c6",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "acmd:build-only",
+      "command": "npm run build",
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:persona-corpus",
+        "comp:public-agent-data",
+        "comp:project-docs"
+      ],
+      "contract_ids": [],
+      "description": "Build the site only, exercising template/data/persona rendering; fails closed if Python/Jinja dependencies are unavailable.",
+      "id": "check:build-only",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:73f52603d0cdfc2b",
+        "prov:756f566ef137b772",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac",
+        "prov:4417f3bf0932d8ac",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:11a91e2a1f50280f"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": null,
+      "command": "npm run check:links",
+      "component_ids": [
+        "comp:link-checker",
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "Validate public links and assets resolve over the network without paid API access.",
+      "id": "check:link-check",
+      "provenance_refs": [
+        "prov:cc1fa9e22afc08c6",
+        "prov:6d95e66efa505ecc",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "requires_network": true,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": false
+    }
+  ],
+  "primary_model_id": "claude-opus-4-8-pattern-negative",
+  "project_id": "leonbreukelman-engineer",
+  "project_root": "/home/leonb/projects/leonbreukelman-engineer",
+  "prompt_hashes": {
+    "decomposer": "8e1ca8b2298c729ad6b78547b23763b4ab449a12852825a8d71a81e84257846e"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-2fa647520d3e55ea",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:public-agent-data",
+        "comp:persona-corpus"
+      ],
+      "contract_ids": [],
+      "description": "build.py's consumption of api/v1/profile.json, llms.txt, and the persona corpus is not represented by any graph edge; only Python stdlib/jinja2 import edges were captured, so the build-consumes-data and build-renders-persona contracts are inferred rather than graph-observed.",
+      "id": "gap:build-data-edge-missing",
+      "proposed_closure_check": "Assert that rendered build output embeds fields from api/v1/profile.json and headings from prompt/represent_me.md after npm run build.",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:5dd0cc494cd85fbe",
+        "prov:756f566ef137b772",
+        "prov:77b106b079f49cac",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:project-docs"
+      ],
+      "contract_ids": [],
+      "description": "build.py imports jinja2 and README#Structure documents a templates surface, but no template node was selected in the packet, leaving the template surface uncomponentized.",
+      "id": "gap:templates-not-componentized",
+      "proposed_closure_check": "Re-run graph extraction to include template (e.g. *.j2/*.html) nodes and bind them to the build pipeline component, then verify each template is rendered by npm run build.",
+      "provenance_refs": [
+        "prov:b282fbda2c978640",
+        "prov:e2560a67a5e0ba01",
+        "prov:8c73e6d6bb2288db",
+        "prov:4417f3bf0932d8ac",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:link-checker",
+        "comp:public-agent-data",
+        "comp:project-docs"
+      ],
+      "contract_ids": [],
+      "description": "scripts/check-public-links.py uses urllib.request to fetch public URLs, but the set of checked targets is not represented as graph nodes/edges, so link-surface coverage cannot be verified from the packet.",
+      "id": "gap:linkcheck-target-unobserved",
+      "proposed_closure_check": "Capture the link inventory emitted by npm run check:links and assert each public asset (api/v1/profile.json, llms.txt) is included in the checked set.",
+      "provenance_refs": [
+        "prov:cc1fa9e22afc08c6",
+        "prov:6d95e66efa505ecc",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac",
+        "prov:4417f3bf0932d8ac",
+        "prov:fa04b24fd751aac4",
+        "prov:cd2a7925a71a196b",
+        "prov:4129a4074bc34843",
+        "prov:cb36c3c07f1b6ffd",
+        "prov:7894438ea3df3482",
+        "prov:4e30e269c5a237db",
+        "prov:e2560a67a5e0ba01",
+        "prov:7cf3013274f52d35",
+        "prov:febd8e67289848a5",
+        "prov:73f52603d0cdfc2b",
+        "prov:11a91e2a1f50280f"
+      ],
+      "severity": "low"
+    },
+    {
+      "component_ids": [
+        "comp:mcp-server",
+        "comp:worker-edge-router"
+      ],
+      "contract_ids": [
+        "contract:router-to-mcp"
+      ],
+      "description": "The MCP request/response contract served by worker/mcp/server.js is not captured by any node/edge beyond the module import, so the protocol surface is unverified.",
+      "id": "gap:mcp-protocol-unspecified",
+      "proposed_closure_check": "Add a worker integration test that issues a representative MCP request through worker/index.js and asserts a schema-valid response from the server module.",
+      "provenance_refs": [
+        "prov:e8c798459ce07e15",
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "Model proposed `contract:build-consumes-data` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap:unsupported-contract:contract-build-consumes-data",
+      "proposed_closure_check": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:build-pipeline",
+        "comp:persona-corpus"
+      ],
+      "contract_ids": [],
+      "description": "Model proposed `contract:build-renders-persona` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap:unsupported-contract:contract-build-renders-persona",
+      "proposed_closure_check": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:756f566ef137b772",
+        "prov:505ad7266a711b66",
+        "prov:ecf942bf7ef015fa",
+        "prov:440d643908db39b6",
+        "prov:ce979449395c4cd6",
+        "prov:3644e055f1423819",
+        "prov:d068bad5b6984348",
+        "prov:a92ae5c99a4d4dae",
+        "prov:3962163d63785712",
+        "prov:0cdbbafa93443ece"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:link-checker",
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "Model proposed `contract:linkcheck-validates-data` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap:unsupported-contract:contract-linkcheck-validates-data",
+      "proposed_closure_check": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "provenance_refs": [
+        "prov:cc1fa9e22afc08c6",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp:public-agent-data"
+      ],
+      "contract_ids": [],
+      "description": "Public JSON/well-known static surfaces are present but not yet componentized: api/v1/case_studies.json, api/v1/projects.json, well-known/agent-card.json, well-known/ai.json, well-known/security.txt. They are held as explicit verification gaps rather than silently passing as covered by the public-agent-data component.",
+      "id": "gap:unowned-public-static-surfaces",
+      "proposed_closure_check": "Add deterministic static-surface grouping and link-check target mapping for api/v1/* and well-known/* source files.",
+      "provenance_refs": [
+        "prov:c6056aa2fba92b85",
+        "prov:813acff12ec619c1",
+        "prov:7a63594e8000dd3e",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

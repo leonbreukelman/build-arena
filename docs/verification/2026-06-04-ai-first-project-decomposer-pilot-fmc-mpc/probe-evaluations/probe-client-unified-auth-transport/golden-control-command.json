@@ -1,0 +1,18 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts --project-id fmc-mcp --goal 'decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-control.recorded.json --overwrite --non-goal 'do not require live FMC credentials or network calls for acceptance' --non-goal 'do not accept file-bucket components'",
+  "gate_report": {
+    "passed": true,
+    "violations": []
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03",
+    "snapshot_id": "snapshot-4757158616d87e03",
+    "violation_count": 0
+  },
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-client-unified-auth-transport/golden-artifacts/snapshot-4757158616d87e03\", \"snapshot_id\": \"snapshot-4757158616d87e03\", \"violation_count\": 0}\n"
+}

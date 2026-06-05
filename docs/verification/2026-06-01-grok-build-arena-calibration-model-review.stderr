@@ -1,0 +1,2 @@
+[2m2026-06-01T03:44:06.105938Z[0m [31mERROR[0m worker quit with fatal: Transport channel closed, when Auth(AuthorizationRequired)
+[2m2026-06-01T03:44:06.189725Z[0m [31mERROR[0m worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: "Bearer resource_metadata=\"https://huggingface.co/.well-known/oauth-protected-resource/mcp?login\"" })

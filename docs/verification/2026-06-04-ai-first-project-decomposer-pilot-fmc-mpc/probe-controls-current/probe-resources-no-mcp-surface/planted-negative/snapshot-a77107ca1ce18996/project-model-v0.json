@@ -1,0 +1,383 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-config",
+      "kind": "source",
+      "name": "Configuration & Settings",
+      "observableCheckIds": [
+        "check-comp-config"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/config.py"
+      ],
+      "responsibilities": [
+        "Load and validate runtime configuration (FMC host, credentials, timeouts) as typed pydantic settings consumed by client and server."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-client",
+      "kind": "source",
+      "name": "FMC HTTP Client (auth, transport, token cache)",
+      "observableCheckIds": [
+        "check-comp-client"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/client.py"
+      ],
+      "responsibilities": [
+        "Own async HTTP transport to the FMC REST API, base64 basic-auth handshake, and time-based auth-token caching/refresh."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-tools",
+      "kind": "source",
+      "name": "MCP Tool Surface",
+      "observableCheckIds": [
+        "check-comp-tools"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/tools.py",
+        "src/fmc_mcp/resources.py"
+      ],
+      "responsibilities": [
+        "Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-server",
+      "kind": "source",
+      "name": "MCP Server Runtime & Entrypoint",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/__main__.py"
+      ],
+      "responsibilities": [
+        "Construct the FastMCP server, wire config and client into its lifecycle, and expose the process entrypoint that launches the server."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Server consumes configuration",
+      "fromComponent": "comp-server",
+      "id": "ct-server-config",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-config"
+    },
+    {
+      "description": "Client consumes configuration",
+      "fromComponent": "comp-client",
+      "id": "ct-client-config",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-client"
+      ],
+      "toComponent": "comp-config"
+    },
+    {
+      "description": "Resources call FMC client",
+      "fromComponent": "comp-config",
+      "id": "ct-resources-client",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-config"
+      ],
+      "toComponent": "comp-client"
+    },
+    {
+      "description": "Server uses FMC client",
+      "fromComponent": "comp-server",
+      "id": "ct-server-client",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-client"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "comp-config",
+        "comp-client",
+        "comp-tools",
+        "comp-server"
+      ]
+    }
+  ],
+  "goal": "decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon",
+  "heldOutProbes": [
+    {
+      "componentId": "comp-config",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-resources-no-mcp-surface",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg-tools-resources-merge."
+    },
+    {
+      "componentId": "comp-client",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-client-unified-auth-transport",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg-client-split."
+    },
+    {
+      "componentId": "comp-config",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-no-fabricated-components",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg-fabricated-audit-log."
+    }
+  ],
+  "id": "fmc-mcp",
+  "invariants": [
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-tools",
+        "comp-server"
+      ],
+      "description": "All component, contract, and gap claims must trace to selected graph nodes/edges and their provenance; no responsibilities, tools, or endpoints may be invented beyond packet evidence.",
+      "id": "cc-anti-fabrication",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-tools",
+        "check-comp-server"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-client",
+        "comp-server",
+        "comp-tools",
+        "comp-config"
+      ],
+      "description": "Acceptance must be deterministic; the client's time-based token caching and any wall-clock or network ordering must be controlled/stubbed so the pytest suite yields stable results.",
+      "id": "cc-determinism",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-tools",
+        "check-comp-server"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-tools",
+        "comp-server"
+      ],
+      "description": "Every owned node, supporting edge, and check is anchored to packet provenance ids so the decomposition is auditable back to the source graph.",
+      "id": "cc-provenance",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-tools",
+        "check-comp-server"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-client",
+        "comp-server"
+      ],
+      "description": "Acceptance must not call the live FMC controller or require credentials; the httpx-based client and FastMCP runtime must be exercised offline with stubs, per project non-goals.",
+      "id": "cc-no-live-paid-api-acceptance",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-tools",
+        "check-comp-server"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Split the client into a separate authentication/token-cache component and a thin HTTP transport component.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-client-split",
+      "whyNotPrimary": "Auth (base64), token caching (time), and transport (httpx) are co-located in the single client module with no edge evidence of a distinct auth surface; splitting would create sub-file fragments rather than independent responsibility units. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    },
+    {
+      "description": "Merge tools and resources into a single 'FMC operations' component.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-tools-resources-merge",
+      "whyNotPrimary": "Responsibilities differ: resources retrieve and serialize FMC data via the client, while tools define the MCP tool surface and own input validation (ipaddress); the tools->resources import edge confirms a layered dependency, not a single unit. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    },
+    {
+      "description": "Treat fmc_mcp.__main__ as its own standalone entrypoint component separate from the server runtime.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-server-entrypoint",
+      "whyNotPrimary": "__main__ only imports and delegates to fmc_mcp.server (single import edge) and carries no independent responsibility; isolating it would produce a rejected file-bucket component. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    }
+  ],
+  "nonGoals": [
+    "do not require live FMC credentials or network calls for acceptance",
+    "do not accept file-bucket components"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "comp-config",
+      "description": "Observable local check for Configuration & Settings.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-config",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "comp-client",
+      "description": "Observable local check for FMC HTTP Client (auth, transport, token cache).",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-client",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "comp-tools",
+      "description": "Observable local check for MCP Tool Surface.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-tools",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "comp-server",
+      "description": "Observable local check for MCP Server Runtime & Entrypoint.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-server",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/fmc-mcp",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "comp-server",
+        "comp-tools"
+      ],
+      "description": "No selected edge connects fmc_mcp.server to fmc_mcp.tools, so registration/exposure of MCP tools through the server runtime is not observable from the graph; the tool surface may be wired via decorators or runtime registration not captured by the packet.",
+      "id": "gap-tool-wiring",
+      "proposedClosureCheck": "Add an offline check that imports fmc_mcp.server and asserts the expected FMC tools are registered on the FastMCP instance.",
+      "severity": "high"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-client"
+      ],
+      "description": "Client FMC HTTP/auth behavior (httpx transport, base64 basic auth, time-based token caching) cannot be exercised against a live controller under the no-network/no-credentials acceptance constraint, so the real FMC request contract is verified only via mocks/offline.",
+      "id": "gap-client-network",
+      "proposedClosureCheck": "Add offline contract tests that stub the httpx transport and assert request shaping, auth header construction, and token-cache expiry logic.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-server"
+      ],
+      "description": "The fmc_mcp.__main__ -> fmc_mcp.server startup path (process entrypoint) is not shown to be covered by tests in the packet.",
+      "id": "gap-entrypoint",
+      "proposedClosureCheck": "Add a smoke test invoking the module entrypoint with a stubbed server.run to assert it starts without network.",
+      "severity": "low"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Documentation/static surfaces present in the graph (markdown_section x45 with 45 documents edges) and config surfaces (config x3 with 3 configures edges) were not selected and are not componentized, so their accuracy and coverage remain undecomposed.",
+      "id": "gap-docs-static",
+      "proposedClosureCheck": "Select documentation and config nodes in a follow-up packet and either map them to owning components or emit explicit doc-accuracy checks.",
+      "severity": "low"
+    }
+  ]
+}

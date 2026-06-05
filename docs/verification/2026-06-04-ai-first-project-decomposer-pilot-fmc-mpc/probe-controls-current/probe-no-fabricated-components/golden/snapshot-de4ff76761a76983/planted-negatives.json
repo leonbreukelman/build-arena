@@ -1,0 +1,23 @@
+[
+  {
+    "bad_decomposition_pattern": "Split comp-client into two components: comp-auth (base64 credential encoding and time-based token caching, owning prov:2b0e52ad10883e7c and prov:4d9c0f2751d94893) and comp-transport (httpx async transport, owning prov:bcfd8e782d7fe500 and prov:aefc03705172d5d2). Replace ct-client-config, ct-resources-client, and ct-server-client with new contracts flowing through comp-auth and then comp-transport.",
+    "expected_gate_failure": "Non-goal 'do not accept file-bucket components' is violated because both comp-auth and comp-transport are sub-file fragments of a single graph node (node:4042451215c279f0dca7) with no packet edge separating auth/token logic from httpx transport; neither new component has an independent owned_node_id traceable to a distinct graph node. cc-anti-fabrication is additionally violated because the split requires fabricating a new edge between comp-auth and comp-transport that does not appear in the packet's supporting_edge_ids.",
+    "planted_negative_id": "neg-client-split",
+    "target": "comp-client",
+    "why_hidden_from_primary": "The primary decomposer explicitly documented this as near_neighbor_alternative nn-client-split and gave its rejection rationale; probing the same pattern tests whether the deterministic gate independently rejects it rather than relying on the decomposer's documented awareness."
+  },
+  {
+    "bad_decomposition_pattern": "Merge comp-tools and comp-resources into a single component comp-fmc-operations with responsibility 'Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation.' Co-own node:84a7c7e4c189e28cb1bb and node:a32d71cbbae4bcadc234. Eliminate the ct-tools-resources contract and its supporting edge edge:68860f44ca677cc65828.",
+    "expected_gate_failure": "chk-tools-validation references ct-tools-resources in its contract_ids list; after the contract is eliminated the check becomes unanchored to any contract, leaving it without a valid acceptance path and causing the gate to report an unverifiable contract reference. Additionally cc-provenance is violated because edge:68860f44ca677cc65828 is listed as a supporting_edge_ids entry for the now-eliminated ct-tools-resources contract but has no surviving contract to attach to, breaking the edge-to-contract audit trail.",
+    "planted_negative_id": "neg-tools-resources-merge",
+    "target": "comp-tools",
+    "why_hidden_from_primary": "The primary decomposer rejected nn-tools-resources-merge and documented the layered-dependency rationale; the probe exercises the chk-tools-validation orphaning pathway, which is a gate-wiring test rather than a decomposer-judgment test."
+  },
+  {
+    "bad_decomposition_pattern": "Add a new component comp-audit-log with responsibility 'Capture and persist FMC REST API audit events for compliance review', owned_node_ids: ['node:fabricated-audit-001'], and a new contract ct-audit-client from comp-client to comp-audit-log with supporting_edge_ids: ['edge:fabricated-audit-edge-001']. No graph node or edge with these identifiers exists in the packet.",
+    "expected_gate_failure": "cc-anti-fabrication is violated immediately: node:fabricated-audit-001 and edge:fabricated-audit-edge-001 do not appear in any packet provenance and are absent from all selected node/edge lists. The gate must reject any component whose owned_node_ids or contracts cannot be anchored to packet-attested graph elements. probe-no-fabricated-components fails because the fabricated node ID is not present in the accepted packet graph.",
+    "planted_negative_id": "neg-fabricated-audit-log",
+    "target": "comp-config",
+    "why_hidden_from_primary": "The primary decomposer cannot generate this negative autonomously \u2014 it requires an independent agent to introduce a node ID that was never emitted by the packet graph, then verify the anti-fabrication gate catches it without relying on the decomposer's self-consistency."
+  }
+]
