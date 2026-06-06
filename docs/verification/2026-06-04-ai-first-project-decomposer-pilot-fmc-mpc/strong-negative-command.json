@@ -1,0 +1,25 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts --project-id fmc-mcp --goal 'decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-reversed-contract.recorded.json --overwrite --non-goal 'do not require live FMC credentials or network calls for acceptance' --non-goal 'do not accept file-bucket components'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "contract_references",
+        "location": "contracts[ct-server-config]",
+        "message": "Contract ct-server-config supporting edge edge:1dbd45e8683cedc3c87a does not connect the declared from/to components.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd",
+    "snapshot_id": "snapshot-553cdbff672962cd",
+    "violation_count": 1
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-artifacts/snapshot-553cdbff672962cd\", \"snapshot_id\": \"snapshot-553cdbff672962cd\", \"violation_count\": 1}\n"
+}

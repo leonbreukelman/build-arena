@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Missing universal concerns: anti_fabrication.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Universal concern anti_fabrication does not cover components: comp:build-pipeline, comp:link-checker, comp:mcp-server, comp:persona-corpus, comp:project-docs, comp:public-agent-data, comp:worker-edge-router.",
+      "severity": "error"
+    }
+  ]
+}

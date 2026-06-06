@@ -1,0 +1,48 @@
+{
+  "artifact_hashes": {
+    "gate_report": "e6021cf0fce166e615ef97adb71243d611b668650046559796cef03a5729d69e",
+    "graph_file": "a663fafbca6fd8520cdced61b40b1e4ae7aebf6b77ed49bdb331e1ab2bb94a25",
+    "project_model_v0": "27ecd3460dfbf4a4b946517f3ba531fa60f2f8b99b024d58f13e021e4af758a5",
+    "snapshot": "3da4c24c9e15d8ac52b2fdee2c54210bb4b6a6512a67cf151919831d0af68e5d"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "00a632ac950a8c411f8d8ac90197e28191f58619"
+  },
+  "encyclopedia_manifest_hash": "01f3060f688369be9f3220d3488c91f094f012afadb3d54c0b21feb39356d8b1",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "e6021cf0fce166e615ef97adb71243d611b668650046559796cef03a5729d69e",
+  "gate_report_path": "gate-report.json",
+  "goal": "decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon",
+  "graph_file_hash": "a663fafbca6fd8520cdced61b40b1e4ae7aebf6b77ed49bdb331e1ab2bb94a25",
+  "graph_hash": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3"
+  },
+  "model_ids": {
+    "decomposer": "claude-opus-4-8-pattern-negative",
+    "probe_builder": "claude-sonnet-4-6",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not require live FMC credentials or network calls for acceptance",
+    "do not accept file-bucket components"
+  ],
+  "output_hashes": {
+    "decomposer": "b9e6adcda6be7afa36a15a5ccd37d0a2366cba538abe10023bbe2ea29779f55f"
+  },
+  "project_id": "fmc-mcp",
+  "project_model_v0_hash": "27ecd3460dfbf4a4b946517f3ba531fa60f2f8b99b024d58f13e021e4af758a5",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "092867bad00bfb28cc51eff73c828ed94d0e27b4f9d74eca7fbcc83d05e42963"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "3da4c24c9e15d8ac52b2fdee2c54210bb4b6a6512a67cf151919831d0af68e5d",
+  "snapshot_id": "snapshot-3bbe49934c034796",
+  "snapshot_path": "snapshot.json"
+}

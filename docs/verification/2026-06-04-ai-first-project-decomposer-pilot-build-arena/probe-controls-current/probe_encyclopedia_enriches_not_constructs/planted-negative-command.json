@@ -1,0 +1,36 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative.raw.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590\", \"snapshot_id\": \"snapshot-8fa06d53f521f590\", \"violation_count\": 10}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative/snapshot-8fa06d53f521f590",
+    "snapshot_id": "snapshot-8fa06d53f521f590",
+    "violation_count": 10,
+    "violation_gates": [
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "edge_coverage",
+      "edge_coverage",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "component_measurability",
+      "component_measurability"
+    ],
+    "violation_messages": [
+      "Contract con:decomposer_uses_graph references unknown component endpoint.",
+      "Contract con:gate_uses_graph references unknown component endpoint.",
+      "Contract con:cli_uses_graph references unknown component endpoint.",
+      "Contract con:encyclopedia_uses_graph references unknown component endpoint.",
+      "Owned import edge edge:aab2ec163c62488ea195 from comp:project_model_cli to comp:project_encyclopedia is not covered by any contract between those components.",
+      "Owned import edge edge:b5dce22e18014652dcc8 from comp:project_model_gate to comp:project_encyclopedia is not covered by any contract between those components.",
+      "Concern concern:anti_fabrication references unknown component comp:project_graph.",
+      "Concern concern:provenance references unknown component comp:project_graph."
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+[
+  {
+    "id": "H1",
+    "hypothesis": "The decomposer implementation never implemented direct Grok/xAI API; pilot evidence was generated outside the decomposer live path.",
+    "status": "supported_pre_repair_closed_by_live_adapter_fix",
+    "evidence": [
+      "At RCA time, arena/project_model_llm.py had fixture/recorded/noop helpers only; no xAI/OpenAI/Hermes client seam.",
+      "At RCA time, arena/project_decomposer_ai.py live branch raised RuntimeError before model invocation.",
+      "Accepted pilot reruns use --llm-mode recorded according to prior review artifact."
+    ],
+    "post_repair_status": "LiveProjectModelLLM now provides a direct xAI/OpenAI-compatible client, and arena/project_decomposer_ai.py now routes llm_mode=\"live\" to adapter.generate(prompt)."
+  },
+  {
+    "id": "H2",
+    "hypothesis": "Direct Grok/xAI API still works, but Build Arena CLI is not wired to it.",
+    "status": "supported_pre_repair_closed_by_live_adapter_fix",
+    "evidence": [
+      "Direct xAI /models returned HTTP 200.",
+      "Tiny direct chat returned parseable JSON.",
+      "Before repair, Build Arena --llm-mode live raised unimplemented RuntimeError."
+    ],
+    "post_repair_status": "After repair, a tiny live CLI smoke reached the provider and emitted a snapshot/gate report; it exited non-zero only because the model output gate failed closed."
+  },
+  {
+    "id": "H3",
+    "hypothesis": "Hermes xAI provider works, but Build Arena used an unrelated path because no adapter seam was implemented.",
+    "status": "supported_pre_repair_adapter_gap",
+    "evidence": [
+      "hermes auth status xai returned logged in; redacted config/env show XAI_API_KEY present.",
+      "Hermes --provider xai one-shot returned parseable JSON.",
+      "Build Arena source had no Hermes provider adapter import/use; this remains a deliberate non-primary path because direct xAI API is the implemented adapter."
+    ],
+    "post_repair_status": "The implemented live path uses direct OpenAI-compatible xAI API, not Hermes provider subprocesses. Hermes xAI remains secondary smoke evidence only."
+  },
+  {
+    "id": "H4",
+    "hypothesis": "Grok Build CLI attempted agent/tool work because prompts used local/project-like paths or CLI defaulted to agent behavior, causing cancellation/tool-loop failure.",
+    "status": "partially_supported",
+    "evidence": [
+      "Wrapper artifacts contain text=\"\" and stopReason=\"Cancelled\" while thought shows it started reasoning.",
+      "Prompts embed many local-style paths and graph packet contents.",
+      "Exact wrapper argv was not recorded; shell history only shows grok and grok login, so tool-loop cause is plausible but not fully proven."
+    ]
+  },
+  {
+    "id": "H5",
+    "hypothesis": "stopReason Cancelled is wrapper/protocol failure, not a Grok model-quality failure.",
+    "status": "supported",
+    "evidence": [
+      "Direct API and Hermes provider smokes both returned valid JSON with the same credential set.",
+      "Wrapper output has no final text; no valid model answer exists to score."
+    ]
+  },
+  {
+    "id": "H6",
+    "hypothesis": "A recent code change regressed from direct API to Grok Build CLI.",
+    "status": "not_supported",
+    "evidence": [
+      "RCA-time search/git evidence found no direct xAI/Grok API adapter in Build Arena project_model_llm/decomposer source.",
+      "No prior direct API implementation was found in source history searched with git -Sxai/-Sgrok."
+    ],
+    "post_repair_status": "The staged repair adds the first direct xAI/OpenAI-compatible adapter; this supports 'missing implementation' rather than 'regressed implementation'."
+  },
+  {
+    "id": "H7",
+    "hypothesis": "The model output packet is too large for selected Grok path, causing cancellation/non-final output.",
+    "status": "inconclusive",
+    "evidence": [
+      "Full held-out prompt was 31.5 KB; compact prompt was 10.8 KB and still wrapper-cancelled.",
+      "Direct API compact smoke returned valid JSON at small scale. Size may contribute to CLI agent behavior but is not the root boundary failure."
+    ]
+  }
+]

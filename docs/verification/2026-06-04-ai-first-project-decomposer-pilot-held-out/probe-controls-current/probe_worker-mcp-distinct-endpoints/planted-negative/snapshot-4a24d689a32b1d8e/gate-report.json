@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "contract_references",
+      "location": "contracts[contract:router-to-mcp]",
+      "message": "Contract contract:router-to-mcp is self-referential after component merge.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:ee74e56eeab2c21d6122]",
+      "message": "Owned import edge edge:ee74e56eeab2c21d6122 from comp:worker-edge-router to comp:mcp-server is not covered by any contract between those components.",
+      "severity": "error"
+    }
+  ]
+}

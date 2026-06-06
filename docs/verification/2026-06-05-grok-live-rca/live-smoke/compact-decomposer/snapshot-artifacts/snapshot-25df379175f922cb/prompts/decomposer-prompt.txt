@@ -1,0 +1,15 @@
+Build an AI-first project decomposition from graph/wiki evidence only.
+Project: tiny-decomposer-smoke
+Goal: decompose this tiny repository into responsibility-bearing components
+Non-goals: ["do not treat file buckets as final components"]
+Reject vague/file-bucket leaves; produce components, contracts, concerns, checks, gaps, near-neighbors, and probes.
+Graph sample:
+- test_file: tests/test_core.py
+- python_function: pkg/core.py
+- python_module: pkg/core.py
+- file: pkg/core.py
+- project: tiny-repo
+- python_module: tests/test_core.py
+- config: pyproject.toml
+- python_function: tests/test_core.py
+- python_import: tests/test_core.py

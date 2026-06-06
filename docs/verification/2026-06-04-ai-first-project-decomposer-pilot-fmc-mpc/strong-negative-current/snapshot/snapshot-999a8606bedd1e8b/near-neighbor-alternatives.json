@@ -1,0 +1,35 @@
+[
+  {
+    "alternative": "Split the client into a separate authentication/token-cache component and a thin HTTP transport component.",
+    "id": "nn-client-split",
+    "provenance_refs": [
+      "prov:bcfd8e782d7fe500",
+      "prov:2b0e52ad10883e7c",
+      "prov:aefc03705172d5d2",
+      "prov:4d9c0f2751d94893"
+    ],
+    "target_id": "comp-client",
+    "why_not_primary": "Auth (base64), token caching (time), and transport (httpx) are co-located in the single client module with no edge evidence of a distinct auth surface; splitting would create sub-file fragments rather than independent responsibility units. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+  },
+  {
+    "alternative": "Merge tools and resources into a single 'FMC operations' component.",
+    "id": "nn-tools-resources-merge",
+    "provenance_refs": [
+      "prov:4e62ae79d2c07a9c",
+      "prov:750d7fda533e438c",
+      "prov:3dfa2aaf889c6db2"
+    ],
+    "target_id": "comp-tools",
+    "why_not_primary": "Responsibilities differ: resources retrieve and serialize FMC data via the client, while tools define the MCP tool surface and own input validation (ipaddress); the tools->resources import edge confirms a layered dependency, not a single unit. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+  },
+  {
+    "alternative": "Treat fmc_mcp.__main__ as its own standalone entrypoint component separate from the server runtime.",
+    "id": "nn-server-entrypoint",
+    "provenance_refs": [
+      "prov:da6e96a18d26d1cf",
+      "prov:e08d506150373eea"
+    ],
+    "target_id": "comp-server",
+    "why_not_primary": "__main__ only imports and delegates to fmc_mcp.server (single import edge) and carries no independent responsibility; isolating it would produce a rejected file-bucket component. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+  }
+]

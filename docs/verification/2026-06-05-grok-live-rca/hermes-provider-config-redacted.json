@@ -1,0 +1,29 @@
+{
+  "config_path": "/home/leonb/.hermes/config.yaml",
+  "model_block_redacted": [
+    "model:",
+    "  default: gpt-5.5",
+    "  provider: openai-codex",
+    "  base_url: https://chatgpt.com/backend-api/codex",
+    "  api_mode: codex_responses"
+  ],
+  "env_path": "/home/leonb/.hermes/.env",
+  "relevant_env_key_presence": [
+    {
+      "key": "ANTHROPIC_TOKEN",
+      "present": true
+    },
+    {
+      "key": "ANTHROPIC_API_KEY",
+      "present": true
+    },
+    {
+      "key": "XAI_API_KEY",
+      "present": true
+    },
+    {
+      "key": "ANTHROPIC_DEFAULT_OPUS_MODEL",
+      "present": true
+    }
+  ]
+}

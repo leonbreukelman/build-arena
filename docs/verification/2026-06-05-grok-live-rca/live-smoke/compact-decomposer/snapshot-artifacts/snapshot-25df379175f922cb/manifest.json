@@ -1,0 +1,47 @@
+{
+  "artifact_hashes": {
+    "gate_report": "506f8fcc167545baa9756b7be3ed5e45505063f54d6c09595cc8f8dae6e41436",
+    "graph_file": "83a1dfd3daeb575d137a36af2b3a529a1e32281eb7aaf1e2fe3304d49a087b0a",
+    "project_model_v0": "ac202b898322872a53be54b22c71ad77428868d3aa18e47b16380afb01e5a200",
+    "snapshot": "bb568060f86169e72d1373194268c9c2ecf3ad56a06ad1cd01029c0c7ba49fb7"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "1a2a701149de564d54ab15220ebc94ee562c5708"
+  },
+  "encyclopedia_manifest_hash": "d732574f356d618dcd0b80ba6b41a7f364e0576cdfe5dc85a0b51b39abc8e17c",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "506f8fcc167545baa9756b7be3ed5e45505063f54d6c09595cc8f8dae6e41436",
+  "gate_report_path": "gate-report.json",
+  "goal": "decompose this tiny repository into responsibility-bearing components",
+  "graph_file_hash": "83a1dfd3daeb575d137a36af2b3a529a1e32281eb7aaf1e2fe3304d49a087b0a",
+  "graph_hash": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b"
+  },
+  "model_ids": {
+    "decomposer": "grok-4",
+    "probe_builder": "grok-live-smoke-independent-probe-builder",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "output_hashes": {
+    "decomposer": "4e745104c2909ec65e866c25ebef004f8b4fd10a3e73191c3eb97f1907563636"
+  },
+  "project_id": "tiny-decomposer-smoke",
+  "project_model_v0_hash": "ac202b898322872a53be54b22c71ad77428868d3aa18e47b16380afb01e5a200",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_root": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/tiny-repo",
+  "prompt_hashes": {
+    "decomposer": "1ec938a064fb790f05c13a54bfa8839ffd7348e9eefe953febcbe82ad32c7863"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "bb568060f86169e72d1373194268c9c2ecf3ad56a06ad1cd01029c0c7ba49fb7",
+  "snapshot_id": "snapshot-25df379175f922cb",
+  "snapshot_path": "snapshot.json"
+}

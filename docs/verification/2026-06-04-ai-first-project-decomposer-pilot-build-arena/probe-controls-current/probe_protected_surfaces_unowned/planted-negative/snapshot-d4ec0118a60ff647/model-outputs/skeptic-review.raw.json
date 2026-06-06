@@ -1,0 +1,6 @@
+{
+  "bounded_repair_rounds": 0,
+  "classification": "no_blocking_findings_in_fixture_review",
+  "findings": [],
+  "model_id": "fixture-skeptic-f3-reviewer"
+}

@@ -1,0 +1,83 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-server-config]",
+      "message": "Contract ct-server-config is self-referential after component merge.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-server-config]",
+      "message": "Contract ct-server-config supporting edge edge:1dbd45e8683cedc3c87a does not connect the declared from/to components.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "contracts[ct-resources-client]",
+      "message": "Contract ct-resources-client references unknown component endpoint.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:1dbd45e8683cedc3c87a]",
+      "message": "Owned import edge edge:1dbd45e8683cedc3c87a from comp-server to comp-config is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:25c3c6d20a305beeeca9]",
+      "message": "Owned import edge edge:25c3c6d20a305beeeca9 from comp-tools to comp-client is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-anti-fabrication]",
+      "message": "Concern cc-anti-fabrication references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-determinism]",
+      "message": "Concern cc-determinism references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-provenance]",
+      "message": "Concern cc-provenance references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns[cc-no-live-paid-api-acceptance]",
+      "message": "Concern cc-no-live-paid-api-acceptance references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk-suite]",
+      "message": "Check chk-suite references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "observable_checks[chk-suite]",
+      "message": "Check chk-suite references unknown contract ct-tools-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks[chk-resources-contract]",
+      "message": "Check chk-resources-contract references unknown component comp-resources.",
+      "severity": "error"
+    },
+    {
+      "gate": "contract_references",
+      "location": "observable_checks[chk-tools-validation]",
+      "message": "Check chk-tools-validation references unknown contract ct-tools-resources.",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-reversed-contract.recorded.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "contract_references",
+        "location": "contracts[con:decomposer_uses_graph]",
+        "message": "Contract con:decomposer_uses_graph supporting edge edge:52d0c53c037ed70393d0 does not connect the declared from/to components.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170",
+    "snapshot_id": "snapshot-cee41b62614ce170",
+    "violation_count": 1
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-artifacts/snapshot-cee41b62614ce170\", \"snapshot_id\": \"snapshot-cee41b62614ce170\", \"violation_count\": 1}\n"
+}

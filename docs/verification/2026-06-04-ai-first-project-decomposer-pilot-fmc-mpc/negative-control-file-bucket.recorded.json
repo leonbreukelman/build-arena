@@ -1,0 +1,37 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.misc-bucket",
+      "name": "Misc bucket",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2",
+        "node:4042451215c279f0dca7",
+        "node:84a7c7e4c189e28cb1bb",
+        "node:a32d71cbbae4bcadc234",
+        "node:9810fbe9bc4ff06aee73",
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Owns every convenient project file as one fluent bucket without measurable contracts.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [],
+  "cross_cutting_concerns": [],
+  "goal": "decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon",
+  "held_out_probes": [],
+  "model_id": "negative-control-file-bucket-generator",
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not require live FMC credentials or network calls for acceptance",
+    "do not accept file-bucket components"
+  ],
+  "observable_checks": [],
+  "project_id": "fmc-mcp",
+  "verification_gaps": []
+}

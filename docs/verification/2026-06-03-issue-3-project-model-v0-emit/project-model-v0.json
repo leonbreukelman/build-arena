@@ -1,0 +1,782 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "componentAlignment",
+      "invariantViolations",
+      "dependencyViolations",
+      "unsupportedAssumptions",
+      "evidenceGroundingGaps",
+      "nearNeighborResistance",
+      "fLabelHint"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "The model is derived only from filesystem and git inventory state observed by the decomposer.",
+      "id": "filesystem_and_git_are_authoritative",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "documentation_and_operator_guidance",
+      "kind": "documentation",
+      "name": "Documentation And Operator Guidance",
+      "observableCheckIds": [
+        "documentation_and_operator_guidance_verification_gap_observed"
+      ],
+      "ownedSurfaces": [
+        "AGENTS.md",
+        "README.md",
+        "docs/examples/project-model-v0-code-adjacent.json",
+        "docs/examples/project-model-v0-process-strategy.json",
+        "docs/plans/2026-05-24-phase-1-scorer-calibration.md",
+        "docs/plans/2026-05-25-phase-2-verifier-ablation.md",
+        "docs/plans/2026-05-25-phase-3-hypothesizer-fingerprints-router.md",
+        "docs/plans/2026-05-25-phase-4-loop-budget-divergence.md",
+        "docs/plans/2026-06-01-project-decomposer.md",
+        "docs/project-model-v0.md",
+        "docs/schemas/project-model-v0.schema.json",
+        "docs/verification/2026-06-01-opus-project-decomposer-implementation-review.md",
+        "docs/verification/2026-06-01-opus-project-decomposer-plan-review.md",
+        "docs/verification/2026-06-01-project-decomposer-verification-report.md"
+      ],
+      "responsibilities": [
+        "Maintain documentation and operator guidance."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "project_configuration",
+      "kind": "configuration",
+      "name": "Project Configuration",
+      "observableCheckIds": [
+        "project_configuration_check"
+      ],
+      "ownedSurfaces": [
+        ".arena/calibration/repo/pyproject.toml",
+        ".gitignore",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "responsibilities": [
+        "Maintain project configuration."
+      ],
+      "riskLevel": "low"
+    },
+    {
+      "id": "python_package",
+      "kind": "source",
+      "name": "Python Package",
+      "observableCheckIds": [
+        "python_compile_check"
+      ],
+      "ownedSurfaces": [
+        ".arena/calibration/repo/benchmarks/runtime_proxy.py",
+        ".arena/calibration/repo/src/validatorlib/__init__.py",
+        ".arena/calibration/repo/src/validatorlib/core.py",
+        ".arena/calibration/repo/src/validatorlib/errors.py",
+        ".arena/calibration/repo/src/validatorlib/io.py",
+        ".arena/calibration/repo/src/validatorlib/parsing.py",
+        ".arena/calibration/repo/src/validatorlib/style_debt.py",
+        ".arena/calibration/repo/src/validatorlib/typing_gaps.py",
+        ".arena/calibration/repo/src/validatorlib/validate.py",
+        ".arena/calibration/repo/tests/test_core.py",
+        ".arena/calibration/repo/tests/test_errors.py",
+        ".arena/calibration/repo/tests/test_io.py",
+        ".arena/calibration/repo/tests/test_parsing.py",
+        ".arena/calibration/repo/tests/test_validate.py",
+        "arena/__init__.py",
+        "arena/boundary.py",
+        "arena/budget.py",
+        "arena/decomposer.py",
+        "arena/divergence.py",
+        "arena/events.py",
+        "arena/fingerprints.py",
+        "arena/generated/__init__.py",
+        "arena/generated/models.py",
+        "arena/hypothesizer.py",
+        "arena/ledger.py",
+        "arena/loop.py",
+        "arena/project_model_v0.py",
+        "arena/protocols.py",
+        "arena/router.py",
+        "arena/runners/__init__.py",
+        "arena/runners/base.py",
+        "arena/runners/claude_code.py",
+        "arena/runners/ollama.py",
+        "arena/worktrees.py",
+        "scorer/__init__.py",
+        "scorer/engine.py",
+        "scorer/exceptions.py",
+        "scorer/lock.py",
+        "scripts/normalize_generated_artifacts.py",
+        "scripts/rebuild_calibration.py",
+        "scripts/update_scorer_lock.py",
+        "verifier/__init__.py",
+        "verifier/ablation.py",
+        "verifier/calibration.py",
+        "verifier/config.py",
+        "verifier/engine.py"
+      ],
+      "responsibilities": [
+        "Maintain python package."
+      ],
+      "riskLevel": "low"
+    },
+    {
+      "id": "regression_tests",
+      "kind": "test",
+      "name": "Regression Tests",
+      "observableCheckIds": [
+        "regression_tests"
+      ],
+      "ownedSurfaces": [
+        "tests/conftest.py",
+        "tests/test_ablation.py",
+        "tests/test_boundary.py",
+        "tests/test_budget.py",
+        "tests/test_calibration_ordering.py",
+        "tests/test_coverage_closure.py",
+        "tests/test_divergence.py",
+        "tests/test_events_projection.py",
+        "tests/test_failure_ledger.py",
+        "tests/test_fingerprints.py",
+        "tests/test_hypothesizer_bandit.py",
+        "tests/test_loop_phase4.py",
+        "tests/test_project_decomposer.py",
+        "tests/test_project_model_v0_contract.py",
+        "tests/test_runner_router.py",
+        "tests/test_schema_generation.py",
+        "tests/test_scorer_determinism.py",
+        "tests/test_scorer_lock.py",
+        "tests/test_verifier_calibration.py",
+        "tests/test_verifier_gates.py",
+        "tests/test_view_before_edit.py",
+        "tests/test_worktrees.py"
+      ],
+      "responsibilities": [
+        "Maintain regression tests."
+      ],
+      "riskLevel": "low"
+    },
+    {
+      "id": "unclassified_project_surface",
+      "kind": "unknown",
+      "name": "Unclassified Project Surface",
+      "observableCheckIds": [
+        "unclassified_project_surface_verification_gap_observed"
+      ],
+      "ownedSurfaces": [
+        ".arena/calibration/diffs/negative/N-1.patch",
+        ".arena/calibration/diffs/negative/N-2.patch",
+        ".arena/calibration/diffs/negative/N-3.patch",
+        ".arena/calibration/diffs/negative/N-4.patch",
+        ".arena/calibration/diffs/negative/N-5.patch",
+        ".arena/calibration/diffs/neutral/Z-1.patch",
+        ".arena/calibration/diffs/neutral/Z-2.patch",
+        ".arena/calibration/diffs/neutral/Z-3.patch",
+        ".arena/calibration/diffs/positive/P-1.patch",
+        ".arena/calibration/diffs/positive/P-2.patch",
+        ".arena/calibration/diffs/positive/P-3.patch",
+        ".arena/calibration/diffs/positive/P-4.patch",
+        ".arena/calibration/diffs/positive/P-5.patch",
+        ".arena/calibration/expected.json",
+        ".arena/config.toml",
+        ".arena/dashboard/.gitkeep",
+        ".arena/scorer.lock.toml",
+        ".python-version",
+        "Makefile",
+        "arena/generated/ddl.sql",
+        "arena/generated/schema.json",
+        "dashboard/src/lib/generated/.gitkeep",
+        "dashboard/src/lib/generated/arena.d.ts",
+        "schema/arena.yaml"
+      ],
+      "responsibilities": [
+        "Maintain unclassified project surface."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "The source package is the behavior surface exercised by regression tests.",
+      "fromComponent": "python_package",
+      "id": "python_package_feeds_regression_tests",
+      "kind": "feeds",
+      "observableCheckIds": [
+        "python_compile_check",
+        "regression_tests"
+      ],
+      "toComponent": "regression_tests"
+    },
+    {
+      "description": "Project configuration constrains how this component is installed, tested, or linted.",
+      "fromComponent": "project_configuration",
+      "id": "project_configuration_informs_documentation_and_operator_guidance",
+      "kind": "informs",
+      "observableCheckIds": [
+        "documentation_and_operator_guidance_verification_gap_observed",
+        "project_configuration_check"
+      ],
+      "toComponent": "documentation_and_operator_guidance"
+    },
+    {
+      "description": "Project configuration constrains how this component is installed, tested, or linted.",
+      "fromComponent": "project_configuration",
+      "id": "project_configuration_informs_python_package",
+      "kind": "informs",
+      "observableCheckIds": [
+        "project_configuration_check",
+        "python_compile_check"
+      ],
+      "toComponent": "python_package"
+    },
+    {
+      "description": "Project configuration constrains how this component is installed, tested, or linted.",
+      "fromComponent": "project_configuration",
+      "id": "project_configuration_informs_regression_tests",
+      "kind": "informs",
+      "observableCheckIds": [
+        "project_configuration_check",
+        "regression_tests"
+      ],
+      "toComponent": "regression_tests"
+    },
+    {
+      "description": "Project configuration constrains how this component is installed, tested, or linted.",
+      "fromComponent": "project_configuration",
+      "id": "project_configuration_informs_unclassified_project_surface",
+      "kind": "informs",
+      "observableCheckIds": [
+        "project_configuration_check",
+        "unclassified_project_surface_verification_gap_observed"
+      ],
+      "toComponent": "unclassified_project_surface"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "project-model-v0-json",
+        "terminal-output",
+        "file-path"
+      ],
+      "description": "Canonical Project Model v0 JSON emitted by arena.decomposer before planning begins.",
+      "id": "canonical_project_model_json",
+      "requiredFor": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package",
+        "regression_tests",
+        "unclassified_project_surface"
+      ]
+    },
+    {
+      "acceptedArtifactTypes": [
+        "project-model-v0-json",
+        "file-path",
+        "terminal-output",
+        "review-note"
+      ],
+      "description": "Evidence and proposed closure checks for every surfaced verification gap.",
+      "id": "verification_gap_evidence",
+      "requiredFor": [
+        "doc_spec_drift_check_missing",
+        "unclassified_project_surface_gap"
+      ]
+    }
+  ],
+  "goal": "# Issue #3: Emit Project Model v0 from primary tasks before planning or architecture work\n\n## Purpose\n\nImplement the Build Arena side of Project Model v0.\n\nBuild Arena's role is to turn a primary task/backlog item into a mechanically checkable Project Model before planning, architecture selection, or code work begins.\n\nParent coordination issue: https://github.com/leonbreukelman/build-arena/issues/2\n\n## Agent role\n\nYou are the Build Arena implementation agent.\n\nYour job is to emit the Project Model. Do not implement Elenchus evaluation logic here, and do not build the arena-calibration fixture harness here.\n\n## Agent instructions\n\n1. Read the parent Project Model v0 contract first.\n2. Inspect the existing deterministic decomposer path, especially the README's Phase 5 notes and any `arena.decomposer` implementation.\n3. Update or implement the decomposer so a primary task/backlog item can produce a Project Model v0 document.\n4. Keep the implementation deterministic and local-first. Do not require live paid LLM/API calls for tests.\n5. Add validation for the Project Model quality gate:\n   - every component has a responsibility;\n   - every component has at least one observable/measurable check;\n   - dependencies are explicit and non-contradictory;\n   - invariants are represented separately from ordinary goals;\n   - verification gaps are surfaced rather than hidden;\n   - unclassified project surfaces are reported.\n6. Preserve the distinction between ownership accounting and quality scoring. Build Arena may say \"this surface is covered/missing\"; Elenchus/arena-calibration decide whether a proposal's rationale aligns.\n7. Add or update CLI/API behavior so callers can request Project Model v0 in canonical JSON.\n\n## Expected output shape\n\nThe emitted model should include, at minimum:\n\n- `schemaVersion`\n- `sourceTask`\n- `goal`\n- `nonGoals`\n- `components`\n- `dependencies`\n- `invariants`\n- `observableChecks`\n- `evidenceRequirements`\n- `assumptions`\n- `risks`\n- `nearNeighbors`\n- `heldOutProbes`\n- `verificationGaps`\n- `unclassifiedProjectSurface`\n\n## Acceptance criteria\n\n- [ ] A primary task can be converted into Project Model v0 JSON.\n- [ ] The JSON validates against the parent contract.\n- [ ] `--fail-on-gap` or equivalent behavior fails/flags missing checks, missing components, and unclassified project surface.\n- [ ] At least one non-code task example is covered, not only code-patch examples.\n- [ ] Tests prove the decomposer catches a shallow/vague decomposition as a quality-gate failure.\n- [ ] Existing deterministic behavior and current green gates are preserved.\n- [ ] README/docs explain how `elenchus-core` and `arena-calibration` should consume the emitted model.\n\n## Non-goals\n\n- Do not score proposal truth or optimality.\n- Do not add live-provider dependency for acceptance.\n- Do not implement the Elenchus advisory signal protocol beyond producing the model it consumes.\n- Do not treat F3 as only a code-patch/generalization problem.",
+  "heldOutProbes": [],
+  "id": "build-arena",
+  "invariants": [
+    {
+      "componentIds": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package",
+        "regression_tests",
+        "unclassified_project_surface"
+      ],
+      "description": "Every included source/config/test/doc file is owned exactly once or the model is invalid.",
+      "id": "source_coverage",
+      "observableCheckIds": [
+        "documentation_and_operator_guidance_verification_gap_observed",
+        "project_configuration_check",
+        "python_compile_check",
+        "regression_tests",
+        "unclassified_project_surface_verification_gap_observed"
+      ]
+    },
+    {
+      "componentIds": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package",
+        "regression_tests",
+        "unclassified_project_surface"
+      ],
+      "description": "Project Model emission and validation must not require live paid LLM/API calls.",
+      "id": "no_live_api_required",
+      "observableCheckIds": [
+        "documentation_and_operator_guidance_verification_gap_observed",
+        "project_configuration_check",
+        "python_compile_check",
+        "regression_tests",
+        "unclassified_project_surface_verification_gap_observed"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Start implementation or architecture work from the backlog item without a shared Project Model.",
+      "distinguishingEvidence": [
+        "schemaVersion",
+        "components",
+        "dependencies",
+        "observableChecks"
+      ],
+      "id": "plan_without_project_model",
+      "whyNotPrimary": "That reopens the F3 risk of coherent work aimed at the wrong component, sequence, or example."
+    },
+    {
+      "description": "Use file ownership coverage as the only decomposition signal.",
+      "distinguishingEvidence": [
+        "responsibilities",
+        "verificationGaps",
+        "heldOutProbes"
+      ],
+      "id": "ownership_only_decomposition",
+      "whyNotPrimary": "Ownership accounting does not express responsibilities, dependencies, non-code checks, risks, or held-out probes."
+    }
+  ],
+  "nonGoals": [
+    "Do not require live paid LLM/API calls to emit or validate this model.",
+    "Do not implement Elenchus scoring or advisory evaluation in the Build Arena decomposer.",
+    "Do not treat ownership accounting as quality scoring."
+  ],
+  "observableChecks": [
+    {
+      "componentId": "documentation_and_operator_guidance",
+      "description": "Inspect surfaced verification gap(s) for Documentation And Operator Guidance.",
+      "evidenceRequired": [
+        "doc_spec_drift_check_missing"
+      ],
+      "id": "documentation_and_operator_guidance_verification_gap_observed",
+      "mode": "inspection",
+      "noLiveApi": true,
+      "observableSignal": "verification gap is present in verificationGaps and has proposed closure evidence"
+    },
+    {
+      "componentId": "project_configuration",
+      "description": "Project configuration is exercised by normal tests/tooling.",
+      "evidenceRequired": [
+        "terminal output for `uv run pytest -q`",
+        "referenced path exists: .arena/calibration/repo/pyproject.toml",
+        "referenced path exists: .gitignore",
+        "referenced path exists: pyproject.toml",
+        "referenced path exists: uv.lock"
+      ],
+      "id": "project_configuration_check",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "python_package",
+      "description": "Python source compiles.",
+      "evidenceRequired": [
+        "terminal output for `uv run python -m compileall .`",
+        "referenced path exists: .arena/calibration/repo/benchmarks/runtime_proxy.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/__init__.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/core.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/errors.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/io.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/parsing.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/style_debt.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/typing_gaps.py",
+        "referenced path exists: .arena/calibration/repo/src/validatorlib/validate.py",
+        "referenced path exists: .arena/calibration/repo/tests/test_core.py",
+        "referenced path exists: .arena/calibration/repo/tests/test_errors.py",
+        "referenced path exists: .arena/calibration/repo/tests/test_io.py",
+        "referenced path exists: .arena/calibration/repo/tests/test_parsing.py",
+        "referenced path exists: .arena/calibration/repo/tests/test_validate.py",
+        "referenced path exists: arena/__init__.py",
+        "referenced path exists: arena/boundary.py",
+        "referenced path exists: arena/budget.py",
+        "referenced path exists: arena/decomposer.py",
+        "referenced path exists: arena/divergence.py",
+        "referenced path exists: arena/events.py",
+        "referenced path exists: arena/fingerprints.py",
+        "referenced path exists: arena/generated/__init__.py",
+        "referenced path exists: arena/generated/models.py",
+        "referenced path exists: arena/hypothesizer.py",
+        "referenced path exists: arena/ledger.py",
+        "referenced path exists: arena/loop.py",
+        "referenced path exists: arena/project_model_v0.py",
+        "referenced path exists: arena/protocols.py",
+        "referenced path exists: arena/router.py",
+        "referenced path exists: arena/runners/__init__.py",
+        "referenced path exists: arena/runners/base.py",
+        "referenced path exists: arena/runners/claude_code.py",
+        "referenced path exists: arena/runners/ollama.py",
+        "referenced path exists: arena/worktrees.py",
+        "referenced path exists: scorer/__init__.py",
+        "referenced path exists: scorer/engine.py",
+        "referenced path exists: scorer/exceptions.py",
+        "referenced path exists: scorer/lock.py",
+        "referenced path exists: scripts/normalize_generated_artifacts.py",
+        "referenced path exists: scripts/rebuild_calibration.py",
+        "referenced path exists: scripts/update_scorer_lock.py",
+        "referenced path exists: verifier/__init__.py",
+        "referenced path exists: verifier/ablation.py",
+        "referenced path exists: verifier/calibration.py",
+        "referenced path exists: verifier/config.py",
+        "referenced path exists: verifier/engine.py"
+      ],
+      "id": "python_compile_check",
+      "mode": "static-analysis",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m compileall ."
+    },
+    {
+      "componentId": "regression_tests",
+      "description": "Project regression tests.",
+      "evidenceRequired": [
+        "terminal output for `uv run pytest -q`",
+        "referenced path exists: tests/conftest.py",
+        "referenced path exists: tests/test_ablation.py",
+        "referenced path exists: tests/test_boundary.py",
+        "referenced path exists: tests/test_budget.py",
+        "referenced path exists: tests/test_calibration_ordering.py",
+        "referenced path exists: tests/test_coverage_closure.py",
+        "referenced path exists: tests/test_divergence.py",
+        "referenced path exists: tests/test_events_projection.py",
+        "referenced path exists: tests/test_failure_ledger.py",
+        "referenced path exists: tests/test_fingerprints.py",
+        "referenced path exists: tests/test_hypothesizer_bandit.py",
+        "referenced path exists: tests/test_loop_phase4.py",
+        "referenced path exists: tests/test_project_decomposer.py",
+        "referenced path exists: tests/test_project_model_v0_contract.py",
+        "referenced path exists: tests/test_runner_router.py",
+        "referenced path exists: tests/test_schema_generation.py",
+        "referenced path exists: tests/test_scorer_determinism.py",
+        "referenced path exists: tests/test_scorer_lock.py",
+        "referenced path exists: tests/test_verifier_calibration.py",
+        "referenced path exists: tests/test_verifier_gates.py",
+        "referenced path exists: tests/test_view_before_edit.py",
+        "referenced path exists: tests/test_worktrees.py"
+      ],
+      "id": "regression_tests",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "unclassified_project_surface",
+      "description": "Inspect surfaced verification gap(s) for Unclassified Project Surface.",
+      "evidenceRequired": [
+        "unclassified_project_surface_gap"
+      ],
+      "id": "unclassified_project_surface_verification_gap_observed",
+      "mode": "inspection",
+      "noLiveApi": true,
+      "observableSignal": "verification gap is present in verificationGaps and has proposed closure evidence"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A downstream agent could start coherent work against the wrong component, sequence, or visible example if the Project Model is skipped.",
+      "id": "wrong_target_planning",
+      "level": "medium",
+      "mitigation": "Emit Project Model v0 before planning and consume its components, dependencies, checks, and gaps."
+    },
+    {
+      "componentId": "documentation_and_operator_guidance",
+      "description": "documentation files exist but no mechanical doc/spec drift check is derivable from the filesystem scan",
+      "id": "doc_spec_drift_check_missing_risk",
+      "level": "medium",
+      "mitigation": "add a project-specific doc/spec drift checker or explicit acceptance fixture"
+    },
+    {
+      "componentId": "unclassified_project_surface",
+      "description": ".arena/calibration/diffs/negative/N-1.patch; .arena/calibration/diffs/negative/N-2.patch; .arena/calibration/diffs/negative/N-3.patch; .arena/calibration/diffs/negative/N-4.patch; .arena/calibration/diffs/negative/N-5.patch; .arena/calibration/diffs/neutral/Z-1.patch; .arena/calibration/diffs/neutral/Z-2.patch; .arena/calibration/diffs/neutral/Z-3.patch; .arena/calibration/diffs/positive/P-1.patch; .arena/calibration/diffs/positive/P-2.patch; .arena/calibration/diffs/positive/P-3.patch; .arena/calibration/diffs/positive/P-4.patch; .arena/calibration/diffs/positive/P-5.patch; .arena/calibration/expected.json; .arena/config.toml; .arena/dashboard/.gitkeep; .arena/scorer.lock.toml; .python-version; Makefile; arena/generated/ddl.sql; arena/generated/schema.json; dashboard/src/lib/generated/.gitkeep; dashboard/src/lib/generated/arena.d.ts; schema/arena.yaml",
+      "id": "unclassified_project_surface_gap_risk",
+      "level": "medium",
+      "mitigation": "classify these files into project-specific components with mechanical checks"
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "issue": "https://github.com/leonbreukelman/build-arena/issues/3",
+    "primaryBacklogItem": "https://github.com/leonbreukelman/build-arena/issues/3",
+    "repo": "leonbreukelman/build-arena",
+    "task": "# Issue #3: Emit Project Model v0 from primary tasks before planning or architecture work\n\n## Purpose\n\nImplement the Build Arena side of Project Model v0.\n\nBuild Arena's role is to turn a primary task/backlog item into a mechanically checkable Project Model before planning, architecture selection, or code work begins.\n\nParent coordination issue: https://github.com/leonbreukelman/build-arena/issues/2\n\n## Agent role\n\nYou are the Build Arena implementation agent.\n\nYour job is to emit the Project Model. Do not implement Elenchus evaluation logic here, and do not build the arena-calibration fixture harness here.\n\n## Agent instructions\n\n1. Read the parent Project Model v0 contract first.\n2. Inspect the existing deterministic decomposer path, especially the README's Phase 5 notes and any `arena.decomposer` implementation.\n3. Update or implement the decomposer so a primary task/backlog item can produce a Project Model v0 document.\n4. Keep the implementation deterministic and local-first. Do not require live paid LLM/API calls for tests.\n5. Add validation for the Project Model quality gate:\n   - every component has a responsibility;\n   - every component has at least one observable/measurable check;\n   - dependencies are explicit and non-contradictory;\n   - invariants are represented separately from ordinary goals;\n   - verification gaps are surfaced rather than hidden;\n   - unclassified project surfaces are reported.\n6. Preserve the distinction between ownership accounting and quality scoring. Build Arena may say \"this surface is covered/missing\"; Elenchus/arena-calibration decide whether a proposal's rationale aligns.\n7. Add or update CLI/API behavior so callers can request Project Model v0 in canonical JSON.\n\n## Expected output shape\n\nThe emitted model should include, at minimum:\n\n- `schemaVersion`\n- `sourceTask`\n- `goal`\n- `nonGoals`\n- `components`\n- `dependencies`\n- `invariants`\n- `observableChecks`\n- `evidenceRequirements`\n- `assumptions`\n- `risks`\n- `nearNeighbors`\n- `heldOutProbes`\n- `verificationGaps`\n- `unclassifiedProjectSurface`\n\n## Acceptance criteria\n\n- [ ] A primary task can be converted into Project Model v0 JSON.\n- [ ] The JSON validates against the parent contract.\n- [ ] `--fail-on-gap` or equivalent behavior fails/flags missing checks, missing components, and unclassified project surface.\n- [ ] At least one non-code task example is covered, not only code-patch examples.\n- [ ] Tests prove the decomposer catches a shallow/vague decomposition as a quality-gate failure.\n- [ ] Existing deterministic behavior and current green gates are preserved.\n- [ ] README/docs explain how `elenchus-core` and `arena-calibration` should consume the emitted model.\n\n## Non-goals\n\n- Do not score proposal truth or optimality.\n- Do not add live-provider dependency for acceptance.\n- Do not implement the Elenchus advisory signal protocol beyond producing the model it consumes.\n- Do not treat F3 as only a code-patch/generalization problem."
+  },
+  "unclassifiedProjectSurface": [
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-1.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_negative_n-1_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-2.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_negative_n-2_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-3.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_negative_n-3_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-4.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_negative_n-4_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-5.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_negative_n-5_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/neutral/Z-1.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_neutral_z-1_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/neutral/Z-2.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_neutral_z-2_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/neutral/Z-3.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_neutral_z-3_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/positive/P-1.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_positive_p-1_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/positive/P-2.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_positive_p-2_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/positive/P-3.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_positive_p-3_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/positive/P-4.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_positive_p-4_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/diffs/positive/P-5.patch is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_diffs_positive_p-5_patch",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/calibration/expected.json is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_calibration_expected_json",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/config.toml is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_config_toml",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/dashboard/.gitkeep is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_dashboard_gitkeep",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".arena/scorer.lock.toml is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_scorer_lock_toml",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": ".python-version is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_python-version",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "Makefile is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_makefile",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "arena/generated/ddl.sql is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_generated_ddl_sql",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "arena/generated/schema.json is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_arena_generated_schema_json",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "dashboard/src/lib/generated/.gitkeep is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_dashboard_src_lib_generated_gitkeep",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "dashboard/src/lib/generated/arena.d.ts is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_dashboard_src_lib_generated_arena_d_ts",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    },
+    {
+      "candidateOwners": [
+        "documentation_and_operator_guidance",
+        "project_configuration",
+        "python_package"
+      ],
+      "description": "schema/arena.yaml is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+      "id": "unclassified_schema_arena_yaml",
+      "reasonUnclassified": "The deterministic scanner could not infer a more specific owner from path or file type."
+    }
+  ],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "documentation_and_operator_guidance"
+      ],
+      "description": "documentation files exist but no mechanical doc/spec drift check is derivable from the filesystem scan",
+      "id": "doc_spec_drift_check_missing",
+      "proposedClosureCheck": "add a project-specific doc/spec drift checker or explicit acceptance fixture",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "unclassified_project_surface"
+      ],
+      "description": ".arena/calibration/diffs/negative/N-1.patch; .arena/calibration/diffs/negative/N-2.patch; .arena/calibration/diffs/negative/N-3.patch; .arena/calibration/diffs/negative/N-4.patch; .arena/calibration/diffs/negative/N-5.patch; .arena/calibration/diffs/neutral/Z-1.patch; .arena/calibration/diffs/neutral/Z-2.patch; .arena/calibration/diffs/neutral/Z-3.patch; .arena/calibration/diffs/positive/P-1.patch; .arena/calibration/diffs/positive/P-2.patch; .arena/calibration/diffs/positive/P-3.patch; .arena/calibration/diffs/positive/P-4.patch; .arena/calibration/diffs/positive/P-5.patch; .arena/calibration/expected.json; .arena/config.toml; .arena/dashboard/.gitkeep; .arena/scorer.lock.toml; .python-version; Makefile; arena/generated/ddl.sql; arena/generated/schema.json; dashboard/src/lib/generated/.gitkeep; dashboard/src/lib/generated/arena.d.ts; schema/arena.yaml",
+      "id": "unclassified_project_surface_gap",
+      "proposedClosureCheck": "classify these files into project-specific components with mechanical checks",
+      "severity": "medium"
+    }
+  ]
+}

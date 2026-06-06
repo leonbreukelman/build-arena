@@ -1,0 +1,6 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena --project-id build-arena --source-task 'Build Arena AI-first decomposer pilot' --primary-backlog-item pilot-build-arena --goal 'decompose Build Arena into responsibility-bearing components that can safely drive arena hypotheses' --non-goal 'do not accept file-bucket components' --non-goal 'do not target scorer verifier schema or generated artifacts for arena hypotheses' --llm-mode fixture --overwrite",
+  "returncode": 0,
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/snapshot-1ae3a461ad1ccb90/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/snapshot-1ae3a461ad1ccb90/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/snapshot-1ae3a461ad1ccb90\", \"snapshot_id\": \"snapshot-1ae3a461ad1ccb90\", \"violation_count\": 0}\n",
+  "stderr": ""
+}

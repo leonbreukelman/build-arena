@@ -1,0 +1,797 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-project_graph",
+      "kind": "source",
+      "name": "Project Graph Builder",
+      "observableCheckIds": [
+        "check-comp-project_graph"
+      ],
+      "ownedSurfaces": [
+        "arena/project_graph.py"
+      ],
+      "responsibilities": [
+        "Construct the typed code/doc graph of the repository (nodes, edges, provenance) from source and git state, serving as the shared substrate every downstream arena stage reads."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project_encyclopedia",
+      "kind": "source",
+      "name": "Project Encyclopedia",
+      "observableCheckIds": [
+        "check-comp-project_encyclopedia"
+      ],
+      "ownedSurfaces": [
+        "arena/project_encyclopedia.py"
+      ],
+      "responsibilities": [
+        "Enrich the raw graph into a structured, queryable knowledge surface (symbols, sections, fingerprintable descriptors) consumed by the AI decomposer."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project_snapshot",
+      "kind": "source",
+      "name": "Project Snapshot",
+      "observableCheckIds": [
+        "check-comp-project_snapshot"
+      ],
+      "ownedSurfaces": [
+        "arena/project_snapshot.py"
+      ],
+      "responsibilities": [
+        "Capture a deterministic, hashed snapshot of project state used to anchor decomposition and gating decisions to a fixed working-tree fingerprint."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-ai_decomposer",
+      "kind": "source",
+      "name": "AI Project Decomposer",
+      "observableCheckIds": [
+        "check-comp-ai_decomposer"
+      ],
+      "ownedSurfaces": [
+        "arena/project_decomposer_ai.py",
+        "arena/project_model_llm.py"
+      ],
+      "responsibilities": [
+        "Drive the AI-first decomposition pipeline: assemble graph/encyclopedia/snapshot context, invoke the model adapter, and emit a Project Model of responsibility-bearing components rather than path buckets."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project_model_gate",
+      "kind": "source",
+      "name": "Project Model Gate",
+      "observableCheckIds": [
+        "check-comp-project_model_gate"
+      ],
+      "ownedSurfaces": [
+        "arena/project_model_gate.py"
+      ],
+      "responsibilities": [
+        "Validate and admit emitted project models against snapshot identity and structural rules, rejecting non-deterministic or fabricated decompositions before acceptance."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project_model_cli",
+      "kind": "source",
+      "name": "Project Model CLI",
+      "observableCheckIds": [
+        "check-comp-project_model_cli"
+      ],
+      "ownedSurfaces": [
+        "arena/project_model_cli.py"
+      ],
+      "responsibilities": [
+        "Provide the command-line entrypoint that wires graph construction and gating into an operator-runnable project-model workflow."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-hypothesis_engine",
+      "kind": "source",
+      "name": "Hypothesis Engine",
+      "observableCheckIds": [
+        "check-comp-hypothesis_engine"
+      ],
+      "ownedSurfaces": [
+        "arena/hypothesizer.py",
+        "arena/fingerprints.py"
+      ],
+      "responsibilities": [
+        "Generate and select arena hypotheses using content fingerprints and a multi-armed-bandit policy, deduplicating candidates against the generated model surface."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-arena_loop",
+      "kind": "source",
+      "name": "Arena Execution Loop",
+      "observableCheckIds": [
+        "check-comp-arena_loop"
+      ],
+      "ownedSurfaces": [
+        "arena/loop.py",
+        "arena/budget.py"
+      ],
+      "responsibilities": [
+        "Orchestrate the iterative arena run: enforce the execution budget, advance phases, emit events, and bound divergence across the generated model surface."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Decomposer consumes Project Graph",
+      "fromComponent": "comp-ai_decomposer",
+      "id": "con-decomposer_uses_graph",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-ai_decomposer"
+      ],
+      "toComponent": "comp-project_graph"
+    },
+    {
+      "description": "Decomposer anchors to Project Snapshot",
+      "fromComponent": "comp-ai_decomposer",
+      "id": "con-decomposer_uses_snapshot",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-ai_decomposer"
+      ],
+      "toComponent": "comp-project_snapshot"
+    },
+    {
+      "description": "Decomposer consumes Project Encyclopedia",
+      "fromComponent": "comp-ai_decomposer",
+      "id": "con-decomposer_uses_encyclopedia",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-ai_decomposer"
+      ],
+      "toComponent": "comp-project_encyclopedia"
+    },
+    {
+      "description": "Decomposer submits to Project Model Gate",
+      "fromComponent": "comp-ai_decomposer",
+      "id": "con-decomposer_uses_gate",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-ai_decomposer"
+      ],
+      "toComponent": "comp-project_model_gate"
+    },
+    {
+      "description": "Gate reads Project Graph",
+      "fromComponent": "comp-project_model_gate",
+      "id": "con-gate_uses_graph",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-project_model_gate"
+      ],
+      "toComponent": "comp-project_graph"
+    },
+    {
+      "description": "Gate validates against Project Snapshot",
+      "fromComponent": "comp-project_model_gate",
+      "id": "con-gate_uses_snapshot",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-project_model_gate"
+      ],
+      "toComponent": "comp-project_snapshot"
+    },
+    {
+      "description": "CLI drives Project Model Gate",
+      "fromComponent": "comp-project_model_cli",
+      "id": "con-cli_uses_gate",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-project_model_cli"
+      ],
+      "toComponent": "comp-project_model_gate"
+    },
+    {
+      "description": "Encyclopedia builds on Project Graph",
+      "fromComponent": "comp-project_encyclopedia",
+      "id": "con-encyclopedia_uses_graph",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-project_encyclopedia"
+      ],
+      "toComponent": "comp-project_graph"
+    },
+    {
+      "description": "CLI invokes decomposer snapshot builder",
+      "fromComponent": "comp-project_model_cli",
+      "id": "con-cli_uses_decomposer",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-project_model_cli"
+      ],
+      "toComponent": "comp-ai_decomposer"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "comp-project_graph",
+        "comp-project_encyclopedia",
+        "comp-project_snapshot",
+        "comp-ai_decomposer",
+        "comp-project_model_gate",
+        "comp-project_model_cli",
+        "comp-hypothesis_engine",
+        "comp-arena_loop"
+      ]
+    }
+  ],
+  "goal": "decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics",
+  "heldOutProbes": [
+    {
+      "componentId": "comp-project_encyclopedia",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-encyclopedia_enriches_not_constructs",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:encyclopedia_owns_graph_construction."
+    },
+    {
+      "componentId": "comp-ai_decomposer",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-decomposer_must_submit_to_gate",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:decomposer_bypasses_gate."
+    },
+    {
+      "componentId": "comp-project_model_cli",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-cli_wires_both_graph_and_gate",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:cli_omits_graph_contract."
+    },
+    {
+      "componentId": "comp-hypothesis_engine",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-generated_surfaces_not_owned",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:hypothesis_engine_owns_generated_schema."
+    },
+    {
+      "componentId": "comp-project_graph",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-no_file_bucket_components",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:file_bucket_component."
+    },
+    {
+      "componentId": "comp-project_graph",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-protected_surfaces_unowned",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:component_owns_protected_surface."
+    }
+  ],
+  "id": "build-arena",
+  "invariants": [
+    {
+      "componentIds": [
+        "comp-project_graph",
+        "comp-project_encyclopedia",
+        "comp-project_snapshot",
+        "comp-ai_decomposer",
+        "comp-project_model_gate",
+        "comp-project_model_cli",
+        "comp-hypothesis_engine",
+        "comp-arena_loop"
+      ],
+      "description": "Every component and contract must trace to packet-supplied node/edge IDs and provenance; no responsibility, dependency, or check may be invented beyond observed graph evidence.",
+      "id": "concern-anti_fabrication",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-project_snapshot",
+        "comp-project_model_gate",
+        "comp-ai_decomposer"
+      ],
+      "description": "Decomposition and gating must be reproducible from a fixed snapshot; the packet reports git_dirty=true, so determinism is at risk until the working tree is committed and re-hashed.",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-project_graph",
+        "comp-project_encyclopedia",
+        "comp-project_snapshot",
+        "comp-ai_decomposer",
+        "comp-project_model_gate",
+        "comp-project_model_cli",
+        "comp-hypothesis_engine",
+        "comp-arena_loop"
+      ],
+      "description": "All emitted artifacts must carry prov refs back to originating nodes/edges so the decomposition is auditable end-to-end.",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-ai_decomposer"
+      ],
+      "description": "Acceptance verification must run offline with no paid API calls; the AI decomposer's model invocation path must be excluded from or stubbed in the acceptance command.",
+      "id": "concern-no_live_paid_api_acceptance",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-arena_loop",
+        "comp-hypothesis_engine"
+      ],
+      "description": "Generated surfaces (arena/generated/models.py, schema.json, ddl.sql) are consumed by the loop and hypothesis engine but must not be treated as owned hypotheses; they are regenerated, not authored.",
+      "id": "concern-generated_surfaces",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [],
+      "description": "Protected surfaces under scorer/, verifier/, and schema/arena.yaml are excluded from arena ownership per non-goals; no component may claim or mutate them.",
+      "id": "concern-protected_surfaces",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [],
+      "description": "Generated surfaces are detected from git/filesystem truth and excluded from source component ownership.",
+      "id": "concern-generated-artifact-integrity",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    },
+    {
+      "componentIds": [],
+      "description": "Protected/oracle/scorer/schema surfaces are graph-visible but excluded from source ownership.",
+      "id": "concern-protected-surface-integrity",
+      "observableCheckIds": [
+        "check-comp-project_graph",
+        "check-comp-project_encyclopedia",
+        "check-comp-project_snapshot",
+        "check-comp-ai_decomposer",
+        "check-comp-project_model_gate",
+        "check-comp-project_model_cli",
+        "check-comp-hypothesis_engine",
+        "check-comp-arena_loop"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Promote arena.project_model_llm into a standalone LLM-adapter component separate from the decomposer.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-standalone_llm_adapter",
+      "whyNotPrimary": "The decomposer imports project_model_llm directly (edge:7e02ea209da7795bff6a) and is its only observed consumer, forming a single AI-first pipeline; splitting would create a one-file unit with no independent contract. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    },
+    {
+      "description": "Route the decomposer's graph access through the encyclopedia instead of the raw project_graph.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-graph_via_encyclopedia",
+      "whyNotPrimary": "The decomposer imports arena.project_graph directly (edge:52d0c53c037ed70393d0) in addition to the encyclopedia, so a direct graph contract is observed and not a transitive substitute. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    },
+    {
+      "description": "Attribute arena.budget to the Hypothesis Engine rather than the Execution Loop.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-budget_in_hypothesis",
+      "whyNotPrimary": "Only arena.loop imports arena.budget (edge:0ad81c69fa74d4c0698e); the hypothesizer has no budget import edge, so budget belongs to the loop's execution responsibility. Anchored to goal: decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics; non-goals: do not accept file-bucket components; do not treat scorer verifier schema or generated files as owned arena hypotheses."
+    },
+    {
+      "description": "Treat the CLI as a direct fixture/report runner instead of an operator entrypoint into the AI-first decomposer.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-cli_direct_fixture_runner",
+      "whyNotPrimary": "The goal requires a real decomposition pipeline, and the CLI import of arena.project_decomposer_ai shows the operator entrypoint delegates to the decomposer rather than bypassing it."
+    }
+  ],
+  "nonGoals": [
+    "do not accept file-bucket components",
+    "do not treat scorer verifier schema or generated files as owned arena hypotheses"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "comp-project_graph",
+      "description": "Observable local check for Project Graph Builder.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project_graph",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-project_encyclopedia",
+      "description": "Observable local check for Project Encyclopedia.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project_encyclopedia",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-project_snapshot",
+      "description": "Observable local check for Project Snapshot.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project_snapshot",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-ai_decomposer",
+      "description": "Observable local check for AI Project Decomposer.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-ai_decomposer",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-project_model_gate",
+      "description": "Observable local check for Project Model Gate.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project_model_gate",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-project_model_cli",
+      "description": "Observable local check for Project Model CLI.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project_model_cli",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-hypothesis_engine",
+      "description": "Observable local check for Hypothesis Engine.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-hypothesis_engine",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    },
+    {
+      "componentId": "comp-arena_loop",
+      "description": "Observable local check for Arena Execution Loop.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-arena_loop",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest tests -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/build-arena",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "comp-project_model_cli"
+      ],
+      "description": "Project Model CLI has no observed tests/ import edge in the packet; its entrypoint wiring is unverified by the suite.",
+      "id": "vg-cli_untested",
+      "proposedClosureCheck": "Add tests/test_project_model_cli.py that invokes the CLI argument parser and gate path, then assert it passes under 'uv run pytest tests -q'.",
+      "severity": "high"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-ai_decomposer"
+      ],
+      "description": "arena.project_model_llm is reached only via the decomposer (edge:7e02ea209da7795bff6a) and has no direct test import; its model-adapter logic is not independently verified.",
+      "id": "vg-llm_untested_in_isolation",
+      "proposedClosureCheck": "Add a unit test that stubs the model call and asserts project_model_llm prompt assembly and JSON parsing deterministically under 'uv run pytest tests -q'.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-arena_loop",
+        "comp-hypothesis_engine"
+      ],
+      "description": "surface_counts.generated=4 but only three generated nodes (models.py, schema.json, ddl.sql) appear in the packet; one generated surface is not represented or componentized.",
+      "id": "vg-generated_surface_uncovered",
+      "proposedClosureCheck": "Enumerate all generated surfaces in the snapshot and assert each is regenerable (not hand-edited) via a generation-drift check in 'uv run pytest tests -q'.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Ten protected surfaces (scorer/*, verifier/*, schema/arena.yaml) are intentionally excluded from arena ownership per non-goals and therefore remain unverified by this decomposition.",
+      "id": "vg-protected_surfaces_unowned",
+      "proposedClosureCheck": "Confirm via a boundary check that no arena component imports or writes protected surfaces, run inside 'uv run pytest tests -q'.",
+      "severity": "low"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-project_snapshot"
+      ],
+      "description": "git_dirty=true with many uncommitted arena/ and docs/ paths; this decomposition was derived from an uncommitted working tree and may not reproduce from a clean checkout.",
+      "id": "vg-dirty_tree_nondeterminism",
+      "proposedClosureCheck": "Re-run decomposition and gating against a committed snapshot and assert identical project-model hash under 'uv run pytest tests -q'.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module scripts.update_scorer_lock is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_scripts_update_scorer_lock",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.router is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_router",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.divergence is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_divergence",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.worktrees is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_worktrees",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module scripts.normalize_generated_artifacts is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_scripts_normalize_generated_artifacts",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.runners.ollama is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_runners_ollama",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.project_model_v0 is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_project_model_v0",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.boundary is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_boundary",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.events is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_events",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.decomposer is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_decomposer",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module scripts.rebuild_calibration is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_scripts_rebuild_calibration",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.runners.base is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_runners_base",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.ledger is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_ledger",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.protocols is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_protocols",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.runners.claude_code is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_runners_claude_code",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [],
+      "description": "Primary source module arena.runners is present in the current filesystem/git graph but is outside the recorded high-level Build Arena decomposer component set; treat it as an explicit verification gap rather than silently passing inventory coverage.",
+      "id": "vg-inventory_unowned_arena_runners",
+      "proposedClosureCheck": "Add a semantic component or justify exclusion with a deterministic local check before using this snapshot as complete coverage.",
+      "severity": "medium"
+    }
+  ]
+}

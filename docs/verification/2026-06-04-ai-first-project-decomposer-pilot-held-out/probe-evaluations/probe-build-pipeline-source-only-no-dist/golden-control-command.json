@@ -1,0 +1,18 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts --project-id leonbreukelman-engineer --goal 'decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-control.recorded.json --overwrite --non-goal 'do not treat generated dist output as source ownership' --non-goal 'do not require Cloudflare deployment or public mutation'",
+  "gate_report": {
+    "passed": true,
+    "violations": []
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882",
+    "snapshot_id": "snapshot-8f5e4e8243788882",
+    "violation_count": 0
+  },
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-build-pipeline-source-only-no-dist/golden-artifacts/snapshot-8f5e4e8243788882\", \"snapshot_id\": \"snapshot-8f5e4e8243788882\", \"violation_count\": 0}\n"
+}

@@ -1,0 +1,132 @@
+{
+  "all_expected_gates_observed": true,
+  "all_golden_passed": true,
+  "all_planted_negatives_failed": true,
+  "controls_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current",
+  "distinct_negative_violation_gates": [
+    "component_measurability",
+    "contract_references",
+    "cross_cutting_concerns",
+    "edge_coverage",
+    "inventory_coverage"
+  ],
+  "pilot": "fmc-mcp",
+  "probe_count": 3,
+  "probe_results": [
+    {
+      "actual_mutation": "merged comp-tools and comp-resources and eliminated ct-tools-resources while checks still reference it",
+      "declared_bad_decomposition_pattern": "Merge comp-tools and comp-resources into a single component comp-fmc-operations with responsibility 'Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation.' Co-own node:84a7c7e4c189e28cb1bb and node:a32d71cbbae4bcadc234. Eliminate the ct-tools-resources contract and its supporting edge edge:68860f44ca677cc65828.",
+      "declared_expected_gate_failure": "chk-tools-validation references ct-tools-resources in its contract_ids list; after the contract is eliminated the check becomes unanchored to any contract, leaving it without a valid acceptance path and causing the gate to report an unverifiable contract reference. Additionally cc-provenance is violated because edge:68860f44ca677cc65828 is listed as a supporting_edge_ids entry for the now-eliminated ct-tools-resources contract but has no surviving contract to attach to, breaking the edge-to-contract audit trail.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "contract_references",
+        "cross_cutting_concerns"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-resources-no-mcp-surface/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-resources-no-mcp-surface/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "contract_references",
+        "edge_coverage",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "component_measurability",
+        "contract_references",
+        "component_measurability",
+        "contract_references"
+      ],
+      "planted_negative_id": "neg-tools-resources-merge",
+      "probe_id": "probe-resources-no-mcp-surface"
+    },
+    {
+      "actual_mutation": "split comp-client into fabricated sub-file auth/transport components and fabricated contract edge",
+      "declared_bad_decomposition_pattern": "Split comp-client into two components: comp-auth (base64 credential encoding and time-based token caching, owning prov:2b0e52ad10883e7c and prov:4d9c0f2751d94893) and comp-transport (httpx async transport, owning prov:bcfd8e782d7fe500 and prov:aefc03705172d5d2). Replace ct-client-config, ct-resources-client, and ct-server-client with new contracts flowing through comp-auth and then comp-transport.",
+      "declared_expected_gate_failure": "Non-goal 'do not accept file-bucket components' is violated because both comp-auth and comp-transport are sub-file fragments of a single graph node (node:4042451215c279f0dca7) with no packet edge separating auth/token logic from httpx transport; neither new component has an independent owned_node_id traceable to a distinct graph node. cc-anti-fabrication is additionally violated because the split requires fabricating a new edge between comp-auth and comp-transport that does not appear in the packet's supporting_edge_ids.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "inventory_coverage",
+        "contract_references",
+        "cross_cutting_concerns"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "inventory_coverage",
+        "inventory_coverage",
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "component_measurability",
+        "component_measurability"
+      ],
+      "planted_negative_id": "neg-client-split",
+      "probe_id": "probe-client-unified-auth-transport"
+    },
+    {
+      "actual_mutation": "added fabricated audit component and fabricated supporting edge",
+      "declared_bad_decomposition_pattern": "Add a new component comp-audit-log with responsibility 'Capture and persist FMC REST API audit events for compliance review', owned_node_ids: ['node:fabricated-audit-001'], and a new contract ct-audit-client from comp-client to comp-audit-log with supporting_edge_ids: ['edge:fabricated-audit-edge-001']. No graph node or edge with these identifiers exists in the packet.",
+      "declared_expected_gate_failure": "cc-anti-fabrication is violated immediately: node:fabricated-audit-001 and edge:fabricated-audit-edge-001 do not appear in any packet provenance and are absent from all selected node/edge lists. The gate must reject any component whose owned_node_ids or contracts cannot be anchored to packet-attested graph elements. probe-no-fabricated-components fails because the fabricated node ID is not present in the accepted packet graph.",
+      "expected_gate_observed": true,
+      "expected_violation_gates": [
+        "inventory_coverage",
+        "contract_references",
+        "cross_cutting_concerns"
+      ],
+      "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden-command.json",
+      "golden_passed": true,
+      "golden_returncode": 0,
+      "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative-command.json",
+      "negative_passed": false,
+      "negative_returncode": 1,
+      "negative_violation_gates": [
+        "inventory_coverage",
+        "contract_references",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns"
+      ],
+      "planted_negative_id": "neg-fabricated-audit-log",
+      "probe_id": "probe-no-fabricated-components"
+    }
+  ],
+  "strong_negative": {
+    "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/strong-negative-command.json",
+    "expected_violation_gates": [
+      "contract_references",
+      "cross_cutting_concerns"
+    ],
+    "mutation": "merged comp-tools and comp-resources and eliminated ct-tools-resources while checks still reference it; also made first contract self-referential",
+    "passed": false,
+    "returncode": 1,
+    "violation_gates": [
+      "contract_references",
+      "contract_references",
+      "contract_references",
+      "edge_coverage",
+      "edge_coverage",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns",
+      "component_measurability",
+      "contract_references",
+      "component_measurability",
+      "contract_references"
+    ]
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "project-model/v0",
+  "id": "cross_repo_project_model_rollout_process",
+  "source": {
+    "task": "Coordinate a shared Project Model contract across build-arena, elenchus-core, and arena-calibration.",
+    "primaryBacklogItem": "https://github.com/leonbreukelman/build-arena/issues/2",
+    "repo": "leonbreukelman/build-arena",
+    "issue": "Project Model v0 parent coordination issue"
+  },
+  "goal": "Keep three downstream implementation agents aligned on one pre-code decomposition contract before any repo adds incompatible F3 semantics.",
+  "nonGoals": [
+    "Do not make Elenchus a truth oracle or production allow/deny gate.",
+    "Do not require child agents to run live paid model calls for acceptance.",
+    "Do not ask arena-calibration to invent the product decomposition it is supposed to test."
+  ],
+  "components": [
+    {
+      "id": "contract_authority",
+      "name": "Contract authority",
+      "kind": "architecture",
+      "riskLevel": "high",
+      "responsibilities": [
+        "Publish the versioned field semantics that downstream repos must target.",
+        "Name F3 as real load-bearing reasoning aimed at the wrong target, component, sequence, or example."
+      ],
+      "ownedSurfaces": [
+        "docs/project-model-v0.md",
+        "docs/schemas/project-model-v0.schema.json"
+      ],
+      "observableCheckIds": ["contract_doc_schema_sync", "non_code_observable_review"]
+    },
+    {
+      "id": "child_ticket_alignment",
+      "name": "Child ticket alignment",
+      "kind": "process",
+      "riskLevel": "high",
+      "responsibilities": [
+        "Ensure each child ticket names the same compatibility target and does not redefine decomposition, observable checks, or F3 locally.",
+        "Keep repo ownership explicit: build-arena emits the model, elenchus-core evaluates advisory alignment, arena-calibration proves fixture separation."
+      ],
+      "ownedSurfaces": [
+        "build-arena child issue",
+        "elenchus-core child issue",
+        "arena-calibration child issue"
+      ],
+      "observableCheckIds": ["issue_bodies_reference_target", "ownership_split_review"]
+    },
+    {
+      "id": "feedback_loop",
+      "name": "Fixture feedback loop",
+      "kind": "strategy",
+      "riskLevel": "medium",
+      "responsibilities": [
+        "Allow calibration fixture failures to update the parent contract without letting fixture code become the product owner.",
+        "Record verification gaps and near-neighbor alternatives when the contract is too weak to classify a proposal."
+      ],
+      "ownedSurfaces": [
+        "fixture feedback notes",
+        "parent issue compatibility questions"
+      ],
+      "observableCheckIds": ["calibration_failure_feedback_recorded"]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "contract_precedes_child_implementation",
+      "fromComponent": "contract_authority",
+      "toComponent": "child_ticket_alignment",
+      "kind": "precedes",
+      "description": "Child repos must target the parent Project Model v0 contract before adding local adapters or fixtures.",
+      "observableCheckIds": ["issue_bodies_reference_target"]
+    },
+    {
+      "id": "child_results_feed_contract",
+      "fromComponent": "child_ticket_alignment",
+      "toComponent": "feedback_loop",
+      "kind": "feeds",
+      "description": "Child implementation gaps and fixture failures feed back into the parent contract as verification gaps or compatibility questions.",
+      "observableCheckIds": ["calibration_failure_feedback_recorded"]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "advisory_not_oracle",
+      "description": "Elenchus signals are advisory alignment/explanation-quality evidence, not objective truth or auto-approval.",
+      "componentIds": ["contract_authority", "child_ticket_alignment"],
+      "observableCheckIds": ["contract_doc_schema_sync", "ownership_split_review"]
+    },
+    {
+      "id": "non_code_observability",
+      "description": "Architecture, process, and strategy components still need observable checks such as issue text, ADR review, tabletop transcript, or rubric output.",
+      "componentIds": ["contract_authority", "feedback_loop"],
+      "observableCheckIds": ["non_code_observable_review", "calibration_failure_feedback_recorded"]
+    }
+  ],
+  "observableChecks": [
+    {
+      "id": "contract_doc_schema_sync",
+      "componentId": "contract_authority",
+      "mode": "static-analysis",
+      "description": "Compare docs and schema for required field names and F3 definition markers.",
+      "observableSignal": "local tests validate worked examples against the schema and scan docs for required contract terms",
+      "evidenceRequired": ["pytest output", "schema path", "doc path"],
+      "noLiveApi": true
+    },
+    {
+      "id": "non_code_observable_review",
+      "componentId": "contract_authority",
+      "mode": "non-code-rubric",
+      "description": "Reviewer checks that non-code components have visible artifacts and evidence, not vibes.",
+      "observableSignal": "review checklist marks each non-code component with a named artifact and pass/fail condition",
+      "evidenceRequired": ["review checklist", "artifact links"],
+      "noLiveApi": true
+    },
+    {
+      "id": "issue_bodies_reference_target",
+      "componentId": "child_ticket_alignment",
+      "mode": "inspection",
+      "description": "Read child issue bodies and verify each names project-model/v0 plus the schema/doc compatibility target.",
+      "observableSignal": "all child issues link to the parent and mention the same compatibility target",
+      "evidenceRequired": ["issue URLs", "body excerpts"],
+      "noLiveApi": true
+    },
+    {
+      "id": "ownership_split_review",
+      "componentId": "child_ticket_alignment",
+      "mode": "inspection",
+      "description": "Verify ownership split is explicit and compatible across the child tickets.",
+      "observableSignal": "no child issue asks elenchus-core or arena-calibration to redefine the Project Model",
+      "evidenceRequired": ["issue body excerpts", "parent issue comment"],
+      "noLiveApi": true
+    },
+    {
+      "id": "calibration_failure_feedback_recorded",
+      "componentId": "feedback_loop",
+      "mode": "artifact-audit",
+      "description": "When a fixture exposes a contract gap, record it as a verification gap or parent compatibility question.",
+      "observableSignal": "the parent issue/spec records the failed fixture family and proposed contract adjustment",
+      "evidenceRequired": ["fixture ID", "gap note", "follow-up link"],
+      "noLiveApi": true
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "id": "issue_body_evidence",
+      "description": "GitHub issue body excerpts proving compatibility target and ownership split.",
+      "acceptedArtifactTypes": ["issue-url", "markdown-excerpt"],
+      "requiredFor": ["child_ticket_alignment"]
+    },
+    {
+      "id": "non_code_review_artifact",
+      "description": "A checklist, ADR, tabletop transcript, or process dry-run log that can be inspected by a reviewer.",
+      "acceptedArtifactTypes": ["markdown", "tabletop-transcript", "review-checklist"],
+      "requiredFor": ["contract_authority", "feedback_loop"]
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "parent_issue_is_authoritative",
+      "description": "The build-arena parent issue is the source of truth for the shared contract during v0 rollout.",
+      "status": "confirmed"
+    },
+    {
+      "id": "child_repos_can_consume_json_schema",
+      "description": "Each child repo can either validate the JSON schema directly or map its local types to the schema fields.",
+      "status": "assumed"
+    }
+  ],
+  "risks": [
+    {
+      "id": "semantic_drift",
+      "componentId": "child_ticket_alignment",
+      "level": "high",
+      "description": "Child agents may use local meanings for decomposition or observable check and pass incompatible fixtures.",
+      "mitigation": "Require issue bodies and acceptance criteria to target project-model/v0 explicitly."
+    },
+    {
+      "id": "meta_f3_ruler",
+      "componentId": "contract_authority",
+      "level": "high",
+      "description": "A vague parent model would become a bad ruler that rewards checklist matching instead of target alignment.",
+      "mitigation": "Run quality-gate checks for no checks, vague decomposition, missing dependencies, unclassified surface, and missing high-risk probes."
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "id": "duplicate_local_contracts",
+      "description": "Let each repo define its own compatible-looking Project Model shape.",
+      "whyNotPrimary": "The repos would drift on F3 and observable-check semantics before calibration can compare results.",
+      "distinguishingEvidence": ["schema validation", "child issue body review"]
+    },
+    {
+      "id": "calibration_first",
+      "description": "Ask arena-calibration to create F3 fixtures before build-arena defines the model contract.",
+      "whyNotPrimary": "Calibration fixtures need a stable ruler; otherwise they test local guesswork instead of product intent.",
+      "distinguishingEvidence": ["ownership split review", "parent issue acceptance criteria"]
+    }
+  ],
+  "heldOutProbes": [
+    {
+      "id": "child_local_rename_probe",
+      "componentId": "child_ticket_alignment",
+      "probeType": "counterexample",
+      "scenario": "A child issue uses local names such as projectObjective and validationEvidence while claiming compatibility.",
+      "expectedBehavior": "The parent compatibility check flags the missing schemaVersion/project-model/v0 target and requires a mapping or issue edit.",
+      "evidenceRequired": ["issue excerpt", "compatibility finding"]
+    },
+    {
+      "id": "architecture_without_artifact_probe",
+      "componentId": "contract_authority",
+      "probeType": "tabletop",
+      "scenario": "An architecture component is described as important but has no ADR, issue body, checklist, or other inspectable artifact.",
+      "expectedBehavior": "The quality gate flags no observable check or unclassified surface instead of accepting the strategy prose.",
+      "evidenceRequired": ["tabletop note", "quality-gate finding"]
+    }
+  ],
+  "verificationGaps": [],
+  "unclassifiedProjectSurface": [],
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "componentAlignment",
+      "invariantViolations",
+      "dependencyViolations",
+      "unsupportedAssumptions",
+      "evidenceGroundingGaps",
+      "nearNeighborResistance",
+      "fLabelHint"
+    ],
+    "optionalFLabelHint": true
+  }
+}

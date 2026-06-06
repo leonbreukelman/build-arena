@@ -1,0 +1,518 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-build-pipeline",
+      "kind": "source",
+      "name": "Static Site Build Pipeline",
+      "observableCheckIds": [
+        "check-comp-build-pipeline"
+      ],
+      "ownedSurfaces": [
+        "scripts/build.py"
+      ],
+      "responsibilities": [
+        "Render templates and source data into the deployable site via scripts/build.py, failing closed when Python/Jinja dependencies are unavailable."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-link-checker",
+      "kind": "source",
+      "name": "Public Link Integrity Checker",
+      "observableCheckIds": [
+        "check-comp-link-checker"
+      ],
+      "ownedSurfaces": [
+        "scripts/check-public-links.py"
+      ],
+      "responsibilities": [
+        "Validate that public links and assets resolve via scripts/check-public-links.py before/after build."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-worker-edge-router",
+      "kind": "source",
+      "name": "Cloudflare Worker Edge Router",
+      "observableCheckIds": [
+        "check-comp-worker-edge-router"
+      ],
+      "ownedSurfaces": [
+        "worker/index.js",
+        "worker/index.js"
+      ],
+      "responsibilities": [
+        "Serve as the deployed worker entrypoint (worker/index.js) routing inbound requests and delegating agent traffic to the MCP server module."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-mcp-server",
+      "kind": "source",
+      "name": "MCP Server Module",
+      "observableCheckIds": [
+        "check-comp-mcp-server"
+      ],
+      "ownedSurfaces": [
+        "worker/mcp/server.js"
+      ],
+      "responsibilities": [
+        "Implement the Model Context Protocol surface (worker/mcp/server.js) that exposes agent-facing tools/resources."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-public-agent-data",
+      "kind": "source",
+      "name": "Public Agent Data & Discovery Metadata",
+      "observableCheckIds": [
+        "check-comp-public-agent-data"
+      ],
+      "ownedSurfaces": [
+        "api/v1/profile.json",
+        "llms.txt",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md",
+        "prompt/represent_me.md"
+      ],
+      "responsibilities": [
+        "Contains api/v1/profile.json, llms.txt, and prompt/represent_me.md as one agent-facing data bucket."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-project-docs",
+      "kind": "source",
+      "name": "Project Documentation",
+      "observableCheckIds": [
+        "check-comp-project-docs"
+      ],
+      "ownedSurfaces": [
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "responsibilities": [
+        "Onboard humans and AI agents with install, development, build, preview, deployment, and structure guidance (README.md)."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Worker edge router invokes MCP server module",
+      "fromComponent": "comp-worker-edge-router",
+      "id": "contract-router-to-mcp",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-worker-edge-router"
+      ],
+      "toComponent": "comp-mcp-server"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "comp-build-pipeline",
+        "comp-link-checker",
+        "comp-worker-edge-router",
+        "comp-mcp-server",
+        "comp-public-agent-data",
+        "comp-project-docs"
+      ]
+    }
+  ],
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "heldOutProbes": [
+    {
+      "componentId": "comp-worker-edge-router",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-worker-mcp-distinct-endpoints",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:merge-worker-mcp-into-one-component."
+    },
+    {
+      "componentId": "comp-build-pipeline",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-persona-corpus-distinct-from-machine-data",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:persona-corpus-merged-into-public-data."
+    },
+    {
+      "componentId": "comp-build-pipeline",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-build-pipeline-source-only-no-dist",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:dist-output-as-owned-source."
+    },
+    {
+      "componentId": "comp-build-pipeline",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-anti-fabrication-concern-is-universal",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative neg:drop-anti-fabrication-concern."
+    }
+  ],
+  "id": "leonbreukelman-engineer",
+  "invariants": [
+    {
+      "componentIds": [
+        "comp-build-pipeline",
+        "comp-link-checker",
+        "comp-worker-edge-router",
+        "comp-mcp-server",
+        "comp-public-agent-data",
+        "comp-project-docs"
+      ],
+      "description": "Every component, contract, and check must trace to selected nodes and prov identifiers in the packet; no files, edges, or behaviors are invented beyond the supplied graph.",
+      "id": "concern-anti-fabrication",
+      "observableCheckIds": [
+        "check-comp-build-pipeline",
+        "check-comp-link-checker",
+        "check-comp-worker-edge-router",
+        "check-comp-mcp-server",
+        "check-comp-public-agent-data",
+        "check-comp-project-docs"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-build-pipeline",
+        "comp-public-agent-data"
+      ],
+      "description": "The build must be reproducible; scripts/build.py imports datetime, which can inject nondeterministic timestamps into rendered output and must be pinned or excluded from acceptance comparisons.",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-comp-build-pipeline",
+        "check-comp-link-checker",
+        "check-comp-worker-edge-router",
+        "check-comp-mcp-server",
+        "check-comp-public-agent-data",
+        "check-comp-project-docs"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-build-pipeline",
+        "comp-link-checker",
+        "comp-worker-edge-router",
+        "comp-mcp-server",
+        "comp-public-agent-data",
+        "comp-project-docs"
+      ],
+      "description": "Each emitted component and contract carries prov references back to its source node(s) so the decomposition is auditable against the repository.",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-comp-build-pipeline",
+        "check-comp-link-checker",
+        "check-comp-worker-edge-router",
+        "check-comp-mcp-server",
+        "check-comp-public-agent-data",
+        "check-comp-project-docs"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-build-pipeline",
+        "comp-link-checker"
+      ],
+      "description": "The acceptance command must not invoke any live paid API; npm run build performs local rendering and npm run check:links performs unauthenticated public HTTP fetches only.",
+      "id": "concern-no-live-paid-api-acceptance",
+      "observableCheckIds": [
+        "check-comp-build-pipeline",
+        "check-comp-link-checker",
+        "check-comp-worker-edge-router",
+        "check-comp-mcp-server",
+        "check-comp-public-agent-data",
+        "check-comp-project-docs"
+      ]
+    },
+    {
+      "componentIds": [],
+      "description": "Generated surfaces are detected from git/filesystem truth and excluded from source component ownership.",
+      "id": "concern-generated-artifact-integrity",
+      "observableCheckIds": [
+        "check-comp-build-pipeline",
+        "check-comp-link-checker",
+        "check-comp-worker-edge-router",
+        "check-comp-mcp-server",
+        "check-comp-public-agent-data",
+        "check-comp-project-docs"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Own the generated dist/ output as the primary build artifact component.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-build-vs-dist",
+      "whyNotPrimary": "Non-goal forbids treating generated dist output as source ownership; scripts/build.py is the source-of-truth build surface. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "description": "Run the MCP server as a standalone Node process instead of a Cloudflare Worker module.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-mcp-standalone",
+      "whyNotPrimary": "Source shows worker/mcp/server.js imported by the Cloudflare worker entry (worker/index.js) and deployment targets Cloudflare Pages; the packet does not require an alternate runtime. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "description": "Generate api/v1/profile.json and llms.txt at build time rather than committing them as source.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-data-generated-at-build",
+      "whyNotPrimary": "The packet selects profile.json (config) and llms.txt as committed source files with their own prov, and no edge shows build.py emitting them. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    },
+    {
+      "description": "Fold the represent_me persona prompt into the public JSON data component.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "nn-persona-in-data",
+      "whyNotPrimary": "prompt/represent_me.md is a distinct prose corpus (file plus nine narrative sections) with separate prov; it is authored representation guidance, not machine-readable API data. Anchored to goal: decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs; non-goals: do not treat generated dist output as source ownership; do not require Cloudflare deployment or public mutation."
+    }
+  ],
+  "nonGoals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "comp-build-pipeline",
+      "description": "Observable local check for Static Site Build Pipeline.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-build-pipeline",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    },
+    {
+      "componentId": "comp-link-checker",
+      "description": "Observable local check for Public Link Integrity Checker.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-link-checker",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    },
+    {
+      "componentId": "comp-worker-edge-router",
+      "description": "Observable local check for Cloudflare Worker Edge Router.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-worker-edge-router",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    },
+    {
+      "componentId": "comp-mcp-server",
+      "description": "Observable local check for MCP Server Module.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-mcp-server",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    },
+    {
+      "componentId": "comp-public-agent-data",
+      "description": "Observable local check for Public Agent Data & Discovery Metadata.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-public-agent-data",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    },
+    {
+      "componentId": "comp-project-docs",
+      "description": "Observable local check for Project Documentation.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-project-docs",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "npm run build && npm run check:links"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/leonbreukelman-engineer",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "comp-build-pipeline",
+        "comp-public-agent-data"
+      ],
+      "description": "build.py's consumption of api/v1/profile.json, llms.txt, and the persona corpus is not represented by any graph edge; only Python stdlib/jinja2 import edges were captured, so the build-consumes-data and build-renders-persona contracts are inferred rather than graph-observed.",
+      "id": "gap-build-data-edge-missing",
+      "proposedClosureCheck": "Assert that rendered build output embeds fields from api/v1/profile.json and headings from prompt/represent_me.md after npm run build.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-build-pipeline",
+        "comp-project-docs"
+      ],
+      "description": "build.py imports jinja2 and README#Structure documents a templates surface, but no template node was selected in the packet, leaving the template surface uncomponentized.",
+      "id": "gap-templates-not-componentized",
+      "proposedClosureCheck": "Re-run graph extraction to include template (e.g. *.j2/*.html) nodes and bind them to the build pipeline component, then verify each template is rendered by npm run build.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-link-checker",
+        "comp-public-agent-data",
+        "comp-project-docs"
+      ],
+      "description": "scripts/check-public-links.py uses urllib.request to fetch public URLs, but the set of checked targets is not represented as graph nodes/edges, so link-surface coverage cannot be verified from the packet.",
+      "id": "gap-linkcheck-target-unobserved",
+      "proposedClosureCheck": "Capture the link inventory emitted by npm run check:links and assert each public asset (api/v1/profile.json, llms.txt) is included in the checked set.",
+      "severity": "low"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-mcp-server",
+        "comp-worker-edge-router"
+      ],
+      "description": "The MCP request/response contract served by worker/mcp/server.js is not captured by any node/edge beyond the module import, so the protocol surface is unverified.",
+      "id": "gap-mcp-protocol-unspecified",
+      "proposedClosureCheck": "Add a worker integration test that issues a representative MCP request through worker/index.js and asserts a schema-valid response from the server module.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-build-pipeline",
+        "comp-public-agent-data"
+      ],
+      "description": "Model proposed `contract:build-consumes-data` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap-unsupported-contract-contract-build-consumes-data",
+      "proposedClosureCheck": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-build-pipeline"
+      ],
+      "description": "Model proposed `contract:build-renders-persona` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap-unsupported-contract-contract-build-renders-persona",
+      "proposedClosureCheck": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-link-checker",
+        "comp-public-agent-data"
+      ],
+      "description": "Model proposed `contract:linkcheck-validates-data` as a semantic contract, but the current graph has no deterministic supporting edge; keep it as a verification gap rather than a passed contract.",
+      "id": "gap-unsupported-contract-contract-linkcheck-validates-data",
+      "proposedClosureCheck": "Add deterministic reference extraction or a focused local check that proves this semantic dependency.",
+      "severity": "medium"
+    },
+    {
+      "affectedComponentIds": [
+        "comp-public-agent-data"
+      ],
+      "description": "Public JSON/well-known static surfaces are present but not yet componentized: api/v1/case_studies.json, api/v1/projects.json, well-known/agent-card.json, well-known/ai.json, well-known/security.txt. They are held as explicit verification gaps rather than silently passing as covered by the public-agent-data component.",
+      "id": "gap-unowned-public-static-surfaces",
+      "proposedClosureCheck": "Add deterministic static-surface grouping and link-check target mapping for api/v1/* and well-known/* source files.",
+      "severity": "medium"
+    }
+  ]
+}

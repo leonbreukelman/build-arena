@@ -1,0 +1,48 @@
+{
+  "artifact_hashes": {
+    "gate_report": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+    "graph_file": "7fcfb61097bc2069c81ce1f9393c03f586000a2c3abe90eb59dd603da4c0b230",
+    "project_model_v0": "285283ad68c4bb6e7bbce732cf2855880961368fba8227effa2dd0059d7f20b6",
+    "snapshot": "659c1ccf6d4635382204e9f13a902232fdbc5ce6fbff8ac9ad421a87357053b6"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb"
+  },
+  "encyclopedia_manifest_hash": "4127f6050cf40d7e95c5eee2ca8a9657072493cc178444ff33b05025c879e9fe",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+  "gate_report_path": "gate-report.json",
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "graph_file_hash": "7fcfb61097bc2069c81ce1f9393c03f586000a2c3abe90eb59dd603da4c0b230",
+  "graph_hash": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357"
+  },
+  "model_ids": {
+    "decomposer": "claude-opus-4-8",
+    "probe_builder": "claude-sonnet-4-6",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "output_hashes": {
+    "decomposer": "6fcbebbd0e693741b7345e44b760aca75afb8c3936cf16f1ad167a52fa4f21ab"
+  },
+  "project_id": "leonbreukelman-engineer",
+  "project_model_v0_hash": "285283ad68c4bb6e7bbce732cf2855880961368fba8227effa2dd0059d7f20b6",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_root": "/home/leonb/projects/leonbreukelman-engineer",
+  "prompt_hashes": {
+    "decomposer": "8e1ca8b2298c729ad6b78547b23763b4ab449a12852825a8d71a81e84257846e"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "659c1ccf6d4635382204e9f13a902232fdbc5ce6fbff8ac9ad421a87357053b6",
+  "snapshot_id": "snapshot-7897ac06d4f929af",
+  "snapshot_path": "snapshot.json"
+}

@@ -1,0 +1,2793 @@
+{
+  "project_id": "build-arena",
+  "repo": "/home/leonb/projects/build-arena",
+  "goal": "decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics",
+  "non_goals": [
+    "do not accept file-bucket components",
+    "do not treat scorer verifier schema or generated files as owned arena hypotheses"
+  ],
+  "actual_verification_command": "uv run pytest tests -q",
+  "git_dirty": true,
+  "dirty_paths": [
+    "arena/project_decomposer_ai.py",
+    "arena/project_encyclopedia.py",
+    "arena/project_graph.py",
+    "arena/project_model_cli.py",
+    "arena/project_model_gate.py",
+    "arena/project_model_llm.py",
+    "arena/project_snapshot.py",
+    "docs/build-arena-constitution.md",
+    "docs/build-arena-current-state.md",
+    "docs/build-arena-project-brief.md",
+    "docs/build-arena-specification.md",
+    "docs/plans/2026-06-04-ai-first-project-decomposer-implementation-plan.md",
+    "docs/playbooks/",
+    "docs/research/",
+    "docs/specs/",
+    "docs/verification/2026-06-01-arena-calibration-decomposer-evaluation-report.md",
+    "docs/verification/2026-06-01-arena-calibration-decomposer-local-evaluation.json",
+    "docs/verification/2026-06-01-arena-calibration-decomposer-model.json",
+    "docs/verification/2026-06-01-arena-calibration-model-review-prompt-distilled.md",
+    "docs/verification/2026-06-01-arena-calibration-model-review-prompt-grok.md",
+    "docs/verification/2026-06-01-arena-calibration-model-review-prompt.md",
+    "docs/verification/2026-06-01-grok-build-arena-calibration-model-review.md",
+    "docs/verification/2026-06-01-grok-build-arena-calibration-model-review.stderr",
+    "docs/verification/2026-06-01-opus-arena-calibration-model-review.json",
+    "docs/verification/2026-06-01-opus-arena-calibration-model-review.md",
+    "docs/verification/2026-06-03-issue-3-project-model-v0-emit/",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview-prompt.md",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.json",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.md",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.stderr.txt",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review-prompt.md",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.json",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.md",
+    "docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.stderr.txt",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-review-input.md",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-review.json",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-pilot-opus-review.md",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-plan-opus-review.json",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-plan-opus-review.md",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-spec-opus-review.json",
+    "docs/verification/2026-06-04-ai-first-project-decomposer-spec-opus-review.md",
+    "tests/test_project_decomposer_ai.py",
+    "tests/test_project_encyclopedia.py",
+    "tests/test_project_graph.py",
+    "tests/test_project_model_cli_ai.py",
+    "tests/test_project_snapshot_gate.py"
+  ],
+  "node_kinds": {
+    "python_function": 479,
+    "verification_artifact": 223,
+    "markdown_section": 314,
+    "python_class": 120,
+    "file": 62,
+    "python_module": 55,
+    "test_file": 27,
+    "protected_surface": 10,
+    "config": 9,
+    "javascript_module": 1,
+    "generated_surface": 4,
+    "project": 1,
+    "python_import": 62
+  },
+  "edge_kinds": {
+    "defined_in": 655,
+    "documents": 314,
+    "imports": 360,
+    "contains": 335,
+    "protects": 10,
+    "tests": 36,
+    "generated_from": 4,
+    "configures": 9
+  },
+  "candidate_nodes": [
+    {
+      "id": "node:0088bc317c6c93bbb6a8",
+      "kind": "python_function",
+      "label": "run_loop",
+      "path": "arena/loop.py",
+      "symbol": "arena.loop.run_loop",
+      "tags": [],
+      "prov": "prov:203bd1535b5a6b54"
+    },
+    {
+      "id": "node:00cc7d2d70f9b4ac4c3a",
+      "kind": "python_function",
+      "label": "apply",
+      "path": "tests/test_runner_router.py",
+      "symbol": "tests.test_runner_router.apply",
+      "tags": [],
+      "prov": "prov:732e842be4fc3e11"
+    },
+    {
+      "id": "node:00ecc8a60f7800506fe7",
+      "kind": "python_function",
+      "label": "_git",
+      "path": "tests/test_worktrees.py",
+      "symbol": "tests.test_worktrees._git",
+      "tags": [],
+      "prov": "prov:52e379b82cb4cf6b"
+    },
+    {
+      "id": "node:00fceef6b5a3ab84d675",
+      "kind": "python_class",
+      "label": "FileRecord",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.FileRecord",
+      "tags": [],
+      "prov": "prov:41be55f8fcc16f52"
+    },
+    {
+      "id": "node:017ca8e0891e11fb316d",
+      "kind": "python_function",
+      "label": "__init__",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.__init__",
+      "tags": [],
+      "prov": "prov:34f43fc5daf1c859"
+    },
+    {
+      "id": "node:01e6e85222b1a652cca2",
+      "kind": "python_function",
+      "label": "apply",
+      "path": "arena/router.py",
+      "symbol": "arena.router.apply",
+      "tags": [],
+      "prov": "prov:9fbe8ad647126c50"
+    },
+    {
+      "id": "node:02ff135423ef695e91f6",
+      "kind": "python_function",
+      "label": "test_quality_gate_flags_meta_f3_failure_modes",
+      "path": "tests/test_project_model_v0_contract.py",
+      "symbol": "tests.test_project_model_v0_contract.test_quality_gate_flags_meta_f3_failure_modes",
+      "tags": [],
+      "prov": "prov:5931d448d4d233d9"
+    },
+    {
+      "id": "node:036086e1b5e28b7d98b8",
+      "kind": "python_function",
+      "label": "verify_worktree",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.verify_worktree",
+      "tags": [],
+      "prov": "prov:fc15e37d8ac6bd41"
+    },
+    {
+      "id": "node:0437aac7365a635c663f",
+      "kind": "python_module",
+      "label": "tests.test_project_model_v0_contract",
+      "path": "tests/test_project_model_v0_contract.py",
+      "symbol": "tests.test_project_model_v0_contract",
+      "tags": [],
+      "prov": "prov:77db521cbbafd2a3"
+    },
+    {
+      "id": "node:048bfe102d4c269aaeaf",
+      "kind": "test_file",
+      "label": "tests/test_worktrees.py",
+      "path": "tests/test_worktrees.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:3a1f6d72932058e7"
+    },
+    {
+      "id": "node:048f79edd7a9fa865c79",
+      "kind": "python_function",
+      "label": "_tracked_and_untracked_files",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._tracked_and_untracked_files",
+      "tags": [],
+      "prov": "prov:6e5f7624383aaf70"
+    },
+    {
+      "id": "node:04bae3f7a09e572cdc2d",
+      "kind": "python_function",
+      "label": "__contains__",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.__contains__",
+      "tags": [],
+      "prov": "prov:2236c06e64e84843"
+    },
+    {
+      "id": "node:0500c0f56a95e42e8027",
+      "kind": "python_class",
+      "label": "EventLog",
+      "path": "arena/events.py",
+      "symbol": "arena.events.EventLog",
+      "tags": [],
+      "prov": "prov:5141fb097d5c0dd4"
+    },
+    {
+      "id": "node:051d72797afc13b81c37",
+      "kind": "python_function",
+      "label": "_run",
+      "path": "arena/worktrees.py",
+      "symbol": "arena.worktrees._run",
+      "tags": [],
+      "prov": "prov:eacf89e2775612e8"
+    },
+    {
+      "id": "node:052d8863dca8b51e2ad5",
+      "kind": "python_class",
+      "label": "EncyclopediaManifest",
+      "path": "arena/project_encyclopedia.py",
+      "symbol": "arena.project_encyclopedia.EncyclopediaManifest",
+      "tags": [],
+      "prov": "prov:cb4f717939c1fa8c"
+    },
+    {
+      "id": "node:0532a9a3003cecb63c34",
+      "kind": "python_function",
+      "label": "snapshot_from_dict",
+      "path": "arena/project_snapshot.py",
+      "symbol": "arena.project_snapshot.snapshot_from_dict",
+      "tags": [],
+      "prov": "prov:d85e2b615710c9b6"
+    },
+    {
+      "id": "node:0538c960daf582ce2b77",
+      "kind": "python_function",
+      "label": "read_events",
+      "path": "arena/divergence.py",
+      "symbol": "arena.divergence.read_events",
+      "tags": [],
+      "prov": "prov:859113b55d67666f"
+    },
+    {
+      "id": "node:06169763c5a421143130",
+      "kind": "python_function",
+      "label": "validate",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.validate",
+      "tags": [],
+      "prov": "prov:d10eb9d862268d63"
+    },
+    {
+      "id": "node:062f9f7f5e79a9adc4b1",
+      "kind": "python_function",
+      "label": "has_failed",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.has_failed",
+      "tags": [],
+      "prov": "prov:61d5eda257978541"
+    },
+    {
+      "id": "node:066131b872c2fc2506b2",
+      "kind": "python_class",
+      "label": "StaticEventReader",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.StaticEventReader",
+      "tags": [],
+      "prov": "prov:13b0b0fc7b00d11b"
+    },
+    {
+      "id": "node:068c26412e161c4091ef",
+      "kind": "python_function",
+      "label": "_to_plain",
+      "path": "arena/project_encyclopedia.py",
+      "symbol": "arena.project_encyclopedia._to_plain",
+      "tags": [],
+      "prov": "prov:c27da6a025b6d9f1"
+    },
+    {
+      "id": "node:06e1bee10d7d366cbb1c",
+      "kind": "python_class",
+      "label": "SuccessfulRunner",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.SuccessfulRunner",
+      "tags": [],
+      "prov": "prov:f77571294b98e598"
+    },
+    {
+      "id": "node:06f18676ba2fbb274cfb",
+      "kind": "python_function",
+      "label": "intent",
+      "path": "arena/hypothesizer.py",
+      "symbol": "arena.hypothesizer.intent",
+      "tags": [],
+      "prov": "prov:527dd7cb0b1dfc99"
+    },
+    {
+      "id": "node:0705a6188be335171f7f",
+      "kind": "python_function",
+      "label": "_write_synthetic_python_project",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer._write_synthetic_python_project",
+      "tags": [],
+      "prov": "prov:a52b815465290c29"
+    },
+    {
+      "id": "node:07230de32dfff40d70b1",
+      "kind": "python_function",
+      "label": "build_noop_model_output",
+      "path": "arena/project_model_llm.py",
+      "symbol": "arena.project_model_llm.build_noop_model_output",
+      "tags": [],
+      "prov": "prov:7ea29c1936fcc5a2"
+    },
+    {
+      "id": "node:0793fe11073e5120ca30",
+      "kind": "python_function",
+      "label": "_arena_component_kind",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._arena_component_kind",
+      "tags": [],
+      "prov": "prov:b454b17a6bac6967"
+    },
+    {
+      "id": "node:08aea6044a9e03b83c23",
+      "kind": "test_file",
+      "label": "tests/test_project_decomposer.py",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:c3b8e0fb5f54f42a"
+    },
+    {
+      "id": "node:09068fc5b2d889652976",
+      "kind": "python_class",
+      "label": "Diverged",
+      "path": "arena/divergence.py",
+      "symbol": "arena.divergence.Diverged",
+      "tags": [],
+      "prov": "prov:0a62c6c9d8793343"
+    },
+    {
+      "id": "node:095e263a52b7a4c19e85",
+      "kind": "python_function",
+      "label": "__enter__",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.__enter__",
+      "tags": [],
+      "prov": "prov:e61a4eee750fc308"
+    },
+    {
+      "id": "node:09776bdfdb2fb8f74dc3",
+      "kind": "python_function",
+      "label": "test_deterministic_ablation_runner_handles_paraphrase_and_mistake_probes",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_deterministic_ablation_runner_handles_paraphrase_and_mistake_probes",
+      "tags": [],
+      "prov": "prov:69c84f75644e6cef"
+    },
+    {
+      "id": "node:0afbfeeaf9fde25739c7",
+      "kind": "python_function",
+      "label": "_hypothesis_id",
+      "path": "arena/hypothesizer.py",
+      "symbol": "arena.hypothesizer._hypothesis_id",
+      "tags": [],
+      "prov": "prov:e31258f0d24232d3"
+    },
+    {
+      "id": "node:0b2a2955a997f600d5f0",
+      "kind": "python_function",
+      "label": "test_gate_fails_fluent_non_vague_sibling_file_bucket_decomposition",
+      "path": "tests/test_project_snapshot_gate.py",
+      "symbol": "tests.test_project_snapshot_gate.test_gate_fails_fluent_non_vague_sibling_file_bucket_decomposition",
+      "tags": [],
+      "prov": "prov:9fc754f63e6e0275"
+    },
+    {
+      "id": "node:0b83915bd5f1534a6b84",
+      "kind": "python_class",
+      "label": "ContainsGhost",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.ContainsGhost",
+      "tags": [],
+      "prov": "prov:a0997d78d2610c79"
+    },
+    {
+      "id": "node:0c05132ec86f933eb752",
+      "kind": "python_module",
+      "label": "tests.test_divergence",
+      "path": "tests/test_divergence.py",
+      "symbol": "tests.test_divergence",
+      "tags": [],
+      "prov": "prov:0bc106758d4a30eb"
+    },
+    {
+      "id": "node:0c22e3f7eb59d721951d",
+      "kind": "python_function",
+      "label": "n2",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.n2",
+      "tags": [],
+      "prov": "prov:03e330b8889ad70b"
+    },
+    {
+      "id": "node:0c5332773eb96bc8cd2a",
+      "kind": "protected_surface",
+      "label": "scorer/engine.py",
+      "path": "scorer/engine.py",
+      "symbol": null,
+      "tags": [
+        "protected"
+      ],
+      "prov": "prov:b4ea60b636b808b4"
+    },
+    {
+      "id": "node:0e1b8b8f69fe2e9a57d0",
+      "kind": "test_file",
+      "label": "tests/test_events_projection.py",
+      "path": "tests/test_events_projection.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:5b8cf37cac539dd7"
+    },
+    {
+      "id": "node:0e37d63e546969b69d3f",
+      "kind": "python_function",
+      "label": "_exclusion_reason",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._exclusion_reason",
+      "tags": [],
+      "prov": "prov:88bcfa9fba2d21b5"
+    },
+    {
+      "id": "node:0e9ffd45a5151b46e278",
+      "kind": "python_function",
+      "label": "_fingerprint_for_component",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._fingerprint_for_component",
+      "tags": [],
+      "prov": "prov:3fcbc6fdfd8de125"
+    },
+    {
+      "id": "node:0eb73baebd66ff6ed216",
+      "kind": "test_file",
+      "label": "tests/test_verifier_gates.py",
+      "path": "tests/test_verifier_gates.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:4bd0f3243b60790f"
+    },
+    {
+      "id": "node:0f3063c131989c88cb36",
+      "kind": "python_function",
+      "label": "test_verifier_rejects_non_load_bearing_reasoning",
+      "path": "tests/test_verifier_gates.py",
+      "symbol": "tests.test_verifier_gates.test_verifier_rejects_non_load_bearing_reasoning",
+      "tags": [],
+      "prov": "prov:52fdb0471f39368a"
+    },
+    {
+      "id": "node:0f6d49e794675d11e479",
+      "kind": "python_function",
+      "label": "__eq__",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.__eq__",
+      "tags": [],
+      "prov": "prov:1211047946c2a09b"
+    },
+    {
+      "id": "node:104313c12acbcbd9c76d",
+      "kind": "config",
+      "label": "Makefile",
+      "path": "Makefile",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:415cbd2b9d88b290"
+    },
+    {
+      "id": "node:105e73a79534b7681e6e",
+      "kind": "python_function",
+      "label": "_copy_committed_repo",
+      "path": "tests/test_calibration_ordering.py",
+      "symbol": "tests.test_calibration_ordering._copy_committed_repo",
+      "tags": [],
+      "prov": "prov:5a1212a6860ae00c"
+    },
+    {
+      "id": "node:10b578ef24b96663b923",
+      "kind": "python_function",
+      "label": "SCAN",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.SCAN",
+      "tags": [],
+      "prov": "prov:05e2cca03f448d20"
+    },
+    {
+      "id": "node:10e1ad0ca0488b37dd91",
+      "kind": "python_class",
+      "label": "HypothesisProposal",
+      "path": "arena/hypothesizer.py",
+      "symbol": "arena.hypothesizer.HypothesisProposal",
+      "tags": [],
+      "prov": "prov:51891df93a505b96"
+    },
+    {
+      "id": "node:10fe6dfb662bc3e570a8",
+      "kind": "python_function",
+      "label": "test_graph_excludes_embedded_calibration_repos_from_primary_context",
+      "path": "tests/test_project_graph.py",
+      "symbol": "tests.test_project_graph.test_graph_excludes_embedded_calibration_repos_from_primary_context",
+      "tags": [],
+      "prov": "prov:82f0f6e475394377"
+    },
+    {
+      "id": "node:11a0406382b77a717fc1",
+      "kind": "python_function",
+      "label": "_decomposer_prompt",
+      "path": "arena/project_decomposer_ai.py",
+      "symbol": "arena.project_decomposer_ai._decomposer_prompt",
+      "tags": [],
+      "prov": "prov:751ecc2263b01559"
+    },
+    {
+      "id": "node:12377f8ac159ed6d215c",
+      "kind": "python_function",
+      "label": "test_calibration_loop_promotes_one_positive_patch",
+      "path": "tests/test_loop_phase4.py",
+      "symbol": "tests.test_loop_phase4.test_calibration_loop_promotes_one_positive_patch",
+      "tags": [],
+      "prov": "prov:f5355398cdd62e10"
+    },
+    {
+      "id": "node:12749f8af13d3c4640e1",
+      "kind": "python_function",
+      "label": "decompose_project_model_v0",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.decompose_project_model_v0",
+      "tags": [],
+      "prov": "prov:54221c9da8ac1b60"
+    },
+    {
+      "id": "node:12af6e17e5d477c66abd",
+      "kind": "python_function",
+      "label": "_javascript_module_name",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._javascript_module_name",
+      "tags": [],
+      "prov": "prov:85288356dfede69b"
+    },
+    {
+      "id": "node:136c3e062f8958a46688",
+      "kind": "test_file",
+      "label": "tests/test_scorer_lock.py",
+      "path": "tests/test_scorer_lock.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:b9812021c7aefc63"
+    },
+    {
+      "id": "node:13f62db4f6e456362d08",
+      "kind": "python_function",
+      "label": "_list_of_scalars",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0._list_of_scalars",
+      "tags": [],
+      "prov": "prov:cd271a7b0a83a55f"
+    },
+    {
+      "id": "node:142aa584d05afe40c3c3",
+      "kind": "python_function",
+      "label": "test_boundary_violation_attempts_trip_after_threshold",
+      "path": "tests/test_divergence.py",
+      "symbol": "tests.test_divergence.test_boundary_violation_attempts_trip_after_threshold",
+      "tags": [],
+      "prov": "prov:b800b2975880fce0"
+    },
+    {
+      "id": "node:1445af82f7045621ca80",
+      "kind": "python_class",
+      "label": "EvidenceRequirement",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.EvidenceRequirement",
+      "tags": [],
+      "prov": "prov:cd4246c0e2172296"
+    },
+    {
+      "id": "node:1459c791b6b405e600e4",
+      "kind": "python_function",
+      "label": "_base_model",
+      "path": "tests/test_project_model_v0_contract.py",
+      "symbol": "tests.test_project_model_v0_contract._base_model",
+      "tags": [],
+      "prov": "prov:feeb013a25db5351"
+    },
+    {
+      "id": "node:14ca574bd6f0a6074b23",
+      "kind": "python_function",
+      "label": "_sha256_hex",
+      "path": "arena/fingerprints.py",
+      "symbol": "arena.fingerprints._sha256_hex",
+      "tags": [],
+      "prov": "prov:d37824f7e44500e9"
+    },
+    {
+      "id": "node:14f7378b2356ec5878d4",
+      "kind": "test_file",
+      "label": "tests/test_project_snapshot_gate.py",
+      "path": "tests/test_project_snapshot_gate.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:0d7fa71cc44f7fb2"
+    },
+    {
+      "id": "node:15699c5fe6fe6b6806d7",
+      "kind": "python_function",
+      "label": "test_bandit_uses_ucb_after_cold_start",
+      "path": "tests/test_hypothesizer_bandit.py",
+      "symbol": "tests.test_hypothesizer_bandit.test_bandit_uses_ucb_after_cold_start",
+      "tags": [],
+      "prov": "prov:3682e60fca6ed86a"
+    },
+    {
+      "id": "node:15b7501e4c6734c1de0f",
+      "kind": "python_class",
+      "label": "ApplyResult",
+      "path": "arena/runners/base.py",
+      "symbol": "arena.runners.base.ApplyResult",
+      "tags": [],
+      "prov": "prov:6d393abb934d1f90"
+    },
+    {
+      "id": "node:15e524a94c12406d4692",
+      "kind": "python_function",
+      "label": "_interesting_snippet",
+      "path": "arena/project_encyclopedia.py",
+      "symbol": "arena.project_encyclopedia._interesting_snippet",
+      "tags": [],
+      "prov": "prov:89652ff22291501e"
+    },
+    {
+      "id": "node:161b331eaad8387d2c8d",
+      "kind": "python_function",
+      "label": "execute",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.execute",
+      "tags": [],
+      "prov": "prov:e6506cf48b294657"
+    },
+    {
+      "id": "node:166a93ad67ab725d3ed4",
+      "kind": "python_function",
+      "label": "_loop_context",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure._loop_context",
+      "tags": [],
+      "prov": "prov:72d3b3bbac7b3db5"
+    },
+    {
+      "id": "node:17e126f61373fd99f09f",
+      "kind": "python_function",
+      "label": "graph_to_dict",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph.graph_to_dict",
+      "tags": [],
+      "prov": "prov:23c53beacac31d47"
+    },
+    {
+      "id": "node:1816296aa460f8cc88c8",
+      "kind": "python_function",
+      "label": "_next_seq",
+      "path": "arena/events.py",
+      "symbol": "arena.events._next_seq",
+      "tags": [],
+      "prov": "prov:ea12d0f315b826ad"
+    },
+    {
+      "id": "node:18a6cab518b2af77f309",
+      "kind": "python_class",
+      "label": "DashboardPublisher",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.DashboardPublisher",
+      "tags": [],
+      "prov": "prov:b11df1d57b184984"
+    },
+    {
+      "id": "node:197ebdebb58d30803e2b",
+      "kind": "python_function",
+      "label": "test_build_project_model_snapshot_writes_sidecars_and_v0_projection",
+      "path": "tests/test_project_decomposer_ai.py",
+      "symbol": "tests.test_project_decomposer_ai.test_build_project_model_snapshot_writes_sidecars_and_v0_projection",
+      "tags": [],
+      "prov": "prov:bcec65ba8d5d54d8"
+    },
+    {
+      "id": "node:1a6d219fc9ecee3c0ea4",
+      "kind": "python_function",
+      "label": "p3",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.p3",
+      "tags": [],
+      "prov": "prov:56762804dae783dc"
+    },
+    {
+      "id": "node:1ac65160a779aa8dfabc",
+      "kind": "python_class",
+      "label": "CrossCuttingConcern",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.CrossCuttingConcern",
+      "tags": [],
+      "prov": "prov:9712a17ffdd79d59"
+    },
+    {
+      "id": "node:1acc1a28c9f0bfed2460",
+      "kind": "python_function",
+      "label": "_resolve_javascript_import",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._resolve_javascript_import",
+      "tags": [],
+      "prov": "prov:d525fa5ad4d2a3f9"
+    },
+    {
+      "id": "node:1b58187746a6d0e045c9",
+      "kind": "python_function",
+      "label": "write",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.write",
+      "tags": [],
+      "prov": "prov:257c2e6b1f6293a6"
+    },
+    {
+      "id": "node:1bfbb7b2c224caa085b8",
+      "kind": "python_class",
+      "label": "QualityGateReport",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.QualityGateReport",
+      "tags": [],
+      "prov": "prov:035658a931a3e781"
+    },
+    {
+      "id": "node:1c0324b7c4491cd6145c",
+      "kind": "python_class",
+      "label": "NearNeighborAlternative",
+      "path": "arena/project_snapshot.py",
+      "symbol": "arena.project_snapshot.NearNeighborAlternative",
+      "tags": [],
+      "prov": "prov:48a2ce811bb25916"
+    },
+    {
+      "id": "node:1c509eb75b1661be6088",
+      "kind": "python_function",
+      "label": "p4",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.p4",
+      "tags": [],
+      "prov": "prov:3df7d61fbfdaf58a"
+    },
+    {
+      "id": "node:1c9a581b3e7021704e85",
+      "kind": "python_class",
+      "label": "ProjectionSummary",
+      "path": "arena/events.py",
+      "symbol": "arena.events.ProjectionSummary",
+      "tags": [],
+      "prov": "prov:a37d34149aaceb03"
+    },
+    {
+      "id": "node:1cbb9b5595b8dcc163a7",
+      "kind": "python_function",
+      "label": "test_deterministic_ablation_runner_discriminates_load_bearing_reasoning",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_deterministic_ablation_runner_discriminates_load_bearing_reasoning",
+      "tags": [],
+      "prov": "prov:e8f5e085cae32b21"
+    },
+    {
+      "id": "node:1cd2c0fc0535672ef746",
+      "kind": "python_function",
+      "label": "_remove_runtime_artifacts",
+      "path": "arena/worktrees.py",
+      "symbol": "arena.worktrees._remove_runtime_artifacts",
+      "tags": [],
+      "prov": "prov:c0ed2b92ccc1a591"
+    },
+    {
+      "id": "node:1d8ba629d9b4fd677a57",
+      "kind": "python_function",
+      "label": "_hypothesis",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure._hypothesis",
+      "tags": [],
+      "prov": "prov:67950db83f035130"
+    },
+    {
+      "id": "node:1e05807cd1be48844ba5",
+      "kind": "python_class",
+      "label": "GitPromoter",
+      "path": "arena/worktrees.py",
+      "symbol": "arena.worktrees.GitPromoter",
+      "tags": [],
+      "prov": "prov:821dac19d9b68a29"
+    },
+    {
+      "id": "node:1e21740c50b621004300",
+      "kind": "python_function",
+      "label": "_scope_for_component",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._scope_for_component",
+      "tags": [],
+      "prov": "prov:46c717f5758988c2"
+    },
+    {
+      "id": "node:1e5c6b3406e139d5e5fb",
+      "kind": "python_function",
+      "label": "n3",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.n3",
+      "tags": [],
+      "prov": "prov:d4a42c654c60e2aa"
+    },
+    {
+      "id": "node:1e634df8151745189f3b",
+      "kind": "python_module",
+      "label": "tests.test_view_before_edit",
+      "path": "tests/test_view_before_edit.py",
+      "symbol": "tests.test_view_before_edit",
+      "tags": [],
+      "prov": "prov:3c792165cd24e47f"
+    },
+    {
+      "id": "node:1f27bb7d71f6d95889c1",
+      "kind": "python_function",
+      "label": "_to_posix",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._to_posix",
+      "tags": [],
+      "prov": "prov:7b3542e067dc7f50"
+    },
+    {
+      "id": "node:209782252b2f0d794212",
+      "kind": "python_class",
+      "label": "RecordingPromoter",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.RecordingPromoter",
+      "tags": [],
+      "prov": "prov:64271f7225f4c4a5"
+    },
+    {
+      "id": "node:20a3bab118463d9434ca",
+      "kind": "python_class",
+      "label": "Contract",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.Contract",
+      "tags": [],
+      "prov": "prov:222665e4cc1e95ac"
+    },
+    {
+      "id": "node:20e26901764628576e2b",
+      "kind": "python_class",
+      "label": "DivergenceDetector",
+      "path": "arena/divergence.py",
+      "symbol": "arena.divergence.DivergenceDetector",
+      "tags": [],
+      "prov": "prov:fb16e690186f2cb6"
+    },
+    {
+      "id": "node:2144ed2bd9dd192bb8ab",
+      "kind": "python_function",
+      "label": "_shares_significant_word",
+      "path": "arena/project_model_gate.py",
+      "symbol": "arena.project_model_gate._shares_significant_word",
+      "tags": [],
+      "prov": "prov:f4a04110062ff88e"
+    },
+    {
+      "id": "node:21518d46a0396303e351",
+      "kind": "python_function",
+      "label": "promote",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.promote",
+      "tags": [],
+      "prov": "prov:0db927f65a9557b8"
+    },
+    {
+      "id": "node:216773029cb6005c1f90",
+      "kind": "python_function",
+      "label": "_contradictory_dependency_findings",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0._contradictory_dependency_findings",
+      "tags": [],
+      "prov": "prov:94424e66b3709997"
+    },
+    {
+      "id": "node:220fb40ba0fcb931bdd0",
+      "kind": "python_class",
+      "label": "Verifier",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.Verifier",
+      "tags": [],
+      "prov": "prov:23583c4374f3e45a"
+    },
+    {
+      "id": "node:22a140692d79aa6f497c",
+      "kind": "python_function",
+      "label": "test_filesystem_fallback_uses_denylist_and_typed_exclusions",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer.test_filesystem_fallback_uses_denylist_and_typed_exclusions",
+      "tags": [],
+      "prov": "prov:147781594a4bff7c"
+    },
+    {
+      "id": "node:22b22d1b06d7bd21228b",
+      "kind": "python_function",
+      "label": "_ast_diff_pattern",
+      "path": "arena/loop.py",
+      "symbol": "arena.loop._ast_diff_pattern",
+      "tags": [],
+      "prov": "prov:cc8db1ea6eea5737"
+    },
+    {
+      "id": "node:23071a434774cd47ff74",
+      "kind": "python_function",
+      "label": "_event_cycle_id",
+      "path": "arena/divergence.py",
+      "symbol": "arena.divergence._event_cycle_id",
+      "tags": [],
+      "prov": "prov:3b4f1605b95dea3b"
+    },
+    {
+      "id": "node:231cf3a6fea69c0a9436",
+      "kind": "python_class",
+      "label": "ProvenanceRef",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph.ProvenanceRef",
+      "tags": [],
+      "prov": "prov:52e02b5d5d426b96"
+    },
+    {
+      "id": "node:2363c7a98cabee396a4f",
+      "kind": "python_function",
+      "label": "_id",
+      "path": "arena/project_model_llm.py",
+      "symbol": "arena.project_model_llm._id",
+      "tags": [],
+      "prov": "prov:27d2caacc4090c9f"
+    },
+    {
+      "id": "node:236799e2ead7742d13d4",
+      "kind": "protected_surface",
+      "label": "scorer/lock.py",
+      "path": "scorer/lock.py",
+      "symbol": null,
+      "tags": [
+        "protected"
+      ],
+      "prov": "prov:ef892d964ca5a2f4"
+    },
+    {
+      "id": "node:23db855188c47cb27d7f",
+      "kind": "python_module",
+      "label": "tests.test_calibration_ordering",
+      "path": "tests/test_calibration_ordering.py",
+      "symbol": "tests.test_calibration_ordering",
+      "tags": [],
+      "prov": "prov:ca0f10304ca33ccd"
+    },
+    {
+      "id": "node:240a10374b95530fc209",
+      "kind": "python_function",
+      "label": "dirty_failure",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.dirty_failure",
+      "tags": [],
+      "prov": "prov:3f129cdba5295cec"
+    },
+    {
+      "id": "node:241410ab7066e976d86c",
+      "kind": "python_function",
+      "label": "_tool_event",
+      "path": "tests/test_view_before_edit.py",
+      "symbol": "tests.test_view_before_edit._tool_event",
+      "tags": [],
+      "prov": "prov:56ed79002ad52d0d"
+    },
+    {
+      "id": "node:246f20ac99acfc175a00",
+      "kind": "python_function",
+      "label": "test_verified_discard_emits_single_verdict_and_disagreement",
+      "path": "tests/test_loop_phase4.py",
+      "symbol": "tests.test_loop_phase4.test_verified_discard_emits_single_verdict_and_disagreement",
+      "tags": [],
+      "prov": "prov:4443cf3688705fbd"
+    },
+    {
+      "id": "node:25f20977d4f2a6ed4c22",
+      "kind": "python_function",
+      "label": "test_read_then_edit_same_path_in_same_turn_passes",
+      "path": "tests/test_view_before_edit.py",
+      "symbol": "tests.test_view_before_edit.test_read_then_edit_same_path_in_same_turn_passes",
+      "tags": [],
+      "prov": "prov:75322ee4db4ac042"
+    },
+    {
+      "id": "node:264d1591a90b359255bf",
+      "kind": "python_function",
+      "label": "_baseline",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure._baseline",
+      "tags": [],
+      "prov": "prov:91b8507ef4fcd07e"
+    },
+    {
+      "id": "node:2662b4d6afdb706e687b",
+      "kind": "python_function",
+      "label": "validate_project_model_v0",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.validate_project_model_v0",
+      "tags": [],
+      "prov": "prov:77fd2113e1f33575"
+    },
+    {
+      "id": "node:266d99808de13a147791",
+      "kind": "python_function",
+      "label": "_filesystem_paths",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._filesystem_paths",
+      "tags": [],
+      "prov": "prov:1df6586b5695a59a"
+    },
+    {
+      "id": "node:2774f8ceb78dc4d12c59",
+      "kind": "python_function",
+      "label": "test_scorer_lock_mismatch_refuses_load",
+      "path": "tests/test_scorer_lock.py",
+      "symbol": "tests.test_scorer_lock.test_scorer_lock_mismatch_refuses_load",
+      "tags": [],
+      "prov": "prov:f899dd06d3176605"
+    },
+    {
+      "id": "node:27838a6f230eccfebd2c",
+      "kind": "python_function",
+      "label": "test_cli_project_model_v0_fail_on_gap_uses_quality_gate_and_surfaces_gaps",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer.test_cli_project_model_v0_fail_on_gap_uses_quality_gate_and_surfaces_gaps",
+      "tags": [],
+      "prov": "prov:8a1a8ec5f90a3cc4"
+    },
+    {
+      "id": "node:279ad76fd9ab15f11361",
+      "kind": "python_function",
+      "label": "_emit_run_started",
+      "path": "arena/loop.py",
+      "symbol": "arena.loop._emit_run_started",
+      "tags": [],
+      "prov": "prov:3879003df9b509bd"
+    },
+    {
+      "id": "node:27aac0e12f636fc195f2",
+      "kind": "python_function",
+      "label": "is_boundary_violation",
+      "path": "arena/boundary.py",
+      "symbol": "arena.boundary.is_boundary_violation",
+      "tags": [],
+      "prov": "prov:0318c3012d379497"
+    },
+    {
+      "id": "node:27d222cd09974744fb49",
+      "kind": "python_function",
+      "label": "write_encyclopedia",
+      "path": "arena/project_encyclopedia.py",
+      "symbol": "arena.project_encyclopedia.write_encyclopedia",
+      "tags": [],
+      "prov": "prov:b8dc32385e96be02"
+    },
+    {
+      "id": "node:27f9e4d6c16a1a514947",
+      "kind": "protected_surface",
+      "label": "verifier/config.py",
+      "path": "verifier/config.py",
+      "symbol": null,
+      "tags": [
+        "protected"
+      ],
+      "prov": "prov:50455c6c74a79c2d"
+    },
+    {
+      "id": "node:2880cccd0047787d8a62",
+      "kind": "python_function",
+      "label": "add",
+      "path": "arena/project_model_gate.py",
+      "symbol": "arena.project_model_gate.add",
+      "tags": [],
+      "prov": "prov:794a3b7d9ae67ff0"
+    },
+    {
+      "id": "node:288350bd208190f9e803",
+      "kind": "python_function",
+      "label": "_append",
+      "path": "arena/ledger.py",
+      "symbol": "arena.ledger._append",
+      "tags": [],
+      "prov": "prov:548271ff88beec2c"
+    },
+    {
+      "id": "node:28d4634cb9e98279d1a6",
+      "kind": "test_file",
+      "label": "tests/test_failure_ledger.py",
+      "path": "tests/test_failure_ledger.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:b9c42b946ad99a84"
+    },
+    {
+      "id": "node:29f1748f0d70722c176a",
+      "kind": "python_class",
+      "label": "Component",
+      "path": "arena/project_snapshot.py",
+      "symbol": "arena.project_snapshot.Component",
+      "tags": [],
+      "prov": "prov:814ec2492e5826e9"
+    },
+    {
+      "id": "node:2a0997db76c1c15dfc26",
+      "kind": "python_module",
+      "label": "tests.test_verifier_gates",
+      "path": "tests/test_verifier_gates.py",
+      "symbol": "tests.test_verifier_gates",
+      "tags": [],
+      "prov": "prov:723e627b56ac21e1"
+    },
+    {
+      "id": "node:2a7c633b48460803a469",
+      "kind": "python_function",
+      "label": "_run",
+      "path": "tests/test_project_decomposer_ai.py",
+      "symbol": "tests.test_project_decomposer_ai._run",
+      "tags": [],
+      "prov": "prov:287a9c90d9500ac4"
+    },
+    {
+      "id": "node:2b0d5a321463fa90fb38",
+      "kind": "python_function",
+      "label": "_rel",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._rel",
+      "tags": [],
+      "prov": "prov:74c6ce9fde9fdb65"
+    },
+    {
+      "id": "node:2b4660770e4b55d68482",
+      "kind": "python_class",
+      "label": "VerificationGap",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.VerificationGap",
+      "tags": [],
+      "prov": "prov:c3ebd306f346e590"
+    },
+    {
+      "id": "node:2b4a2f2873b95e91e1d2",
+      "kind": "python_class",
+      "label": "EmptyArmSetError",
+      "path": "arena/hypothesizer.py",
+      "symbol": "arena.hypothesizer.EmptyArmSetError",
+      "tags": [],
+      "prov": "prov:01e1c1d0e2442bed"
+    },
+    {
+      "id": "node:2bc84d2b1d3c3b455c30",
+      "kind": "python_function",
+      "label": "HYPOTHESIZE",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.HYPOTHESIZE",
+      "tags": [],
+      "prov": "prov:9f67d000fa7bc391"
+    },
+    {
+      "id": "node:2c1b29aab1bcf7673127",
+      "kind": "python_function",
+      "label": "stable_hash_json",
+      "path": "arena/project_snapshot.py",
+      "symbol": "arena.project_snapshot.stable_hash_json",
+      "tags": [],
+      "prov": "prov:d1597adffb1ecfab"
+    },
+    {
+      "id": "node:2c99b85020925e3ea91f",
+      "kind": "test_file",
+      "label": "tests/test_verifier_calibration.py",
+      "path": "tests/test_verifier_calibration.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:fb6724f9bbe80c48"
+    },
+    {
+      "id": "node:2cdb34ab582f9e59b4ed",
+      "kind": "python_class",
+      "label": "ClaudeStreamGuard",
+      "path": "arena/runners/claude_code.py",
+      "symbol": "arena.runners.claude_code.ClaudeStreamGuard",
+      "tags": [],
+      "prov": "prov:9447289e7d10b67d"
+    },
+    {
+      "id": "node:2d00d80f5a558a3bac82",
+      "kind": "python_class",
+      "label": "Dependency",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.Dependency",
+      "tags": [],
+      "prov": "prov:224212cb5242050e"
+    },
+    {
+      "id": "node:2d3c4b96ca1882b152cb",
+      "kind": "test_file",
+      "label": "tests/test_project_encyclopedia.py",
+      "path": "tests/test_project_encyclopedia.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:bb8a0f354b501f1c"
+    },
+    {
+      "id": "node:2d4dec4c7677dbfb4230",
+      "kind": "python_function",
+      "label": "_best_import_target",
+      "path": "arena/project_model_llm.py",
+      "symbol": "arena.project_model_llm._best_import_target",
+      "tags": [],
+      "prov": "prov:98305a4aa3446f40"
+    },
+    {
+      "id": "node:2d681ccf8e207538f9f7",
+      "kind": "python_function",
+      "label": "_normalized_token",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0._normalized_token",
+      "tags": [],
+      "prov": "prov:ab556a6ccfab9bf7"
+    },
+    {
+      "id": "node:2d8943036984e461610e",
+      "kind": "python_class",
+      "label": "Scanner",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.Scanner",
+      "tags": [],
+      "prov": "prov:6323f1cf38a72ce1"
+    },
+    {
+      "id": "node:2d8fb37005fa67c4bc9c",
+      "kind": "python_function",
+      "label": "_normalize_relative_path",
+      "path": "arena/boundary.py",
+      "symbol": "arena.boundary._normalize_relative_path",
+      "tags": [],
+      "prov": "prov:1582ff1bab4f2b34"
+    },
+    {
+      "id": "node:2e579c4d173648c38f29",
+      "kind": "python_class",
+      "label": "Rollbacker",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.Rollbacker",
+      "tags": [],
+      "prov": "prov:f2e600c956902a2f"
+    },
+    {
+      "id": "node:2ebacc5efe6017f73af3",
+      "kind": "python_function",
+      "label": "_arena_cross_cutting_concerns",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._arena_cross_cutting_concerns",
+      "tags": [],
+      "prov": "prov:d80a58c7f604baed"
+    },
+    {
+      "id": "node:2f38f8fe3fbbdd8eb4b1",
+      "kind": "python_function",
+      "label": "propose",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.propose",
+      "tags": [],
+      "prov": "prov:2ce5929799ef5812"
+    },
+    {
+      "id": "node:2f3d29b462bd2ef6c582",
+      "kind": "python_class",
+      "label": "GitState",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.GitState",
+      "tags": [],
+      "prov": "prov:9ef77c045ad08ac5"
+    },
+    {
+      "id": "node:2f3f32a8fd79f137d557",
+      "kind": "config",
+      "label": ".arena/scorer.lock.toml",
+      "path": ".arena/scorer.lock.toml",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:1cd6a03130f68b7f"
+    },
+    {
+      "id": "node:2fdfef4c1cb7ead2b07d",
+      "kind": "python_class",
+      "label": "Component",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.Component",
+      "tags": [],
+      "prov": "prov:bed26ea5f96f927f"
+    },
+    {
+      "id": "node:2fe7308910e27bfc3e33",
+      "kind": "python_function",
+      "label": "run",
+      "path": "tests/conftest.py",
+      "symbol": "tests.conftest.run",
+      "tags": [],
+      "prov": "prov:f939e2c0a8ce10b7"
+    },
+    {
+      "id": "node:30323584d238e52813c7",
+      "kind": "python_function",
+      "label": "test_verify_reruns_all_probes_without_cache_reuse",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_verify_reruns_all_probes_without_cache_reuse",
+      "tags": [],
+      "prov": "prov:cc743f3257856186"
+    },
+    {
+      "id": "node:309a0c2747316983416f",
+      "kind": "python_function",
+      "label": "_held_out_probes_for_v0",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._held_out_probes_for_v0",
+      "tags": [],
+      "prov": "prov:a556e270ae29a9db"
+    },
+    {
+      "id": "node:309a49e3e9b1ef725b83",
+      "kind": "python_function",
+      "label": "test_snapshot_cli_writes_artifacts_and_prints_summary_json",
+      "path": "tests/test_project_model_cli_ai.py",
+      "symbol": "tests.test_project_model_cli_ai.test_snapshot_cli_writes_artifacts_and_prints_summary_json",
+      "tags": [],
+      "prov": "prov:07e8b482cdd8257a"
+    },
+    {
+      "id": "node:309df67164d080af7f6d",
+      "kind": "python_function",
+      "label": "_first_prov",
+      "path": "arena/project_model_llm.py",
+      "symbol": "arena.project_model_llm._first_prov",
+      "tags": [],
+      "prov": "prov:5a298f880430b685"
+    },
+    {
+      "id": "node:310b7dc1ca725a762f6f",
+      "kind": "python_class",
+      "label": "StaticHypothesizer",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.StaticHypothesizer",
+      "tags": [],
+      "prov": "prov:661a74db95a753ac"
+    },
+    {
+      "id": "node:3194ae4d1c1502782c9f",
+      "kind": "python_module",
+      "label": "tests.test_project_snapshot_gate",
+      "path": "tests/test_project_snapshot_gate.py",
+      "symbol": "tests.test_project_snapshot_gate",
+      "tags": [],
+      "prov": "prov:9fd78ede30e7450b"
+    },
+    {
+      "id": "node:31a88e7d71c6ed31866f",
+      "kind": "python_function",
+      "label": "run_project_model_gate",
+      "path": "arena/project_model_gate.py",
+      "symbol": "arena.project_model_gate.run_project_model_gate",
+      "tags": [],
+      "prov": "prov:7f1b75abf952b6dc"
+    },
+    {
+      "id": "node:31f5f98d65d0f61e2f09",
+      "kind": "python_function",
+      "label": "test_git_subdirectory_resolves_to_repo_toplevel",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer.test_git_subdirectory_resolves_to_repo_toplevel",
+      "tags": [],
+      "prov": "prov:80316267304c541f"
+    },
+    {
+      "id": "node:32985ff8dc7ac8903900",
+      "kind": "python_function",
+      "label": "test_encyclopedia_redacts_secret_shaped_content",
+      "path": "tests/test_project_encyclopedia.py",
+      "symbol": "tests.test_project_encyclopedia.test_encyclopedia_redacts_secret_shaped_content",
+      "tags": [],
+      "prov": "prov:eb361f25644afa39"
+    },
+    {
+      "id": "node:338a67cda6d10b3e8e5a",
+      "kind": "python_class",
+      "label": "BudgetController",
+      "path": "arena/budget.py",
+      "symbol": "arena.budget.BudgetController",
+      "tags": [],
+      "prov": "prov:e45bcfdfb0d6a0a9"
+    },
+    {
+      "id": "node:338e063d437110d2b1e5",
+      "kind": "python_function",
+      "label": "test_arena_calibration_checkout_model_is_ready_when_available",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer.test_arena_calibration_checkout_model_is_ready_when_available",
+      "tags": [],
+      "prov": "prov:cfb6872b213c4aa3"
+    },
+    {
+      "id": "node:33aaae09f765715591d7",
+      "kind": "python_function",
+      "label": "check_and_raise",
+      "path": "arena/divergence.py",
+      "symbol": "arena.divergence.check_and_raise",
+      "tags": [],
+      "prov": "prov:36f1bfdc80767ad3"
+    },
+    {
+      "id": "node:34011faf23249a35ca7c",
+      "kind": "python_function",
+      "label": "dirty_status",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.dirty_status",
+      "tags": [],
+      "prov": "prov:d9702823112c0e63"
+    },
+    {
+      "id": "node:341951f0342a3105ec24",
+      "kind": "python_class",
+      "label": "BrokenConnection",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.BrokenConnection",
+      "tags": [],
+      "prov": "prov:75d347e443918080"
+    },
+    {
+      "id": "node:347d754663d1a6cdec89",
+      "kind": "python_class",
+      "label": "UnclassifiedProjectSurface",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.UnclassifiedProjectSurface",
+      "tags": [],
+      "prov": "prov:a11f200a25281522"
+    },
+    {
+      "id": "node:3490292529b8b70aa59f",
+      "kind": "python_class",
+      "label": "Assumption",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.Assumption",
+      "tags": [],
+      "prov": "prov:4f0942978e91c1ec"
+    },
+    {
+      "id": "node:34d6ed45466f27c580d1",
+      "kind": "python_function",
+      "label": "canonical_project_model_json",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.canonical_project_model_json",
+      "tags": [],
+      "prov": "prov:1265ed2e9dcfabbd"
+    },
+    {
+      "id": "node:3504847ec051a4940819",
+      "kind": "python_module",
+      "label": "scripts.update_scorer_lock",
+      "path": "scripts/update_scorer_lock.py",
+      "symbol": "scripts.update_scorer_lock",
+      "tags": [],
+      "prov": "prov:8963ca66a2c17a0d"
+    },
+    {
+      "id": "node:3528080bcd00d671689f",
+      "kind": "python_class",
+      "label": "FakeLoopStates",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.FakeLoopStates",
+      "tags": [],
+      "prov": "prov:9492b0f4ad5b9224"
+    },
+    {
+      "id": "node:360e6a6b7aad69793ca0",
+      "kind": "python_function",
+      "label": "populate_baseline",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.populate_baseline",
+      "tags": [],
+      "prov": "prov:5f8626f3b9d8e509"
+    },
+    {
+      "id": "node:360ef01bbfc6f314738f",
+      "kind": "python_class",
+      "label": "FingerprintTemplate",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.FingerprintTemplate",
+      "tags": [],
+      "prov": "prov:fbb8274edcdfcc88"
+    },
+    {
+      "id": "node:36195c80bcccaf58597f",
+      "kind": "python_function",
+      "label": "record_runner_credit",
+      "path": "arena/budget.py",
+      "symbol": "arena.budget.record_runner_credit",
+      "tags": [],
+      "prov": "prov:db7d160bce33d377"
+    },
+    {
+      "id": "node:3675593d485f9ea8afdc",
+      "kind": "python_function",
+      "label": "_normalize_path",
+      "path": "arena/runners/claude_code.py",
+      "symbol": "arena.runners.claude_code._normalize_path",
+      "tags": [],
+      "prov": "prov:a1187f10f6324177"
+    },
+    {
+      "id": "node:3676da101757fb3a3f6e",
+      "kind": "python_function",
+      "label": "replace_text",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.replace_text",
+      "tags": [],
+      "prov": "prov:a3f14ad98ecbac23"
+    },
+    {
+      "id": "node:36ae9e5b116af05b2187",
+      "kind": "python_module",
+      "label": "arena.project_model_gate",
+      "path": "arena/project_model_gate.py",
+      "symbol": "arena.project_model_gate",
+      "tags": [],
+      "prov": "prov:230973477f15e6eb"
+    },
+    {
+      "id": "node:36deb95d7ef25b79ea9b",
+      "kind": "python_function",
+      "label": "_add_python_nodes",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._add_python_nodes",
+      "tags": [],
+      "prov": "prov:ba79a391ce1ec4e8"
+    },
+    {
+      "id": "node:36e551b7e54931f88400",
+      "kind": "python_function",
+      "label": "n5",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.n5",
+      "tags": [],
+      "prov": "prov:d1e3c2c4864f8a04"
+    },
+    {
+      "id": "node:372d2df2794302c7dc91",
+      "kind": "test_file",
+      "label": "tests/test_calibration_ordering.py",
+      "path": "tests/test_calibration_ordering.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:c414b6e382cb43a9"
+    },
+    {
+      "id": "node:37dec431caa3433920c6",
+      "kind": "python_function",
+      "label": "test_verifier_config_rejects_probe_sets_that_are_not_three_of_four",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_verifier_config_rejects_probe_sets_that_are_not_three_of_four",
+      "tags": [],
+      "prov": "prov:a2f8d97cd633d184"
+    },
+    {
+      "id": "node:3855808760a1b16888a2",
+      "kind": "python_function",
+      "label": "_halt_reason",
+      "path": "arena/budget.py",
+      "symbol": "arena.budget._halt_reason",
+      "tags": [],
+      "prov": "prov:2d62742a604ca198"
+    },
+    {
+      "id": "node:386d54db904e92c4e0ac",
+      "kind": "python_function",
+      "label": "rewrite",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.rewrite",
+      "tags": [],
+      "prov": "prov:56909dd6c354b679"
+    },
+    {
+      "id": "node:38764eb0643974d77169",
+      "kind": "python_function",
+      "label": "_sha",
+      "path": "arena/project_model_gate.py",
+      "symbol": "arena.project_model_gate._sha",
+      "tags": [],
+      "prov": "prov:59cdf9b71da28434"
+    },
+    {
+      "id": "node:3a0666dfe0a15d919485",
+      "kind": "python_function",
+      "label": "__init__",
+      "path": "arena/ledger.py",
+      "symbol": "arena.ledger.__init__",
+      "tags": [],
+      "prov": "prov:a26389ed34bf8d77"
+    },
+    {
+      "id": "node:3a72fc7d4bd6f6670c66",
+      "kind": "python_function",
+      "label": "_error_result",
+      "path": "arena/router.py",
+      "symbol": "arena.router._error_result",
+      "tags": [],
+      "prov": "prov:fa6e2a096052dbba"
+    },
+    {
+      "id": "node:3b0fa43dcfb73e2e3242",
+      "kind": "python_function",
+      "label": "invalid_stdout",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.invalid_stdout",
+      "tags": [],
+      "prov": "prov:de3d45570f22de71"
+    },
+    {
+      "id": "node:3c11895cdd682bfdce2e",
+      "kind": "python_function",
+      "label": "test_verify_worktree_rescores_live_candidate_each_call",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_verify_worktree_rescores_live_candidate_each_call",
+      "tags": [],
+      "prov": "prov:ac4098a79a50f572"
+    },
+    {
+      "id": "node:3c76682cb6e14b837c99",
+      "kind": "python_class",
+      "label": "UCB1Bandit",
+      "path": "arena/hypothesizer.py",
+      "symbol": "arena.hypothesizer.UCB1Bandit",
+      "tags": [],
+      "prov": "prov:0bd66f9bb812d71e"
+    },
+    {
+      "id": "node:3cc0f7eaa6543f51b6a5",
+      "kind": "python_function",
+      "label": "_list_of_dicts",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0._list_of_dicts",
+      "tags": [],
+      "prov": "prov:0ae8c9831014797c"
+    },
+    {
+      "id": "node:3cfce48a830e4fb764f9",
+      "kind": "python_function",
+      "label": "_write_minimal_arena_calibration_project",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer._write_minimal_arena_calibration_project",
+      "tags": [],
+      "prov": "prov:606e39bc7009641b"
+    },
+    {
+      "id": "node:3d7e12a134895c5de9b2",
+      "kind": "python_module",
+      "label": "arena.router",
+      "path": "arena/router.py",
+      "symbol": "arena.router",
+      "tags": [],
+      "prov": "prov:58f9a0cb3163cca5"
+    },
+    {
+      "id": "node:3dcb382bae5f37fea2c0",
+      "kind": "python_function",
+      "label": "_run",
+      "path": "tests/test_project_snapshot_gate.py",
+      "symbol": "tests.test_project_snapshot_gate._run",
+      "tags": [],
+      "prov": "prov:fda03e2364d8e8d0"
+    },
+    {
+      "id": "node:3e53da271bc64abc0eb3",
+      "kind": "python_function",
+      "label": "test_real_ablation_runner_can_be_sole_reject_reason",
+      "path": "tests/test_ablation.py",
+      "symbol": "tests.test_ablation.test_real_ablation_runner_can_be_sole_reject_reason",
+      "tags": [],
+      "prov": "prov:150504ada6566b4d"
+    },
+    {
+      "id": "node:3eb5dec20ee0f85db970",
+      "kind": "python_function",
+      "label": "_branch_name",
+      "path": "arena/worktrees.py",
+      "symbol": "arena.worktrees._branch_name",
+      "tags": [],
+      "prov": "prov:71a449798d7ea110"
+    },
+    {
+      "id": "node:3edb52c75df02ca384ae",
+      "kind": "python_function",
+      "label": "test_verifier_rejects_nonpositive_score_delta",
+      "path": "tests/test_verifier_gates.py",
+      "symbol": "tests.test_verifier_gates.test_verifier_rejects_nonpositive_score_delta",
+      "tags": [],
+      "prov": "prov:215ca80282cc4c2f"
+    },
+    {
+      "id": "node:3ef4e4358338399ee3c5",
+      "kind": "python_function",
+      "label": "test_validate_project_model_rejects_multiple_owners_and_stale_coverage",
+      "path": "tests/test_project_decomposer.py",
+      "symbol": "tests.test_project_decomposer.test_validate_project_model_rejects_multiple_owners_and_stale_coverage",
+      "tags": [],
+      "prov": "prov:be647fe217ed51e3"
+    },
+    {
+      "id": "node:3f2008ff4fe08d439486",
+      "kind": "python_class",
+      "label": "NoopScanner",
+      "path": "tests/test_loop_phase4.py",
+      "symbol": "tests.test_loop_phase4.NoopScanner",
+      "tags": [],
+      "prov": "prov:dc7481c6ded0634b"
+    },
+    {
+      "id": "node:3f71a295e7ad27f45749",
+      "kind": "python_module",
+      "label": "tests.test_events_projection",
+      "path": "tests/test_events_projection.py",
+      "symbol": "tests.test_events_projection",
+      "tags": [],
+      "prov": "prov:4c02b9fede8a698f"
+    },
+    {
+      "id": "node:3f9a7ece58f8406dd61e",
+      "kind": "python_class",
+      "label": "VerificationGap",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.VerificationGap",
+      "tags": [],
+      "prov": "prov:3771ddbbae1ea2b9"
+    },
+    {
+      "id": "node:3fb76ec579df77bbf720",
+      "kind": "test_file",
+      "label": "tests/test_divergence.py",
+      "path": "tests/test_divergence.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:3e086a4a21d2dd3b"
+    },
+    {
+      "id": "node:3fe4e5e4b5f5a13cc13b",
+      "kind": "python_class",
+      "label": "EventEmitter",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.EventEmitter",
+      "tags": [],
+      "prov": "prov:ea102ab6a6747e8a"
+    },
+    {
+      "id": "node:415e9bc516164e9f055c",
+      "kind": "python_function",
+      "label": "_arena_calibration_decomposition",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer._arena_calibration_decomposition",
+      "tags": [],
+      "prov": "prov:faf754fcb4ebf452"
+    },
+    {
+      "id": "node:416dd0a696db5cc7ce80",
+      "kind": "python_function",
+      "label": "iter_records",
+      "path": "arena/ledger.py",
+      "symbol": "arena.ledger.iter_records",
+      "tags": [],
+      "prov": "prov:e3e9adb2ad3d0803"
+    },
+    {
+      "id": "node:41787236fa6eaec76260",
+      "kind": "python_class",
+      "label": "ScopeBoundary",
+      "path": "arena/decomposer.py",
+      "symbol": "arena.decomposer.ScopeBoundary",
+      "tags": [],
+      "prov": "prov:1807c5c3beb47b4c"
+    },
+    {
+      "id": "node:42e0df78112cf7b1c0bd",
+      "kind": "python_function",
+      "label": "fake_set",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.fake_set",
+      "tags": [],
+      "prov": "prov:4b69cd93d227e005"
+    },
+    {
+      "id": "node:431826250209d462d0bd",
+      "kind": "python_function",
+      "label": "score",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.score",
+      "tags": [],
+      "prov": "prov:a60fa5cff29ced85"
+    },
+    {
+      "id": "node:43678efff6ee13adaedf",
+      "kind": "python_class",
+      "label": "AgentRunner",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.AgentRunner",
+      "tags": [],
+      "prov": "prov:9cf64b4d90ebb606"
+    },
+    {
+      "id": "node:446f0443a2b4269ed6b8",
+      "kind": "python_function",
+      "label": "test_symbolic_hypothesizer_creates_hypothesis_without_filesystem_writes",
+      "path": "tests/test_hypothesizer_bandit.py",
+      "symbol": "tests.test_hypothesizer_bandit.test_symbolic_hypothesizer_creates_hypothesis_without_filesystem_writes",
+      "tags": [],
+      "prov": "prov:532cf58511691b1d"
+    },
+    {
+      "id": "node:447d331ae9860a12ad03",
+      "kind": "test_file",
+      "label": "tests/test_project_decomposer_ai.py",
+      "path": "tests/test_project_decomposer_ai.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:8ec0b3fa730df38e"
+    },
+    {
+      "id": "node:4520d26c2c3e44efeb2d",
+      "kind": "python_function",
+      "label": "test_failure_ledger_collision_check_rejects_before_runner_spawn",
+      "path": "tests/test_failure_ledger.py",
+      "symbol": "tests.test_failure_ledger.test_failure_ledger_collision_check_rejects_before_runner_spawn",
+      "tags": [],
+      "prov": "prov:21f27dd24c729dc0"
+    },
+    {
+      "id": "node:4532480deefd500fba33",
+      "kind": "python_function",
+      "label": "_module_name",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph._module_name",
+      "tags": [],
+      "prov": "prov:12afc09b90981af2"
+    },
+    {
+      "id": "node:455f2e03e60320a0b871",
+      "kind": "python_function",
+      "label": "test_encyclopedia_writes_manifest_and_source_linked_pages",
+      "path": "tests/test_project_encyclopedia.py",
+      "symbol": "tests.test_project_encyclopedia.test_encyclopedia_writes_manifest_and_source_linked_pages",
+      "tags": [],
+      "prov": "prov:e4b371157a765b7e"
+    },
+    {
+      "id": "node:45df6347be117d573b6e",
+      "kind": "python_function",
+      "label": "p2",
+      "path": "scripts/rebuild_calibration.py",
+      "symbol": "scripts.rebuild_calibration.p2",
+      "tags": [],
+      "prov": "prov:3e09660390b1fb3e"
+    },
+    {
+      "id": "node:460567aa7645a2b7a1b7",
+      "kind": "python_function",
+      "label": "compute_fingerprint",
+      "path": "arena/fingerprints.py",
+      "symbol": "arena.fingerprints.compute_fingerprint",
+      "tags": [],
+      "prov": "prov:58a29a206b290fad"
+    },
+    {
+      "id": "node:463297c25e65b1351752",
+      "kind": "python_function",
+      "label": "check",
+      "path": "arena/budget.py",
+      "symbol": "arena.budget.check",
+      "tags": [],
+      "prov": "prov:9d86d845c23d526a"
+    },
+    {
+      "id": "node:466f4efce3e67379b584",
+      "kind": "python_function",
+      "label": "_first_cycle",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0._first_cycle",
+      "tags": [],
+      "prov": "prov:2909d9e33c0f892d"
+    },
+    {
+      "id": "node:47b9112245f04a5b0843",
+      "kind": "test_file",
+      "label": "tests/test_hypothesizer_bandit.py",
+      "path": "tests/test_hypothesizer_bandit.py",
+      "symbol": null,
+      "tags": [],
+      "prov": "prov:fde8b63bcf9b7510"
+    },
+    {
+      "id": "node:48196af7dc1dc6431129",
+      "kind": "python_function",
+      "label": "_emit_disagreement_if_needed",
+      "path": "arena/loop.py",
+      "symbol": "arena.loop._emit_disagreement_if_needed",
+      "tags": [],
+      "prov": "prov:bff6d2c1b467607c"
+    },
+    {
+      "id": "node:486c519b5ae6708d22ad",
+      "kind": "python_class",
+      "label": "DivergenceDetector",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.DivergenceDetector",
+      "tags": [],
+      "prov": "prov:33bb8cc411e8d188"
+    },
+    {
+      "id": "node:48a3ebfbf81e1a7d962f",
+      "kind": "python_function",
+      "label": "test_decomposer_private_and_cli_edge_cases",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.test_decomposer_private_and_cli_edge_cases",
+      "tags": [],
+      "prov": "prov:cf6ebbac45ada565"
+    },
+    {
+      "id": "node:48e14a268942aad1affe",
+      "kind": "python_function",
+      "label": "test_scorer_lock_rejects_new_scorer_file",
+      "path": "tests/test_scorer_lock.py",
+      "symbol": "tests.test_scorer_lock.test_scorer_lock_rejects_new_scorer_file",
+      "tags": [],
+      "prov": "prov:952900aaa571f891"
+    },
+    {
+      "id": "node:4a6dbc3a6ef364f1df4a",
+      "kind": "python_function",
+      "label": "test_router_reports_runner_error_when_primary_and_fallback_exhaust",
+      "path": "tests/test_runner_router.py",
+      "symbol": "tests.test_runner_router.test_router_reports_runner_error_when_primary_and_fallback_exhaust",
+      "tags": [],
+      "prov": "prov:75d2f31e651e619a"
+    },
+    {
+      "id": "node:4aefe0cad5ba4c0def26",
+      "kind": "python_function",
+      "label": "test_boundary_violation_rejects_scorer_target_before_runner_spawn",
+      "path": "tests/test_boundary.py",
+      "symbol": "tests.test_boundary.test_boundary_violation_rejects_scorer_target_before_runner_spawn",
+      "tags": [],
+      "prov": "prov:30d6ed261419c26e"
+    },
+    {
+      "id": "node:4b061abf0c44d22b7967",
+      "kind": "python_function",
+      "label": "write_json",
+      "path": "arena/project_snapshot.py",
+      "symbol": "arena.project_snapshot.write_json",
+      "tags": [],
+      "prov": "prov:1bcd00c64b866495"
+    },
+    {
+      "id": "node:4bcdc70ea53eff2b0bef",
+      "kind": "python_function",
+      "label": "__init__",
+      "path": "arena/router.py",
+      "symbol": "arena.router.__init__",
+      "tags": [],
+      "prov": "prov:0987db8d3f9c5646"
+    },
+    {
+      "id": "node:4bcfb81cc14ee7c3df5d",
+      "kind": "python_class",
+      "label": "ObservableCheck",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.ObservableCheck",
+      "tags": [],
+      "prov": "prov:24830ca3caa52bd6"
+    },
+    {
+      "id": "node:4c089361432574660567",
+      "kind": "python_function",
+      "label": "canonical_graph_json",
+      "path": "arena/project_graph.py",
+      "symbol": "arena.project_graph.canonical_graph_json",
+      "tags": [],
+      "prov": "prov:a8f4a98e684f1ba9"
+    },
+    {
+      "id": "node:4c85ea611bf39bb0557f",
+      "kind": "python_function",
+      "label": "fingerprint_cluster_failure_rate",
+      "path": "arena/protocols.py",
+      "symbol": "arena.protocols.fingerprint_cluster_failure_rate",
+      "tags": [],
+      "prov": "prov:7a85fd3a3343b04f"
+    },
+    {
+      "id": "node:4cea747bbc38a9009fb4",
+      "kind": "python_function",
+      "label": "test_bandit_cold_start_pulls_each_arm_in_config_order",
+      "path": "tests/test_hypothesizer_bandit.py",
+      "symbol": "tests.test_hypothesizer_bandit.test_bandit_cold_start_pulls_each_arm_in_config_order",
+      "tags": [],
+      "prov": "prov:5aa79c32e86ae65c"
+    },
+    {
+      "id": "node:4dbb212f5e91495f5fe5",
+      "kind": "python_function",
+      "label": "test_runner_credit_cap_uses_zero_promotion_reason_until_first_promotion",
+      "path": "tests/test_budget.py",
+      "symbol": "tests.test_budget.test_runner_credit_cap_uses_zero_promotion_reason_until_first_promotion",
+      "tags": [],
+      "prov": "prov:00bfd4a2b3b8698a"
+    },
+    {
+      "id": "node:4dd2f2be6fd6e00fb28a",
+      "kind": "python_function",
+      "label": "test_loop_promotes_then_continues_until_budget_and_helper_edges",
+      "path": "tests/test_coverage_closure.py",
+      "symbol": "tests.test_coverage_closure.test_loop_promotes_then_continues_until_budget_and_helper_edges",
+      "tags": [],
+      "prov": "prov:38a92913da0aee60"
+    },
+    {
+      "id": "node:4e51a09976447101e46c",
+      "kind": "python_function",
+      "label": "test_read_in_previous_turn_does_not_authorize_later_edit",
+      "path": "tests/test_view_before_edit.py",
+      "symbol": "tests.test_view_before_edit.test_read_in_previous_turn_does_not_authorize_later_edit",
+      "tags": [],
+      "prov": "prov:5c498527a1f80a45"
+    },
+    {
+      "id": "node:4f412bc04264b280c290",
+      "kind": "python_function",
+      "label": "test_claude_weekly_limit_stream_triggers_ollama_fallback",
+      "path": "tests/test_runner_router.py",
+      "symbol": "tests.test_runner_router.test_claude_weekly_limit_stream_triggers_ollama_fallback",
+      "tags": [],
+      "prov": "prov:02013782a4e0e601"
+    },
+    {
+      "id": "node:4f6ca2f9e576f8ab50ae",
+      "kind": "python_class",
+      "label": "Risk",
+      "path": "arena/project_model_v0.py",
+      "symbol": "arena.project_model_v0.Risk",
+      "tags": [],
+      "prov": "prov:9670ec33772f7b1f"
+    },
+    {
+      "id": "node:4fa512a640b8aae6e18b",
+      "kind": "python_function",
+      "label": "test_graph_discovers_javascript_modules_functions_and_relative_imports",
+      "path": "tests/test_project_graph.py",
+      "symbol": "tests.test_project_graph.test_graph_discovers_javascript_modules_functions_and_relative_imports",
+      "tags": [],
+      "prov": "prov:0fe99b38488b1356"
+    }
+  ],
+  "import_edges": [
+    {
+      "id": "edge:0c06938db30491f6dc3d",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:typing",
+      "label": "typing",
+      "prov": [
+        "prov:447099daaaecc40d"
+      ]
+    },
+    {
+      "id": "edge:13e2ba1f57bf1e4c6572",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:fe7eb20a861848b3"
+      ]
+    },
+    {
+      "id": "edge:14d7e4260eb3860953b0",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:arena.project_graph",
+      "label": "arena.project_graph",
+      "prov": [
+        "prov:652d8d0b5d5c9865"
+      ]
+    },
+    {
+      "id": "edge:15d7cebd251d60f925a0",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:db5de6ef474ad875"
+      ]
+    },
+    {
+      "id": "edge:1bcdde1aced49c59ddd1",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:df5bc1426a322183"
+      ]
+    },
+    {
+      "id": "edge:1bd83780c1b5fee5dfc9",
+      "from_node_id": "node:1e634df8151745189f3b",
+      "from_symbol": "tests.test_view_before_edit",
+      "to_node_id": "node:python_import:arena.runners.base",
+      "label": "arena.runners.base",
+      "prov": [
+        "prov:fd2fe28198a84c5e"
+      ]
+    },
+    {
+      "id": "edge:1dcbdcabb4c1c19c7842",
+      "from_node_id": "node:3f71a295e7ad27f45749",
+      "from_symbol": "tests.test_events_projection",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:b0c8d29b90e0e1b9"
+      ]
+    },
+    {
+      "id": "edge:25c1dfdf51f25b453af6",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:dataclasses",
+      "label": "dataclasses",
+      "prov": [
+        "prov:5759231ef6668ad6"
+      ]
+    },
+    {
+      "id": "edge:286723e522f36320ba67",
+      "from_node_id": "node:3d7e12a134895c5de9b2",
+      "from_symbol": "arena.router",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:bff5e5b510f826be"
+      ]
+    },
+    {
+      "id": "edge:2bef0afa77cc8c037e93",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:shutil",
+      "label": "shutil",
+      "prov": [
+        "prov:2e68fce1704463e8"
+      ]
+    },
+    {
+      "id": "edge:3172eb1e8e4d1611f055",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:copy",
+      "label": "copy",
+      "prov": [
+        "prov:68b0abcf9a193150"
+      ]
+    },
+    {
+      "id": "edge:31a923039466bcbe60c4",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:hashlib",
+      "label": "hashlib",
+      "prov": [
+        "prov:83ddfa74eef20007"
+      ]
+    },
+    {
+      "id": "edge:369b01801b926dfe4c79",
+      "from_node_id": "node:3504847ec051a4940819",
+      "from_symbol": "scripts.update_scorer_lock",
+      "to_node_id": "node:python_import:sys",
+      "label": "sys",
+      "prov": [
+        "prov:fa6cf58069e8474c"
+      ]
+    },
+    {
+      "id": "edge:3700a836c21b3d93cd41",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:bf496d2b11272051"
+      ]
+    },
+    {
+      "id": "edge:3b270feffa9a455a6be7",
+      "from_node_id": "node:3d7e12a134895c5de9b2",
+      "from_symbol": "arena.router",
+      "to_node_id": "node:python_import:arena.runners.base",
+      "label": "arena.runners.base",
+      "prov": [
+        "prov:1f669c9f47da05ce"
+      ]
+    },
+    {
+      "id": "edge:41ebfeaf4ab3c4e38c59",
+      "from_node_id": "node:0c05132ec86f933eb752",
+      "from_symbol": "tests.test_divergence",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:def2fe1df1184505"
+      ]
+    },
+    {
+      "id": "edge:4a01ebcbd3c17637b763",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:arena.project_model_gate",
+      "label": "arena.project_model_gate",
+      "prov": [
+        "prov:293cb97cd10855ab"
+      ]
+    },
+    {
+      "id": "edge:4e6a0175cfd58bb93ffc",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:pydantic",
+      "label": "pydantic",
+      "prov": [
+        "prov:c5559bf1bc3f6a84"
+      ]
+    },
+    {
+      "id": "edge:5a0b6936da8420556843",
+      "from_node_id": "node:3504847ec051a4940819",
+      "from_symbol": "scripts.update_scorer_lock",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:ed46e2402ed812dc"
+      ]
+    },
+    {
+      "id": "edge:617d35bd9ed6a798cf24",
+      "from_node_id": "node:3d7e12a134895c5de9b2",
+      "from_symbol": "arena.router",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:b00433b1d78af33d"
+      ]
+    },
+    {
+      "id": "edge:64ccff10a4d759eeeb2c",
+      "from_node_id": "node:3504847ec051a4940819",
+      "from_symbol": "scripts.update_scorer_lock",
+      "to_node_id": "node:python_import:tomli_w",
+      "label": "tomli_w",
+      "prov": [
+        "prov:f32886e8ca753d28"
+      ]
+    },
+    {
+      "id": "edge:6b861c2a6670c69b5e0a",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:jsonschema",
+      "label": "jsonschema",
+      "prov": [
+        "prov:dc9d4266cf8cb7ed"
+      ]
+    },
+    {
+      "id": "edge:71744517f45dcf3c27db",
+      "from_node_id": "node:3d7e12a134895c5de9b2",
+      "from_symbol": "arena.router",
+      "to_node_id": "node:python_import:arena.protocols",
+      "label": "arena.protocols",
+      "prov": [
+        "prov:30275272c87e2a74"
+      ]
+    },
+    {
+      "id": "edge:73f377726355f7338833",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:c8f505b0b7fc1c19"
+      ]
+    },
+    {
+      "id": "edge:754b5b39b8feded7d4c1",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:re",
+      "label": "re",
+      "prov": [
+        "prov:bcbb8d3a601a239a"
+      ]
+    },
+    {
+      "id": "edge:77506750548dc1c66251",
+      "from_node_id": "node:0c05132ec86f933eb752",
+      "from_symbol": "tests.test_divergence",
+      "to_node_id": "node:python_import:arena.generated.models",
+      "label": "arena.generated.models",
+      "prov": [
+        "prov:a0af13485b6fb7f6"
+      ]
+    },
+    {
+      "id": "edge:7bb5d1411ae37f4fe969",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:e57ba7f8c7f04ddd"
+      ]
+    },
+    {
+      "id": "edge:7ede3f3c3261c4026642",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:verifier.ablation",
+      "label": "verifier.ablation",
+      "prov": [
+        "prov:902a267211feaaac"
+      ]
+    },
+    {
+      "id": "edge:85f14f548972f76bd992",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:arena.project_snapshot",
+      "label": "arena.project_snapshot",
+      "prov": [
+        "prov:165bffd3e1ee4e38"
+      ]
+    },
+    {
+      "id": "edge:89bf9543f06032b5010e",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:d8158226ed6642c7"
+      ]
+    },
+    {
+      "id": "edge:8a884ee1bc0a61128376",
+      "from_node_id": "node:1e634df8151745189f3b",
+      "from_symbol": "tests.test_view_before_edit",
+      "to_node_id": "node:python_import:arena.runners.claude_code",
+      "label": "arena.runners.claude_code",
+      "prov": [
+        "prov:858714f765878a7e"
+      ]
+    },
+    {
+      "id": "edge:9ef14b0610743158d655",
+      "from_node_id": "node:3f71a295e7ad27f45749",
+      "from_symbol": "tests.test_events_projection",
+      "to_node_id": "node:python_import:arena.events",
+      "label": "arena.events",
+      "prov": [
+        "prov:bd85a5f42d5cc5ed"
+      ]
+    },
+    {
+      "id": "edge:a327f1b62dc3c689d2fe",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:pytest",
+      "label": "pytest",
+      "prov": [
+        "prov:6e0ce6a9770b30ae"
+      ]
+    },
+    {
+      "id": "edge:a4bc740ddf677c56f400",
+      "from_node_id": "node:1e634df8151745189f3b",
+      "from_symbol": "tests.test_view_before_edit",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:812bcf74ecee348f"
+      ]
+    },
+    {
+      "id": "edge:a84a67b29687c652b97c",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:arena.generated.models",
+      "label": "arena.generated.models",
+      "prov": [
+        "prov:98a39086a1b6dfac"
+      ]
+    },
+    {
+      "id": "edge:b029edc3deb4be4027ed",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:subprocess",
+      "label": "subprocess",
+      "prov": [
+        "prov:71e31864f11b119d"
+      ]
+    },
+    {
+      "id": "edge:b09819ffd734187988fb",
+      "from_node_id": "node:3504847ec051a4940819",
+      "from_symbol": "scripts.update_scorer_lock",
+      "to_node_id": "node:python_import:scorer.lock",
+      "label": "scorer.lock",
+      "prov": [
+        "prov:235ad1b7976266c3"
+      ]
+    },
+    {
+      "id": "edge:b53b331cb8c50318869e",
+      "from_node_id": "node:0c05132ec86f933eb752",
+      "from_symbol": "tests.test_divergence",
+      "to_node_id": "node:python_import:arena.divergence",
+      "label": "arena.divergence",
+      "prov": [
+        "prov:cea1b350b647e93f"
+      ]
+    },
+    {
+      "id": "edge:b5dce22e18014652dcc8",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:arena.project_graph",
+      "label": "arena.project_graph",
+      "prov": [
+        "prov:077e0b24f63b1c43"
+      ]
+    },
+    {
+      "id": "edge:b6e0d11f01e2c6f134a2",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:60fe53e4f915ba32"
+      ]
+    },
+    {
+      "id": "edge:bdca114394ee7569a48a",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:copy",
+      "label": "copy",
+      "prov": [
+        "prov:1a447860b1eb5657"
+      ]
+    },
+    {
+      "id": "edge:be6fc339130ac100043b",
+      "from_node_id": "node:3194ae4d1c1502782c9f",
+      "from_symbol": "tests.test_project_snapshot_gate",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:5a88e5081a93bcad"
+      ]
+    },
+    {
+      "id": "edge:bf974a5c0f87b9230b3f",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:subprocess",
+      "label": "subprocess",
+      "prov": [
+        "prov:6b96015d36134ce7"
+      ]
+    },
+    {
+      "id": "edge:c732419f7410df32fb67",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:arena.project_snapshot",
+      "label": "arena.project_snapshot",
+      "prov": [
+        "prov:8cfef055f80f2a7b"
+      ]
+    },
+    {
+      "id": "edge:cbe10c2e1b8d91134d03",
+      "from_node_id": "node:3d7e12a134895c5de9b2",
+      "from_symbol": "arena.router",
+      "to_node_id": "node:python_import:arena.generated.models",
+      "label": "arena.generated.models",
+      "prov": [
+        "prov:f89a5ea108813e2e"
+      ]
+    },
+    {
+      "id": "edge:ce8bd2af387afd77b174",
+      "from_node_id": "node:36ae9e5b116af05b2187",
+      "from_symbol": "arena.project_model_gate",
+      "to_node_id": "node:python_import:typing",
+      "label": "typing",
+      "prov": [
+        "prov:1110354a6a2afe64"
+      ]
+    },
+    {
+      "id": "edge:cfb909065fb5f6cfdd6d",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:74b043cc3b0ec73f"
+      ]
+    },
+    {
+      "id": "edge:d8e671caa8287f6bcd67",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:5773ca9d3e63ef2b"
+      ]
+    },
+    {
+      "id": "edge:da801af2c0252d9c508a",
+      "from_node_id": "node:3504847ec051a4940819",
+      "from_symbol": "scripts.update_scorer_lock",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:53aa99d9ef97c747"
+      ]
+    },
+    {
+      "id": "edge:dcb6894e71a947ea35c9",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:verifier.engine",
+      "label": "verifier.engine",
+      "prov": [
+        "prov:dc6c231aab148512"
+      ]
+    },
+    {
+      "id": "edge:dd9257e1f4bf9f020153",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:7bc8c3458f3fc141"
+      ]
+    },
+    {
+      "id": "edge:dead32f1ea1d8a37d7f7",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:verifier.config",
+      "label": "verifier.config",
+      "prov": [
+        "prov:4a0e94d49a7b4e0e"
+      ]
+    },
+    {
+      "id": "edge:e63319e8f381e083936b",
+      "from_node_id": "node:23db855188c47cb27d7f",
+      "from_symbol": "tests.test_calibration_ordering",
+      "to_node_id": "node:python_import:scorer.engine",
+      "label": "scorer.engine",
+      "prov": [
+        "prov:257cdaa7959f059d"
+      ]
+    },
+    {
+      "id": "edge:ea357c9d46b59de22f6b",
+      "from_node_id": "node:1e634df8151745189f3b",
+      "from_symbol": "tests.test_view_before_edit",
+      "to_node_id": "node:python_import:pytest",
+      "label": "pytest",
+      "prov": [
+        "prov:f954aa08cabb9c5d"
+      ]
+    },
+    {
+      "id": "edge:f4071b3715be01c682b6",
+      "from_node_id": "node:0c05132ec86f933eb752",
+      "from_symbol": "tests.test_divergence",
+      "to_node_id": "node:python_import:arena.events",
+      "label": "arena.events",
+      "prov": [
+        "prov:3ce45931a4cd663b"
+      ]
+    },
+    {
+      "id": "edge:f61cc8fc10327c50917d",
+      "from_node_id": "node:0437aac7365a635c663f",
+      "from_symbol": "tests.test_project_model_v0_contract",
+      "to_node_id": "node:python_import:arena.project_model_v0",
+      "label": "arena.project_model_v0",
+      "prov": [
+        "prov:ff4bab15553e103b"
+      ]
+    },
+    {
+      "id": "edge:fe0faf654a6de3ce819a",
+      "from_node_id": "node:2a0997db76c1c15dfc26",
+      "from_symbol": "tests.test_verifier_gates",
+      "to_node_id": "node:python_import:scorer.engine",
+      "label": "scorer.engine",
+      "prov": [
+        "prov:2a91b032446522c2"
+      ]
+    }
+  ],
+  "surfaces": {
+    "protected": [
+      {
+        "id": "node:0c5332773eb96bc8cd2a",
+        "path": "scorer/engine.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:b4ea60b636b808b4"
+      },
+      {
+        "id": "node:236799e2ead7742d13d4",
+        "path": "scorer/lock.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:ef892d964ca5a2f4"
+      },
+      {
+        "id": "node:27f9e4d6c16a1a514947",
+        "path": "verifier/config.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:50455c6c74a79c2d"
+      },
+      {
+        "id": "node:5af1d563210609e0d809",
+        "path": "verifier/__init__.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:1411d5ace6bd7135"
+      },
+      {
+        "id": "node:5c2e47420d2da5a018d9",
+        "path": "verifier/calibration.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:df42396adab2a9fc"
+      },
+      {
+        "id": "node:952918f11767e73a4fa9",
+        "path": "schema/arena.yaml",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:1588b944760fcaf5"
+      },
+      {
+        "id": "node:d3e31d5a08b54e18fef0",
+        "path": "scorer/__init__.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:75d9656ba69803ce"
+      },
+      {
+        "id": "node:dd36720bde79fdbfb6b9",
+        "path": "verifier/engine.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:88f3d7a7f5ebc93e"
+      },
+      {
+        "id": "node:e699992af13f23710abc",
+        "path": "scorer/exceptions.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:774548e852b6c408"
+      },
+      {
+        "id": "node:f15021a093045f3a4b74",
+        "path": "verifier/ablation.py",
+        "kind": "protected_surface",
+        "tags": [
+          "protected"
+        ],
+        "prov": "prov:cf755acbd7126eaa"
+      }
+    ],
+    "generated": [
+      {
+        "id": "node:7f6da3c938fb14625d35",
+        "path": "arena/generated/schema.json",
+        "kind": "generated_surface",
+        "tags": [
+          "generated"
+        ],
+        "prov": "prov:910e3c0ee04a35a7"
+      },
+      {
+        "id": "node:babb8915aaa567b149a2",
+        "path": "arena/generated/ddl.sql",
+        "kind": "generated_surface",
+        "tags": [
+          "generated"
+        ],
+        "prov": "prov:a9f834c533530b22"
+      },
+      {
+        "id": "node:c7545aa876329c181a76",
+        "path": "arena/generated/models.py",
+        "kind": "generated_surface",
+        "tags": [
+          "generated"
+        ],
+        "prov": "prov:0dc9f20d86b961b4"
+      },
+      {
+        "id": "node:fe348787d4370a44c7c1",
+        "path": "arena/generated/__init__.py",
+        "kind": "generated_surface",
+        "tags": [
+          "generated"
+        ],
+        "prov": "prov:35f7f575106cd36b"
+      }
+    ]
+  },
+  "source_docs": [
+    {
+      "path": "README.md",
+      "excerpt": "# Autonomous Build Arena\n\nLocal-first autonomous build/optimization loop for a single operator.\n\nRepo identity: this main loop/system repo is `build-arena`. Internal\n`.arena/calibration/` artifacts are scorer/verifier calibration data, not the\nrepo identity. The separate `arena-calibration` repo is the smaller public\ncalibration harness.\n\nCurrent implementation status: Phase 4 loop glue, budget, divergence, event projection, and worktree promotion foundation is complete.\n\nImplemented acceptance gates:\n\n- `.arena/scorer.lock.toml` pins scorer source by content hash.\n- Re-scoring the same git OID is deterministic within `1e-6` on every axis.\n- Calibration catalog has 13 diffs: 5 positive, 5 negative, 3 neutral.\n- Phase 1 scorer ordering assertions pass across the full catalog.\n- Hypotheses touching `scorer/`, `verifier/`, `schema/`, generated artifacts, or scorer lock files are rejected before runner spawn.\n- Phase 2 verifier evaluates score delta, tests, pinned regressions, and ablation quorum independently.\n- Coverage is a pinned axis by floor, not by monotonic movement: drops that remain above the configured floor are allowed, while drops below the floor reject.\n- Ablation configuration defaults to the `ollama` runner identity with 3 Lanham probes and a 2-of-3 quorum; Phase 2 uses a deterministic no-API stand-in and defers the live Ollama adapter to the runner-integration phase.\n- Verifier calibration separately measures false positives and false negatives over the curated diff catalog: FP = 0, FN rate <= 10%. On the current 5-positive catalog this means 0 missed positives.\n- Verifier calls rescore live worktrees and rerun probes instead of reusing cached probe results.\n- Phase 3 fingerprints are deterministic, model-scoped, target-order-insensitive, and shaped as 32-hex blake2b ids with SHA-256 component metadata.\n- Phase 3 intent embeddings are deterministic no-API SHA-256 expansions seeded by the pinned embedding model name; the live `BAAI/bge-small-en-v1.5` embedding adapter is deferred to the loop/integration phase.\n- Phase 3 failure ledger is append-only JSONL and rejects previously failed fingerprints before runner spawn.\n- Phase 3 bandit uses MABWiser U"
+    },
+    {
+      "path": "AGENTS.md",
+      "excerpt": "# AGENTS.md \u2014 Autonomous Build Arena\n\n## Anti-fabrication rules (highest priority)\n\n1. NEVER reason from an imagined file. Before quoting or editing any file content, read that exact path in the current turn.\n2. NEVER guess at function/class/symbol existence. Inspect files or search first.\n3. The scanner/scorer model must be rebuilt from filesystem and git ground truth. Cached projections are never authoritative.\n\n## Boundary-violation rules\n\n1. NEVER modify anything under `scorer/`, `verifier/`, or `schema/` as part of an arena-generated hypothesis. These paths are read-only to autonomous runners.\n2. NEVER modify `.arena/scorer.lock.toml` from inside an arena cycle. Bumping the scorer requires a new run/operator action.\n3. NEVER hand-edit files under `arena/generated/`. They are produced from `schema/arena.yaml` by `make generated`.\n4. NEVER bypass `git worktree` for future APPLY/PROMOTE phases. Phase 1 tests may use temporary fixture repos only.\n\n## Worktree rules for future runners\n\n1. Runner writes are restricted to `.arena/worktrees/<cycle_id>/`.\n2. Do not run `git checkout`, `git branch -f`, `git reset --hard`, `git rebase`, or `git push` inside a cycle worktree.\n3. The promoter is the only component allowed to advance the internal baseline, and it must use `git merge --ff-only`.\n\n## Current phase\n\nPhase 4 loop glue, budget, divergence detection, event projection, and worktree promotion foundation are implemented and verified. Intent embeddings remain deterministic no-API stand-ins seeded by the pinned model name; live embedding execution is deferred. The loop now uses JSONL events as canonical state, locked git worktrees for cycle isolation, ff-only promotion, live wall-clock budget checks, and hard divergence halts. Do not implement the dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution until Phase 4 remains green and the next phase is explicitly started.\n\n## Commands\n\n- `make generated` \u2014 regenerate LinkML artifacts.\n- `uv run pytest tests -q` \u2014 run tests.\n- `uv run ruff check .` \u2014 lint source.\n- `uv run pyright` \u2014 type-check source.\n- `uv run python scripts/rebuild_calibration.py` \u2014 rebuild synthetic calibration r"
+    },
+    {
+      "path": "pyproject.toml",
+      "excerpt": "[project]\nname = \"build-arena\"\nversion = \"0.1.0\"\ndescription = \"Local-first autonomous build arena with anti-fabrication scorer calibration\"\nrequires-python = \">=3.12\"\ndependencies = [\n    \"linkml>=1.8.7\",\n    \"mabwiser>=2.7.4\",\n    \"pydantic>=2.7\",\n    \"pyyaml>=6.0\",\n    \"tomli-w>=1.0\",\n]\n\n[dependency-groups]\ndev = [\n    \"pytest>=8.2\",\n    \"pytest-cov>=5.0\",\n    \"ruff>=0.6\",\n    \"pyright>=1.1\",\n]\n\n[tool.pytest.ini_options]\naddopts = \"-q\"\ntestpaths = [\"tests\"]\npythonpath = [\".\"]\n\n[tool.ruff]\ntarget-version = \"py312\"\nline-length = 100\nexclude = [\"arena/generated\", \".arena/calibration/repo\"]\n\n[tool.ruff.lint]\nselect = [\"E\", \"F\", \"I\", \"UP\", \"B\", \"SIM\"]\nignore = [\"E501\"]\n\n[tool.pyright]\ninclude = [\"arena\", \"scorer\", \"verifier\", \"scripts\", \"tests\"]\nexclude = [\"arena/generated\", \".arena/calibration/repo\"]\ntypeCheckingMode = \"standard\"\npythonVersion = \"3.12\"\nreportMissingTypeStubs = false\n\n[tool.coverage.run]\nsource = [\"arena\", \"scorer\", \"verifier\", \"scripts\"]\nomit = [\"arena/generated/*\"]\n\n[tool.coverage.report]\nfail_under = 100\nshow_missing = true\nexclude_also = [\n    \"if __name__ == .__main__.:\",\n    \"def .*: \\\\.\\\\.\\\\.\",\n]\n"
+    }
+  ]
+}

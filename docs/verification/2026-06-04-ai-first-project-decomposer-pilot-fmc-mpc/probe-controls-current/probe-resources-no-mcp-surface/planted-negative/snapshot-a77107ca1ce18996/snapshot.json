@@ -1,0 +1,570 @@
+{
+  "acceptance_command_allowlist": [
+    "acc:pytest",
+    "chk-resources-contract",
+    "chk-suite",
+    "chk-tools-validation"
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "chk-suite",
+        "chk-resources-contract"
+      ],
+      "contract_ids": [
+        "ct-server-config",
+        "ct-client-config"
+      ],
+      "id": "comp-config",
+      "name": "Configuration & Settings",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Load and validate runtime configuration (FMC host, credentials, timeouts) as typed pydantic settings consumed by client and server.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "chk-suite",
+        "chk-resources-contract"
+      ],
+      "contract_ids": [
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-server-client"
+      ],
+      "id": "comp-client",
+      "name": "FMC HTTP Client (auth, transport, token cache)",
+      "owned_node_ids": [
+        "node:4042451215c279f0dca7"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "responsibility": "Own async HTTP transport to the FMC REST API, base64 basic-auth handshake, and time-based auth-token caching/refresh.",
+      "verification_gap_ids": [
+        "gap-client-network"
+      ]
+    },
+    {
+      "check_ids": [
+        "chk-suite",
+        "chk-tools-validation"
+      ],
+      "contract_ids": [],
+      "id": "comp-tools",
+      "name": "MCP Tool Surface",
+      "owned_node_ids": [
+        "node:a32d71cbbae4bcadc234",
+        "node:84a7c7e4c189e28cb1bb"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c"
+      ],
+      "responsibility": "Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation.",
+      "verification_gap_ids": [
+        "gap-tool-wiring"
+      ]
+    },
+    {
+      "check_ids": [
+        "chk-suite"
+      ],
+      "contract_ids": [
+        "ct-server-config",
+        "ct-server-client"
+      ],
+      "id": "comp-server",
+      "name": "MCP Server Runtime & Entrypoint",
+      "owned_node_ids": [
+        "node:9810fbe9bc4ff06aee73",
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf"
+      ],
+      "responsibility": "Construct the FastMCP server, wire config and client into its lifecycle, and expose the process entrypoint that launches the server.",
+      "verification_gap_ids": [
+        "gap-tool-wiring",
+        "gap-entrypoint"
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp-server",
+      "id": "ct-server-config",
+      "name": "Server consumes configuration",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:a490824f581f0eb5"
+      ],
+      "supporting_edge_ids": [
+        "edge:1dbd45e8683cedc3c87a"
+      ],
+      "to_component_id": "comp-config"
+    },
+    {
+      "from_component_id": "comp-client",
+      "id": "ct-client-config",
+      "name": "Client consumes configuration",
+      "near_neighbor_alternative_ids": [
+        "nn-client-split"
+      ],
+      "provenance_refs": [
+        "prov:ccb407380f605c8b"
+      ],
+      "supporting_edge_ids": [
+        "edge:4db395dbd95108d60b32"
+      ],
+      "to_component_id": "comp-config"
+    },
+    {
+      "from_component_id": "comp-resources",
+      "id": "ct-resources-client",
+      "name": "Resources call FMC client",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:9688276cf5e240e7"
+      ],
+      "supporting_edge_ids": [
+        "edge:25c3c6d20a305beeeca9"
+      ],
+      "to_component_id": "comp-client"
+    },
+    {
+      "from_component_id": "comp-server",
+      "id": "ct-server-client",
+      "name": "Server uses FMC client",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:878270a56e8c3d80"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbfc0096826b93771472"
+      ],
+      "to_component_id": "comp-client"
+    }
+  ],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server"
+      ],
+      "contract_ids": [
+        "ct-server-config",
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-server-client"
+      ],
+      "description": "All component, contract, and gap claims must trace to selected graph nodes/edges and their provenance; no responsibilities, tools, or endpoints may be invented beyond packet evidence.",
+      "id": "cc-anti-fabrication",
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf",
+        "prov:a490824f581f0eb5",
+        "prov:ccb407380f605c8b",
+        "prov:9688276cf5e240e7",
+        "prov:3dfa2aaf889c6db2",
+        "prov:878270a56e8c3d80"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp-client",
+        "comp-server",
+        "comp-resources",
+        "comp-tools",
+        "comp-config"
+      ],
+      "contract_ids": [
+        "ct-client-config",
+        "ct-server-client",
+        "ct-resources-client"
+      ],
+      "description": "Acceptance must be deterministic; the client's time-based token caching and any wall-clock or network ordering must be controlled/stubbed so the pytest suite yields stable results.",
+      "id": "cc-determinism",
+      "provenance_refs": [
+        "prov:4d9c0f2751d94893",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf",
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:b380701c2879efce",
+        "prov:ccb407380f605c8b",
+        "prov:878270a56e8c3d80",
+        "prov:9688276cf5e240e7"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server"
+      ],
+      "contract_ids": [
+        "ct-server-config",
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-server-client"
+      ],
+      "description": "Every owned node, supporting edge, and check is anchored to packet provenance ids so the decomposition is auditable back to the source graph.",
+      "id": "cc-provenance",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:750d7fda533e438c",
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:4e62ae79d2c07a9c",
+        "prov:da6e96a18d26d1cf",
+        "prov:a490824f581f0eb5",
+        "prov:ccb407380f605c8b",
+        "prov:9688276cf5e240e7",
+        "prov:3dfa2aaf889c6db2",
+        "prov:878270a56e8c3d80"
+      ],
+      "triggered_by": "universal"
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp-client",
+        "comp-server",
+        "comp-resources"
+      ],
+      "contract_ids": [
+        "ct-server-client",
+        "ct-resources-client"
+      ],
+      "description": "Acceptance must not call the live FMC controller or require credentials; the httpx-based client and FastMCP runtime must be exercised offline with stubs, per project non-goals.",
+      "id": "cc-no-live-paid-api-acceptance",
+      "provenance_refs": [
+        "prov:2b0e52ad10883e7c",
+        "prov:224f5fd127caa0f7",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf",
+        "prov:4e62ae79d2c07a9c",
+        "prov:878270a56e8c3d80",
+        "prov:9688276cf5e240e7"
+      ],
+      "triggered_by": "non_goal:do not require live FMC credentials or network calls for acceptance"
+    }
+  ],
+  "goal": "decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon",
+  "graph_hash": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-resources-no-mcp-surface",
+      "planted_negative_id": "neg-tools-resources-merge",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:bebb3d04d5e3bea1",
+        "prov:3dfa2aaf889c6db2",
+        "prov:9688276cf5e240e7"
+      ],
+      "target_component_ids": [
+        "comp-resources"
+      ],
+      "target_contract_ids": [
+        "ct-resources-client",
+        "ct-tools-resources"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-client-unified-auth-transport",
+      "planted_negative_id": "neg-client-split",
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:2b0e52ad10883e7c",
+        "prov:aefc03705172d5d2",
+        "prov:4d9c0f2751d94893",
+        "prov:ccb407380f605c8b",
+        "prov:9688276cf5e240e7",
+        "prov:878270a56e8c3d80"
+      ],
+      "target_component_ids": [
+        "comp-client"
+      ],
+      "target_contract_ids": [
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-server-client"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "039b6f926c0e71fb2675995112bd2cc895a9e59c43147f3414ed958d2610ecd5",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-no-fabricated-components",
+      "planted_negative_id": "neg-fabricated-audit-log",
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf",
+        "prov:a490824f581f0eb5",
+        "prov:ccb407380f605c8b",
+        "prov:9688276cf5e240e7",
+        "prov:3dfa2aaf889c6db2",
+        "prov:878270a56e8c3d80"
+      ],
+      "target_component_ids": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server"
+      ],
+      "target_contract_ids": [
+        "ct-server-config",
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-tools-resources",
+        "ct-server-client"
+      ]
+    }
+  ],
+  "input_hashes": {
+    "graph": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3"
+  },
+  "model_output_hashes": {
+    "decomposer": "c7ab7eafb4c1148ab411b1d0d861d53a42186f3ac16bcdc4b54c98bb67e21643"
+  },
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Split the client into a separate authentication/token-cache component and a thin HTTP transport component.",
+      "id": "nn-client-split",
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:2b0e52ad10883e7c",
+        "prov:aefc03705172d5d2",
+        "prov:4d9c0f2751d94893"
+      ],
+      "target_id": "comp-client",
+      "why_not_primary": "Auth (base64), token caching (time), and transport (httpx) are co-located in the single client module with no edge evidence of a distinct auth surface; splitting would create sub-file fragments rather than independent responsibility units. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    },
+    {
+      "alternative": "Merge tools and resources into a single 'FMC operations' component.",
+      "id": "nn-tools-resources-merge",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:3dfa2aaf889c6db2"
+      ],
+      "target_id": "comp-tools",
+      "why_not_primary": "Responsibilities differ: resources retrieve and serialize FMC data via the client, while tools define the MCP tool surface and own input validation (ipaddress); the tools->resources import edge confirms a layered dependency, not a single unit. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    },
+    {
+      "alternative": "Treat fmc_mcp.__main__ as its own standalone entrypoint component separate from the server runtime.",
+      "id": "nn-server-entrypoint",
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf",
+        "prov:e08d506150373eea"
+      ],
+      "target_id": "comp-server",
+      "why_not_primary": "__main__ only imports and delegates to fmc_mcp.server (single import edge) and carries no independent responsibility; isolating it would produce a rejected file-bucket component. Anchored to goal: decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon; non-goals: do not require live FMC credentials or network calls for acceptance; do not accept file-bucket components."
+    }
+  ],
+  "non_goals": [
+    "do not require live FMC credentials or network calls for acceptance",
+    "do not accept file-bucket components"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "chk-suite",
+      "command": "uv run python -m pytest -q",
+      "component_ids": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server"
+      ],
+      "contract_ids": [
+        "ct-server-config",
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-tools-resources",
+        "ct-server-client"
+      ],
+      "description": "Full offline pytest suite passes, exercising configuration loading, client logic, resource serialization, and server wiring.",
+      "id": "chk-suite",
+      "provenance_refs": [
+        "prov:83bfaa715796cf55",
+        "prov:aae72e2816907c8a",
+        "prov:d10dbb159e6fb524",
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:da6e96a18d26d1cf",
+        "prov:a490824f581f0eb5",
+        "prov:ccb407380f605c8b",
+        "prov:9688276cf5e240e7",
+        "prov:3dfa2aaf889c6db2",
+        "prov:878270a56e8c3d80"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk-resources-contract",
+      "command": "uv run python -m pytest -q",
+      "component_ids": [
+        "comp-resources",
+        "comp-client",
+        "comp-config"
+      ],
+      "contract_ids": [
+        "ct-resources-client",
+        "ct-client-config"
+      ],
+      "description": "Resource\u2194client\u2194config integration is validated through tests/test_resources.py, which imports fmc_mcp.resources, fmc_mcp.client, and fmc_mcp.config.",
+      "id": "chk-resources-contract",
+      "provenance_refs": [
+        "prov:83bfaa715796cf55",
+        "prov:9688276cf5e240e7",
+        "prov:ccb407380f605c8b",
+        "prov:4e62ae79d2c07a9c",
+        "prov:bcfd8e782d7fe500",
+        "prov:b380701c2879efce"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "chk-tools-validation",
+      "command": "uv run python -m pytest -q",
+      "component_ids": [
+        "comp-tools"
+      ],
+      "contract_ids": [
+        "ct-tools-resources"
+      ],
+      "description": "Tool-surface input validation (ipaddress parsing) and JSON shaping are exercised under the suite.",
+      "id": "chk-tools-validation",
+      "provenance_refs": [
+        "prov:750d7fda533e438c",
+        "prov:12c675fbe4c747a2",
+        "prov:3dfa2aaf889c6db2"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    }
+  ],
+  "primary_model_id": "claude-opus-4-8-pattern-negative",
+  "project_id": "fmc-mcp",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "092867bad00bfb28cc51eff73c828ed94d0e27b4f9d74eca7fbcc83d05e42963"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-a77107ca1ce18996",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "comp-server",
+        "comp-tools"
+      ],
+      "contract_ids": [],
+      "description": "No selected edge connects fmc_mcp.server to fmc_mcp.tools, so registration/exposure of MCP tools through the server runtime is not observable from the graph; the tool surface may be wired via decorators or runtime registration not captured by the packet.",
+      "id": "gap-tool-wiring",
+      "proposed_closure_check": "Add an offline check that imports fmc_mcp.server and asserts the expected FMC tools are registered on the FastMCP instance.",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:750d7fda533e438c",
+        "prov:da6e96a18d26d1cf"
+      ],
+      "severity": "high"
+    },
+    {
+      "component_ids": [
+        "comp-client"
+      ],
+      "contract_ids": [
+        "ct-resources-client",
+        "ct-server-client",
+        "ct-client-config"
+      ],
+      "description": "Client FMC HTTP/auth behavior (httpx transport, base64 basic auth, time-based token caching) cannot be exercised against a live controller under the no-network/no-credentials acceptance constraint, so the real FMC request contract is verified only via mocks/offline.",
+      "id": "gap-client-network",
+      "proposed_closure_check": "Add offline contract tests that stub the httpx transport and assert request shaping, auth header construction, and token-cache expiry logic.",
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:2b0e52ad10883e7c",
+        "prov:9688276cf5e240e7",
+        "prov:878270a56e8c3d80",
+        "prov:ccb407380f605c8b"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "comp-server"
+      ],
+      "contract_ids": [],
+      "description": "The fmc_mcp.__main__ -> fmc_mcp.server startup path (process entrypoint) is not shown to be covered by tests in the packet.",
+      "id": "gap-entrypoint",
+      "proposed_closure_check": "Add a smoke test invoking the module entrypoint with a stubbed server.run to assert it starts without network.",
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf",
+        "prov:e08d506150373eea",
+        "prov:d10dbb159e6fb524"
+      ],
+      "severity": "low"
+    },
+    {
+      "component_ids": [],
+      "contract_ids": [],
+      "description": "Documentation/static surfaces present in the graph (markdown_section x45 with 45 documents edges) and config surfaces (config x3 with 3 configures edges) were not selected and are not componentized, so their accuracy and coverage remain undecomposed.",
+      "id": "gap-docs-static",
+      "proposed_closure_check": "Select documentation and config nodes in a follow-up packet and either map them to owning components or emit explicit doc-accuracy checks.",
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "severity": "low"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out --project-id leonbreukelman-engineer --source-task 'leonbreukelman-engineer AI-first decomposer pilot' --primary-backlog-item pilot-leonbreukelman-engineer --goal 'decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs' --llm-mode fixture --overwrite --non-goal 'do not treat generated dist output as source ownership' --non-goal 'do not require Cloudflare deployment or public mutation'",
+  "cwd": "/home/leonb/projects/build-arena",
+  "returncode": 0,
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6844d7f53c770da9/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6844d7f53c770da9/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/snapshot-6844d7f53c770da9\", \"snapshot_id\": \"snapshot-6844d7f53c770da9\", \"violation_count\": 0}\n",
+  "stderr": ""
+}

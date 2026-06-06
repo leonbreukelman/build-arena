@@ -1,0 +1,16 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden --project-id leonbreukelman-engineer --goal 'decompose the personal site repo into responsibility-bearing web delivery components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/recorded-model-output.repaired.json --overwrite --non-goal 'do not accept static file buckets as sufficient architecture' --non-goal 'do not treat generated dist output as source ownership'",
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af\", \"snapshot_id\": \"snapshot-7897ac06d4f929af\", \"violation_count\": 0}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden/snapshot-7897ac06d4f929af",
+    "snapshot_id": "snapshot-7897ac06d4f929af",
+    "violation_count": 0,
+    "violation_gates": [],
+    "violation_messages": []
+  }
+}

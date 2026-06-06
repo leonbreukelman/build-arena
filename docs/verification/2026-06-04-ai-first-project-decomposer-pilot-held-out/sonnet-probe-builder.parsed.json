@@ -1,0 +1,141 @@
+{
+  "builder_model_id": "claude-sonnet-4-6",
+  "builder_prompt_hash_hint": "sha256:probe-builder-independent-sonnet-4-6-20260604:first8=a3f82c19",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "sha256:probe-builder-independent-sonnet-4-6-20260604:first8=a3f82c19",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:worker-mcp-distinct-endpoints",
+      "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+      "provenance_refs": [
+        "prov:ea0068ba73266e60",
+        "prov:47b71b23b6c02da8",
+        "prov:e8c798459ce07e15"
+      ],
+      "target_component_ids": [
+        "comp:worker-edge-router",
+        "comp:mcp-server"
+      ],
+      "target_contract_ids": [
+        "contract:router-to-mcp"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "sha256:probe-builder-independent-sonnet-4-6-20260604:first8=a3f82c19",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:persona-corpus-distinct-from-machine-data",
+      "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+      "provenance_refs": [
+        "prov:756f566ef137b772",
+        "prov:5dd0cc494cd85fbe",
+        "prov:77b106b079f49cac"
+      ],
+      "target_component_ids": [
+        "comp:persona-corpus",
+        "comp:public-agent-data"
+      ],
+      "target_contract_ids": [
+        "contract:build-renders-persona"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "sha256:probe-builder-independent-sonnet-4-6-20260604:first8=a3f82c19",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:build-pipeline-source-only-no-dist",
+      "planted_negative_id": "neg:dist-output-as-owned-source",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:73f52603d0cdfc2b"
+      ],
+      "target_component_ids": [
+        "comp:build-pipeline"
+      ],
+      "target_contract_ids": [
+        "contract:build-consumes-data",
+        "contract:build-renders-persona"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "sha256:probe-builder-independent-sonnet-4-6-20260604:first8=a3f82c19",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe:anti-fabrication-concern-is-universal",
+      "planted_negative_id": "neg:drop-anti-fabrication-concern",
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db",
+        "prov:5dd0cc494cd85fbe",
+        "prov:756f566ef137b772",
+        "prov:4417f3bf0932d8ac"
+      ],
+      "target_component_ids": [
+        "comp:build-pipeline",
+        "comp:link-checker",
+        "comp:worker-edge-router",
+        "comp:mcp-server",
+        "comp:public-agent-data",
+        "comp:persona-corpus",
+        "comp:project-docs"
+      ],
+      "target_contract_ids": [
+        "contract:router-to-mcp",
+        "contract:build-consumes-data",
+        "contract:build-renders-persona",
+        "contract:linkcheck-validates-data"
+      ]
+    }
+  ],
+  "negative_control_summary": "Deterministic negative control procedure: (1) Remove concern:anti-fabrication from cross_cutting_concerns and narrow concern:provenance to component_ids=['comp:build-pipeline','comp:link-checker'] only. (2) Gate enumerates all component_ids from the components array\u2014yields seven IDs. (3) Gate collects all cross_cutting_concerns with triggered_by='universal' and unions their component_ids\u2014now yields only comp:build-pipeline and comp:link-checker from the narrowed provenance concern; no anti-fabrication concern exists. (4) Set difference: {comp:worker-edge-router, comp:mcp-server, comp:public-agent-data, comp:persona-corpus, comp:project-docs} have zero universal-concern coverage. (5) Gate emits non-empty uncovered gap set and fails. This procedure is fully deterministic: pure set difference over the JSON structure, no network call, no model invocation. Any decomposition that removes a concern with triggered_by='universal' or strips component IDs from such a concern predictably reduces coverage and triggers the gate. Similarly, removing concern:provenance entirely leaves all components without provenance anchoring, causing the prov-ref audit check to fail on the same deterministic path.",
+  "planted_negatives": [
+    {
+      "bad_decomposition_pattern": "Merge worker/index.js and worker/mcp/server.js under a single 'Cloudflare Worker Code' component owning all of node:32f3a0d3845cf98fb8cb, node:javascript_import:worker.mcp.server, and node:1e8ba7fd1db36d8f49db, then drop contract:router-to-mcp because from_component_id and to_component_id would resolve to the same merged component.",
+      "expected_gate_failure": "Contract graph integrity check: contract:router-to-mcp declares from_component_id=comp:worker-edge-router and to_component_id=comp:mcp-server. If both are merged into one component, either both IDs point to a non-existent component (the merged one has a new ID) or the contract becomes a self-referential edge with from==to. Any gate validating that from_component_id != to_component_id and that both referenced IDs exist in the components list rejects this decomposition deterministically.",
+      "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+      "target": "comp:worker-edge-router and comp:mcp-server",
+      "why_hidden_from_primary": "The primary decomposer (claude-opus-4-8) was given distinct source nodes for worker/index.js and worker/mcp/server.js and correctly split them on semantic responsibility. A file-bucket report generator grouping by filesystem directory (worker/) rather than by semantic boundary would bundle them. The probe tests whether the directed-contract endpoint distinctness invariant is enforced, not just whether files are listed."
+    },
+    {
+      "bad_decomposition_pattern": "Move all ten persona corpus node IDs (node:270b52766ba2097c3bf8, node:087085bf23e3cc4628f2, node:3497d88db26b2742c66a, node:5ea405faea230cdf5498, node:7ad8da6a627ab8d27e9e, node:9d9d37a18c7ab7537c0f, node:c627dcac9798554af877, node:ca0aad13b3b497dd9e40, node:cd8a921454b74ef09e06, node:f0fd663527865f98c64e) into comp:public-agent-data's owned_node_ids on the grounds that represent_me.md is 'agent-facing content analogous to llms.txt', eliminate comp:persona-corpus as a distinct component, and repoint contract:build-renders-persona to to_component_id=comp:public-agent-data.",
+      "expected_gate_failure": "Near-neighbor alternative nn:persona-in-data is explicitly marked why_not_primary='prompt/represent_me.md is a distinct prose corpus with separate prov; it is authored representation guidance, not machine-readable API data.' A gate that checks whether any near_neighbor_alternative's rejected pattern is instantiated in the decomposition detects this. Additionally, a prov-node-to-component uniqueness check fails: persona prov refs (prov:756f566ef137b772 and siblings) conflict with comp:public-agent-data's prov refs (prov:5dd0cc494cd85fbe, prov:77b106b079f49cac), producing a multi-component prov collision.",
+      "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+      "target": "comp:persona-corpus and comp:public-agent-data",
+      "why_hidden_from_primary": "The primary correctly distinguished machine-readable data (JSON, llms.txt) from prose corpus (Markdown sections with narrative structure). A generator classifying by consumer role ('both are agent-facing') rather than artifact type and authoring surface would merge them. The probe tests the near-neighbor exclusion gate and prov-uniqueness check."
+    },
+    {
+      "bad_decomposition_pattern": "Add invented dist/ directory graph nodes to comp:build-pipeline's owned_node_ids with the rationale that 'the pipeline produces and therefore owns its output,' citing no prov refs for the added nodes.",
+      "expected_gate_failure": "Two gates fire. First, the non-goal enforcement gate checks that no owned_node_id resolves to a generated output surface; the project packet records surface_counts.generated=0, so any node corresponding to a dist/ artifact has no matching packet entry and fails this check. Second, the anti-fabrication concern (concern:anti-fabrication, triggered_by='universal') requires that every component's owned_node_ids trace to packet-supplied prov identifiers; dist/ nodes carry no prov ref and the anti-fabrication gate emits a fabricated-node violation.",
+      "planted_negative_id": "neg:dist-output-as-owned-source",
+      "target": "comp:build-pipeline",
+      "why_hidden_from_primary": "The primary correctly scoped ownership to scripts/build.py and its packet-anchored prov. A naive generator conflating 'build pipeline' with 'everything the build touches or emits' would claim dist/ nodes. The probe tests both non-goal enforcement and anti-fabrication prov anchoring simultaneously."
+    },
+    {
+      "bad_decomposition_pattern": "Remove concern:anti-fabrication from cross_cutting_concerns entirely, or reduce its component_ids to only ['comp:build-pipeline'] with triggered_by='conditional' on the rationale that 'fabrication risk is highest where data edges are missing (build pipeline only).'",
+      "expected_gate_failure": "Universal-concern coverage assertion: enumerate all seven component IDs from the components list; collect all cross_cutting_concerns with triggered_by='universal' and union their component_ids. With concern:anti-fabrication absent or scoped, only concern:provenance (if left universal) covers some components. Five component IDs\u2014comp:link-checker, comp:worker-edge-router, comp:mcp-server, comp:persona-corpus, comp:project-docs\u2014have no universal-concern coverage. The gate diffs the full component ID set against universally-covered IDs and emits a non-empty gap set, causing deterministic failure without any network call or model invocation.",
+      "planted_negative_id": "neg:drop-anti-fabrication-concern",
+      "target": "concern:anti-fabrication",
+      "why_hidden_from_primary": "The primary modeled anti-fabrication correctly as universal. A file-bucket report generator would not model cross-cutting concerns at all, or would scope them narrowly to where graph edges explicitly surface the risk. The probe tests universal-coverage enforcement across all seven components."
+    }
+  ],
+  "probe_builder_output": {
+    "coverage_rationale": "Probes cover: contract-graph structural integrity (probe 1), near-neighbor exclusion and prov-uniqueness (probe 2), non-goal and anti-fabrication enforcement (probe 3), and universal-concern coverage completeness (probe 4). Together they span the four primary failure modes a file-bucket report generator would exhibit relative to a semantic-responsibility decomposition.",
+    "discrimination_rate": "4/4 probes set discrimination_passed=true, conditioned on deterministic gate or probe rubric rejection of the planted bad decomposition pattern",
+    "independence_statement": "Builder model claude-sonnet-4-6 did not participate in the primary decomposition by claude-opus-4-8. Probes were constructed solely from the project packet summary and primary decomposition provided in this prompt, without access to the primary decomposer's internal reasoning, chain-of-thought, or intermediate outputs.",
+    "planted_negative_count": 4,
+    "probe_count": 4,
+    "rationale": "Four probes were designed to discriminate semantic-responsibility decomposition from a fluent file-bucket report. Probe 1 (worker-mcp-distinct-endpoints) tests the contract directed-edge invariant that from_component_id != to_component_id; a directory-grouping generator merging worker/ files breaks this invariant deterministically. Probe 2 (persona-corpus-distinct-from-machine-data) tests near-neighbor exclusion gate enforcement for nn:persona-in-data and prov-uniqueness; a consumer-role classifier merging prose and JSON triggers both checks. Probe 3 (build-pipeline-source-only-no-dist) tests non-goal enforcement and anti-fabrication prov anchoring together; a pipeline-owns-output generator claims dist/ nodes that have no packet prov, failing both gates. Probe 4 (anti-fabrication-concern-is-universal) tests universal-concern coverage across all seven components; a generator skipping cross-cutting-concern modeling or scoping concerns conditionally leaves most components uncovered and trips the set-difference gate. All probes use only IDs present in the supplied decomposition packet; no graph node IDs were invented."
+  }
+}

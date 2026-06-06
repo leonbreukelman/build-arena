@@ -1,0 +1,32 @@
+{
+  "branch": {
+    "command": "git branch --show-current",
+    "cwd": "/home/leonb/projects/build-arena",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "coverage-100\n"
+  },
+  "git_toplevel": {
+    "command": "git rev-parse --show-toplevel",
+    "cwd": "/home/leonb/projects/build-arena",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/build-arena\n"
+  },
+  "pwd": {
+    "command": "pwd",
+    "cwd": "/home/leonb/projects/build-arena",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "/home/leonb/projects/build-arena\n"
+  },
+  "repo": "/home/leonb/projects/build-arena",
+  "selection_note": "Required pilot 1: Build Arena itself.",
+  "status_short": {
+    "command": "git status --short",
+    "cwd": "/home/leonb/projects/build-arena",
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "?? arena/project_decomposer_ai.py\n?? arena/project_encyclopedia.py\n?? arena/project_graph.py\n?? arena/project_model_cli.py\n?? arena/project_model_gate.py\n?? arena/project_model_llm.py\n?? arena/project_snapshot.py\n?? docs/build-arena-constitution.md\n?? docs/build-arena-current-state.md\n?? docs/build-arena-project-brief.md\n?? docs/build-arena-specification.md\n?? docs/plans/2026-06-04-ai-first-project-decomposer-implementation-plan.md\n?? docs/playbooks/\n?? docs/research/\n?? docs/specs/\n?? docs/verification/2026-06-01-arena-calibration-decomposer-evaluation-report.md\n?? docs/verification/2026-06-01-arena-calibration-decomposer-local-evaluation.json\n?? docs/verification/2026-06-01-arena-calibration-decomposer-model.json\n?? docs/verification/2026-06-01-arena-calibration-model-review-prompt-distilled.md\n?? docs/verification/2026-06-01-arena-calibration-model-review-prompt-grok.md\n?? docs/verification/2026-06-01-arena-calibration-model-review-prompt.md\n?? docs/verification/2026-06-01-grok-build-arena-calibration-model-review.md\n?? docs/verification/2026-06-01-grok-build-arena-calibration-model-review.stderr\n?? docs/verification/2026-06-01-opus-arena-calibration-model-review.json\n?? docs/verification/2026-06-01-opus-arena-calibration-model-review.md\n?? docs/verification/2026-06-03-issue-3-project-model-v0-emit/\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview-prompt.md\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.json\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.md\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-rereview.stderr.txt\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review-prompt.md\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.json\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.md\n?? docs/verification/2026-06-03-opus-f3-project-model-mentor-runbook-review.stderr.txt\n?? docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/\n?? docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/\n?? docs/verification/2026-06-04-ai-first-project-decomposer-plan-opus-review.json\n?? docs/verification/2026-06-04-ai-first-project-decomposer-plan-opus-review.md\n?? docs/verification/2026-06-04-ai-first-project-decomposer-spec-opus-review.json\n?? docs/verification/2026-06-04-ai-first-project-decomposer-spec-opus-review.md\n?? tests/test_project_decomposer_ai.py\n?? tests/test_project_encyclopedia.py\n?? tests/test_project_graph.py\n?? tests/test_project_model_cli_ai.py\n?? tests/test_project_snapshot_gate.py\n"
+  }
+}

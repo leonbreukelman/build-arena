@@ -1,0 +1,6 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc --project-id fmc-mcp --goal 'decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/recorded-model-output.with-probes.json --overwrite --non-goal 'do not require live FMC credentials or network calls for acceptance' --non-goal 'do not accept file-bucket components'",
+  "returncode": 2,
+  "stdout": "",
+  "stderr": "unhashable type: 'dict'\n"
+}

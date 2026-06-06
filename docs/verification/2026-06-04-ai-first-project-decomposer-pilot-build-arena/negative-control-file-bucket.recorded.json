@@ -1,0 +1,42 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.misc-bucket",
+      "name": "Misc bucket",
+      "owned_node_ids": [
+        "node:72409672d819b843aed3",
+        "node:8a740887145cf8fa758b",
+        "node:91cba0b9bf0b2e024cf3",
+        "node:b8354b00efc29ef31e46",
+        "node:93f4928e9dfb6246e78a",
+        "node:36ae9e5b116af05b2187",
+        "node:b10f965f56c8c8168fcb",
+        "node:d4bb7dca227bb5d8e5b0",
+        "node:bb8a30e1cd7cc7256a07",
+        "node:d7aacb432805ee47bc3e",
+        "node:5808ad2d44e48ee6248d"
+      ],
+      "provenance_refs": [
+        "prov:94aed68ebfbd8e1d"
+      ],
+      "responsibility": "Owns every convenient project file as one fluent bucket without measurable contracts.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [],
+  "cross_cutting_concerns": [],
+  "goal": "decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics",
+  "held_out_probes": [],
+  "model_id": "negative-control-file-bucket-generator",
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not accept file-bucket components",
+    "do not treat scorer verifier schema or generated files as owned arena hypotheses"
+  ],
+  "observable_checks": [],
+  "project_id": "build-arena",
+  "verification_gaps": []
+}

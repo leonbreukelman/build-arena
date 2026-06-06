@@ -1,0 +1,18 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-control.recorded.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "gate_report": {
+    "passed": true,
+    "violations": []
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5/manifest.json",
+    "passed": true,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5",
+    "snapshot_id": "snapshot-10e36534abee20d5",
+    "violation_count": 0
+  },
+  "returncode": 0,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5/manifest.json\", \"passed\": true, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-evaluations/probe-no_file_bucket_components/golden-artifacts/snapshot-10e36534abee20d5\", \"snapshot_id\": \"snapshot-10e36534abee20d5\", \"violation_count\": 0}\n"
+}

@@ -1,0 +1,20 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/build-arena --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative --project-id build-arena --goal 'decompose Build Arena into responsibility-bearing components without relying on path-classifier semantics' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative.raw.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not treat scorer verifier schema or generated files as owned arena hypotheses'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a\", \"snapshot_id\": \"snapshot-11fdb36d997e6e8a\", \"violation_count\": 1}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative/snapshot-11fdb36d997e6e8a",
+    "snapshot_id": "snapshot-11fdb36d997e6e8a",
+    "violation_count": 1,
+    "violation_gates": [
+      "component_measurability"
+    ],
+    "violation_messages": [
+      "Component comp:project_graph responsibility reads like a path/file-bucket decomposition rather than a semantic responsibility."
+    ]
+  }
+}

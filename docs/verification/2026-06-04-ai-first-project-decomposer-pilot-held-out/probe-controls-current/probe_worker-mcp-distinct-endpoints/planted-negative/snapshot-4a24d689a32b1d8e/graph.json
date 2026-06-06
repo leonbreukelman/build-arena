@@ -1,0 +1,5559 @@
+{
+  "edges": [
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:14b22207cea9242c6f34",
+      "id": "edge:0067e60854acb22b8307",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "3c232b5eef279854ceafb395064ab4ac3b602b361fcf34951690b88f2836b78e",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c6056aa2fba92b85",
+          "line_end": 73,
+          "line_start": 1,
+          "path": "api/v1/projects.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:fd13909968f5b768873a",
+      "id": "edge:01d75659eb63317878ca",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:770f5651b8fc3486",
+          "line_end": 223,
+          "line_start": 209,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:0223908fe449c72a551d",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:aabb96a05a30bb1f",
+          "line_end": 261,
+          "line_start": 1,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:579a99eddabf701591a8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8c96a6d1d1b949b47a8",
+      "id": "edge:027a6e55f8507c63e1ba",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:30dc80201ed692ce",
+          "line_end": 100,
+          "line_start": 91,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:7bc3408b058bec876a5a",
+      "id": "edge:027f9adfaf462691c309",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:985c483fff687a5b",
+          "line_end": 78,
+          "line_start": 67,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:07616f67337ab23f1eac",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:756f566ef137b772",
+          "line_end": 78,
+          "line_start": 1,
+          "path": "prompt/represent_me.md",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:07d1bce8f3de7008e322",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "5752b922b43c55fe9809684bc3292755ebb838b53fee5606979c7673be5162db",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f7b77075a81a281d",
+          "line_end": 27,
+          "line_start": 1,
+          "path": ".gitignore",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:8d663344167934366564"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:0912b5a600752e7c95bc",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "2393efbbfe1531d82ec16341a7649cc49f30a997198628322426edf129ff7c68",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:1fc34945d0fd1ded",
+          "line_end": 15,
+          "line_start": 1,
+          "path": "scripts/build-site.sh",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:ad59fc8f1269c11d8240"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d04474a27932d29e2de2",
+      "id": "edge:0987e52c6ae016bf1a6d",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:711f5eb2efc52c71",
+          "line_end": 87,
+          "line_start": 83,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:3925af7de145b6e3ffe0",
+      "id": "edge:1d58784f0fc1e8408392",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d808c2de658d2c18",
+          "line_end": 41,
+          "line_start": 23,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:151cf959b51dafbd619e",
+      "id": "edge:1e88131591c718d59ec8",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "89706b0c13f3dfe1df9ecde46d75d8ee3452994a3b18024b0b4f1ac661d86fad",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:813acff12ec619c1",
+          "line_end": 109,
+          "line_start": 1,
+          "path": "well-known/agent-card.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:1e9b1b9fbad311f3693b",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6bb5304f18c132f6b48bb96aecdb53e48b63e66ca0b524f6a925398e0fc5dc0f",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e5867443e99d7d95",
+          "line_end": 46,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:db152df1ce71c7253d2d"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:70dc63bab5d48553454b",
+      "id": "edge:1f59b8cf40b100d5196c",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:61f7f31bc619b9c9",
+          "line_end": 7,
+          "line_start": 7,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:579a99eddabf701591a8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:20aa3be719a737eb2cd5",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "499b0212322c8b05af53eb817507789905e54aa8383a4eae05a44aca2bfc96ea",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc547fddea0bc4aa",
+          "line_end": 98,
+          "line_start": 1,
+          "path": "api/v1/offers.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:569910cced19bf75ae0b"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:2169b824a463bf9c842c",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "60de24e6bf23da35eea8f9bd064f02234682e5da0951e1fdb3cfd32998640cd0",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2dd83ff0e39c11a0",
+          "line_end": 17,
+          "line_start": 1,
+          "path": "package.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:e1a4bf92d1b32f2f503d"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:569910cced19bf75ae0b",
+      "id": "edge:218b7584d7948af6bbde",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "499b0212322c8b05af53eb817507789905e54aa8383a4eae05a44aca2bfc96ea",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc547fddea0bc4aa",
+          "line_end": 98,
+          "line_start": 1,
+          "path": "api/v1/offers.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:226f2ea26e086389fa5d",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6dc5e273e5a300c7c8d8f6e1ea1e88a3dc802add37847139c43a92fba7f213c9",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ee7225f24bd44bef",
+          "line_end": 44,
+          "line_start": 1,
+          "path": "api/v1/case_studies.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:f8af01263ce1ce0eb232"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:1c5a6f0459fa5b83d040",
+      "id": "edge:236b8f7bc4a2baaf9e20",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fa04b24fd751aac4",
+          "line_end": 5,
+          "line_start": 5,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8a344356f5d23c2baf2e",
+      "id": "edge:268de6bb5e855157b516",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:20633b322b34fb46",
+          "line_end": 236,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:62ad61e36d4379d32dee",
+      "id": "edge:27b41aa6ad9c1ea16fad",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4802cd6642a66791",
+          "line_end": 21,
+          "line_start": 13,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:556c8beea475f0092f9d",
+      "id": "edge:282126135ea5f103e4af",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:60d9f41d8fbffed7",
+          "line_end": 121,
+          "line_start": 102,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:292397846c323ef63f7a",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7da91706ad13dedb",
+          "line_end": 120,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:0e05f1db4adb3bbc9e83",
+      "id": "edge:2b092884c6a6be031621",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:edfff9996d5380e1",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f54782f22cfead583755",
+      "id": "edge:2beada34b6d33f6cb98a",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:57d8fa55e2ac07dc",
+          "line_end": 52,
+          "line_start": 43,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8f7bc74926c11f4ffb75",
+      "id": "edge:2e0de50b63c451a8dea9",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7bb64d2bbcaf6819",
+          "line_end": 27,
+          "line_start": 27,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:1a2e01373efe55ff7c11",
+      "id": "edge:3267a3b07e716865ce73",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:df7a443405848b30",
+          "line_end": 116,
+          "line_start": 116,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:33fbf5bf92644bc817be",
+      "kind": "imports",
+      "label": "sys",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d75786183ab35e5a",
+          "line_end": 12,
+          "line_start": 12,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:sys"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:ca0aad13b3b497dd9e40",
+      "id": "edge:353b88271fb2e73ee969",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a92ae5c99a4d4dae",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:388a8b7993d965c68760",
+      "kind": "imports",
+      "label": "pathlib",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:8ae860e02f73b5c8",
+          "line_end": 16,
+          "line_start": 16,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:pathlib"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:39d78984712736d1d1ed",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "32cce056918c49d64a5090953fa0cdd4f9d29747969ccd47c6bcb31688a9b551",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc1e470c847214a6",
+          "line_end": 2,
+          "line_start": 1,
+          "path": "scripts/requirements.txt",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:425e97b2c1ce274a07dd"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:fc16f9421e5f3a2683ad",
+      "id": "edge:3f1cb1b6fcb932a9a9dc",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cea811488559294c",
+          "line_end": 207,
+          "line_start": 180,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d038e1fd31641ace3226",
+      "id": "edge:400e3150647882946aae",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e2560a67a5e0ba01",
+          "line_end": 21,
+          "line_start": 21,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:40ece460ff6bd748033f",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "ed37b208c48b9a3f4395329fa292fc3f3299ec883c781fb1251fa7fc29c3738c",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:9b30aea1617abf1c",
+          "line_end": 1505,
+          "line_start": 1,
+          "path": "package-lock.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c871af2d62ed3dccfad0"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:43a5ea854b1a9eb7a34a",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "13d41e3ad7c0cb5bc61dbca097403fc11437acbd24c9f39c641ad5f13e2c6576",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ee829ba44efd1573",
+          "line_end": 78,
+          "line_start": 1,
+          "path": "templates/base.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:e9b715af08c3796f163a"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f4ebd3edbda8af591795",
+      "id": "edge:440d028b6bb0fc1d1112",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2dcc1d86bdf9caef",
+          "line_end": 28,
+          "line_start": 28,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:19cc14e2a3828fc1d1f4"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8a344356f5d23c2baf2e",
+      "id": "edge:441cff0e4e2068950a2e",
+      "kind": "imports",
+      "label": "pathlib",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:747bd5322f141fd0",
+          "line_end": 4,
+          "line_start": 4,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:pathlib"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:6977bb7f77e08cd3e7a5",
+      "id": "edge:44e298a458b620d0bd66",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:1850ad5cb836d39e",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:4567ca45c31e64f6fa3b",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "245c105e0314cc6dae44e1fdd36d3507e11328495674e96313324158de795af2",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:02ba82f0a1cc741d",
+          "line_end": 5,
+          "line_start": 1,
+          "path": "well-known/security.txt",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a50174e2cbf98164b1b9"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:a2126531d7c20f37e4d1",
+      "id": "edge:4788f41208b8a023e51e",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4b64388607641e33",
+          "line_end": 139,
+          "line_start": 134,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:0f29b2589c8192bfd049",
+      "id": "edge:47fca7fc9dea98bb27c4",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:b3a339052ff65c4a",
+          "line_end": 89,
+          "line_start": 80,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:cd398435655203c8977c",
+      "id": "edge:499cd02bd2ecc49924bc",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f45aa298c0dd30ad",
+          "line_end": 117,
+          "line_start": 99,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:4dcbcfbc1d1e33dcb4ee",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "4137fbc9bcf79b228913a988ac9524fc0dbdfe55c503692c52a0ca8d0616f041",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:06bd972541318fd3",
+          "line_end": 54,
+          "line_start": 1,
+          "path": "templates/human/work.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:346f9b3cd2dde3c5d686"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c1299be91730fc58c1e3",
+      "id": "edge:51f2374950587d7e36f1",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4e30e269c5a237db",
+          "line_end": 17,
+          "line_start": 17,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:087085bf23e3cc4628f2",
+      "id": "edge:56b7b0c61de5a6537636",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:505ad7266a711b66",
+          "line_end": 55,
+          "line_start": 55,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f1827689881225265d56",
+      "id": "edge:5756df6d419dc485b9b3",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3d218e9502f48636",
+          "line_end": 60,
+          "line_start": 60,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:32f3a0d3845cf98fb8cb",
+      "id": "edge:5a385c93988c7279efe4",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ea0068ba73266e60",
+          "line_end": 147,
+          "line_start": 1,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:19cc14e2a3828fc1d1f4"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:5cedd2c0593d85880d92",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7eaf81e99bd2434adaed615590b2cba9340c6531ffe6edce43a1cb93dff393dd",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0383de06a8a36ed1",
+          "line_end": 12,
+          "line_start": 1,
+          "path": "scripts/build-fallback.sh",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:2e14c1247beb5519c591"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c871af2d62ed3dccfad0",
+      "id": "edge:5d5d4188368a6fe81472",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "ed37b208c48b9a3f4395329fa292fc3f3299ec883c781fb1251fa7fc29c3738c",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:9b30aea1617abf1c",
+          "line_end": 1505,
+          "line_start": 1,
+          "path": "package-lock.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:de09c473f13049315d86",
+      "id": "edge:600ad941f5a73376230d",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:febd8e67289848a5",
+          "line_end": 32,
+          "line_start": 32,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f918107b9b1786323a79",
+      "id": "edge:619e4daf3591f9355654",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:73f52603d0cdfc2b",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:62776b28fdd710e3c783",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "619baf7c904626869c61e7b0d2983659ae995c169ce829e18dca31e1a6d78fda",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a426998abe16a1d3",
+          "line_end": 50,
+          "line_start": 1,
+          "path": "templates/human/services.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:016549f456f6ba3ecbb6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:5c8ebcea8dd641341457",
+      "id": "edge:635f2e51cb80eff2f642",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e9c7c073f81e5a80",
+          "line_end": 68,
+          "line_start": 51,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:a5b95d7d7ada63930bef",
+      "id": "edge:64f7b0ff5507a6cc4515",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7894438ea3df3482",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:50ef3f5ae5030e151c95",
+      "id": "edge:6558b6cd3b745012cbfe",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3bb44d8a7ee8cb24",
+          "line_end": 83,
+          "line_start": 63,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:abc28ffa9a81eb2796c3",
+      "id": "edge:66c5b1572b3877988cb9",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:08cb365023aa07b6",
+          "line_end": 48,
+          "line_start": 37,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:6b44a5c20c6e117b730f",
+      "kind": "imports",
+      "label": "argparse",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:79fcec2ced8fd3ac",
+          "line_end": 10,
+          "line_start": 10,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:argparse"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:32d0bb23216b301cf16b",
+      "id": "edge:6e2eaf59da098c63bb0d",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:070b33867ef6318a",
+          "line_end": 29,
+          "line_start": 29,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f8af01263ce1ce0eb232",
+      "id": "edge:712630ce72558bdd693f",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6dc5e273e5a300c7c8d8f6e1ea1e88a3dc802add37847139c43a92fba7f213c9",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ee7225f24bd44bef",
+          "line_end": 44,
+          "line_start": 1,
+          "path": "api/v1/case_studies.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:a781236d3a83da277bb3",
+      "id": "edge:71b957285029c69180be",
+      "kind": "tests",
+      "label": "tests inferred module",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4748fccbacbd25ea",
+          "line_end": 236,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:8a344356f5d23c2baf2e"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:3ea96135dd639273b1d2",
+      "id": "edge:72b0e27493b1b86b2838",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f8f91de97eb31594",
+          "line_end": 80,
+          "line_start": 71,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:5ea405faea230cdf5498",
+      "id": "edge:7303ce4595690c051e26",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:440d643908db39b6",
+          "line_end": 63,
+          "line_start": 63,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:73f720150aa0c7d91f22",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "22b1f8acd347d77e5d820af4ab786bfcf0df47458e7a0a7eb3153e9a519dfa23",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7a63594e8000dd3e",
+          "line_end": 52,
+          "line_start": 1,
+          "path": "well-known/ai.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:3c9a18d43326bf03e45f"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:745224ca73de09028a13",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "53a52d1d42019262d8377a213804faad00d3f387864be70126ff6e4cd242f302",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f523135dd3a150eb",
+          "line_end": 38,
+          "line_start": 1,
+          "path": "templates/human/contact.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:f4c3da775ce6da003096"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:74ab9b699f72835ea11c",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1cd516a2dd41fdac374659c5b775a7f2d18b52a4049d350e9fa04f19592e5422",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2d042fe8ddc59861",
+          "line_end": 63,
+          "line_start": 1,
+          "path": "api/v1/capabilities.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:ea7151a0d793d431ee03"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:3c9a18d43326bf03e45f",
+      "id": "edge:7a0295f894a3213f2a34",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "22b1f8acd347d77e5d820af4ab786bfcf0df47458e7a0a7eb3153e9a519dfa23",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7a63594e8000dd3e",
+          "line_end": 52,
+          "line_start": 1,
+          "path": "well-known/ai.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:182d7abe7007643cd122",
+      "id": "edge:7ab8d5ed5640b54f4ba7",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:84fab95b9de823c6",
+          "line_end": 41,
+          "line_start": 37,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d701b635b99442ff8d5a",
+      "id": "edge:7efc33a7b59b579e8532",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7cf3013274f52d35",
+          "line_end": 8,
+          "line_start": 8,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:ea7151a0d793d431ee03",
+      "id": "edge:84b78f9a14648bbeffb7",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1cd516a2dd41fdac374659c5b775a7f2d18b52a4049d350e9fa04f19592e5422",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2d042fe8ddc59861",
+          "line_end": 63,
+          "line_start": 1,
+          "path": "api/v1/capabilities.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:851853794ca6b3577958",
+      "kind": "imports",
+      "label": "urllib.error",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c6777f2e098ec6be",
+          "line_end": 13,
+          "line_start": 13,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:urllib.error"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:351b0cf821ac5d85e952",
+      "id": "edge:854598a739e55134694d",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:97384f644806c1ae",
+          "line_end": 232,
+          "line_start": 225,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:40def010266dc2054df4",
+      "id": "edge:87fb2ce4ddab479d1575",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "2a605a7390d20632a9309f4a0f0ba63503a74e7257b7bafe5361be74d62d0bdc",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c20618cf7606fc6c",
+          "line_end": 4,
+          "line_start": 1,
+          "path": "wrangler.toml",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:1f369583c733a0e4788e",
+      "id": "edge:8a62693051eb731f5439",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:86bf0c396bc0df4c",
+          "line_end": 43,
+          "line_start": 43,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:8aebd210743ccde48ce8",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "cb85590d1eb0af256b3eb3f18b22eb1b635b52448971d5f20fc9dea0adc035d1",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d708c9a6f9c7a4e1",
+          "line_end": 28,
+          "line_start": 1,
+          "path": "templates/human/about.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:d9ce5cc74af8b52b84db"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:8c4136c418c6409fda59",
+      "kind": "imports",
+      "label": "shutil",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:38ce7fc35ba61db2",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:shutil"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:fa185c6d6a01601f4ad9",
+      "id": "edge:90279549bdec5fdd764e",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3d83ede3836e30ff",
+          "line_end": 34,
+          "line_start": 28,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:9d9d37a18c7ab7537c0f",
+      "id": "edge:9106d61e570376424605",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3644e055f1423819",
+          "line_end": 46,
+          "line_start": 46,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:e7345e7cd914f8193bad",
+      "id": "edge:91bc136256d1f3f3acdd",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:68215659b11025db",
+          "line_end": 232,
+          "line_start": 11,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:91ec4fe104cfdad1e4a5",
+      "kind": "imports",
+      "label": "pathlib",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f3a3ac6792232d99",
+          "line_end": 15,
+          "line_start": 15,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:pathlib"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:93cd983f557c8507117a",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "2a605a7390d20632a9309f4a0f0ba63503a74e7257b7bafe5361be74d62d0bdc",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c20618cf7606fc6c",
+          "line_end": 4,
+          "line_start": 1,
+          "path": "wrangler.toml",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:40def010266dc2054df4"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:95bf4bac0bd1105f6b2f",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d448810094ed0fab",
+          "line_end": 114,
+          "line_start": 1,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:e6ff74c1c448507362e2",
+      "id": "edge:96c9531f86cd45698080",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:37bd8b4ab637084d",
+          "line_end": 80,
+          "line_start": 80,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:97760ba88c0882f324c7",
+      "kind": "imports",
+      "label": "urllib.request",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6d95e66efa505ecc",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:urllib.request"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:41af933ad0d73efff528",
+      "id": "edge:995cc74a2b34a593b0b0",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4ba0d79cd394826f",
+          "line_end": 17,
+          "line_start": 17,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:fcbe6669d86356de0639",
+      "id": "edge:9abae8622c68347f8c6d",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:11a91e2a1f50280f",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:5bdf043c6b60f3337321",
+      "id": "edge:9abe5515cb6bf74938a0",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:109e088b42b1cedd",
+          "line_end": 110,
+          "line_start": 86,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:9b853eb4121c2243cd48",
+      "kind": "imports",
+      "label": "datetime",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:667b089a4eb82688",
+          "line_end": 15,
+          "line_start": 15,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:datetime"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:242462366792e6c85ea0",
+      "id": "edge:9f2df4713a86e90461c9",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cd2a7925a71a196b",
+          "line_end": 48,
+          "line_start": 48,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:a065e819f8d86621c138",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc1fa9e22afc08c6",
+          "line_end": 114,
+          "line_start": 1,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:a38aefbb10662ccf078d",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "aab96700a4963aa7bd1f8ac24551a301cecc7dab547edcea5e60c1ed391c863e",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2c784af59836bbad",
+          "line_end": 64,
+          "line_start": 1,
+          "path": "templates/human/index.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:5ef4a7c114a17855d9c5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:48991a5304f50a6f4617",
+      "id": "edge:a4e9ded71e040fdcb220",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a80df12bd04c2aa7",
+          "line_end": 65,
+          "line_start": 54,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:3497d88db26b2742c66a",
+      "id": "edge:a60b8fff91771e86e8b0",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ecf942bf7ef015fa",
+          "line_end": 36,
+          "line_start": 36,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:3b25680b492a6345baec",
+      "id": "edge:a67d46bb7c356b817acc",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4129a4074bc34843",
+          "line_end": 40,
+          "line_start": 40,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:a95fe839136f736f2502",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "89706b0c13f3dfe1df9ecde46d75d8ee3452994a3b18024b0b4f1ac661d86fad",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:813acff12ec619c1",
+          "line_end": 109,
+          "line_start": 1,
+          "path": "well-known/agent-card.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:151cf959b51dafbd619e"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:e1a4bf92d1b32f2f503d",
+      "id": "edge:acf1e18054dc0a8a15d1",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "60de24e6bf23da35eea8f9bd064f02234682e5da0951e1fdb3cfd32998640cd0",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2dd83ff0e39c11a0",
+          "line_end": 17,
+          "line_start": 1,
+          "path": "package.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:4f7e53ec7b6ab7383a7c",
+      "id": "edge:b0fc4980ff7361f81c72",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cb36c3c07f1b6ffd",
+          "line_end": 36,
+          "line_start": 36,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:b181574c40dfcf5e7dcb",
+      "kind": "imports",
+      "label": "jinja2",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:b282fbda2c978640",
+          "line_end": 18,
+          "line_start": 18,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:jinja2"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:b27f2ab47d9f047f0286",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d755fd09d50cdd54f691fa37980061ec6309f0fd5fbe4b0f649420c61a2820f4",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:77b106b079f49cac",
+          "line_end": 40,
+          "line_start": 1,
+          "path": "llms.txt",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:b8a0684279f7b4edc1bc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:b737ca69635863da5448",
+      "kind": "imports",
+      "label": "re",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e05036e1893e81e5",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:re"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:bd566a1c71fe264d4f2a",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:8c73e6d6bb2288db",
+          "line_end": 163,
+          "line_start": 1,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:bdc82c0ed9de2d23ccec",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "3c232b5eef279854ceafb395064ab4ac3b602b361fcf34951690b88f2836b78e",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c6056aa2fba92b85",
+          "line_end": 73,
+          "line_start": 1,
+          "path": "api/v1/projects.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:14b22207cea9242c6f34"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "id": "edge:c0257a7115256fd1910a",
+      "kind": "imports",
+      "label": "__future__",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:678954e744a8969e",
+          "line_end": 8,
+          "line_start": 8,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:__future__"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:f0fd663527865f98c64e",
+      "id": "edge:c0b0461df19ec5a197f9",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0cdbbafa93443ece",
+          "line_end": 5,
+          "line_start": 5,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:b3b1f19ad2ed91bec458",
+      "id": "edge:c29264153691be8d3c0a",
+      "kind": "configures",
+      "label": "configures",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "f12d2f13c48e5be3240b62ec94bc19ac6786b3881031f2b0a60997f5fc807706",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:5dd0cc494cd85fbe",
+          "line_end": 58,
+          "line_start": 1,
+          "path": "api/v1/profile.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:cd8a921454b74ef09e06",
+      "id": "edge:c3a4b5b2931e72fa2fb3",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3962163d63785712",
+          "line_end": 74,
+          "line_start": 74,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:2bb51f976c64d4211590",
+      "id": "edge:c4d4fa9bdcc86a122895",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d61ae4c462fc6458",
+          "line_end": 60,
+          "line_start": 51,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:7167c75108e95e289383"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "id": "edge:c76b6dc305ff9cdce347",
+      "kind": "imports",
+      "label": "json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:bc8741f77a077338",
+          "line_end": 13,
+          "line_start": 13,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:json"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:1e8ba7fd1db36d8f49db",
+      "id": "edge:c950a643cb5ccc27a64f",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e8c798459ce07e15",
+          "line_end": 261,
+          "line_start": 1,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:579a99eddabf701591a8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:879b251d931f7c881237",
+      "id": "edge:c9777fa52edb37b8007d",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fa9c631e3cc9aac6",
+          "line_end": 159,
+          "line_start": 142,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8a344356f5d23c2baf2e",
+      "id": "edge:cb8c70dbdd3ae0ad7c7d",
+      "kind": "imports",
+      "label": "unittest",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d8dd17a2ee96a5fb",
+          "line_end": 3,
+          "line_start": 3,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:unittest"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:0b296c8c603b4645bd9d",
+      "id": "edge:cbecafde05e06cefd5d1",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:171ec312e6eb8703",
+          "line_end": 48,
+          "line_start": 44,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:cde485bfac190afe11fc",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "844fcf05c5a39675b68b9cd60b82bd85987babe9e2264c96d3665ce5cb60a627",
+          "derived_by": "filesystem_generated_directory",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:17390211c2ade4e3",
+          "line_end": null,
+          "line_start": null,
+          "path": "dist/",
+          "source_type": "directory"
+        }
+      ],
+      "to_node_id": "node:7e8e99e4637cfb748e0a"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8a344356f5d23c2baf2e",
+      "id": "edge:d2435ec62539194b264f",
+      "kind": "imports",
+      "label": "subprocess",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:48326432df32a394",
+          "line_end": 2,
+          "line_start": 2,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:subprocess"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:b1e0de9e41d1ea0d7288",
+      "id": "edge:d67d22dbd3132d53f4e3",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0a3089718432b220",
+          "line_end": 16,
+          "line_start": 16,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:579a99eddabf701591a8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:8a344356f5d23c2baf2e",
+      "id": "edge:d85d006494d06cd126dc",
+      "kind": "imports",
+      "label": "json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6e7cd6fd5e6e5f51",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:python_import:json"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:db4c644708f8acb2c38c",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4417f3bf0932d8ac",
+          "line_end": 54,
+          "line_start": 1,
+          "path": "README.md",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:69d6bc2e023965d76a75"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c627dcac9798554af877",
+      "id": "edge:df303ad3e20b23bda91b",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d068bad5b6984348",
+          "line_end": 13,
+          "line_start": 13,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:39d92e273650d019657f",
+      "id": "edge:df5e71ff3f4370597874",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6394278cbbd6e7b3",
+          "line_end": 96,
+          "line_start": 90,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:7ad8da6a627ab8d27e9e",
+      "id": "edge:e4e8cb068860a171a853",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ce979449395c4cd6",
+          "line_end": 24,
+          "line_start": 24,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:270b52766ba2097c3bf8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:e66916cc61a9f16fe41f",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "20b26c86fd40fb95255c998d0060feff2a3ffcf001f513afe5d25041a15d4c98",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:14d6d8a7e97d1f6b",
+          "line_end": 43,
+          "line_start": 1,
+          "path": "templates/human/ai.html",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:8e1bda3aae8ca0473eca"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:265a520d06ab9e3d76cd",
+      "id": "edge:e828368770c211c9656c",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fdeaea75119ca8d3",
+          "line_end": 178,
+          "line_start": 123,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:ed3cc3f1580be5f9e62d",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4748fccbacbd25ea",
+          "line_end": 236,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:a781236d3a83da277bb3"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:32f3a0d3845cf98fb8cb",
+      "id": "edge:ee74e56eeab2c21d6122",
+      "kind": "imports",
+      "label": "worker.mcp.server",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:47b71b23b6c02da8",
+          "line_end": 12,
+          "line_start": 12,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:javascript_import:worker.mcp.server"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:dfcc83f7d703feeeb739",
+      "id": "edge:effb4bc8486f52668790",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d4fca002d18768a3",
+          "line_end": 173,
+          "line_start": 173,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:579a99eddabf701591a8"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:f116911915f8eaf8c100",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "f12d2f13c48e5be3240b62ec94bc19ac6786b3881031f2b0a60997f5fc807706",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:5dd0cc494cd85fbe",
+          "line_end": 58,
+          "line_start": 1,
+          "path": "api/v1/profile.json",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:b3b1f19ad2ed91bec458"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:eb81b518d5b754dbbb1c",
+      "id": "edge:f42649b9c7fe0a508531",
+      "kind": "defined_in",
+      "label": "defined_in",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:9481ce0cfa8e70ee",
+          "line_end": 131,
+          "line_start": 120,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:7e8e99e4637cfb748e0a",
+      "id": "edge:f9baf98e38d935e96b97",
+      "kind": "generated_from",
+      "label": "generated_from",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "844fcf05c5a39675b68b9cd60b82bd85987babe9e2264c96d3665ce5cb60a627",
+          "derived_by": "filesystem_generated_directory",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:17390211c2ade4e3",
+          "line_end": null,
+          "line_start": null,
+          "path": "dist/",
+          "source_type": "directory"
+        }
+      ],
+      "to_node_id": "node:c88d20441e94cb3266a5"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:fa2b53dd555395effa3c",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d181fbbe3ffc8c31",
+          "line_end": 163,
+          "line_start": 1,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:177414d555e0bb8188d6"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:a6c81faa394e154cc5e0",
+      "id": "edge:fc455f41bd4596f2bbaf",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:64594ba1abbe87c1",
+          "line_end": 103,
+          "line_start": 103,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:7ae2865bcc575f1882cc"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:1d60c7274d548dafd5d3",
+      "id": "edge:fcda9b370575d70c3c0e",
+      "kind": "documents",
+      "label": "documents",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6bb5304f18c132f6b48bb96aecdb53e48b63e66ca0b524f6a925398e0fc5dc0f",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:8a927950f229cc59",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "to_node_id": "node:db152df1ce71c7253d2d"
+    },
+    {
+      "confidence": "deterministic",
+      "derived_by": "project_graph",
+      "from_node_id": "node:c88d20441e94cb3266a5",
+      "id": "edge:ff456c2e388a85e24b77",
+      "kind": "contains",
+      "label": "contains",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:609857db3c01b3a6",
+          "line_end": 147,
+          "line_start": 1,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "to_node_id": "node:19cc14e2a3828fc1d1f4"
+    }
+  ],
+  "git": {
+    "available": true,
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+    "root": "/home/leonb/projects/leonbreukelman-engineer"
+  },
+  "nodes": [
+    {
+      "id": "node:016549f456f6ba3ecbb6",
+      "kind": "file",
+      "label": "templates/human/services.html",
+      "path": "templates/human/services.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "619baf7c904626869c61e7b0d2983659ae995c169ce829e18dca31e1a6d78fda",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a426998abe16a1d3",
+          "line_end": 50,
+          "line_start": 1,
+          "path": "templates/human/services.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:087085bf23e3cc4628f2",
+      "kind": "markdown_section",
+      "label": "What He Is Less Good At",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:505ad7266a711b66",
+          "line_end": 55,
+          "line_start": 55,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#What He Is Less Good At",
+      "tags": []
+    },
+    {
+      "id": "node:0b296c8c603b4645bd9d",
+      "kind": "python_function",
+      "label": "render_page",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:171ec312e6eb8703",
+          "line_end": 48,
+          "line_start": 44,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.render_page",
+      "tags": []
+    },
+    {
+      "id": "node:0e05f1db4adb3bbc9e83",
+      "kind": "markdown_section",
+      "label": "Strategy Decision",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:edfff9996d5380e1",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Strategy Decision",
+      "tags": []
+    },
+    {
+      "id": "node:0f29b2589c8192bfd049",
+      "kind": "python_function",
+      "label": "test_worker_returns_gone_for_retired_article_routes",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:b3a339052ff65c4a",
+          "line_end": 89,
+          "line_start": 80,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_worker_returns_gone_for_retired_article_routes",
+      "tags": []
+    },
+    {
+      "id": "node:14b22207cea9242c6f34",
+      "kind": "config",
+      "label": "api/v1/projects.json",
+      "path": "api/v1/projects.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "3c232b5eef279854ceafb395064ab4ac3b602b361fcf34951690b88f2836b78e",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c6056aa2fba92b85",
+          "line_end": 73,
+          "line_start": 1,
+          "path": "api/v1/projects.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:151cf959b51dafbd619e",
+      "kind": "config",
+      "label": "well-known/agent-card.json",
+      "path": "well-known/agent-card.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "89706b0c13f3dfe1df9ecde46d75d8ee3452994a3b18024b0b4f1ac661d86fad",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:813acff12ec619c1",
+          "line_end": 109,
+          "line_start": 1,
+          "path": "well-known/agent-card.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:177414d555e0bb8188d6",
+      "kind": "file",
+      "label": "scripts/build.py",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d181fbbe3ffc8c31",
+          "line_end": 163,
+          "line_start": 1,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:182d7abe7007643cd122",
+      "kind": "python_function",
+      "label": "setup_jinja",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:84fab95b9de823c6",
+          "line_end": 41,
+          "line_start": 37,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.setup_jinja",
+      "tags": []
+    },
+    {
+      "id": "node:19cc14e2a3828fc1d1f4",
+      "kind": "file",
+      "label": "worker/index.js",
+      "path": "worker/index.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:609857db3c01b3a6",
+          "line_end": 147,
+          "line_start": 1,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:1a2e01373efe55ff7c11",
+      "kind": "markdown_section",
+      "label": "Risks",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:df7a443405848b30",
+          "line_end": 116,
+          "line_start": 116,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Risks",
+      "tags": []
+    },
+    {
+      "id": "node:1c5a6f0459fa5b83d040",
+      "kind": "markdown_section",
+      "label": "Quick Start",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fa04b24fd751aac4",
+          "line_end": 5,
+          "line_start": 5,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Quick Start",
+      "tags": []
+    },
+    {
+      "id": "node:1d60c7274d548dafd5d3",
+      "kind": "markdown_section",
+      "label": "Humble Positioning and Social De-integration Plan",
+      "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6bb5304f18c132f6b48bb96aecdb53e48b63e66ca0b524f6a925398e0fc5dc0f",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:8a927950f229cc59",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md#Humble Positioning and Social De-integration Plan",
+      "tags": []
+    },
+    {
+      "id": "node:1e8ba7fd1db36d8f49db",
+      "kind": "javascript_module",
+      "label": "worker.mcp.server",
+      "path": "worker/mcp/server.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e8c798459ce07e15",
+          "line_end": 261,
+          "line_start": 1,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.mcp.server",
+      "tags": []
+    },
+    {
+      "id": "node:1f369583c733a0e4788e",
+      "kind": "markdown_section",
+      "label": "Task 2: Remove article build path and add work/services generation",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:86bf0c396bc0df4c",
+          "line_end": 43,
+          "line_start": 43,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task 2: Remove article build path and add work/services generation",
+      "tags": []
+    },
+    {
+      "id": "node:242462366792e6c85ea0",
+      "kind": "markdown_section",
+      "label": "Development",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cd2a7925a71a196b",
+          "line_end": 48,
+          "line_start": 48,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Development",
+      "tags": []
+    },
+    {
+      "id": "node:265a520d06ab9e3d76cd",
+      "kind": "python_function",
+      "label": "test_public_positioning_is_humble_and_not_credential_forward",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fdeaea75119ca8d3",
+          "line_end": 178,
+          "line_start": 123,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_public_positioning_is_humble_and_not_credential_forward",
+      "tags": []
+    },
+    {
+      "id": "node:270b52766ba2097c3bf8",
+      "kind": "file",
+      "label": "prompt/represent_me.md",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:756f566ef137b772",
+          "line_end": 78,
+          "line_start": 1,
+          "path": "prompt/represent_me.md",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:2bb51f976c64d4211590",
+      "kind": "python_function",
+      "label": "extract_urls",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d61ae4c462fc6458",
+          "line_end": 60,
+          "line_start": 51,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.check-public-links.extract_urls",
+      "tags": []
+    },
+    {
+      "id": "node:2e14c1247beb5519c591",
+      "kind": "file",
+      "label": "scripts/build-fallback.sh",
+      "path": "scripts/build-fallback.sh",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7eaf81e99bd2434adaed615590b2cba9340c6531ffe6edce43a1cb93dff393dd",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0383de06a8a36ed1",
+          "line_end": 12,
+          "line_start": 1,
+          "path": "scripts/build-fallback.sh",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:32d0bb23216b301cf16b",
+      "kind": "markdown_section",
+      "label": "Task 1: Contract test for the new public shape",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:070b33867ef6318a",
+          "line_end": 29,
+          "line_start": 29,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task 1: Contract test for the new public shape",
+      "tags": []
+    },
+    {
+      "id": "node:32f3a0d3845cf98fb8cb",
+      "kind": "javascript_module",
+      "label": "worker",
+      "path": "worker/index.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ea0068ba73266e60",
+          "line_end": 147,
+          "line_start": 1,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker",
+      "tags": []
+    },
+    {
+      "id": "node:346f9b3cd2dde3c5d686",
+      "kind": "file",
+      "label": "templates/human/work.html",
+      "path": "templates/human/work.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "4137fbc9bcf79b228913a988ac9524fc0dbdfe55c503692c52a0ca8d0616f041",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:06bd972541318fd3",
+          "line_end": 54,
+          "line_start": 1,
+          "path": "templates/human/work.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:3497d88db26b2742c66a",
+      "kind": "markdown_section",
+      "label": "Stories Worth Telling",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ecf942bf7ef015fa",
+          "line_end": 36,
+          "line_start": 36,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Stories Worth Telling",
+      "tags": []
+    },
+    {
+      "id": "node:351b0cf821ac5d85e952",
+      "kind": "python_function",
+      "label": "test_build_fails_closed_instead_of_falling_back_to_article_archive",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:97384f644806c1ae",
+          "line_end": 232,
+          "line_start": 225,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_build_fails_closed_instead_of_falling_back_to_article_archive",
+      "tags": []
+    },
+    {
+      "id": "node:3925af7de145b6e3ffe0",
+      "kind": "python_function",
+      "label": "test_buyer_facing_pages_and_data_exist",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d808c2de658d2c18",
+          "line_end": 41,
+          "line_start": 23,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_buyer_facing_pages_and_data_exist",
+      "tags": []
+    },
+    {
+      "id": "node:39d92e273650d019657f",
+      "kind": "python_function",
+      "label": "copy_prompt_files",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6394278cbbd6e7b3",
+          "line_end": 96,
+          "line_start": 90,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_prompt_files",
+      "tags": []
+    },
+    {
+      "id": "node:3b25680b492a6345baec",
+      "kind": "markdown_section",
+      "label": "Deployment",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4129a4074bc34843",
+          "line_end": 40,
+          "line_start": 40,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Deployment",
+      "tags": []
+    },
+    {
+      "id": "node:3c9a18d43326bf03e45f",
+      "kind": "config",
+      "label": "well-known/ai.json",
+      "path": "well-known/ai.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "22b1f8acd347d77e5d820af4ab786bfcf0df47458e7a0a7eb3153e9a519dfa23",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7a63594e8000dd3e",
+          "line_end": 52,
+          "line_start": 1,
+          "path": "well-known/ai.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:3ea96135dd639273b1d2",
+      "kind": "python_function",
+      "label": "copy_api_files",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f8f91de97eb31594",
+          "line_end": 80,
+          "line_start": 71,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_api_files",
+      "tags": []
+    },
+    {
+      "id": "node:40def010266dc2054df4",
+      "kind": "config",
+      "label": "wrangler.toml",
+      "path": "wrangler.toml",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "2a605a7390d20632a9309f4a0f0ba63503a74e7257b7bafe5361be74d62d0bdc",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c20618cf7606fc6c",
+          "line_end": 4,
+          "line_start": 1,
+          "path": "wrangler.toml",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:41af933ad0d73efff528",
+      "kind": "markdown_section",
+      "label": "Acceptance Criteria",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4ba0d79cd394826f",
+          "line_end": 17,
+          "line_start": 17,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Acceptance Criteria",
+      "tags": []
+    },
+    {
+      "id": "node:425e97b2c1ce274a07dd",
+      "kind": "file",
+      "label": "scripts/requirements.txt",
+      "path": "scripts/requirements.txt",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "32cce056918c49d64a5090953fa0cdd4f9d29747969ccd47c6bcb31688a9b551",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc1e470c847214a6",
+          "line_end": 2,
+          "line_start": 1,
+          "path": "scripts/requirements.txt",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:48991a5304f50a6f4617",
+      "kind": "python_function",
+      "label": "test_legacy_article_sources_are_removed",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a80df12bd04c2aa7",
+          "line_end": 65,
+          "line_start": 54,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_legacy_article_sources_are_removed",
+      "tags": []
+    },
+    {
+      "id": "node:4f7e53ec7b6ab7383a7c",
+      "kind": "markdown_section",
+      "label": "For Humans",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cb36c3c07f1b6ffd",
+          "line_end": 36,
+          "line_start": 36,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#For Humans",
+      "tags": []
+    },
+    {
+      "id": "node:50ef3f5ae5030e151c95",
+      "kind": "python_function",
+      "label": "check_url",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3bb44d8a7ee8cb24",
+          "line_end": 83,
+          "line_start": 63,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.check-public-links.check_url",
+      "tags": []
+    },
+    {
+      "id": "node:556c8beea475f0092f9d",
+      "kind": "python_function",
+      "label": "test_home_page_is_not_article_or_manifesto_led",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:60d9f41d8fbffed7",
+          "line_end": 121,
+          "line_start": 102,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_home_page_is_not_article_or_manifesto_led",
+      "tags": []
+    },
+    {
+      "id": "node:569910cced19bf75ae0b",
+      "kind": "config",
+      "label": "api/v1/offers.json",
+      "path": "api/v1/offers.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "499b0212322c8b05af53eb817507789905e54aa8383a4eae05a44aca2bfc96ea",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc547fddea0bc4aa",
+          "line_end": 98,
+          "line_start": 1,
+          "path": "api/v1/offers.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:579a99eddabf701591a8",
+      "kind": "file",
+      "label": "worker/mcp/server.js",
+      "path": "worker/mcp/server.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:aabb96a05a30bb1f",
+          "line_end": 261,
+          "line_start": 1,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:5bdf043c6b60f3337321",
+      "kind": "python_function",
+      "label": "main",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:109e088b42b1cedd",
+          "line_end": 110,
+          "line_start": 86,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.check-public-links.main",
+      "tags": []
+    },
+    {
+      "id": "node:5c8ebcea8dd641341457",
+      "kind": "python_function",
+      "label": "build_human_pages",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e9c7c073f81e5a80",
+          "line_end": 68,
+          "line_start": 51,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.build_human_pages",
+      "tags": []
+    },
+    {
+      "id": "node:5ea405faea230cdf5498",
+      "kind": "markdown_section",
+      "label": "Data Sources",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:440d643908db39b6",
+          "line_end": 63,
+          "line_start": 63,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Data Sources",
+      "tags": []
+    },
+    {
+      "id": "node:5ef4a7c114a17855d9c5",
+      "kind": "file",
+      "label": "templates/human/index.html",
+      "path": "templates/human/index.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "aab96700a4963aa7bd1f8ac24551a301cecc7dab547edcea5e60c1ed391c863e",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2c784af59836bbad",
+          "line_end": 64,
+          "line_start": 1,
+          "path": "templates/human/index.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:62ad61e36d4379d32dee",
+      "kind": "python_function",
+      "label": "setUpClass",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4802cd6642a66791",
+          "line_end": 21,
+          "line_start": 13,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.setUpClass",
+      "tags": []
+    },
+    {
+      "id": "node:6977bb7f77e08cd3e7a5",
+      "kind": "markdown_section",
+      "label": "Income-Oriented AI-First Portfolio Refactor Plan",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:1850ad5cb836d39e",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Income-Oriented AI-First Portfolio Refactor Plan",
+      "tags": []
+    },
+    {
+      "id": "node:69d6bc2e023965d76a75",
+      "kind": "file",
+      "label": "README.md",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4417f3bf0932d8ac",
+          "line_end": 54,
+          "line_start": 1,
+          "path": "README.md",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:70dc63bab5d48553454b",
+      "kind": "javascript_function",
+      "label": "loadJson",
+      "path": "worker/mcp/server.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:61f7f31bc619b9c9",
+          "line_end": 7,
+          "line_start": 7,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.mcp.server.loadJson",
+      "tags": []
+    },
+    {
+      "id": "node:7167c75108e95e289383",
+      "kind": "file",
+      "label": "scripts/check-public-links.py",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d448810094ed0fab",
+          "line_end": 114,
+          "line_start": 1,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:7ad8da6a627ab8d27e9e",
+      "kind": "markdown_section",
+      "label": "Primary Positioning",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ce979449395c4cd6",
+          "line_end": 24,
+          "line_start": 24,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Primary Positioning",
+      "tags": []
+    },
+    {
+      "id": "node:7ae2865bcc575f1882cc",
+      "kind": "file",
+      "label": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7da91706ad13dedb",
+          "line_end": 120,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:7bc3408b058bec876a5a",
+      "kind": "python_function",
+      "label": "test_recruiter_and_social_surfaces_are_not_public_artifacts",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:985c483fff687a5b",
+          "line_end": 78,
+          "line_start": 67,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_recruiter_and_social_surfaces_are_not_public_artifacts",
+      "tags": []
+    },
+    {
+      "id": "node:7e8e99e4637cfb748e0a",
+      "kind": "generated_surface",
+      "label": "dist/",
+      "path": "dist/",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "844fcf05c5a39675b68b9cd60b82bd85987babe9e2264c96d3665ce5cb60a627",
+          "derived_by": "filesystem_generated_directory",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:17390211c2ade4e3",
+          "line_end": null,
+          "line_start": null,
+          "path": "dist/",
+          "source_type": "directory"
+        }
+      ],
+      "symbol": null,
+      "tags": [
+        "generated"
+      ]
+    },
+    {
+      "id": "node:879b251d931f7c881237",
+      "kind": "python_function",
+      "label": "build",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:fa9c631e3cc9aac6",
+          "line_end": 159,
+          "line_start": 142,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.build",
+      "tags": []
+    },
+    {
+      "id": "node:8a344356f5d23c2baf2e",
+      "kind": "python_module",
+      "label": "tests.test_public_contract",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:20633b322b34fb46",
+          "line_end": 236,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract",
+      "tags": []
+    },
+    {
+      "id": "node:8d663344167934366564",
+      "kind": "file",
+      "label": ".gitignore",
+      "path": ".gitignore",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "5752b922b43c55fe9809684bc3292755ebb838b53fee5606979c7673be5162db",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f7b77075a81a281d",
+          "line_end": 27,
+          "line_start": 1,
+          "path": ".gitignore",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:8e1bda3aae8ca0473eca",
+      "kind": "file",
+      "label": "templates/human/ai.html",
+      "path": "templates/human/ai.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "20b26c86fd40fb95255c998d0060feff2a3ffcf001f513afe5d25041a15d4c98",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:14d6d8a7e97d1f6b",
+          "line_end": 43,
+          "line_start": 1,
+          "path": "templates/human/ai.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:8f7bc74926c11f4ffb75",
+      "kind": "markdown_section",
+      "label": "Task Slices",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7bb64d2bbcaf6819",
+          "line_end": 27,
+          "line_start": 27,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task Slices",
+      "tags": []
+    },
+    {
+      "id": "node:9d9d37a18c7ab7537c0f",
+      "kind": "markdown_section",
+      "label": "What He Is Good At",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3644e055f1423819",
+          "line_end": 46,
+          "line_start": 46,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#What He Is Good At",
+      "tags": []
+    },
+    {
+      "id": "node:a2126531d7c20f37e4d1",
+      "kind": "python_function",
+      "label": "copy_static_files",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4b64388607641e33",
+          "line_end": 139,
+          "line_start": 134,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_static_files",
+      "tags": []
+    },
+    {
+      "id": "node:a50174e2cbf98164b1b9",
+      "kind": "file",
+      "label": "well-known/security.txt",
+      "path": "well-known/security.txt",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "245c105e0314cc6dae44e1fdd36d3507e11328495674e96313324158de795af2",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:02ba82f0a1cc741d",
+          "line_end": 5,
+          "line_start": 1,
+          "path": "well-known/security.txt",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:a5b95d7d7ada63930bef",
+      "kind": "markdown_section",
+      "label": "Preview locally",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7894438ea3df3482",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Preview locally",
+      "tags": []
+    },
+    {
+      "id": "node:a6c81faa394e154cc5e0",
+      "kind": "markdown_section",
+      "label": "Task 5: Verify and review",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:64594ba1abbe87c1",
+          "line_end": 103,
+          "line_start": 103,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task 5: Verify and review",
+      "tags": []
+    },
+    {
+      "id": "node:a781236d3a83da277bb3",
+      "kind": "test_file",
+      "label": "tests/test_public_contract.py",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4748fccbacbd25ea",
+          "line_end": 236,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:abc28ffa9a81eb2796c3",
+      "kind": "python_function",
+      "label": "iter_public_files",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:08cb365023aa07b6",
+          "line_end": 48,
+          "line_start": 37,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.check-public-links.iter_public_files",
+      "tags": []
+    },
+    {
+      "id": "node:ad59fc8f1269c11d8240",
+      "kind": "file",
+      "label": "scripts/build-site.sh",
+      "path": "scripts/build-site.sh",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "2393efbbfe1531d82ec16341a7649cc49f30a997198628322426edf129ff7c68",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:1fc34945d0fd1ded",
+          "line_end": 15,
+          "line_start": 1,
+          "path": "scripts/build-site.sh",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:b1e0de9e41d1ea0d7288",
+      "kind": "javascript_function",
+      "label": "loadPrompt",
+      "path": "worker/mcp/server.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0a3089718432b220",
+          "line_end": 16,
+          "line_start": 16,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.mcp.server.loadPrompt",
+      "tags": []
+    },
+    {
+      "id": "node:b3b1f19ad2ed91bec458",
+      "kind": "config",
+      "label": "api/v1/profile.json",
+      "path": "api/v1/profile.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "f12d2f13c48e5be3240b62ec94bc19ac6786b3881031f2b0a60997f5fc807706",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:5dd0cc494cd85fbe",
+          "line_end": 58,
+          "line_start": 1,
+          "path": "api/v1/profile.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:b8a0684279f7b4edc1bc",
+      "kind": "file",
+      "label": "llms.txt",
+      "path": "llms.txt",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d755fd09d50cdd54f691fa37980061ec6309f0fd5fbe4b0f649420c61a2820f4",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:77b106b079f49cac",
+          "line_end": 40,
+          "line_start": 1,
+          "path": "llms.txt",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:c1299be91730fc58c1e3",
+      "kind": "markdown_section",
+      "label": "Deploy to Cloudflare Pages",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:4e30e269c5a237db",
+          "line_end": 17,
+          "line_start": 17,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Deploy to Cloudflare Pages",
+      "tags": []
+    },
+    {
+      "id": "node:c627dcac9798554af877",
+      "kind": "markdown_section",
+      "label": "Voice",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d068bad5b6984348",
+          "line_end": 13,
+          "line_start": 13,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Voice",
+      "tags": []
+    },
+    {
+      "id": "node:c871af2d62ed3dccfad0",
+      "kind": "config",
+      "label": "package-lock.json",
+      "path": "package-lock.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "ed37b208c48b9a3f4395329fa292fc3f3299ec883c781fb1251fa7fc29c3738c",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:9b30aea1617abf1c",
+          "line_end": 1505,
+          "line_start": 1,
+          "path": "package-lock.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:c88d20441e94cb3266a5",
+      "kind": "project",
+      "label": "leonbreukelman-engineer",
+      "path": null,
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "ee3768d79b7aaf28133389087710f02b5a1d53657f73a2f5bb201f131d73e8f2",
+          "derived_by": "git",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:project:ee3768d79b7aaf28",
+          "line_end": null,
+          "line_start": null,
+          "path": null,
+          "source_type": "git"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:ca0aad13b3b497dd9e40",
+      "kind": "markdown_section",
+      "label": "How to Represent Leon Breukelman",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:a92ae5c99a4d4dae",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#How to Represent Leon Breukelman",
+      "tags": []
+    },
+    {
+      "id": "node:cd398435655203c8977c",
+      "kind": "python_function",
+      "label": "copy_root_files",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f45aa298c0dd30ad",
+          "line_end": 117,
+          "line_start": 99,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_root_files",
+      "tags": []
+    },
+    {
+      "id": "node:cd8a921454b74ef09e06",
+      "kind": "markdown_section",
+      "label": "Contact",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3962163d63785712",
+          "line_end": 74,
+          "line_start": 74,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Contact",
+      "tags": []
+    },
+    {
+      "id": "node:d038e1fd31641ace3226",
+      "kind": "markdown_section",
+      "label": "Structure",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e2560a67a5e0ba01",
+          "line_end": 21,
+          "line_start": 21,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Structure",
+      "tags": []
+    },
+    {
+      "id": "node:d04474a27932d29e2de2",
+      "kind": "python_function",
+      "label": "copy_well_known_files",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:711f5eb2efc52c71",
+          "line_end": 87,
+          "line_start": 83,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_well_known_files",
+      "tags": []
+    },
+    {
+      "id": "node:d1ab9b8e0eb01b071904",
+      "kind": "python_module",
+      "label": "scripts.check-public-links",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cc1fa9e22afc08c6",
+          "line_end": 114,
+          "line_start": 1,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.check-public-links",
+      "tags": []
+    },
+    {
+      "id": "node:d701b635b99442ff8d5a",
+      "kind": "markdown_section",
+      "label": "Install dependencies",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:7cf3013274f52d35",
+          "line_end": 8,
+          "line_start": 8,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Install dependencies",
+      "tags": []
+    },
+    {
+      "id": "node:d8c96a6d1d1b949b47a8",
+      "kind": "python_function",
+      "label": "test_worker_returns_gone_for_retired_recruiter_and_social_routes",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:30dc80201ed692ce",
+          "line_end": 100,
+          "line_start": 91,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_worker_returns_gone_for_retired_recruiter_and_social_routes",
+      "tags": []
+    },
+    {
+      "id": "node:d8fc3a88afab17188e7b",
+      "kind": "python_module",
+      "label": "scripts.build",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:8c73e6d6bb2288db",
+          "line_end": 163,
+          "line_start": 1,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build",
+      "tags": []
+    },
+    {
+      "id": "node:d9ce5cc74af8b52b84db",
+      "kind": "file",
+      "label": "templates/human/about.html",
+      "path": "templates/human/about.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "cb85590d1eb0af256b3eb3f18b22eb1b635b52448971d5f20fc9dea0adc035d1",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d708c9a6f9c7a4e1",
+          "line_end": 28,
+          "line_start": 1,
+          "path": "templates/human/about.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:db152df1ce71c7253d2d",
+      "kind": "file",
+      "label": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+      "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6bb5304f18c132f6b48bb96aecdb53e48b63e66ca0b524f6a925398e0fc5dc0f",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e5867443e99d7d95",
+          "line_end": 46,
+          "line_start": 1,
+          "path": "docs/plans/2026-05-10-humble-positioning-social-deintegration.md",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:de09c473f13049315d86",
+      "kind": "markdown_section",
+      "label": "For AI Agents",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:febd8e67289848a5",
+          "line_end": 32,
+          "line_start": 32,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#For AI Agents",
+      "tags": []
+    },
+    {
+      "id": "node:dfcc83f7d703feeeb739",
+      "kind": "javascript_function",
+      "label": "handleMcpRequest",
+      "path": "worker/mcp/server.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "777fe36caf41d739a653fcb0d4373de723e9692ed398fd894a3700b05da727d9",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d4fca002d18768a3",
+          "line_end": 173,
+          "line_start": 173,
+          "path": "worker/mcp/server.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.mcp.server.handleMcpRequest",
+      "tags": []
+    },
+    {
+      "id": "node:e1a4bf92d1b32f2f503d",
+      "kind": "config",
+      "label": "package.json",
+      "path": "package.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "60de24e6bf23da35eea8f9bd064f02234682e5da0951e1fdb3cfd32998640cd0",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2dd83ff0e39c11a0",
+          "line_end": 17,
+          "line_start": 1,
+          "path": "package.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:e6ff74c1c448507362e2",
+      "kind": "markdown_section",
+      "label": "Task 4: Add/refresh structured data and prompts",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:37bd8b4ab637084d",
+          "line_end": 80,
+          "line_start": 80,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task 4: Add/refresh structured data and prompts",
+      "tags": []
+    },
+    {
+      "id": "node:e7345e7cd914f8193bad",
+      "kind": "python_class",
+      "label": "PublicContractTest",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:68215659b11025db",
+          "line_end": 232,
+          "line_start": 11,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.PublicContractTest",
+      "tags": []
+    },
+    {
+      "id": "node:e9b715af08c3796f163a",
+      "kind": "file",
+      "label": "templates/base.html",
+      "path": "templates/base.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "13d41e3ad7c0cb5bc61dbca097403fc11437acbd24c9f39c641ad5f13e2c6576",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ee829ba44efd1573",
+          "line_end": 78,
+          "line_start": 1,
+          "path": "templates/base.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:ea7151a0d793d431ee03",
+      "kind": "config",
+      "label": "api/v1/capabilities.json",
+      "path": "api/v1/capabilities.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1cd516a2dd41fdac374659c5b775a7f2d18b52a4049d350e9fa04f19592e5422",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2d042fe8ddc59861",
+          "line_end": 63,
+          "line_start": 1,
+          "path": "api/v1/capabilities.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:eb81b518d5b754dbbb1c",
+      "kind": "python_function",
+      "label": "copy_worker_and_assets",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:9481ce0cfa8e70ee",
+          "line_end": 131,
+          "line_start": 120,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.copy_worker_and_assets",
+      "tags": []
+    },
+    {
+      "id": "node:f0fd663527865f98c64e",
+      "kind": "markdown_section",
+      "label": "Short Version",
+      "path": "prompt/represent_me.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "7a2d4255ca67bfc01eccc247a76ac812fe7ca59c211497da67db8c10316a87ae",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:0cdbbafa93443ece",
+          "line_end": 5,
+          "line_start": 5,
+          "path": "prompt/represent_me.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "prompt/represent_me.md#Short Version",
+      "tags": []
+    },
+    {
+      "id": "node:f1827689881225265d56",
+      "kind": "markdown_section",
+      "label": "Task 3: Rewrite human-facing templates",
+      "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "bbd48d3fb1fa32ac51407470e08772488e76502499a5f761b5bab294e7c64db3",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3d218e9502f48636",
+          "line_end": 60,
+          "line_start": 60,
+          "path": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "docs/plans/2026-05-09-income-oriented-ai-first-refactor.md#Task 3: Rewrite human-facing templates",
+      "tags": []
+    },
+    {
+      "id": "node:f4c3da775ce6da003096",
+      "kind": "file",
+      "label": "templates/human/contact.html",
+      "path": "templates/human/contact.html",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "53a52d1d42019262d8377a213804faad00d3f387864be70126ff6e4cd242f302",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:f523135dd3a150eb",
+          "line_end": 38,
+          "line_start": 1,
+          "path": "templates/human/contact.html",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:f4ebd3edbda8af591795",
+      "kind": "javascript_function",
+      "label": "isRetiredRoute",
+      "path": "worker/index.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:2dcc1d86bdf9caef",
+          "line_end": 28,
+          "line_start": 28,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.isRetiredRoute",
+      "tags": []
+    },
+    {
+      "id": "node:f54782f22cfead583755",
+      "kind": "python_function",
+      "label": "test_article_surfaces_are_not_publicly_generated",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:57d8fa55e2ac07dc",
+          "line_end": 52,
+          "line_start": 43,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_article_surfaces_are_not_publicly_generated",
+      "tags": []
+    },
+    {
+      "id": "node:f8af01263ce1ce0eb232",
+      "kind": "config",
+      "label": "api/v1/case_studies.json",
+      "path": "api/v1/case_studies.json",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "6dc5e273e5a300c7c8d8f6e1ea1e88a3dc802add37847139c43a92fba7f213c9",
+          "derived_by": "filesystem",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:ee7225f24bd44bef",
+          "line_end": 44,
+          "line_start": 1,
+          "path": "api/v1/case_studies.json",
+          "source_type": "file"
+        }
+      ],
+      "symbol": null,
+      "tags": []
+    },
+    {
+      "id": "node:f918107b9b1786323a79",
+      "kind": "markdown_section",
+      "label": "Build the site (fails closed if Python/Jinja dependencies are unavailable)",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:73f52603d0cdfc2b",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#Build the site (fails closed if Python/Jinja dependencies are unavailable)",
+      "tags": []
+    },
+    {
+      "id": "node:fa185c6d6a01601f4ad9",
+      "kind": "python_function",
+      "label": "load_data",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:3d83ede3836e30ff",
+          "line_end": 34,
+          "line_start": 28,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "scripts.build.load_data",
+      "tags": []
+    },
+    {
+      "id": "node:fc16f9421e5f3a2683ad",
+      "kind": "python_function",
+      "label": "test_machine_readable_surfaces_match_humble_positioning",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:cea811488559294c",
+          "line_end": 207,
+          "line_start": 180,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_machine_readable_surfaces_match_humble_positioning",
+      "tags": []
+    },
+    {
+      "id": "node:fcbe6669d86356de0639",
+      "kind": "markdown_section",
+      "label": "leonbreukelman.engineer",
+      "path": "README.md",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "da8338ce170047944572d052c65315740173ba250c7687f0233ad79c65d4368c",
+          "derived_by": "markdown_parser",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:11a91e2a1f50280f",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "README.md",
+          "source_type": "doc_section"
+        }
+      ],
+      "symbol": "README.md#leonbreukelman.engineer",
+      "tags": []
+    },
+    {
+      "id": "node:fd13909968f5b768873a",
+      "kind": "python_function",
+      "label": "test_agent_card_skills_match_mcp_tools_without_recruiter_tools",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:770f5651b8fc3486",
+          "line_end": 223,
+          "line_start": 209,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "tests.test_public_contract.test_agent_card_skills_match_mcp_tools_without_recruiter_tools",
+      "tags": []
+    },
+    {
+      "id": "node:javascript_import:worker.mcp.server",
+      "kind": "javascript_import",
+      "label": "worker.mcp.server",
+      "path": "worker/index.js",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "eb5094f5cdaebb154b48ca06dfbddd52646968c36bbfca9395a4d5857594011f",
+          "derived_by": "javascript_regex",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:47b71b23b6c02da8",
+          "line_end": 12,
+          "line_start": 12,
+          "path": "worker/index.js",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "worker.mcp.server",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:__future__",
+      "kind": "python_import",
+      "label": "__future__",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:678954e744a8969e",
+          "line_end": 8,
+          "line_start": 8,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "__future__",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:argparse",
+      "kind": "python_import",
+      "label": "argparse",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:79fcec2ced8fd3ac",
+          "line_end": 10,
+          "line_start": 10,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "argparse",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:datetime",
+      "kind": "python_import",
+      "label": "datetime",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:667b089a4eb82688",
+          "line_end": 15,
+          "line_start": 15,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "datetime",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:jinja2",
+      "kind": "python_import",
+      "label": "jinja2",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:b282fbda2c978640",
+          "line_end": 18,
+          "line_start": 18,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "jinja2",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:json",
+      "kind": "python_import",
+      "label": "json",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6e7cd6fd5e6e5f51",
+          "line_end": 1,
+          "line_start": 1,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "json",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:pathlib",
+      "kind": "python_import",
+      "label": "pathlib",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:747bd5322f141fd0",
+          "line_end": 4,
+          "line_start": 4,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "pathlib",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:re",
+      "kind": "python_import",
+      "label": "re",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:e05036e1893e81e5",
+          "line_end": 11,
+          "line_start": 11,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "re",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:shutil",
+      "kind": "python_import",
+      "label": "shutil",
+      "path": "scripts/build.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "1dbfb30e20f3e171666c97ff15be753cbde042f775eecae8770ccfbbc4753e03",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:38ce7fc35ba61db2",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "scripts/build.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "shutil",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:subprocess",
+      "kind": "python_import",
+      "label": "subprocess",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:48326432df32a394",
+          "line_end": 2,
+          "line_start": 2,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "subprocess",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:sys",
+      "kind": "python_import",
+      "label": "sys",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d75786183ab35e5a",
+          "line_end": 12,
+          "line_start": 12,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "sys",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:unittest",
+      "kind": "python_import",
+      "label": "unittest",
+      "path": "tests/test_public_contract.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "d1c374ffe9f565ae456c447573cf9ce61f8adb8d8054186e4748c493733fdf74",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:d8dd17a2ee96a5fb",
+          "line_end": 3,
+          "line_start": 3,
+          "path": "tests/test_public_contract.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "unittest",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:urllib.error",
+      "kind": "python_import",
+      "label": "urllib.error",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:c6777f2e098ec6be",
+          "line_end": 13,
+          "line_start": 13,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "urllib.error",
+      "tags": []
+    },
+    {
+      "id": "node:python_import:urllib.request",
+      "kind": "python_import",
+      "label": "urllib.request",
+      "path": "scripts/check-public-links.py",
+      "provenance_refs": [
+        {
+          "confidence": "deterministic",
+          "content_hash": "8127b6a188f5f0c00ac25c2d75b61297ec4a073c24dfc6ef5f2664598d0d7455",
+          "derived_by": "python_ast",
+          "dirty": false,
+          "git_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb",
+          "id": "prov:6d95e66efa505ecc",
+          "line_end": 14,
+          "line_start": 14,
+          "path": "scripts/check-public-links.py",
+          "source_type": "file"
+        }
+      ],
+      "symbol": "urllib.request",
+      "tags": []
+    }
+  ],
+  "project_root": "/home/leonb/projects/leonbreukelman-engineer",
+  "schema_version": "project-graph/v0.1"
+}

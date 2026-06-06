@@ -1,0 +1,420 @@
+[
+  {
+    "all_expected_gates_observed": true,
+    "all_golden_passed": true,
+    "all_planted_negatives_failed": true,
+    "controls_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current",
+    "distinct_negative_violation_gates": [
+      "component_measurability",
+      "contract_references",
+      "cross_cutting_concerns",
+      "edge_coverage",
+      "protected_surfaces"
+    ],
+    "pilot": "build-arena",
+    "probe_count": 6,
+    "probe_results": [
+      {
+        "actual_mutation": "merged/deleted comp:project_graph into encyclopedia",
+        "declared_bad_decomposition_pattern": "Assign responsibility 'Construct and enrich the code/doc graph from source and git state' to comp:project_encyclopedia, absorbing node:72409672d819b843aed3 into its owned_node_ids and eliminating comp:project_graph as a separate component. con:encyclopedia_uses_graph is removed because the dependency becomes internal.",
+        "declared_expected_gate_failure": "Removing comp:project_graph leaves con:decomposer_uses_graph, con:gate_uses_graph, and con:cli_uses_graph with no valid to_component_id target. The gate's contract-completeness check verifies all declared contract targets resolve to an existing component ID; three dangling targets trigger rejection. Additionally, edge:52d0c53c037ed70393d0, edge:b5dce22e18014652dcc8, and edge:aab2ec163c62488ea195 become unattributed, firing the anti_fabrication edge-coverage guard.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "contract_references",
+          "cross_cutting_concerns"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_encyclopedia_enriches_not_constructs/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "contract_references",
+          "contract_references",
+          "contract_references",
+          "contract_references",
+          "edge_coverage",
+          "edge_coverage",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "component_measurability",
+          "component_measurability"
+        ],
+        "planted_negative_id": "neg:encyclopedia_owns_graph_construction",
+        "probe_id": "probe:encyclopedia_enriches_not_constructs"
+      },
+      {
+        "actual_mutation": "removed con:decomposer_uses_gate",
+        "declared_bad_decomposition_pattern": "Remove con:decomposer_uses_gate from comp:ai_decomposer's contract_ids. Describe the decomposer's responsibility as 'invoke model adapter and emit project model directly' without a submission step. Edge edge:1c61a2ef00d44db831c2 is left unattributed to any contract.",
+        "declared_expected_gate_failure": "edge:1c61a2ef00d44db831c2 is a packet-supplied edge that the gate's anti_fabrication pass requires to be covered by at least one contract. With con:decomposer_uses_gate removed, no contract accounts for this edge and the gate rejects the model. concern:determinism also fires because the decomposer output is no longer anchored through gate validation, violating the snapshot-identity chain.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "edge_coverage"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_decomposer_must_submit_to_gate/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_decomposer_must_submit_to_gate/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "edge_coverage"
+        ],
+        "planted_negative_id": "neg:decomposer_bypasses_gate",
+        "probe_id": "probe:decomposer_must_submit_to_gate"
+      },
+      {
+        "actual_mutation": "removed con:cli_uses_graph",
+        "declared_bad_decomposition_pattern": "Drop con:cli_uses_graph from comp:project_model_cli's contract_ids. Describe the CLI responsibility as 'wire gating into an operator-runnable workflow' without mentioning direct graph construction. Edge edge:aab2ec163c62488ea195 is left unattributed.",
+        "declared_expected_gate_failure": "edge:aab2ec163c62488ea195 becomes unattributed; the gate's edge-coverage check rejects the model. chk:graph_tests still passes (graph tests are independent of CLI coverage) but the structural gate on contract completeness fires independently of the pytest suite's test-import signal, demonstrating that the gate enforces edge attribution beyond what test coverage alone requires.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "edge_coverage"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_cli_wires_both_graph_and_gate/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_cli_wires_both_graph_and_gate/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "edge_coverage"
+        ],
+        "planted_negative_id": "neg:cli_omits_graph_contract",
+        "probe_id": "probe:cli_wires_both_graph_and_gate"
+      },
+      {
+        "actual_mutation": "added generated surface ownership to hypothesis engine",
+        "declared_bad_decomposition_pattern": "Add a generated surface node (one of the surface_counts.generated=4 nodes, e.g. the schema.json node referenced by prov:910e3c0ee04a35a7) to comp:hypothesis_engine's owned_node_ids, describing its responsibility as 'generate hypotheses and own the schema surface that governs candidate structure'.",
+        "declared_expected_gate_failure": "concern:generated_surfaces states generated surfaces must not be treated as owned hypotheses. The gate maintains an allowlist of generated-surface node IDs and validates that no component's owned_node_ids intersect it. Adding a generated node to hypothesis_engine's owned set triggers this boundary check and the gate rejects.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "protected_surfaces"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_generated_surfaces_not_owned/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_generated_surfaces_not_owned/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "protected_surfaces"
+        ],
+        "planted_negative_id": "neg:hypothesis_engine_owns_generated_schema",
+        "probe_id": "probe:generated_surfaces_not_owned"
+      },
+      {
+        "actual_mutation": "path/file-bucket responsibility",
+        "declared_bad_decomposition_pattern": "Replace comp:project_graph, comp:project_encyclopedia, and comp:project_snapshot with a single component named 'Arena Core Files' whose responsibility reads 'contains arena/project_graph.py, arena/project_snapshot.py, and arena/project_encyclopedia.py' and whose owned_node_ids are node:72409672d819b843aed3, node:8a740887145cf8fa758b, and node:91cba0b9bf0b2e024cf3.",
+        "declared_expected_gate_failure": "The non-goal 'do not accept file-bucket components' is enforced by the gate via a responsibility-text pattern check: responsibility strings that enumerate file paths, module filenames, or directory memberships without articulating a semantic function are flagged as file-bucket violations. The gate inspects for path-classifier tokens (arena/, .py suffix enumerations, 'contains') and rejects the model. Additionally, collapsing three components drops six contracts (con:encyclopedia_uses_graph and all graph-consumer contracts), firing the edge-coverage guard.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "component_measurability"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_no_file_bucket_components/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "component_measurability"
+        ],
+        "planted_negative_id": "neg:file_bucket_component",
+        "probe_id": "probe:no_file_bucket_components"
+      },
+      {
+        "actual_mutation": "added protected provenance to arena loop",
+        "declared_bad_decomposition_pattern": "Add prov:b4ea60b636b808b4 (a scorer/ protected surface) to comp:arena_loop's provenance_refs, and revise its responsibility to include 'coordinates with scorer outputs to bound divergence across the generated model surface'.",
+        "declared_expected_gate_failure": "concern:protected_surfaces states no component may claim or mutate scorer/, verifier/, or schema/arena.yaml surfaces. The gate validates that no component's provenance_refs include protected-surface provenance IDs from the known protected set (prov:b4ea60b636b808b4, prov:ef892d964ca5a2f4, prov:50455c6c74a79c2d, prov:1411d5ace6bd7135, prov:df42396adab2a9fc, prov:1588b944760fcaf5, prov:75d9656ba69803ce, prov:88f3d7a7f5ebc93e, prov:774548e852b6c408). Inclusion of prov:b4ea60b636b808b4 in arena_loop triggers this boundary enforcement and the gate rejects.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "protected_surfaces"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/probe-controls-current/probe_protected_surfaces_unowned/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "protected_surfaces"
+        ],
+        "planted_negative_id": "neg:component_owns_protected_surface",
+        "probe_id": "probe:protected_surfaces_unowned"
+      }
+    ],
+    "strong_negative": {
+      "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-build-arena/strong-negative-current/strong-negative-command.json",
+      "expected_violation_gates": [
+        "contract_references",
+        "cross_cutting_concerns"
+      ],
+      "mutation": "merged/deleted comp:project_graph into encyclopedia; also made first contract self-referential",
+      "passed": false,
+      "returncode": 1,
+      "violation_gates": [
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "edge_coverage",
+        "edge_coverage",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "component_measurability",
+        "component_measurability"
+      ]
+    }
+  },
+  {
+    "all_expected_gates_observed": true,
+    "all_golden_passed": true,
+    "all_planted_negatives_failed": true,
+    "controls_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current",
+    "distinct_negative_violation_gates": [
+      "component_measurability",
+      "contract_references",
+      "cross_cutting_concerns",
+      "edge_coverage",
+      "inventory_coverage"
+    ],
+    "pilot": "fmc-mcp",
+    "probe_count": 3,
+    "probe_results": [
+      {
+        "actual_mutation": "merged tools/resources and removed contract",
+        "declared_bad_decomposition_pattern": "Merge comp-tools and comp-resources into a single component comp-fmc-operations with responsibility 'Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation.' Co-own node:84a7c7e4c189e28cb1bb and node:a32d71cbbae4bcadc234. Eliminate the ct-tools-resources contract and its supporting edge edge:68860f44ca677cc65828.",
+        "declared_expected_gate_failure": "chk-tools-validation references ct-tools-resources in its contract_ids list; after the contract is eliminated the check becomes unanchored to any contract, leaving it without a valid acceptance path and causing the gate to report an unverifiable contract reference. Additionally cc-provenance is violated because edge:68860f44ca677cc65828 is listed as a supporting_edge_ids entry for the now-eliminated ct-tools-resources contract but has no surviving contract to attach to, breaking the edge-to-contract audit trail.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "contract_references",
+          "cross_cutting_concerns"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-resources-no-mcp-surface/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-resources-no-mcp-surface/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "contract_references",
+          "edge_coverage",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "component_measurability",
+          "contract_references",
+          "component_measurability",
+          "contract_references"
+        ],
+        "planted_negative_id": "neg-tools-resources-merge",
+        "probe_id": "probe-resources-no-mcp-surface"
+      },
+      {
+        "actual_mutation": "fabricated client split",
+        "declared_bad_decomposition_pattern": "Split comp-client into two components: comp-auth (base64 credential encoding and time-based token caching, owning prov:2b0e52ad10883e7c and prov:4d9c0f2751d94893) and comp-transport (httpx async transport, owning prov:bcfd8e782d7fe500 and prov:aefc03705172d5d2). Replace ct-client-config, ct-resources-client, and ct-server-client with new contracts flowing through comp-auth and then comp-transport.",
+        "declared_expected_gate_failure": "Non-goal 'do not accept file-bucket components' is violated because both comp-auth and comp-transport are sub-file fragments of a single graph node (node:4042451215c279f0dca7) with no packet edge separating auth/token logic from httpx transport; neither new component has an independent owned_node_id traceable to a distinct graph node. cc-anti-fabrication is additionally violated because the split requires fabricating a new edge between comp-auth and comp-transport that does not appear in the packet's supporting_edge_ids.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "inventory_coverage",
+          "contract_references",
+          "cross_cutting_concerns"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-client-unified-auth-transport/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "inventory_coverage",
+          "inventory_coverage",
+          "contract_references",
+          "contract_references",
+          "contract_references",
+          "contract_references",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "component_measurability",
+          "component_measurability"
+        ],
+        "planted_negative_id": "neg-client-split",
+        "probe_id": "probe-client-unified-auth-transport"
+      },
+      {
+        "actual_mutation": "fabricated audit component and edge",
+        "declared_bad_decomposition_pattern": "Add a new component comp-audit-log with responsibility 'Capture and persist FMC REST API audit events for compliance review', owned_node_ids: ['node:fabricated-audit-001'], and a new contract ct-audit-client from comp-client to comp-audit-log with supporting_edge_ids: ['edge:fabricated-audit-edge-001']. No graph node or edge with these identifiers exists in the packet.",
+        "declared_expected_gate_failure": "cc-anti-fabrication is violated immediately: node:fabricated-audit-001 and edge:fabricated-audit-edge-001 do not appear in any packet provenance and are absent from all selected node/edge lists. The gate must reject any component whose owned_node_ids or contracts cannot be anchored to packet-attested graph elements. probe-no-fabricated-components fails because the fabricated node ID is not present in the accepted packet graph.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "inventory_coverage",
+          "contract_references",
+          "cross_cutting_concerns"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "inventory_coverage",
+          "contract_references",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns"
+        ],
+        "planted_negative_id": "neg-fabricated-audit-log",
+        "probe_id": "probe-no-fabricated-components"
+      }
+    ],
+    "strong_negative": {
+      "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/strong-negative-current/strong-negative-command.json",
+      "expected_violation_gates": [
+        "contract_references",
+        "cross_cutting_concerns"
+      ],
+      "mutation": "merged tools/resources and removed contract; also made first contract self-referential",
+      "passed": false,
+      "returncode": 1,
+      "violation_gates": [
+        "contract_references",
+        "contract_references",
+        "contract_references",
+        "edge_coverage",
+        "edge_coverage",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "cross_cutting_concerns",
+        "component_measurability",
+        "contract_references",
+        "component_measurability",
+        "contract_references"
+      ]
+    }
+  },
+  {
+    "all_expected_gates_observed": true,
+    "all_golden_passed": true,
+    "all_planted_negatives_failed": true,
+    "controls_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current",
+    "distinct_negative_violation_gates": [
+      "component_measurability",
+      "contract_references",
+      "cross_cutting_concerns",
+      "edge_coverage",
+      "protected_surfaces"
+    ],
+    "pilot": "leonbreukelman-engineer",
+    "probe_count": 4,
+    "probe_results": [
+      {
+        "actual_mutation": "self-referential router-to-mcp contract",
+        "declared_bad_decomposition_pattern": "Merge worker/index.js and worker/mcp/server.js under a single 'Cloudflare Worker Code' component owning all of node:32f3a0d3845cf98fb8cb, node:javascript_import:worker.mcp.server, and node:1e8ba7fd1db36d8f49db, then drop contract:router-to-mcp because from_component_id and to_component_id would resolve to the same merged component.",
+        "declared_expected_gate_failure": "Contract graph integrity check: contract:router-to-mcp declares from_component_id=comp:worker-edge-router and to_component_id=comp:mcp-server. If both are merged into one component, either both IDs point to a non-existent component (the merged one has a new ID) or the contract becomes a self-referential edge with from==to. Any gate validating that from_component_id != to_component_id and that both referenced IDs exist in the components list rejects this decomposition deterministically.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "contract_references"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_worker-mcp-distinct-endpoints/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_worker-mcp-distinct-endpoints/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "contract_references",
+          "edge_coverage"
+        ],
+        "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+        "probe_id": "probe:worker-mcp-distinct-endpoints"
+      },
+      {
+        "actual_mutation": "merged persona corpus into public data and deleted component",
+        "declared_bad_decomposition_pattern": "Move all ten persona corpus node IDs (node:270b52766ba2097c3bf8, node:087085bf23e3cc4628f2, node:3497d88db26b2742c66a, node:5ea405faea230cdf5498, node:7ad8da6a627ab8d27e9e, node:9d9d37a18c7ab7537c0f, node:c627dcac9798554af877, node:ca0aad13b3b497dd9e40, node:cd8a921454b74ef09e06, node:f0fd663527865f98c64e) into comp:public-agent-data's owned_node_ids on the grounds that represent_me.md is 'agent-facing content analogous to llms.txt', eliminate comp:persona-corpus as a distinct component, and repoint contract:build-renders-persona to to_component_id=comp:public-agent-data.",
+        "declared_expected_gate_failure": "Near-neighbor alternative nn:persona-in-data is explicitly marked why_not_primary='prompt/represent_me.md is a distinct prose corpus with separate prov; it is authored representation guidance, not machine-readable API data.' A gate that checks whether any near_neighbor_alternative's rejected pattern is instantiated in the decomposition detects this. Additionally, a prov-node-to-component uniqueness check fails: persona prov refs (prov:756f566ef137b772 and siblings) conflict with comp:public-agent-data's prov refs (prov:5dd0cc494cd85fbe, prov:77b106b079f49cac), producing a multi-component prov collision.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "cross_cutting_concerns",
+          "component_measurability"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_persona-corpus-distinct-from-machine-data/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "component_measurability",
+          "cross_cutting_concerns",
+          "cross_cutting_concerns",
+          "component_measurability"
+        ],
+        "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+        "probe_id": "probe:persona-corpus-distinct-from-machine-data"
+      },
+      {
+        "actual_mutation": "added generated dist surface to build-pipeline ownership",
+        "declared_bad_decomposition_pattern": "Add invented dist/ directory graph nodes to comp:build-pipeline's owned_node_ids with the rationale that 'the pipeline produces and therefore owns its output,' citing no prov refs for the added nodes.",
+        "declared_expected_gate_failure": "Two gates fire. First, the non-goal enforcement gate checks that no owned_node_id resolves to a generated output surface; the project packet records surface_counts.generated=0, so any node corresponding to a dist/ artifact has no matching packet entry and fails this check. Second, the anti-fabrication concern (concern:anti-fabrication, triggered_by='universal') requires that every component's owned_node_ids trace to packet-supplied prov identifiers; dist/ nodes carry no prov ref and the anti-fabrication gate emits a fabricated-node violation.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "protected_surfaces"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_build-pipeline-source-only-no-dist/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_build-pipeline-source-only-no-dist/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "protected_surfaces"
+        ],
+        "planted_negative_id": "neg:dist-output-as-owned-source",
+        "probe_id": "probe:build-pipeline-source-only-no-dist"
+      },
+      {
+        "actual_mutation": "removed anti_fabrication concern",
+        "declared_bad_decomposition_pattern": "Remove concern:anti-fabrication from cross_cutting_concerns entirely, or reduce its component_ids to only ['comp:build-pipeline'] with triggered_by='conditional' on the rationale that 'fabrication risk is highest where data edges are missing (build pipeline only).'",
+        "declared_expected_gate_failure": "Universal-concern coverage assertion: enumerate all seven component IDs from the components list; collect all cross_cutting_concerns with triggered_by='universal' and union their component_ids. With concern:anti-fabrication absent or scoped, only concern:provenance (if left universal) covers some components. Five component IDs\u2014comp:link-checker, comp:worker-edge-router, comp:mcp-server, comp:persona-corpus, comp:project-docs\u2014have no universal-concern coverage. The gate diffs the full component ID set against universally-covered IDs and emits a non-empty gap set, causing deterministic failure without any network call or model invocation.",
+        "expected_gate_observed": true,
+        "expected_violation_gates": [
+          "cross_cutting_concerns"
+        ],
+        "golden_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/golden-command.json",
+        "golden_passed": true,
+        "golden_returncode": 0,
+        "negative_command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-controls-current/probe_anti-fabrication-concern-is-universal/planted-negative-command.json",
+        "negative_passed": false,
+        "negative_returncode": 1,
+        "negative_violation_gates": [
+          "cross_cutting_concerns",
+          "cross_cutting_concerns"
+        ],
+        "planted_negative_id": "neg:drop-anti-fabrication-concern",
+        "probe_id": "probe:anti-fabrication-concern-is-universal"
+      }
+    ],
+    "strong_negative": {
+      "command_artifact": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/strong-negative-current/strong-negative-command.json",
+      "expected_violation_gates": [
+        "contract_references"
+      ],
+      "mutation": "self-referential router-to-mcp contract; also made first contract self-referential",
+      "passed": false,
+      "returncode": 1,
+      "violation_gates": [
+        "contract_references",
+        "edge_coverage"
+      ]
+    }
+  }
+]

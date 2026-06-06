@@ -1,0 +1,6 @@
+{
+  "url": "https://api.x.ai/v1/chat/completions",
+  "model": "grok-4.20-0309-non-reasoning",
+  "payload_sha256": "4c3df1fafc3e805860ec93c71a69fc65eb010a9151b9d1c1790280feed4c9ff7",
+  "prompt_sha256": "646c9947d7ba49e0b228583ed644a44900cfdfb987b4e2e7b365c48c310fa854"
+}

@@ -1,0 +1,25 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/leonbreukelman-engineer --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts --project-id leonbreukelman-engineer --goal 'decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative.recorded.json --overwrite --non-goal 'do not treat generated dist output as source ownership' --non-goal 'do not require Cloudflare deployment or public mutation'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "component_measurability",
+        "location": "components[comp:persona-corpus]",
+        "message": "Component comp:persona-corpus has a vague name.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103",
+    "snapshot_id": "snapshot-be02e0573ebd8103",
+    "violation_count": 1
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-held-out/probe-evaluations/probe-persona-corpus-distinct-from-machine-data/planted-negative-artifacts/snapshot-be02e0573ebd8103\", \"snapshot_id\": \"snapshot-be02e0573ebd8103\", \"violation_count\": 1}\n"
+}

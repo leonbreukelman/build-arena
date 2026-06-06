@@ -1,0 +1,35 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "inventory_coverage",
+      "location": "components",
+      "message": "Snapshot must contain at least one component.",
+      "severity": "error"
+    },
+    {
+      "gate": "component_measurability",
+      "location": "observable_checks",
+      "message": "Snapshot must contain at least one observable check.",
+      "severity": "error"
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "location": "cross_cutting_concerns",
+      "message": "Missing universal concerns: anti_fabrication, determinism, no_live_paid_api_acceptance, provenance.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:72423a36df9156d74f2f]",
+      "message": "Primary source node pkg.core is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "held_out_probe_presence",
+      "location": "held_out_probes",
+      "message": "Snapshot must include at least one held-out probe or explicit blocker gap.",
+      "severity": "error"
+    }
+  ]
+}

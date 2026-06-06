@@ -3,15 +3,42 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, cast
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
+
+from arena.project_model_v0 import (
+    AdvisorySignalHandoff,
+    Assumption,
+    ComponentKind,
+    Dependency,
+    DependencyKind,
+    EvidenceRequirement,
+    HeldOutProbe,
+    Invariant,
+    NearNeighborAlternative,
+    ObservableCheck,
+    ObservableCheckMode,
+    ProjectModelV0,
+    QualityGateReport,
+    Risk,
+    Source,
+    UnclassifiedProjectSurface,
+    evaluate_quality_gate,
+)
+from arena.project_model_v0 import (
+    Component as ProjectModelV0Component,
+)
+from arena.project_model_v0 import (
+    VerificationGap as ProjectModelV0VerificationGap,
+)
 
 SCHEMA_VERSION = "project-model/v0.1"
 
@@ -193,6 +220,187 @@ def decompose_project(project_root: Path | str, project_id: str | None = None) -
     return model
 
 
+def decompose_project_model_v0(
+    project_root: Path | str,
+    *,
+    source_task: str,
+    primary_backlog_item: str,
+    project_id: str | None = None,
+    repo: str | None = None,
+    issue: str | None = None,
+) -> ProjectModelV0:
+    """Emit the shared Project Model v0 contract from a primary task.
+
+    This is a compatibility adapter over the deterministic filesystem/git
+    scanner model. It preserves the existing `project-model/v0.1` decomposer
+    shape while giving downstream agents a canonical `project-model/v0` JSON
+    document before planning, architecture, or code work begins.
+    """
+    internal_model = decompose_project(project_root, project_id=project_id)
+    return project_model_v0_from_decomposition(
+        internal_model,
+        source_task=source_task,
+        primary_backlog_item=primary_backlog_item,
+        repo=repo,
+        issue=issue,
+    )
+
+
+def project_model_v0_from_decomposition(
+    model: ProjectModel,
+    *,
+    source_task: str,
+    primary_backlog_item: str,
+    repo: str | None = None,
+    issue: str | None = None,
+) -> ProjectModelV0:
+    component_id_map = _component_id_map(model.components)
+    gaps_by_component: dict[str, list[VerificationGap]] = defaultdict(list)
+    for gap in model.verification_gaps:
+        gaps_by_component[gap.component_id].append(gap)
+
+    observable_checks: list[ObservableCheck] = []
+    component_check_ids: dict[str, list[str]] = defaultdict(list)
+    used_check_ids: set[str] = set()
+    for component in model.components:
+        component_id = component_id_map[component.id]
+        for check in component.checks:
+            check_id = _unique_identifier(check.id, used_check_ids, f"{component_id}_check")
+            component_check_ids[component.id].append(check_id)
+            observable_checks.append(
+                ObservableCheck(
+                    id=check_id,
+                    componentId=component_id,
+                    mode=_observable_mode_for_check(check),
+                    description=check.description or f"Run {check.command} for {component.name}.",
+                    observableSignal=check.command,
+                    evidenceRequired=_check_evidence_requirements(check),
+                    noLiveApi=check.no_live_api,
+                )
+            )
+        if not component.checks and component.verification_gaps:
+            check_id = _unique_identifier(
+                f"{component_id}_verification_gap_observed",
+                used_check_ids,
+                f"{component_id}_gap_check",
+            )
+            gap_ids = sorted(component.verification_gaps)
+            component_check_ids[component.id].append(check_id)
+            observable_checks.append(
+                ObservableCheck(
+                    id=check_id,
+                    componentId=component_id,
+                    mode="inspection",
+                    description=f"Inspect surfaced verification gap(s) for {component.name}.",
+                    observableSignal="verification gap is present in verificationGaps and has proposed closure evidence",
+                    evidenceRequired=gap_ids,
+                    noLiveApi=True,
+                )
+            )
+
+    v0_components = [
+        ProjectModelV0Component(
+            id=component_id_map[component.id],
+            name=component.name,
+            kind=_component_kind_for_v0(component),
+            riskLevel=_component_risk_level(component, gaps_by_component.get(component.id, [])),
+            responsibilities=component.responsibilities,
+            ownedSurfaces=component.owned_files or [component.name],
+            observableCheckIds=sorted(component_check_ids.get(component.id, [])),
+        )
+        for component in model.components
+    ]
+
+    dependencies = _dependencies_for_v0(model, component_id_map, component_check_ids)
+    invariants = _invariants_for_v0(model, component_id_map, component_check_ids)
+    evidence_requirements = _evidence_requirements_for_v0(model, component_id_map)
+    risks = _risks_for_v0(model, component_id_map)
+    held_out_probes = _held_out_probes_for_v0(model, component_id_map, gaps_by_component)
+    unclassified_surface = _unclassified_surface_for_v0(model, component_id_map)
+
+    source_payload = {
+        "task": source_task,
+        "primaryBacklogItem": primary_backlog_item,
+    }
+    if repo:
+        source_payload["repo"] = repo
+    if issue:
+        source_payload["issue"] = issue
+
+    return ProjectModelV0(
+        schemaVersion="project-model/v0",
+        id=_identifier(model.project_id, "project_model"),
+        source=Source(**source_payload),
+        goal=source_task,
+        nonGoals=[
+            "Do not require live paid LLM/API calls to emit or validate this model.",
+            "Do not implement Elenchus scoring or advisory evaluation in the Build Arena decomposer.",
+            "Do not treat ownership accounting as quality scoring.",
+        ],
+        components=v0_components,
+        dependencies=dependencies,
+        invariants=invariants,
+        observableChecks=observable_checks,
+        evidenceRequirements=evidence_requirements,
+        assumptions=[
+            Assumption(
+                id="filesystem_and_git_are_authoritative",
+                description="The model is derived only from filesystem and git inventory state observed by the decomposer.",
+                status="confirmed",
+            )
+        ],
+        risks=risks,
+        nearNeighborAlternatives=[
+            NearNeighborAlternative(
+                id="plan_without_project_model",
+                description="Start implementation or architecture work from the backlog item without a shared Project Model.",
+                whyNotPrimary="That reopens the F3 risk of coherent work aimed at the wrong component, sequence, or example.",
+                distinguishingEvidence=["schemaVersion", "components", "dependencies", "observableChecks"],
+            ),
+            NearNeighborAlternative(
+                id="ownership_only_decomposition",
+                description="Use file ownership coverage as the only decomposition signal.",
+                whyNotPrimary="Ownership accounting does not express responsibilities, dependencies, non-code checks, risks, or held-out probes.",
+                distinguishingEvidence=["responsibilities", "verificationGaps", "heldOutProbes"],
+            ),
+        ],
+        heldOutProbes=held_out_probes,
+        verificationGaps=[
+            ProjectModelV0VerificationGap(
+                id=_identifier(gap.id, "verification_gap"),
+                severity=gap.severity,
+                description="; ".join(gap.evidence),
+                affectedComponentIds=[component_id_map.get(gap.component_id, _identifier(gap.component_id, "component"))],
+                proposedClosureCheck=gap.proposed_check,
+            )
+            for gap in model.verification_gaps
+        ],
+        unclassifiedProjectSurface=unclassified_surface,
+        advisorySignalHandoff=AdvisorySignalHandoff(
+            consumer="elenchus-core",
+            expectedFields=[
+                "componentAlignment",
+                "invariantViolations",
+                "dependencyViolations",
+                "unsupportedAssumptions",
+                "evidenceGroundingGaps",
+                "nearNeighborResistance",
+                "fLabelHint",
+            ],
+            optionalFLabelHint=True,
+        ),
+    )
+
+
+def validate_project_model_v0(model: ProjectModelV0 | BaseModel | dict[str, Any]) -> QualityGateReport:
+    return evaluate_quality_gate(model)
+
+
+def canonical_project_model_v0_json(model: ProjectModelV0) -> str:
+    payload = model.model_dump(mode="json", exclude_none=True)
+    return json.dumps(payload, sort_keys=True, indent=2, separators=(",", ": ")) + "\n"
+
+
 def validate_project_model(model: ProjectModel) -> DecompositionValidationReport:
     errors: list[str] = []
     warnings: list[str] = []
@@ -317,34 +525,389 @@ def canonical_project_model_json(model: ProjectModel) -> str:
     return json.dumps(payload, sort_keys=True, indent=2, separators=(",", ": ")) + "\n"
 
 
+def _identifier(value: str, fallback: str) -> str:
+    raw = re.sub(r"[^a-z0-9_-]+", "_", value.strip().lower())
+    raw = re.sub(r"_+", "_", raw).strip("_-")
+    if not raw:
+        raw = fallback
+    if not raw[0].isalpha():
+        raw = f"{fallback}_{raw}"
+    return raw
+
+
+def _unique_identifier(value: str, used: set[str], fallback: str) -> str:
+    base = _identifier(value, fallback)
+    candidate = base
+    suffix = 2
+    while candidate in used:
+        candidate = f"{base}_{suffix}"
+        suffix += 1
+    used.add(candidate)
+    return candidate
+
+
+def _component_id_map(components: list[Component]) -> dict[str, str]:
+    used: set[str] = set()
+    return {
+        component.id: _unique_identifier(component.id, used, "component")
+        for component in components
+    }
+
+
+def _component_kind_for_v0(component: Component) -> ComponentKind:
+    if component.kind in {
+        "source",
+        "test",
+        "documentation",
+        "configuration",
+        "spec",
+        "process",
+        "architecture",
+        "strategy",
+        "data",
+        "integration",
+        "operations",
+        "fixture",
+        "unknown",
+    }:
+        return cast(ComponentKind, component.kind)
+    if component.kind == "verification":
+        return "test"
+    if component.kind == "artifact":
+        return "data"
+    return "unknown"
+
+
+def _component_risk_level(component: Component, gaps: list[VerificationGap]) -> Severity:
+    severities = {gap.severity for gap in gaps}
+    if "high" in severities:
+        return "high"
+    if "medium" in severities or component.kind == "unknown":
+        return "medium"
+    return "low"
+
+
+def _observable_mode_for_check(check: MechanicalCheck) -> ObservableCheckMode:
+    command = check.command.lower()
+    if "pytest" in command:
+        return "test"
+    if any(token in command for token in ("compileall", "ruff", "pyright", "mypy")):
+        return "static-analysis"
+    if "dry-run" in command or "exercise_verifier" in command:
+        return "simulation"
+    return "inspection"
+
+
+def _check_evidence_requirements(check: MechanicalCheck) -> list[str]:
+    evidence = [f"terminal output for `{check.command}`"]
+    evidence.extend(f"referenced path exists: {path}" for path in check.referenced_paths)
+    return evidence
+
+
+def _dependencies_for_v0(
+    model: ProjectModel,
+    component_id_map: dict[str, str],
+    component_check_ids: dict[str, list[str]],
+) -> list[Dependency]:
+    dependencies: list[Dependency] = []
+    used_ids: set[str] = set()
+    for contract in model.contracts:
+        if (
+            contract.producer_component_id not in component_id_map
+            or contract.consumer_component_id not in component_id_map
+        ):
+            continue
+        observable_ids = sorted(
+            set(component_check_ids.get(contract.producer_component_id, []))
+            | set(component_check_ids.get(contract.consumer_component_id, []))
+        )
+        dependencies.append(
+            Dependency(
+                id=_unique_identifier(contract.id, used_ids, "dependency"),
+                fromComponent=component_id_map[contract.producer_component_id],
+                toComponent=component_id_map[contract.consumer_component_id],
+                kind="feeds",
+                description=_contract_description(contract),
+                observableCheckIds=observable_ids,
+            )
+        )
+    if dependencies or len(model.components) <= 1:
+        return dependencies
+    return _default_dependencies_for_v0(model.components, component_id_map, component_check_ids, used_ids)
+
+
+def _default_dependencies_for_v0(
+    components: list[Component],
+    component_id_map: dict[str, str],
+    component_check_ids: dict[str, list[str]],
+    used_ids: set[str],
+) -> list[Dependency]:
+    dependencies: list[Dependency] = []
+
+    def add(raw_id: str, source: str, target: str, kind: DependencyKind, description: str) -> None:
+        if source not in component_id_map or target not in component_id_map or source == target:
+            return
+        dependencies.append(
+            Dependency(
+                id=_unique_identifier(raw_id, used_ids, "dependency"),
+                fromComponent=component_id_map[source],
+                toComponent=component_id_map[target],
+                kind=kind,
+                description=description,
+                observableCheckIds=sorted(
+                    set(component_check_ids.get(source, [])) | set(component_check_ids.get(target, []))
+                ),
+            )
+        )
+
+    add(
+        "python_package_feeds_regression_tests",
+        "python_package",
+        "regression_tests",
+        "feeds",
+        "The source package is the behavior surface exercised by regression tests.",
+    )
+    for component in components:
+        if component.id != "project_configuration":
+            add(
+                f"project_configuration_informs_{component.id}",
+                "project_configuration",
+                component.id,
+                "informs",
+                "Project configuration constrains how this component is installed, tested, or linted.",
+            )
+    if not dependencies:
+        ordered = sorted(component.id for component in components)
+        add(
+            f"{ordered[0]}_informs_{ordered[1]}",
+            ordered[0],
+            ordered[1],
+            "informs",
+            "Filesystem-derived decomposition exposes at least one sequencing or information dependency for downstream review.",
+        )
+    return dependencies
+
+
+def _contract_description(contract: Contract) -> str:
+    assumes = "; ".join(contract.assumes) if contract.assumes else "no explicit assumptions"
+    guarantees = "; ".join(contract.guarantees) if contract.guarantees else "no explicit guarantees"
+    return f"Assumes: {assumes}. Guarantees: {guarantees}."
+
+
+def _invariants_for_v0(
+    model: ProjectModel,
+    component_id_map: dict[str, str],
+    component_check_ids: dict[str, list[str]],
+) -> list[Invariant]:
+    invariants: list[Invariant] = []
+    used_ids: set[str] = set()
+    for concern in model.cross_cutting_concerns:
+        component_ids = [
+            component_id_map[component_id]
+            for component_id in concern.affected_components
+            if component_id in component_id_map
+        ]
+        if not component_ids:
+            continue
+        check_ids = sorted(
+            {
+                check_id
+                for component_id in concern.affected_components
+                for check_id in component_check_ids.get(component_id, [])
+            }
+        )
+        invariants.append(
+            Invariant(
+                id=_unique_identifier(concern.id, used_ids, "invariant"),
+                description=concern.description,
+                componentIds=sorted(component_ids),
+                observableCheckIds=check_ids,
+            )
+        )
+    all_component_ids = sorted(component_id_map.values())
+    all_check_ids = sorted({check_id for ids in component_check_ids.values() for check_id in ids})
+    invariants.append(
+        Invariant(
+            id=_unique_identifier("no_live_api_required", used_ids, "invariant"),
+            description="Project Model emission and validation must not require live paid LLM/API calls.",
+            componentIds=all_component_ids,
+            observableCheckIds=all_check_ids,
+        )
+    )
+    return invariants
+
+
+def _evidence_requirements_for_v0(
+    model: ProjectModel,
+    component_id_map: dict[str, str],
+) -> list[EvidenceRequirement]:
+    requirements = [
+        EvidenceRequirement(
+            id="canonical_project_model_json",
+            description="Canonical Project Model v0 JSON emitted by arena.decomposer before planning begins.",
+            acceptedArtifactTypes=["project-model-v0-json", "terminal-output", "file-path"],
+            requiredFor=sorted(component_id_map.values()),
+        )
+    ]
+    if model.verification_gaps:
+        requirements.append(
+            EvidenceRequirement(
+                id="verification_gap_evidence",
+                description="Evidence and proposed closure checks for every surfaced verification gap.",
+                acceptedArtifactTypes=["project-model-v0-json", "file-path", "terminal-output", "review-note"],
+                requiredFor=sorted(_identifier(gap.id, "verification_gap") for gap in model.verification_gaps),
+            )
+        )
+    return requirements
+
+
+def _risks_for_v0(model: ProjectModel, component_id_map: dict[str, str]) -> list[Risk]:
+    risks = [
+        Risk(
+            id="wrong_target_planning",
+            level="medium",
+            description="A downstream agent could start coherent work against the wrong component, sequence, or visible example if the Project Model is skipped.",
+            mitigation="Emit Project Model v0 before planning and consume its components, dependencies, checks, and gaps.",
+        )
+    ]
+    used_ids = {"wrong_target_planning"}
+    for gap in model.verification_gaps:
+        payload: dict[str, Any] = {
+            "id": _unique_identifier(f"{gap.id}_risk", used_ids, "risk"),
+            "level": gap.severity,
+            "description": "; ".join(gap.evidence),
+            "mitigation": gap.proposed_check,
+        }
+        if gap.component_id in component_id_map:
+            payload["componentId"] = component_id_map[gap.component_id]
+        risks.append(Risk(**payload))
+    return risks
+
+
+def _held_out_probes_for_v0(
+    model: ProjectModel,
+    component_id_map: dict[str, str],
+    gaps_by_component: dict[str, list[VerificationGap]],
+) -> list[HeldOutProbe]:
+    probes: list[HeldOutProbe] = []
+    used_ids: set[str] = set()
+    for component in model.components:
+        if _component_risk_level(component, gaps_by_component.get(component.id, [])) != "high":
+            continue
+        component_id = component_id_map[component.id]
+        gap_ids = [gap.id for gap in gaps_by_component.get(component.id, [])]
+        probes.append(
+            HeldOutProbe(
+                id=_unique_identifier(f"{component_id}_wrong_target_probe", used_ids, "held_out_probe"),
+                componentId=component_id,
+                probeType="counterexample",
+                scenario="A downstream proposal passes visible mechanical checks while treating the surfaced high-risk gap as already solved.",
+                expectedBehavior="The Project Model keeps the gap visible and requires the proposed closure check before downstream acceptance.",
+                evidenceRequired=gap_ids or [component_id],
+            )
+        )
+    return probes
+
+
+def _unclassified_surface_for_v0(
+    model: ProjectModel,
+    component_id_map: dict[str, str],
+) -> list[UnclassifiedProjectSurface]:
+    unclassified: list[UnclassifiedProjectSurface] = []
+    used_ids: set[str] = set()
+    candidate_owners = sorted(
+        component_id
+        for original_id, component_id in component_id_map.items()
+        if original_id != "unclassified_project_surface"
+    )
+    for component in model.components:
+        if component.id != "unclassified_project_surface":
+            continue
+        for path in component.owned_files:
+            unclassified.append(
+                UnclassifiedProjectSurface(
+                    id=_unique_identifier(f"unclassified_{path}", used_ids, "unclassified_surface"),
+                    description=f"{path} is included in the project inventory but not assigned to a project-specific responsibility boundary.",
+                    reasonUnclassified="The deterministic scanner could not infer a more specific owner from path or file type.",
+                    candidateOwners=candidate_owners[:3],
+                )
+            )
+    return unclassified
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Emit a Build Arena project decomposition model.")
     parser.add_argument("--project", required=True, help="Project path to scan")
     parser.add_argument("--output", default="-", help="Output JSON path, or '-' for stdout")
     parser.add_argument("--project-id", default=None, help="Override project_id")
+    parser.add_argument(
+        "--format",
+        choices=["scanner-v0.1", "project-model-v0"],
+        default="scanner-v0.1",
+        help="Output the internal scanner model or the shared Project Model v0 contract",
+    )
+    parser.add_argument("--source-task", default=None, help="Primary task text for Project Model v0")
+    parser.add_argument(
+        "--primary-backlog-item",
+        default=None,
+        help="Primary backlog item or issue URL for Project Model v0",
+    )
+    parser.add_argument("--repo", default=None, help="Optional repo identity for Project Model v0 source")
+    parser.add_argument("--issue", default=None, help="Optional issue URL/id for Project Model v0 source")
     parser.add_argument("--fail-on-gap", action="store_true", help="Exit non-zero if verification gaps exist")
     args = parser.parse_args(argv)
 
+    if args.format == "project-model-v0" and (
+        not (args.source_task or "").strip() or not (args.primary_backlog_item or "").strip()
+    ):
+        print(
+            "decomposer error: --source-task and --primary-backlog-item are required for --format project-model-v0",
+            file=sys.stderr,
+        )
+        return 2
+
     try:
-        model = decompose_project(Path(args.project), project_id=args.project_id)
-        report = validate_project_model(model)
+        if args.format == "project-model-v0":
+            v0_model = decompose_project_model_v0(
+                Path(args.project),
+                source_task=args.source_task,
+                primary_backlog_item=args.primary_backlog_item,
+                project_id=args.project_id,
+                repo=args.repo,
+                issue=args.issue,
+            )
+            output = canonical_project_model_v0_json(v0_model)
+            report = validate_project_model_v0(v0_model)
+            gap_count = len(v0_model.verificationGaps)
+        else:
+            scanner_model = decompose_project(Path(args.project), project_id=args.project_id)
+            output = canonical_project_model_json(scanner_model)
+            scanner_report = validate_project_model(scanner_model)
+            report = scanner_report
+            gap_count = scanner_report.gap_count
     except Exception as exc:  # pragma: no cover - CLI guard
         print(f"decomposer error: {exc}", file=sys.stderr)
         return 2
 
-    output = canonical_project_model_json(model)
     if args.output == "-":
         sys.stdout.write(output)
     else:
         Path(args.output).write_text(output, encoding="utf-8")
 
-    if not report.valid:
+    if isinstance(report, QualityGateReport):
+        if not report.passed:
+            print("project model v0 quality gate failed", file=sys.stderr)
+            for finding in report.findings:
+                print(f"- {finding.code}: {finding.location}: {finding.message}", file=sys.stderr)
+            return 2
+    elif not report.valid:
         print("decomposition model is invalid", file=sys.stderr)
         for error in report.errors:
             print(f"- {error}", file=sys.stderr)
         return 2
-    if args.fail_on_gap and report.gap_count > 0:
-        print(f"decomposition model has {report.gap_count} verification gap(s)", file=sys.stderr)
+    if args.fail_on_gap and gap_count > 0:
+        noun = "Project Model v0" if args.format == "project-model-v0" else "decomposition model"
+        print(f"{noun} has {gap_count} verification gap(s)", file=sys.stderr)
         return 3
     return 0
 

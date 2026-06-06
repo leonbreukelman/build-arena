@@ -1,0 +1,11 @@
+{
+  "cmd": "HERMES_ACCEPT_HOOKS=1 hermes --provider xai -m grok-4.20-0309-non-reasoning -z 'Return only valid JSON, exactly: {\"ok\":true,\"path\":\"hermes-xai-provider\"}'",
+  "exit_code": 0,
+  "output_redacted": "{\"ok\":true,\"path\":\"hermes-xai-provider\"}",
+  "output_sha256": "a6ae3a47e7848e61df2f56156a02ec3108bcb7a86fa1f1ede48a1bfbb7551c81",
+  "parsed_json": {
+    "ok": true,
+    "path": "hermes-xai-provider"
+  },
+  "parse_error": null
+}

@@ -1,0 +1,433 @@
+{
+  "project_id": "leonbreukelman-engineer",
+  "repo": "/home/leonb/projects/leonbreukelman-engineer",
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "non_goals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "actual_verification_command": "npm run build && npm run check:links",
+  "git_dirty": false,
+  "dirty_paths": [],
+  "node_kinds": {
+    "file": 21,
+    "markdown_section": 31,
+    "python_function": 27,
+    "config": 10,
+    "javascript_module": 2,
+    "javascript_function": 4,
+    "python_module": 3,
+    "test_file": 1,
+    "project": 1,
+    "python_class": 1,
+    "javascript_import": 1,
+    "python_import": 13
+  },
+  "edge_kinds": {
+    "configures": 10,
+    "defined_in": 37,
+    "contains": 32,
+    "documents": 31,
+    "imports": 17,
+    "tests": 1
+  },
+  "selected_nodes": [
+    {
+      "id": "node:087085bf23e3cc4628f2",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#What He Is Less Good At",
+      "label": "What He Is Less Good At",
+      "tags": [],
+      "prov": "prov:505ad7266a711b66"
+    },
+    {
+      "id": "node:1c5a6f0459fa5b83d040",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Quick Start",
+      "label": "Quick Start",
+      "tags": [],
+      "prov": "prov:fa04b24fd751aac4"
+    },
+    {
+      "id": "node:1e8ba7fd1db36d8f49db",
+      "kind": "javascript_module",
+      "path": "worker/mcp/server.js",
+      "symbol": "worker.mcp.server",
+      "label": "worker.mcp.server",
+      "tags": [],
+      "prov": "prov:e8c798459ce07e15"
+    },
+    {
+      "id": "node:242462366792e6c85ea0",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Development",
+      "label": "Development",
+      "tags": [],
+      "prov": "prov:cd2a7925a71a196b"
+    },
+    {
+      "id": "node:270b52766ba2097c3bf8",
+      "kind": "file",
+      "path": "prompt/represent_me.md",
+      "symbol": null,
+      "label": "prompt/represent_me.md",
+      "tags": [],
+      "prov": "prov:756f566ef137b772"
+    },
+    {
+      "id": "node:32f3a0d3845cf98fb8cb",
+      "kind": "javascript_module",
+      "path": "worker/index.js",
+      "symbol": "worker",
+      "label": "worker",
+      "tags": [],
+      "prov": "prov:ea0068ba73266e60"
+    },
+    {
+      "id": "node:3497d88db26b2742c66a",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Stories Worth Telling",
+      "label": "Stories Worth Telling",
+      "tags": [],
+      "prov": "prov:ecf942bf7ef015fa"
+    },
+    {
+      "id": "node:3b25680b492a6345baec",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Deployment",
+      "label": "Deployment",
+      "tags": [],
+      "prov": "prov:4129a4074bc34843"
+    },
+    {
+      "id": "node:4f7e53ec7b6ab7383a7c",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#For Humans",
+      "label": "For Humans",
+      "tags": [],
+      "prov": "prov:cb36c3c07f1b6ffd"
+    },
+    {
+      "id": "node:5ea405faea230cdf5498",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Data Sources",
+      "label": "Data Sources",
+      "tags": [],
+      "prov": "prov:440d643908db39b6"
+    },
+    {
+      "id": "node:69d6bc2e023965d76a75",
+      "kind": "file",
+      "path": "README.md",
+      "symbol": null,
+      "label": "README.md",
+      "tags": [],
+      "prov": "prov:4417f3bf0932d8ac"
+    },
+    {
+      "id": "node:7ad8da6a627ab8d27e9e",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Primary Positioning",
+      "label": "Primary Positioning",
+      "tags": [],
+      "prov": "prov:ce979449395c4cd6"
+    },
+    {
+      "id": "node:9d9d37a18c7ab7537c0f",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#What He Is Good At",
+      "label": "What He Is Good At",
+      "tags": [],
+      "prov": "prov:3644e055f1423819"
+    },
+    {
+      "id": "node:a5b95d7d7ada63930bef",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Preview locally",
+      "label": "Preview locally",
+      "tags": [],
+      "prov": "prov:7894438ea3df3482"
+    },
+    {
+      "id": "node:b3b1f19ad2ed91bec458",
+      "kind": "config",
+      "path": "api/v1/profile.json",
+      "symbol": null,
+      "label": "api/v1/profile.json",
+      "tags": [],
+      "prov": "prov:5dd0cc494cd85fbe"
+    },
+    {
+      "id": "node:b8a0684279f7b4edc1bc",
+      "kind": "file",
+      "path": "llms.txt",
+      "symbol": null,
+      "label": "llms.txt",
+      "tags": [],
+      "prov": "prov:77b106b079f49cac"
+    },
+    {
+      "id": "node:c1299be91730fc58c1e3",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Deploy to Cloudflare Pages",
+      "label": "Deploy to Cloudflare Pages",
+      "tags": [],
+      "prov": "prov:4e30e269c5a237db"
+    },
+    {
+      "id": "node:c627dcac9798554af877",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Voice",
+      "label": "Voice",
+      "tags": [],
+      "prov": "prov:d068bad5b6984348"
+    },
+    {
+      "id": "node:ca0aad13b3b497dd9e40",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#How to Represent Leon Breukelman",
+      "label": "How to Represent Leon Breukelman",
+      "tags": [],
+      "prov": "prov:a92ae5c99a4d4dae"
+    },
+    {
+      "id": "node:cd8a921454b74ef09e06",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Contact",
+      "label": "Contact",
+      "tags": [],
+      "prov": "prov:3962163d63785712"
+    },
+    {
+      "id": "node:d038e1fd31641ace3226",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Structure",
+      "label": "Structure",
+      "tags": [],
+      "prov": "prov:e2560a67a5e0ba01"
+    },
+    {
+      "id": "node:d1ab9b8e0eb01b071904",
+      "kind": "python_module",
+      "path": "scripts/check-public-links.py",
+      "symbol": "scripts.check-public-links",
+      "label": "scripts.check-public-links",
+      "tags": [],
+      "prov": "prov:cc1fa9e22afc08c6"
+    },
+    {
+      "id": "node:d701b635b99442ff8d5a",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Install dependencies",
+      "label": "Install dependencies",
+      "tags": [],
+      "prov": "prov:7cf3013274f52d35"
+    },
+    {
+      "id": "node:d8fc3a88afab17188e7b",
+      "kind": "python_module",
+      "path": "scripts/build.py",
+      "symbol": "scripts.build",
+      "label": "scripts.build",
+      "tags": [],
+      "prov": "prov:8c73e6d6bb2288db"
+    },
+    {
+      "id": "node:de09c473f13049315d86",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#For AI Agents",
+      "label": "For AI Agents",
+      "tags": [],
+      "prov": "prov:febd8e67289848a5"
+    },
+    {
+      "id": "node:f0fd663527865f98c64e",
+      "kind": "markdown_section",
+      "path": "prompt/represent_me.md",
+      "symbol": "prompt/represent_me.md#Short Version",
+      "label": "Short Version",
+      "tags": [],
+      "prov": "prov:0cdbbafa93443ece"
+    },
+    {
+      "id": "node:f918107b9b1786323a79",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#Build the site (fails closed if Python/Jinja dependencies are unavailable)",
+      "label": "Build the site (fails closed if Python/Jinja dependencies are unavailable)",
+      "tags": [],
+      "prov": "prov:73f52603d0cdfc2b"
+    },
+    {
+      "id": "node:fcbe6669d86356de0639",
+      "kind": "markdown_section",
+      "path": "README.md",
+      "symbol": "README.md#leonbreukelman.engineer",
+      "label": "leonbreukelman.engineer",
+      "tags": [],
+      "prov": "prov:11a91e2a1f50280f"
+    },
+    {
+      "id": "node:javascript_import:worker.mcp.server",
+      "kind": "javascript_import",
+      "path": "worker/index.js",
+      "symbol": "worker.mcp.server",
+      "label": "worker.mcp.server",
+      "tags": [],
+      "prov": "prov:47b71b23b6c02da8"
+    }
+  ],
+  "selected_import_edges": [
+    {
+      "id": "edge:33fbf5bf92644bc817be",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:sys",
+      "label": "sys",
+      "prov": [
+        "prov:d75786183ab35e5a"
+      ]
+    },
+    {
+      "id": "edge:388a8b7993d965c68760",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "from_symbol": "scripts.build",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:8ae860e02f73b5c8"
+      ]
+    },
+    {
+      "id": "edge:6b44a5c20c6e117b730f",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:argparse",
+      "label": "argparse",
+      "prov": [
+        "prov:79fcec2ced8fd3ac"
+      ]
+    },
+    {
+      "id": "edge:851853794ca6b3577958",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:urllib.error",
+      "label": "urllib.error",
+      "prov": [
+        "prov:c6777f2e098ec6be"
+      ]
+    },
+    {
+      "id": "edge:8c4136c418c6409fda59",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "from_symbol": "scripts.build",
+      "to_node_id": "node:python_import:shutil",
+      "label": "shutil",
+      "prov": [
+        "prov:38ce7fc35ba61db2"
+      ]
+    },
+    {
+      "id": "edge:91ec4fe104cfdad1e4a5",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:pathlib",
+      "label": "pathlib",
+      "prov": [
+        "prov:f3a3ac6792232d99"
+      ]
+    },
+    {
+      "id": "edge:97760ba88c0882f324c7",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:urllib.request",
+      "label": "urllib.request",
+      "prov": [
+        "prov:6d95e66efa505ecc"
+      ]
+    },
+    {
+      "id": "edge:9b853eb4121c2243cd48",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "from_symbol": "scripts.build",
+      "to_node_id": "node:python_import:datetime",
+      "label": "datetime",
+      "prov": [
+        "prov:667b089a4eb82688"
+      ]
+    },
+    {
+      "id": "edge:b181574c40dfcf5e7dcb",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "from_symbol": "scripts.build",
+      "to_node_id": "node:python_import:jinja2",
+      "label": "jinja2",
+      "prov": [
+        "prov:b282fbda2c978640"
+      ]
+    },
+    {
+      "id": "edge:b737ca69635863da5448",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:re",
+      "label": "re",
+      "prov": [
+        "prov:e05036e1893e81e5"
+      ]
+    },
+    {
+      "id": "edge:c0257a7115256fd1910a",
+      "from_node_id": "node:d1ab9b8e0eb01b071904",
+      "from_symbol": "scripts.check-public-links",
+      "to_node_id": "node:python_import:__future__",
+      "label": "__future__",
+      "prov": [
+        "prov:678954e744a8969e"
+      ]
+    },
+    {
+      "id": "edge:c76b6dc305ff9cdce347",
+      "from_node_id": "node:d8fc3a88afab17188e7b",
+      "from_symbol": "scripts.build",
+      "to_node_id": "node:python_import:json",
+      "label": "json",
+      "prov": [
+        "prov:bc8741f77a077338"
+      ]
+    },
+    {
+      "id": "edge:ee74e56eeab2c21d6122",
+      "from_node_id": "node:32f3a0d3845cf98fb8cb",
+      "from_symbol": "worker",
+      "to_node_id": "node:javascript_import:worker.mcp.server",
+      "label": "worker.mcp.server",
+      "prov": [
+        "prov:47b71b23b6c02da8"
+      ]
+    }
+  ],
+  "surface_counts": {
+    "protected": 0,
+    "generated": 0
+  }
+}

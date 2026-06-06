@@ -1,0 +1,76 @@
+{
+  "artifact_hashes": {
+    "gate_report": "92c5ee1491be25f3ab513aaafbd8d93feb88cf2cb9e5474725b1c5012a2dbebf",
+    "graph_file": "83a1dfd3daeb575d137a36af2b3a529a1e32281eb7aaf1e2fe3304d49a087b0a",
+    "project_model_v0": "e9f3de7acd5478c4ad2267ec2438368d811e7adc3b66ecba02d1d43838b3c496",
+    "snapshot": "7aa00a8ca95e99464ab53e7e47558f6da1cb15a5498c2a80042f9815b8d88112"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "1a2a701149de564d54ab15220ebc94ee562c5708"
+  },
+  "encyclopedia_manifest_hash": "d732574f356d618dcd0b80ba6b41a7f364e0576cdfe5dc85a0b51b39abc8e17c",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "92c5ee1491be25f3ab513aaafbd8d93feb88cf2cb9e5474725b1c5012a2dbebf",
+  "gate_report_path": "gate-report.json",
+  "goal": "decompose this tiny repository into responsibility-bearing components",
+  "graph_file_hash": "83a1dfd3daeb575d137a36af2b3a529a1e32281eb7aaf1e2fe3304d49a087b0a",
+  "graph_hash": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "151e52246ca7ca7a2976550aa9279ba0b6eb143bdf279a89ca5b1d28c7e87b3b"
+  },
+  "live_provider_metadata": {
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "d2553719dbc6e2775d26744ea0d403ac1d82edf79931388a18a3093ee0f3b5ee",
+    "finish_reason": "stop",
+    "model": "grok-4.20-0309-non-reasoning",
+    "prompt_hash": "f57603edfb0e797df201e5bdc1dc110d39ded5acfd0770e8fdd9dfb4c0b930a7",
+    "provider": "xai",
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 919,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 26015500,
+      "num_sources_used": 0,
+      "prompt_tokens": 297,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 64,
+        "image_tokens": 0,
+        "text_tokens": 297
+      },
+      "total_tokens": 1216
+    }
+  },
+  "model_ids": {
+    "decomposer": "grok-4.20-0309-non-reasoning",
+    "probe_builder": "none",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "output_hashes": {
+    "decomposer": "b32c22ffabbef7b03ed637809c2aa127cad46f2f372e8d1d6b523a232712c7e8"
+  },
+  "project_id": "tiny-live-after-fix",
+  "project_model_v0_hash": "e9f3de7acd5478c4ad2267ec2438368d811e7adc3b66ecba02d1d43838b3c496",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_root": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/tiny-repo",
+  "prompt_hashes": {
+    "decomposer": "f57603edfb0e797df201e5bdc1dc110d39ded5acfd0770e8fdd9dfb4c0b930a7"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "7aa00a8ca95e99464ab53e7e47558f6da1cb15a5498c2a80042f9815b8d88112",
+  "snapshot_id": "snapshot-f4502b05565281c5",
+  "snapshot_path": "snapshot.json"
+}

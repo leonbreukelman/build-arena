@@ -1,0 +1,184 @@
+{
+  "builder_model_id": "claude-sonnet-4-6",
+  "builder_prompt_hash_hint": "fmc-mcp-probe-builder-sonnet46-20260604",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-ip-validation-in-tools",
+      "planted_negative_id": null,
+      "provenance_refs": [
+        "prov:750d7fda533e438c",
+        "prov:12c675fbe4c747a2",
+        "prov:1b3ec86fcc8eb077"
+      ],
+      "target_component_ids": [
+        "comp-tools"
+      ],
+      "target_contract_ids": [
+        "ct-tools-resources"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-resources-no-mcp-surface",
+      "planted_negative_id": "neg-tools-resources-merge",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:bebb3d04d5e3bea1",
+        "prov:3dfa2aaf889c6db2"
+      ],
+      "target_component_ids": [
+        "comp-resources"
+      ],
+      "target_contract_ids": [
+        "ct-resources-client",
+        "ct-tools-resources"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-client-unified-auth-transport",
+      "planted_negative_id": "neg-client-split",
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:2b0e52ad10883e7c",
+        "prov:aefc03705172d5d2",
+        "prov:4d9c0f2751d94893"
+      ],
+      "target_component_ids": [
+        "comp-client"
+      ],
+      "target_contract_ids": [
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-server-client"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-config-pydantic-typed-settings",
+      "planted_negative_id": null,
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:8725a89bbd7df351",
+        "prov:9b83bc4546b8b4e1"
+      ],
+      "target_component_ids": [
+        "comp-config"
+      ],
+      "target_contract_ids": [
+        "ct-server-config",
+        "ct-client-config"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-no-fabricated-components",
+      "planted_negative_id": "neg-fabricated-audit-log",
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:d10dbb159e6fb524"
+      ],
+      "target_component_ids": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server"
+      ],
+      "target_contract_ids": [
+        "ct-server-config",
+        "ct-client-config",
+        "ct-resources-client",
+        "ct-tools-resources",
+        "ct-server-client"
+      ]
+    },
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "claude-sonnet-4-6",
+      "builder_prompt_hash": "fmc-mcp-probe-builder-sonnet46-20260604",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe-server-fastmcp-lifecycle-wiring",
+      "planted_negative_id": null,
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf",
+        "prov:224f5fd127caa0f7",
+        "prov:1cd5d87538f7fc4b"
+      ],
+      "target_component_ids": [
+        "comp-server"
+      ],
+      "target_contract_ids": [
+        "ct-server-config",
+        "ct-server-client"
+      ]
+    }
+  ],
+  "negative_control_summary": "Deterministic negative control procedure (no network, no credentials required): Step 1 \u2014 take the primary decomposition and remove chk-tools-validation from comp-tools.check_ids. chk-tools-validation is the only observable check that anchors ct-tools-resources to an acceptance command (acc:pytest). After removal ct-tools-resources has no check referencing it, so the gate must report the contract as unverifiable and block acceptance. This exercises the gate's check-to-contract binding without any live calls. Step 2 \u2014 additionally set requires_network:true on acc:pytest. All three checks (chk-suite, chk-resources-contract, chk-tools-validation) reference acc:pytest as their acceptance_command_id; with requires_network:true the gate must block all of them because the project non-goal prohibits network calls for acceptance. Both steps are runnable offline against the static decomposition JSON; surface_counts protected:0 generated:0 confirms no surface-ownership guards are in scope, so the check-removal and acceptance-command mutation are the sole deterministic failure levers available.",
+  "planted_negatives": [
+    {
+      "bad_decomposition_pattern": "Split comp-client into two components: comp-auth (base64 credential encoding and time-based token caching, owning prov:2b0e52ad10883e7c and prov:4d9c0f2751d94893) and comp-transport (httpx async transport, owning prov:bcfd8e782d7fe500 and prov:aefc03705172d5d2). Replace ct-client-config, ct-resources-client, and ct-server-client with new contracts flowing through comp-auth and then comp-transport.",
+      "expected_gate_failure": "Non-goal 'do not accept file-bucket components' is violated because both comp-auth and comp-transport are sub-file fragments of a single graph node (node:4042451215c279f0dca7) with no packet edge separating auth/token logic from httpx transport; neither new component has an independent owned_node_id traceable to a distinct graph node. cc-anti-fabrication is additionally violated because the split requires fabricating a new edge between comp-auth and comp-transport that does not appear in the packet's supporting_edge_ids.",
+      "planted_negative_id": "neg-client-split",
+      "target": "comp-client",
+      "why_hidden_from_primary": "The primary decomposer explicitly documented this as near_neighbor_alternative nn-client-split and gave its rejection rationale; probing the same pattern tests whether the deterministic gate independently rejects it rather than relying on the decomposer's documented awareness."
+    },
+    {
+      "bad_decomposition_pattern": "Merge comp-tools and comp-resources into a single component comp-fmc-operations with responsibility 'Retrieve FMC domain objects via the HTTP client and expose them as MCP tools with IP-address input validation.' Co-own node:84a7c7e4c189e28cb1bb and node:a32d71cbbae4bcadc234. Eliminate the ct-tools-resources contract and its supporting edge edge:68860f44ca677cc65828.",
+      "expected_gate_failure": "chk-tools-validation references ct-tools-resources in its contract_ids list; after the contract is eliminated the check becomes unanchored to any contract, leaving it without a valid acceptance path and causing the gate to report an unverifiable contract reference. Additionally cc-provenance is violated because edge:68860f44ca677cc65828 is listed as a supporting_edge_ids entry for the now-eliminated ct-tools-resources contract but has no surviving contract to attach to, breaking the edge-to-contract audit trail.",
+      "planted_negative_id": "neg-tools-resources-merge",
+      "target": "comp-tools",
+      "why_hidden_from_primary": "The primary decomposer rejected nn-tools-resources-merge and documented the layered-dependency rationale; the probe exercises the chk-tools-validation orphaning pathway, which is a gate-wiring test rather than a decomposer-judgment test."
+    },
+    {
+      "bad_decomposition_pattern": "Add a new component comp-audit-log with responsibility 'Capture and persist FMC REST API audit events for compliance review', owned_node_ids: ['node:fabricated-audit-001'], and a new contract ct-audit-client from comp-client to comp-audit-log with supporting_edge_ids: ['edge:fabricated-audit-edge-001']. No graph node or edge with these identifiers exists in the packet.",
+      "expected_gate_failure": "cc-anti-fabrication is violated immediately: node:fabricated-audit-001 and edge:fabricated-audit-edge-001 do not appear in any packet provenance and are absent from all selected node/edge lists. The gate must reject any component whose owned_node_ids or contracts cannot be anchored to packet-attested graph elements. probe-no-fabricated-components fails because the fabricated node ID is not present in the accepted packet graph.",
+      "planted_negative_id": "neg-fabricated-audit-log",
+      "target": "comp-config",
+      "why_hidden_from_primary": "The primary decomposer cannot generate this negative autonomously \u2014 it requires an independent agent to introduce a node ID that was never emitted by the packet graph, then verify the anti-fabrication gate catches it without relying on the decomposer's self-consistency."
+    }
+  ],
+  "probe_builder_output": {
+    "probe_rubrics": {
+      "probe-client-unified-auth-transport": "Assert that exactly one component jointly owns base64 credential encoding, time-based token caching, and httpx async transport, verifiable by confirming only comp-client lists all four provenance refs prov:bcfd8e782d7fe500, prov:2b0e52ad10883e7c, prov:aefc03705172d5d2, prov:4d9c0f2751d94893. Under neg-client-split, neither comp-auth nor comp-transport owns all four refs, so the probe fails.",
+      "probe-config-pydantic-typed-settings": "Assert that comp-config's stated responsibility explicitly names typed pydantic settings validation, not merely 'reads environment variables' or 'loads config'. A fluent file-bucket report could name the config module without distinguishing pydantic model validation from raw os.environ access; this probe catches that elision.",
+      "probe-ip-validation-in-tools": "Assert that IP-address parsing (ipaddress module) is owned exclusively by comp-tools via node:a32d71cbbae4bcadc234, not by comp-client or comp-resources. A decomposition that misattributes input validation to the resource layer fails this probe, as does one that describes comp-tools merely as 'MCP tool wrappers' without specifying the input validation responsibility.",
+      "probe-no-fabricated-components": "Assert that every component's owned_node_ids element appears in the packet's attested node list and every contract's supporting_edge_ids element appears in the packet's attested edge list. Under neg-fabricated-audit-log, node:fabricated-audit-001 and edge:fabricated-audit-edge-001 are absent from the packet, causing immediate cc-anti-fabrication failure.",
+      "probe-resources-no-mcp-surface": "Assert that comp-resources (node:84a7c7e4c189e28cb1bb) does not own MCP @tool decorator registration or tool-surface shaping. Under neg-tools-resources-merge, comp-fmc-operations co-owns retrieval and tool registration \u2014 this probe rejects that co-ownership. A correct decomposition keeps serialization to JSON resource payloads in comp-resources and tool decoration in comp-tools.",
+      "probe-server-fastmcp-lifecycle-wiring": "Assert that comp-server's responsibility explicitly names FastMCP construction and the injection of config and client into the server lifecycle, not just 'starts the server process'. A file-bucket report would describe the server module without naming FastMCP or the lifecycle wiring pattern, failing this semantic discriminator."
+    },
+    "summary": "Six probes across five components and five contracts. Three probes are linked to planted negatives (neg-client-split via probe-client-unified-auth-transport, neg-tools-resources-merge via probe-resources-no-mcp-surface, neg-fabricated-audit-log via probe-no-fabricated-components); three are free-standing semantic discriminators (probe-ip-validation-in-tools, probe-config-pydantic-typed-settings, probe-server-fastmcp-lifecycle-wiring). All discrimination_passed and golden_control_passed are true because the primary decomposition correctly unifies auth/token/transport in comp-client, separates comp-tools from comp-resources with ct-tools-resources, and anchors every owned_node_id and supporting_edge_id to packet provenance. Builder is claude-sonnet-4-6; primary was claude-opus-4-8 satisfying the model-id inequality requirement."
+  }
+}

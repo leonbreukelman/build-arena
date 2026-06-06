@@ -1,0 +1,25 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts --project-id fmc-mcp --goal 'decompose the Cisco FMC MCP server into responsibility-bearing components that can be manually evaluated by Leon' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative.recorded.json --overwrite --non-goal 'do not require live FMC credentials or network calls for acceptance' --non-goal 'do not accept file-bucket components'",
+  "gate_report": {
+    "passed": false,
+    "violations": [
+      {
+        "gate": "inventory_coverage",
+        "location": "components[comp-config]",
+        "message": "Component comp-config references unknown graph node node:fabricated-audit-001.",
+        "severity": "error"
+      }
+    ]
+  },
+  "parsed": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195",
+    "snapshot_id": "snapshot-d583202ab0cab195",
+    "violation_count": 1
+  },
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-evaluations/probe-no-fabricated-components/planted-negative-artifacts/snapshot-d583202ab0cab195\", \"snapshot_id\": \"snapshot-d583202ab0cab195\", \"violation_count\": 1}\n"
+}

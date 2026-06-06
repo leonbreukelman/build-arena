@@ -39,3 +39,15 @@ exclude = ["arena/generated", ".arena/calibration/repo"]
 typeCheckingMode = "standard"
 pythonVersion = "3.12"
 reportMissingTypeStubs = false
+
+[tool.coverage.run]
+source = ["arena", "scorer", "verifier", "scripts"]
+omit = ["arena/generated/*"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_also = [
+    "if __name__ == .__main__.:",
+    "def .*: \\.\\.\\.",
+]

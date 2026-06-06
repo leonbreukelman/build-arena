@@ -1,0 +1,124 @@
+[
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe:worker-mcp-distinct-endpoints",
+    "planted_negative_id": "neg:merge-worker-mcp-into-one-component",
+    "provenance_refs": [
+      "prov:ea0068ba73266e60",
+      "prov:47b71b23b6c02da8",
+      "prov:e8c798459ce07e15"
+    ],
+    "target_component_ids": [
+      "comp:worker-edge-router",
+      "comp:mcp-server"
+    ],
+    "target_contract_ids": [
+      "contract:router-to-mcp"
+    ]
+  },
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe:persona-corpus-distinct-from-machine-data",
+    "planted_negative_id": "neg:persona-corpus-merged-into-public-data",
+    "provenance_refs": [
+      "prov:756f566ef137b772",
+      "prov:5dd0cc494cd85fbe",
+      "prov:77b106b079f49cac",
+      "prov:505ad7266a711b66",
+      "prov:ecf942bf7ef015fa",
+      "prov:440d643908db39b6",
+      "prov:ce979449395c4cd6",
+      "prov:3644e055f1423819",
+      "prov:d068bad5b6984348",
+      "prov:a92ae5c99a4d4dae",
+      "prov:3962163d63785712",
+      "prov:0cdbbafa93443ece"
+    ],
+    "target_component_ids": [
+      "comp:persona-corpus",
+      "comp:public-agent-data"
+    ],
+    "target_contract_ids": []
+  },
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe:build-pipeline-source-only-no-dist",
+    "planted_negative_id": "neg:dist-output-as-owned-source",
+    "provenance_refs": [
+      "prov:8c73e6d6bb2288db",
+      "prov:73f52603d0cdfc2b"
+    ],
+    "target_component_ids": [
+      "comp:build-pipeline"
+    ],
+    "target_contract_ids": []
+  },
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "claude-sonnet-4-6",
+    "builder_prompt_hash": "23f143b1906b7774ce2768b6cf1de912023a5c18bc0f6c649c2c4538f4e8b363",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe:anti-fabrication-concern-is-universal",
+    "planted_negative_id": "neg:drop-anti-fabrication-concern",
+    "provenance_refs": [
+      "prov:8c73e6d6bb2288db",
+      "prov:5dd0cc494cd85fbe",
+      "prov:756f566ef137b772",
+      "prov:4417f3bf0932d8ac",
+      "prov:cc1fa9e22afc08c6",
+      "prov:ea0068ba73266e60",
+      "prov:47b71b23b6c02da8",
+      "prov:e8c798459ce07e15",
+      "prov:77b106b079f49cac",
+      "prov:505ad7266a711b66",
+      "prov:ecf942bf7ef015fa",
+      "prov:440d643908db39b6",
+      "prov:ce979449395c4cd6",
+      "prov:3644e055f1423819",
+      "prov:d068bad5b6984348",
+      "prov:a92ae5c99a4d4dae",
+      "prov:3962163d63785712",
+      "prov:0cdbbafa93443ece",
+      "prov:fa04b24fd751aac4",
+      "prov:cd2a7925a71a196b",
+      "prov:4129a4074bc34843",
+      "prov:cb36c3c07f1b6ffd",
+      "prov:7894438ea3df3482",
+      "prov:4e30e269c5a237db",
+      "prov:e2560a67a5e0ba01",
+      "prov:7cf3013274f52d35",
+      "prov:febd8e67289848a5",
+      "prov:73f52603d0cdfc2b",
+      "prov:11a91e2a1f50280f"
+    ],
+    "target_component_ids": [
+      "comp:build-pipeline",
+      "comp:link-checker",
+      "comp:worker-edge-router",
+      "comp:mcp-server",
+      "comp:public-agent-data",
+      "comp:persona-corpus",
+      "comp:project-docs"
+    ],
+    "target_contract_ids": [
+      "contract:router-to-mcp"
+    ]
+  }
+]

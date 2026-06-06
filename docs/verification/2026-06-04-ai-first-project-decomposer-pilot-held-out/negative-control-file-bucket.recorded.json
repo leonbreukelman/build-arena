@@ -1,0 +1,43 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.misc-bucket",
+      "name": "Misc bucket",
+      "owned_node_ids": [
+        "node:d8fc3a88afab17188e7b",
+        "node:d1ab9b8e0eb01b071904",
+        "node:32f3a0d3845cf98fb8cb",
+        "node:javascript_import:worker.mcp.server",
+        "node:1e8ba7fd1db36d8f49db",
+        "node:b3b1f19ad2ed91bec458",
+        "node:b8a0684279f7b4edc1bc",
+        "node:270b52766ba2097c3bf8",
+        "node:087085bf23e3cc4628f2",
+        "node:3497d88db26b2742c66a",
+        "node:5ea405faea230cdf5498",
+        "node:7ad8da6a627ab8d27e9e"
+      ],
+      "provenance_refs": [
+        "prov:8c73e6d6bb2288db"
+      ],
+      "responsibility": "Owns every convenient project file as one fluent bucket without measurable contracts.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [],
+  "cross_cutting_concerns": [],
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "held_out_probes": [],
+  "model_id": "negative-control-file-bucket-generator",
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "observable_checks": [],
+  "project_id": "leonbreukelman-engineer",
+  "verification_gaps": []
+}

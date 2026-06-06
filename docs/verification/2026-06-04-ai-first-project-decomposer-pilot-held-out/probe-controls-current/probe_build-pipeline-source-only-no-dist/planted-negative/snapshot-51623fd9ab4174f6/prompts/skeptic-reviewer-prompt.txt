@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: decompose the personal site repo into responsibility-bearing web delivery components
+Non-goals: ["do not accept static file buckets as sufficient architecture", "do not treat generated dist output as source ownership"]

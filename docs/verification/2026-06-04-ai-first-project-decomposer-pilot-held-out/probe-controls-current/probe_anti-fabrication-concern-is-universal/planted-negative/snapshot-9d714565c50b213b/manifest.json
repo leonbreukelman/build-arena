@@ -1,0 +1,48 @@
+{
+  "artifact_hashes": {
+    "gate_report": "5ababa3b0e24b5220eb4bf5c8eb82a91b31dcabaf78e3de6fdc5bfffbd65800c",
+    "graph_file": "7fcfb61097bc2069c81ce1f9393c03f586000a2c3abe90eb59dd603da4c0b230",
+    "project_model_v0": "b16788e5418905e1ab32b156e65b7a5de2d17e4bde7f021dacd3fcba356d914b",
+    "snapshot": "edcd1da5457358c2351b3bdb623848deee2b2b8b9279f02374d235746abdef09"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "63fabf075f29610f80eb326c7b2a644ec5891cbb"
+  },
+  "encyclopedia_manifest_hash": "4127f6050cf40d7e95c5eee2ca8a9657072493cc178444ff33b05025c879e9fe",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "5ababa3b0e24b5220eb4bf5c8eb82a91b31dcabaf78e3de6fdc5bfffbd65800c",
+  "gate_report_path": "gate-report.json",
+  "goal": "decompose the AI-first public site and agent metadata project into source-backed components across build scripts, JavaScript worker code, public JSON data, templates, and docs",
+  "graph_file_hash": "7fcfb61097bc2069c81ce1f9393c03f586000a2c3abe90eb59dd603da4c0b230",
+  "graph_hash": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "19e171e590fc6cee6f7e42a5104ba0d556dcb7be4a40648f67bbdde764052357"
+  },
+  "model_ids": {
+    "decomposer": "claude-opus-4-8-pattern-negative",
+    "probe_builder": "claude-sonnet-4-6",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat generated dist output as source ownership",
+    "do not require Cloudflare deployment or public mutation"
+  ],
+  "output_hashes": {
+    "decomposer": "105c89439d6a46d23f1448463471878859ce4ce13f7698b737d69db800be127d"
+  },
+  "project_id": "leonbreukelman-engineer",
+  "project_model_v0_hash": "b16788e5418905e1ab32b156e65b7a5de2d17e4bde7f021dacd3fcba356d914b",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_root": "/home/leonb/projects/leonbreukelman-engineer",
+  "prompt_hashes": {
+    "decomposer": "8e1ca8b2298c729ad6b78547b23763b4ab449a12852825a8d71a81e84257846e"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "edcd1da5457358c2351b3bdb623848deee2b2b8b9279f02374d235746abdef09",
+  "snapshot_id": "snapshot-9d714565c50b213b",
+  "snapshot_path": "snapshot.json"
+}

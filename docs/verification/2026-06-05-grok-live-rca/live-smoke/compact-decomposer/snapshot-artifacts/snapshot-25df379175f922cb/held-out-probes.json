@@ -1,0 +1,21 @@
+[
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "grok-live-smoke-independent-probe-builder",
+    "builder_prompt_hash": "a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe:smoke-independence",
+    "planted_negative_id": null,
+    "provenance_refs": [
+      "prov:project:81500fea1ae31716"
+    ],
+    "target_component_ids": [
+      "comp:core"
+    ],
+    "target_contract_ids": [
+      "contract:core-to-test"
+    ]
+  }
+]

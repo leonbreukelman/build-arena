@@ -1,0 +1,24 @@
+{
+  "graph_project_root": "/home/leonb/projects/build-arena/docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/tiny-repo",
+  "graph_schema_version": "project-graph/v0.1",
+  "pages": [
+    {
+      "id": "page:overview",
+      "output_hash": "c3b923fe35814f740d4aacdf636a19386a92e23bde78759bf04e669a32af81b7",
+      "path": "overview.md",
+      "source_node_ids": [
+        "node:2ed887a154d9f8588b4a",
+        "node:6e9656b31e1a775d1036",
+        "node:72423a36df9156d74f2f",
+        "node:7dc099dc59b71626b405",
+        "node:cb195cc0206fbf57493e",
+        "node:d5230453a7bd8da84d13",
+        "node:f297e5cb198d1f626af5",
+        "node:fb5a935faa0391969beb",
+        "node:python_import:pkg.core"
+      ],
+      "title": "Project Encyclopedia"
+    }
+  ],
+  "schema_version": "project-encyclopedia/v0.1"
+}

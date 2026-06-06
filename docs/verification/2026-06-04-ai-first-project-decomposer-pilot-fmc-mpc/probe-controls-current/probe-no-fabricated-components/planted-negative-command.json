@@ -1,0 +1,26 @@
+{
+  "command": "uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative --project-id fmc-mcp --goal 'decompose FMC-MCP into responsibility-bearing components' --llm-mode recorded --model-output /home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative.raw.json --overwrite --non-goal 'do not accept file-bucket components' --non-goal 'do not require live FMC credentials for acceptance'",
+  "returncode": 1,
+  "stderr": "",
+  "stdout": "{\"gate_report_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796/gate-report.json\", \"manifest_path\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796/manifest.json\", \"passed\": false, \"snapshot_dir\": \"/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796\", \"snapshot_id\": \"snapshot-3bbe49934c034796\", \"violation_count\": 4}\n",
+  "summary": {
+    "gate_report_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796/gate-report.json",
+    "manifest_path": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796/manifest.json",
+    "passed": false,
+    "snapshot_dir": "/home/leonb/projects/build-arena/docs/verification/2026-06-04-ai-first-project-decomposer-pilot-fmc-mpc/probe-controls-current/probe-no-fabricated-components/planted-negative/snapshot-3bbe49934c034796",
+    "snapshot_id": "snapshot-3bbe49934c034796",
+    "violation_count": 4,
+    "violation_gates": [
+      "inventory_coverage",
+      "contract_references",
+      "cross_cutting_concerns",
+      "cross_cutting_concerns"
+    ],
+    "violation_messages": [
+      "Component comp-audit-log references unknown graph node node:fabricated-audit-001.",
+      "Contract ct-audit-client references missing edge edge:fabricated-audit-edge-001.",
+      "Universal concern anti_fabrication does not cover components: comp-audit-log.",
+      "Universal concern provenance does not cover components: comp-audit-log."
+    ]
+  }
+}
