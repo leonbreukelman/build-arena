@@ -217,7 +217,7 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
     first_prov = _first_prov(selected[0])
     test_nodes = [node for node in nodes if node.kind == "test_file"]
     check_prov = _first_prov(test_nodes[0]) if test_nodes else first_prov
-    check_command = "uv run pytest -q" if test_nodes else "uv run python -m pytest -q"
+    check_command = "uv run python -m pytest -q"
 
     components: list[dict[str, Any]] = []
     module_to_component: dict[str, str] = {}
@@ -239,6 +239,7 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
             module_to_component[module] = component_id
 
     contracts: list[dict[str, Any]] = []
+    contracts_by_id: dict[str, dict[str, Any]] = {}
     for edge in edges:
         if edge.kind != "imports":
             continue
@@ -257,24 +258,28 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
         if not from_component or not to_component or from_component == to_component:
             continue
         contract_id = _id("contract", f"{from_component}-{to_component}")
-        contracts.append(
-            {
+        to_node = next(node for node in selected if module_to_component.get(_component_module(node)) == to_component)
+        contract = contracts_by_id.get(contract_id)
+        if contract is None:
+            contract = {
                 "id": contract_id,
                 "name": f"{from_component} imports {to_component}",
                 "from_component_id": from_component,
                 "to_component_id": to_component,
-                "supporting_edge_ids": [edge.id],
+                "supporting_edge_ids": [],
                 "near_neighbor_alternative_ids": ["near.primary-path-bucket"],
-                "provenance_refs": [
-                    _first_prov(from_node),
-                    _first_prov(next(node for node in selected if module_to_component.get(_component_module(node)) == to_component)),
-                ],
+                "provenance_refs": [],
             }
-        )
+            contracts_by_id[contract_id] = contract
+            contracts.append(contract)
+        if edge.id not in contract["supporting_edge_ids"]:
+            contract["supporting_edge_ids"].append(edge.id)
+        for provenance_ref in (_first_prov(from_node), _first_prov(to_node)):
+            if provenance_ref and provenance_ref not in contract["provenance_refs"]:
+                contract["provenance_refs"].append(provenance_ref)
         for component in components:
             if component["id"] in {from_component, to_component} and contract_id not in component["contract_ids"]:
                 component["contract_ids"].append(contract_id)
-        break
 
     concerns = [
         {
@@ -388,7 +393,7 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
                 "provenance_refs": [first_prov],
             }
         ],
-        "acceptance_command_allowlist": ["local-pytest"],
+        "acceptance_command_allowlist": ["local-pytest", check_command],
     }
 
 

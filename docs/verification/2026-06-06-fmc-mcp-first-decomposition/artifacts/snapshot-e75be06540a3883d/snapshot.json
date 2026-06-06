@@ -1,0 +1,413 @@
+{
+  "acceptance_command_allowlist": [
+    "local-pytest",
+    "uv run python -m pytest -q"
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "id": "component.fmc-mcp-server",
+      "name": "Fmc Mcp Server responsibility",
+      "owned_node_ids": [
+        "node:9810fbe9bc4ff06aee73"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.server` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi"
+      ],
+      "id": "component.fmc-mcp-config",
+      "name": "Fmc Mcp Config responsibility",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.config` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "id": "component.fmc-mcp-resources",
+      "name": "Fmc Mcp Resources responsibility",
+      "owned_node_ids": [
+        "node:84a7c7e4c189e28cb1bb"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.resources` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien"
+      ],
+      "id": "component.fmc-mcp-client",
+      "name": "Fmc Mcp Client responsibility",
+      "owned_node_ids": [
+        "node:4042451215c279f0dca7"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.client` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour"
+      ],
+      "id": "component.fmc-mcp-tools",
+      "name": "Fmc Mcp Tools responsibility",
+      "owned_node_ids": [
+        "node:a32d71cbbae4bcadc234"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.tools` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.local-tests"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server"
+      ],
+      "id": "component.fmc-mcp-main",
+      "name": "Fmc Mcp Main responsibility",
+      "owned_node_ids": [
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf"
+      ],
+      "responsibility": "Own the responsibility represented by `fmc_mcp.__main__` and expose it through graph-resolvable code evidence.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-config",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:b380701c2879efce"
+      ],
+      "supporting_edge_ids": [
+        "edge:1dbd45e8683cedc3c87a"
+      ],
+      "to_component_id": "component.fmc-mcp-config"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-resources",
+      "id": "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+      "name": "component.fmc-mcp-resources imports component.fmc-mcp-client",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "supporting_edge_ids": [
+        "edge:25c3c6d20a305beeeca9"
+      ],
+      "to_component_id": "component.fmc-mcp-client"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-client",
+      "id": "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+      "name": "component.fmc-mcp-client imports component.fmc-mcp-config",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:b380701c2879efce"
+      ],
+      "supporting_edge_ids": [
+        "edge:4db395dbd95108d60b32"
+      ],
+      "to_component_id": "component.fmc-mcp-config"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-tools",
+      "id": "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+      "name": "component.fmc-mcp-tools imports component.fmc-mcp-resources",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c",
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "supporting_edge_ids": [
+        "edge:68860f44ca677cc65828"
+      ],
+      "to_component_id": "component.fmc-mcp-resources"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-main",
+      "id": "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+      "name": "component.fmc-mcp-main imports component.fmc-mcp-server",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf",
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:b2b2314baf57aa2e487d"
+      ],
+      "to_component_id": "component.fmc-mcp-server"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-client",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbfc0096826b93771472"
+      ],
+      "to_component_id": "component.fmc-mcp-client"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-resou",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-resources",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "supporting_edge_ids": [
+        "edge:f5439cc4db4e0ea6bf94"
+      ],
+      "to_component_id": "component.fmc-mcp-resources"
+    }
+  ],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Accepted decomposition claims must trace to graph provenance.",
+      "id": "concern.anti-fabrication",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [],
+      "description": "Snapshot artifacts are canonical and gateable without live APIs.",
+      "id": "concern.determinism",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Graph-derived evidence backs each accepted component and contract.",
+      "id": "concern.provenance",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [],
+      "description": "Acceptance checks are local and allowlisted.",
+      "id": "concern.no-live-paid-api",
+      "provenance_refs": [
+        "prov:de169aac696fc2e0"
+      ],
+      "triggered_by": []
+    }
+  ],
+  "goal": "First real Project Model v1 decomposition of the read-only Cisco FMC MCP server from git and filesystem truth",
+  "graph_hash": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "fixture-independent-probe-builder",
+      "builder_prompt_hash": "ff4b7bd60a806e2a6d0686976353f4be6e992956765d849e386d97f6ec88c947",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe.primary-file-bucket-negative",
+      "planted_negative_id": "negative.fluent-file-bucket",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "target_component_ids": [
+        "component.fmc-mcp-server"
+      ],
+      "target_contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi"
+      ]
+    }
+  ],
+  "input_hashes": {
+    "graph": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3"
+  },
+  "model_output_hashes": {
+    "decomposer": "ba945428218da854167f78b2a4f4ae31d47a2003868a1f4a7dec6e106bd86f0c"
+  },
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Treat adjacent files as one polished bucket.",
+      "id": "near.primary-path-bucket",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "target_id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+      "why_not_primary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not treat directories or adjacent files as final semantic components."
+    }
+  ],
+  "non_goals": [
+    "do not treat directories or adjacent files as final semantic components",
+    "do not require live FMC credentials, network calls, or paid LLM/API calls for acceptance"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "local-pytest",
+      "command": "uv run python -m pytest -q",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Run the local deterministic test suite or nearest safe local check.",
+      "id": "check.local-tests",
+      "provenance_refs": [
+        "prov:de169aac696fc2e0"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    }
+  ],
+  "primary_model_id": "fixture-good-model",
+  "project_id": "fmc-mcp",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "9cdd483f5974fa4c3b5c51d16ff452d113bf44c8780f35d96575de09679827d3"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-e75be06540a3883d",
+  "verification_gaps": []
+}

@@ -1,0 +1,4 @@
+[
+  "local-pytest",
+  "uv run python -m pytest -q"
+]

@@ -75,6 +75,9 @@ def test_build_project_model_snapshot_writes_sidecars_and_v0_projection(tmp_path
     assert v0["schemaVersion"] == "project-model/v0"
     assert v0["id"] == "api-project"
     assert result.snapshot.contracts
+    assert result.snapshot.observable_checks[0].command == "uv run python -m pytest -q"
+    assert "local-pytest" in result.snapshot.acceptance_command_allowlist
+    assert "uv run python -m pytest -q" in result.snapshot.acceptance_command_allowlist
     graph_node_by_id = {node.id: node for node in result.graph.nodes}
     assert all(
         not any(tag in graph_node_by_id[node_id].tags for tag in {"protected", "generated"})
@@ -174,3 +177,46 @@ def test_fixture_decomposer_handles_javascript_import_contracts(tmp_path: Path) 
     assert "worker.mcp.server" in owned_symbols
     assert result.snapshot.contracts
     assert not any(symbol == "dist.worker" for symbol in owned_symbols)
+
+
+def test_fixture_decomposer_covers_every_owned_cross_component_import_edge(tmp_path: Path) -> None:
+    repo = tmp_path / "multi-contract-repo"
+    repo.mkdir()
+    (repo / "pkg").mkdir()
+    (repo / "tests").mkdir()
+    (repo / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "pkg" / "config.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (repo / "pkg" / "client.py").write_text(
+        "from pkg.config import VALUE\n\ndef fetch() -> int:\n    return VALUE\n",
+        encoding="utf-8",
+    )
+    (repo / "pkg" / "server.py").write_text(
+        "from pkg.client import fetch\nfrom pkg.config import VALUE\n\ndef run() -> int:\n    return fetch() + VALUE\n",
+        encoding="utf-8",
+    )
+    (repo / "tests" / "test_server.py").write_text(
+        "from pkg.server import run\n\ndef test_run():\n    assert run() == 2\n",
+        encoding="utf-8",
+    )
+    (repo / "pyproject.toml").write_text("[project]\nname='multi-contract-repo'\nversion='0.0.0'\n", encoding="utf-8")
+    _init_repo(repo)
+
+    result = build_project_model_snapshot(
+        repo,
+        tmp_path / "artifacts",
+        project_id="multi-contract-repo",
+        goal="decompose all runtime contracts",
+        non_goals=["do not collapse files into a path bucket"],
+        llm_mode="fixture",
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is True
+    assert {
+        (contract.from_component_id, contract.to_component_id)
+        for contract in result.snapshot.contracts
+    } >= {
+        ("component.pkg-server", "component.pkg-client"),
+        ("component.pkg-server", "component.pkg-config"),
+        ("component.pkg-client", "component.pkg-config"),
+    }
