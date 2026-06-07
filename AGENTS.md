@@ -19,6 +19,14 @@
 2. Do not run `git checkout`, `git branch -f`, `git reset --hard`, `git rebase`, or `git push` inside a cycle worktree.
 3. The promoter is the only component allowed to advance the internal baseline, and it must use `git merge --ff-only`.
 
+## Cross-project intake and prioritization rule
+
+1. For any Build Arena task that consumes, resumes, decomposes, audits, prioritizes, or plans work for a project, apply the `weighted-project-intake-prioritization` Hermes skill before selecting the first improvement. Use the skill's lightweight mode for trivial/narrow edits so this rule does not create unnecessary ceremony.
+2. Treat documentation/project knowledge, reproducible verification, architecture/spec contracts, AI-agent usability, decision history, security hygiene, backlog governance, and operations/rollback as scorecard dimensions. Adjust weights by project phase instead of using one universal priority order.
+3. Canonical project knowledge should live in versioned repo docs and agent instructions. GitHub Wiki or generated encyclopedia output may be used as a navigation layer, but not as the only source of truth unless explicitly mirrored/versioned.
+4. The Build Arena backlog specification for this strategy is `docs/specs/2026-06-07-weighted-project-intake-prioritization.md`. It is not implemented yet; do not claim a scorecard CLI or gate exists until code and tests land.
+5. Scorecard output is advisory until implemented and gated. It does not override anti-fabrication rules, protected-path boundaries, live-provider authorization gates, or the current broad-autonomy blockers.
+
 ## Current implementation status
 
 Phase 1-4 foundation is implemented and verified. The loop uses JSONL events as canonical state, locked git worktrees for cycle isolation, ff-only promotion foundation, live wall-clock budget checks, and hard divergence halts.
