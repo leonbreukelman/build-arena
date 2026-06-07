@@ -1,0 +1,608 @@
+You are Claude Opus reviewing a Build Arena implementation spec and plan before code changes.
+
+Task: determine whether this spec and plan, if implemented as written, will address the original three-model review gaps for FMC-MCP Project Model v1 iteration usability.
+
+Return a concise but complete review with this exact structure:
+
+VERDICT: approve | approve_with_required_changes | reject
+
+REQUIRED CHANGES:
+- list blockers that must be patched before implementation, or 'none'
+
+NON-BLOCKING SUGGESTIONS:
+- list useful improvements, or 'none'
+
+COVERAGE CHECK:
+For each original gap category, say addressed / partially addressed / missing:
+1. semantic responsibilities
+2. product invariants
+3. runtime/data-flow contracts
+4. external surfaces
+5. risk/priority metadata
+6. configured quality checks
+7. combined import resolution
+
+IMPLEMENTATION RISKS:
+- concise risk list
+
+ORIGINAL REVIEW:
+# Three-model review of FMC-MCP Project Model v1 iteration usability
+
+Date: 2026-06-07
+Subject artifact: `snapshot-e75be06540a3883d/project-model-v1.json`
+Target repo: `/home/leonb/projects/fmc-mcp`
+Review packet: `ai-review-input-packet.json`
+
+## Reviewers
+
+1. Grok review: `grok-review.md`
+   - Verdict: `strong`
+   - Score: 8/10
+   - Note: Grok CLI produced a complete review while also logging auth/MCP authorization warnings. `XAI_API_KEY` was not available for API fallback.
+2. Claude Opus review: `opus-review.md`
+   - Verdict: `usable_with_gaps`
+   - Score: 5/10
+   - Ran through Claude Code with `--model opus`, tools disabled, and a budget cap.
+3. Hermes review: `hermes-review.md`
+   - Verdict: `usable_with_gaps`
+   - Score: 6.5/10
+   - Grounded by reading the Project Model, model graph/contracts, and FMC-MCP source files.
+
+## Consensus answer
+
+The generated Project Model is good enough as a first durable map, but not yet good enough as a complete improvement planner.
+
+All three reviewers agreed that the artifact is useful for orientation:
+
+- it identifies the production module/component boundaries;
+- it is pinned to clean git/filesystem provenance;
+- it has a real local acceptance command;
+- it passes the Build Arena gate;
+- it correctly treats tests as verification rather than production components;
+- it gives an agent a safe starting point for source inspection.
+
+All three also found the same main usability problem: the accepted snapshot is mostly a static ownership/import map. It does not yet surface the actual project semantics that a strong model would need to confidently improve FMC-MCP without re-reading source.
+
+## Highest-confidence missed or underrepresented project facts
+
+1. `client.py` is the real complexity center.
+
+The model owns `fmc_mcp.client`, but its component responsibility is generic. It does not explicitly model:
+
+- `RateLimiter` token-bucket behavior;
+- 120 requests/minute rate constraint;
+- 10-connection semaphore/back-pressure;
+- Basic Auth token generation;
+- access-token refresh and full re-auth behavior;
+- 401 retry flow;
+- 429 `Retry-After` handling;
+- pagination through `get_all_items`;
+- the distinction between GET-only read API wrappers and auth-token POST endpoints.
+
+2. FMC-MCP’s own safety invariants are not first-class.
+
+The snapshot’s cross-cutting concerns mostly protect Build Arena process integrity:
+
+- anti-fabrication;
+- determinism;
+- provenance;
+- no live/paid API acceptance.
+
+They do not sufficiently represent FMC-MCP product invariants:
+
+- read-only FMC behavior;
+- secret-safe `SecretStr` handling and redacted config logging;
+- rate/concurrency limits;
+- no-live default acceptance vs optional credentialed live tests;
+- public MCP resources/tools as the user-facing contract.
+
+3. Runtime/data-flow contracts are missing or weak.
+
+The model covers static imports, but not enough of the actual runtime architecture:
+
+- `server.lifespan` constructs `FMCClient`;
+- `server.lifespan` calls `resources.set_client(_client)`;
+- `resources.get_client()` is the injected client access point;
+- `tools` obtains the client through `resources.get_client()`;
+- `server.py` registers four MCP resources and two MCP tools;
+- stdio vs HTTP/SSE transport is an external runtime mode decision.
+
+A specific gap: the accepted model has no clear `server -> tools` contract even though `server.py` imports `tools` and delegates registered tool handlers to it.
+
+4. Public/external surfaces are not modeled as surfaces.
+
+The model does not first-class the externally meaningful contract:
+
+- MCP resource URIs: `fmc://system/info`, `fmc://devices/list`, `fmc://objects/network`, `fmc://deployment/status`;
+- MCP tools: `search_object_by_ip`, deployment-status check;
+- console script: `mcp-server-fmc = fmc_mcp:main`;
+- env vars/settings boundary;
+- FMC REST endpoints;
+- `httpx` and `FastMCP` as important external dependencies.
+
+5. There is no risk or priority signal.
+
+A future agent sees six components but no ranking. The 371-line stateful client and the tiny entrypoint are structurally equivalent in the snapshot. That makes it harder for Grok/Opus/Hermes to know where improvement effort should start.
+
+6. Verification is too narrow for improvement work.
+
+The model includes the real pytest command, which is good. But the repo also configures `ruff` and `mypy` in `pyproject.toml`; the Project Model does not expose those as observable checks or quality surfaces. Opus and Hermes both flagged this.
+
+## Questions reviewers would ask before iterating on FMC-MCP
+
+The recurring questions were:
+
+1. What is the next improvement goal: hardening current read-only MVP, expanding MCP resources/tools, improving packaging/CI, or preparing live FMC validation?
+2. Are read-only behavior, secret safety, rate limit, and 10-connection limit hard invariants that future agents must preserve?
+3. Should `client.py` remain one component, or should rate limiting, auth/session lifecycle, request/retry, pagination, and endpoint wrappers become subcomponents/helpers?
+4. Should default acceptance be pytest only, or pytest plus ruff and mypy?
+5. Is `test_live.py` intentionally manual-only, or should it become a credential-gated live smoke profile later?
+6. Should the Project Model include public MCP resources/tools and env vars as explicit external surfaces?
+7. Is the `server.py` wrapper around `tools.py` functions intentional, or should the indirection be consolidated?
+
+## Highest-value project improvements identified from the model plus review
+
+These are improvements to FMC-MCP itself, not Build Arena:
+
+1. Add/readiness-enforce a read-only safety test or static scan.
+   - Allow auth token POST endpoints.
+   - Ensure domain object/device/deployment operations remain GET-only.
+
+2. Add a mocked end-to-end server wiring test.
+   - Exercise lifespan client creation.
+   - Verify `resources.set_client` injection.
+   - Verify registered resource/tool handlers delegate through the injected client.
+
+3. Add default quality checks beyond pytest.
+   - At minimum expose or run `ruff` and `mypy` because they are already configured in `pyproject.toml`.
+
+4. Improve `client.py` structure or documentation.
+   - Make rate limiting, auth/session lifecycle, request/retry policy, pagination, and endpoint wrappers explicit sub-responsibilities.
+
+5. Review `FMCClient.test_connection` naming.
+   - The `test_` prefix inside production source is a smell and can confuse humans/tools, even if pytest currently searches only `tests`.
+
+6. Consider consolidating or documenting the server/tool indirection.
+   - `server.py` exposes MCP tool functions that call `tools.py` functions with related names. This is probably intentional registration wrapping, but future agents need that made explicit.
+
+## Highest-value Build Arena / Project Model improvements
+
+1. Generate real component responsibilities.
+   - Synthesize from class/function nodes, docstrings, README/spec evidence, and public symbols.
+   - Avoid tautologies like “own the responsibility represented by module X.”
+
+2. Add target-project invariant modeling.
+   - Read-only safety.
+   - Secret-bearing settings.
+   - Rate/concurrency constraints.
+   - Live-test vs local-test boundaries.
+   - External API/protocol surfaces.
+
+3. Model runtime/data-flow edges, not only imports.
+   - Constructs.
+   - Injects.
+   - Registers resource/tool.
+   - Delegates to.
+   - Exposes endpoint/resource/tool.
+
+4. Fix combined-import resolution and semantic contract promotion.
+   - The current model captures `server -> resources` from `from fmc_mcp import resources, tools`, but not the parallel `server -> tools` relationship.
+
+5. Add risk/priority metadata.
+   - LOC/complexity.
+   - Stateful/auth/concurrency tags.
+   - Public-surface ownership.
+   - Test/quality-check coverage.
+   - Churn if git history is available.
+
+6. Separate process concerns from product concerns.
+   - Build Arena concerns explain why the model is trustworthy.
+   - Product concerns explain what future changes must preserve.
+
+7. Include configured quality commands in observable checks.
+   - For Python repos, detect `ruff`, `mypy`/`pyright`, coverage, and test extras where configured.
+
+## Practical interpretation for Leon
+
+Yes, this model is usable — but it is mostly a map, not yet a mentor.
+
+A strong model can use it to find the right files and run the right local test. It cannot yet look at the model alone and know the important product constraints or the best next improvement. For that, it still needs either the manual golden checklist or a richer decomposition pass.
+
+Best next Build Arena improvement:
+
+> Enrich Project Model v1 so each component has real behavioral responsibilities, project-specific invariants, runtime/data-flow contracts, external surfaces, and risk/priority metadata.
+
+Best next FMC-MCP improvement:
+
+> Add explicit tests/checks around read-only behavior, server/resource/tool injection, and configured lint/type gates, then consider splitting or documenting the overloaded client responsibilities.
+
+## Artifact index
+
+- Review packet: `ai-review-input-packet.json`
+- Grok review: `grok-review.md`
+- Opus review: `opus-review.md`
+- Hermes review: `hermes-review.md`
+- This synthesis: `three-model-project-model-usability-review.md`
+
+
+SPEC:
+# Project Model v1 Iteration Usability Enrichment Spec
+
+Date: 2026-06-07
+Status: proposed for implementation in this session
+Source review: `docs/verification/2026-06-06-fmc-mcp-first-decomposition/three-model-project-model-usability-review.md`
+
+## 1. Problem statement
+
+The first FMC-MCP Project Model v1 was accepted by the deterministic Build Arena gate, but the Grok/Opus/Hermes review found that it is mostly a static ownership/import map. It orients an agent to files and tests, but it does not yet make the project easy to improve from the model alone.
+
+The missing usability signals are:
+
+1. semantic component responsibilities instead of tautological module ownership;
+2. product invariants such as read-only behavior, secret safety, rate/concurrency limits, and live-test boundaries;
+3. runtime/data-flow contracts such as construction, injection, registration, and delegation;
+4. explicit external surfaces such as MCP resources/tools, console scripts, environment variables, and HTTP endpoint families;
+5. risk/priority metadata that tells an agent where improvement effort should start;
+6. configured quality checks beyond the nearest local pytest command;
+7. a fix for combined import resolution so `from package import a, b` can generate separate component contracts when `a` and `b` are owned modules.
+
+## 2. Lightweight weighted intake scorecard
+
+This is a narrow Build Arena agent-usability improvement. The weighted intake dimensions from `AGENTS.md` are applied in lightweight mode:
+
+| Dimension | Weight | Rationale |
+| --- | ---: | --- |
+| AI-agent usability | 30 | Directly improves whether Grok/Opus/Hermes can identify safe next work from the model. |
+| Architecture/spec contracts | 24 | Adds runtime/data-flow/external-surface contract metadata. |
+| Reproducible verification | 18 | Adds configured local quality checks and schema tests. |
+| Documentation/project knowledge | 12 | Captures the review-derived contract in versioned repo docs. |
+| Security/safety hygiene | 10 | Product invariants include secret handling, read-only defaults, live-test boundary, and rate limits. |
+| Operations/rollback | 6 | Keeps all changes local, deterministic, and compatible with current gate artifacts. |
+
+Decision: prioritize Project Model v1 enrichment before autonomous FMC-MCP implementation work.
+
+## 3. Scope
+
+### In scope
+
+1. Extend the emitted `project-model/v1` artifact with an `iterationReadiness` top-level object.
+2. Keep `schemaVersion: project-model/v1`; this is a backward-compatible additive extension to the v1 contract, guarded by schema updates and tests.
+3. Keep `ProjectModelSnapshot.schema_version: project-model-snapshot/v0.1`; do not mutate the internal snapshot version unless required.
+4. Improve deterministic fixture decomposition output so snapshots also contain better component responsibilities, product concerns, and configured quality checks.
+5. Improve Python import resolution for combined absolute imports.
+6. Regenerate the FMC-MCP model using the updated decomposer and verify that the new v1 artifact exposes the review findings.
+7. Obtain post-implementation agreement from Grok, Opus, and Hermes that the review gaps are addressed or explicitly represented.
+
+### Out of scope
+
+1. No mutation under `scorer/`, `verifier/`, root `schema/`, or `arena/generated/`.
+2. No autonomous FMC-MCP code changes in this slice.
+3. No live FMC API calls.
+4. No broad autonomous worktree patch/promotion loop.
+5. No Tree-sitter/SCIP/CodeQL parser integration in this slice.
+
+## 4. Contract extension
+
+`project-model-v1.json` must include a new required top-level field:
+
+```json
+"iterationReadiness": {
+  "summary": "...",
+  "componentProfiles": [],
+  "runtimeContracts": [],
+  "externalSurfaces": [],
+  "productInvariants": [],
+  "qualityGates": [],
+  "priorityBacklog": [],
+  "openQuestions": []
+}
+```
+
+### 4.1 `componentProfiles`
+
+Each selected production component gets a profile:
+
+- `componentId`: existing snapshot component id.
+- `ownedNodeIds`: owned graph nodes.
+- `responsibilitySummary`: non-tautological summary derived from source evidence.
+- `keySymbols`: classes/functions/public symbols from the component source.
+- `behavioralTags`: deterministic tags such as `auth`, `rate_limit`, `concurrency`, `pagination`, `mcp_server`, `configuration`, `resource_handlers`, `tool_handlers`, `entrypoint`, `read_only`.
+- `riskLevel`: `low`, `medium`, or `high`.
+- `priorityRank`: integer; 1 is highest priority.
+- `whyPriority`: short reason grounded in source facts.
+- `provenanceRefs`: ProjectGraph provenance refs.
+
+FMC-MCP acceptance target: `component.fmc-mcp-client` must explicitly mention auth/session lifecycle, rate limiting, retry/pagination, and endpoint wrappers. It must rank ahead of the tiny entrypoint.
+
+### 4.2 `runtimeContracts`
+
+Runtime/data-flow contracts are deterministic, evidence-backed records:
+
+- `id`
+- `kind`: one of `constructs`, `injects`, `registers_resource`, `registers_tool`, `delegates_to`, `exposes_runtime_mode`, `imports`
+- `fromComponentId`
+- `toComponentId` when applicable
+- `description`
+- `supportingNodeIds`
+- `supportingEdgeIds`
+- `provenanceRefs`
+
+FMC-MCP acceptance targets:
+
+- server constructs or owns creation of `FMCClient` during lifespan;
+- server injects the client through `resources.set_client`;
+- tools obtain/depend on the injected resource client;
+- server registers MCP resources;
+- server registers MCP tools;
+- server delegates MCP tool handlers to `tools.py`;
+- stdio and HTTP/SSE runtime modes are surfaced.
+
+### 4.3 `externalSurfaces`
+
+External surfaces describe what users, CLIs, protocols, or remote services touch:
+
+- `id`
+- `surfaceType`: `mcp_resource`, `mcp_tool`, `console_script`, `environment_variable`, `http_endpoint_family`, `runtime_mode`, `dependency`
+- `name`
+- `ownerComponentIds`
+- `description`
+- `provenanceRefs`
+
+FMC-MCP acceptance targets:
+
+- resource URIs including `fmc://system/info`, `fmc://devices/list`, `fmc://objects/network`, `fmc://deployment/status`;
+- MCP tools including IP object search and deployment-status check;
+- console script `mcp-server-fmc`;
+- relevant environment/settings names;
+- FMC REST endpoint families;
+- FastMCP and httpx dependencies.
+
+### 4.4 `productInvariants`
+
+Product invariants separate target-project safety from Build Arena process concerns:
+
+- `id`
+- `category`: examples `read_only_external_operations`, `secret_safety`, `rate_limit`, `concurrency_limit`, `live_test_boundary`, `public_mcp_contract`
+- `description`
+- `componentIds`
+- `externalSurfaceIds`
+- `enforcement`: `modeled`, `tested`, `configured`, or `gap`
+- `provenanceRefs`
+
+FMC-MCP acceptance targets:
+
+- read-only external operations are modeled, with auth-token POSTs distinguished from domain-operation reads;
+- `SecretStr`/settings redaction is modeled;
+- 120 requests/minute and 10 concurrent requests are modeled when present in source;
+- live/credentialed tests are distinguished from default local acceptance;
+- public MCP resources/tools are modeled as contract surfaces.
+
+### 4.5 `qualityGates`
+
+Quality gates expose configured safe local commands and whether they are currently acceptance commands:
+
+- `id`
+- `command`
+- `source`: `detected_pyproject`, `detected_package_json`, `snapshot_observable_check`, or `manual`
+- `mode`: `test`, `lint`, `typecheck`, `build`, `other`
+- `safeToRunByDefault`
+- `includedInAcceptance`
+- `provenanceRefs`
+
+FMC-MCP acceptance target: pytest, ruff, and mypy are visible when configured. They may be separate observable checks; all acceptance commands must pass the existing no-live/paid API allowlist guard.
+
+### 4.6 `priorityBacklog`
+
+The model must include advisory improvement targets, not autonomous mutation instructions:
+
+- `id`
+- `rank`
+- `title`
+- `rationale`
+- `componentIds`
+- `relatedInvariantIds`
+- `relatedSurfaceIds`
+- `suggestedVerification`
+- `provenanceRefs`
+
+FMC-MCP expected top items:
+
+1. verify or test read-only behavior;
+2. verify server/resources/tools wiring;
+3. run or expose configured lint/type checks;
+4. document or refactor client sub-responsibilities.
+
+### 4.7 `openQuestions`
+
+Questions should be generated only when the model cannot prove the answer from source. They must help a future agent ask targeted clarification rather than rediscovering broad context.
+
+FMC-MCP expected examples:
+
+- Is `test_live.py` intentionally manual-only or should it become a credential-gated smoke profile?
+- Should `client.py` remain a single responsibility component or be split into helpers?
+- Should default acceptance become pytest + ruff + mypy, or should lint/typecheck remain advisory?
+
+## 5. Deterministic generation rules
+
+1. All records must be derived from `ProjectGraph` nodes/edges, source file text, and config files read from the target repo.
+2. No cached prior Project Model may be used as source truth.
+3. Every record must include provenance refs resolving to graph evidence.
+4. Heuristics may use source text patterns but must fail safe: if a signal is uncertain, emit an open question or verification gap rather than a hard invariant.
+5. The output must remain deterministic for a fixed git/filesystem state.
+6. Additional snapshot observable checks must use safe local commands only.
+
+## 6. Validation and acceptance
+
+Minimum Build Arena acceptance:
+
+1. Unit tests fail before implementation for:
+   - combined Python import resolution;
+   - `iterationReadiness` schema presence and shape;
+   - semantic component profile/priority on a fixture repo;
+   - configured ruff/mypy check discovery.
+2. Unit tests pass after implementation.
+3. `docs/schemas/project-model-v1.schema.json` validates generated artifacts.
+4. `uv run pytest tests -q` passes.
+5. `uv run ruff check .` passes.
+6. `uv run pyright` passes, or any failure is diagnosed and fixed.
+7. FMC-MCP snapshot regeneration passes deterministic gate.
+8. FMC-MCP local checks that the model exposes as acceptance commands are actually run and recorded.
+9. Grok, Opus, and Hermes all agree that the original review gaps are addressed or explicitly represented in the updated FMC-MCP model.
+
+## 7. Non-regression requirements
+
+1. v0 compatibility output remains present.
+2. Existing v1 top-level fields remain unchanged except for the additive required `iterationReadiness` field.
+3. The deterministic gate still rejects stale graph hashes, file buckets, missing provenance, unsafe acceptance commands, missing edge coverage, and protected/generated ownership.
+4. No generated files under `arena/generated/` are hand-edited.
+5. No root `schema/` files are modified.
+
+
+PLAN:
+# Implementation Plan — Project Model v1 Iteration Usability Enrichment
+
+Date: 2026-06-07
+Spec: `docs/specs/2026-06-07-project-model-iteration-usability-enrichment.md`
+Review source: `docs/verification/2026-06-06-fmc-mcp-first-decomposition/three-model-project-model-usability-review.md`
+
+## Objective
+
+Make the Project Model v1 generated by the decomposer useful as an iteration guide, not just a static map. The implementation must enrich the v1 artifact and snapshot output enough that Grok, Opus, and Hermes agree the FMC-MCP review gaps are addressed or explicitly represented.
+
+## Guardrails
+
+1. Do not modify `scorer/`, `verifier/`, root `schema/`, `.arena/scorer.lock.toml`, or `arena/generated/`.
+2. Do not mutate FMC-MCP source in this slice.
+3. Do not use live FMC credentials or `--allow-live`.
+4. Keep v0 output and existing v1 fields compatible.
+5. Ground all records in filesystem/git/source evidence from the target repo.
+
+## Phase 1 — Opus-reviewed design
+
+1. Write spec and plan artifacts.
+2. Send both to Opus with this review question:
+   - Does the spec/plan address every Grok/Opus/Hermes review gap?
+   - Is the contract implementable without overfitting to FMC-MCP?
+   - Are any acceptance criteria missing before implementation?
+3. Patch the spec/plan if Opus identifies valid gaps.
+4. Record the Opus review and accepted changes under `docs/verification/2026-06-07-project-model-iteration-usability/`.
+
+Exit criteria:
+
+- Spec and plan exist.
+- Opus review exists.
+- Accepted feedback is incorporated or explicitly rejected with rationale.
+
+## Phase 2 — Red tests
+
+Add failing tests before implementation:
+
+1. `tests/test_project_graph.py` or existing decomposer tests:
+   - repo with `from pkg import resources, tools` produces import edges/contract coverage for both `pkg.resources` and `pkg.tools` when those modules exist.
+2. `tests/test_project_decomposer_ai.py`:
+   - fixture repo with `client.py`, `server.py`, `resources.py`, and `tools.py` emits non-tautological component responsibilities.
+   - client profile/risk signals rank the stateful/auth/rate-limited client ahead of a tiny entrypoint.
+   - configured `ruff` and `mypy` commands are detected when present in `pyproject.toml`.
+3. `tests/test_project_model_v1_contract.py`:
+   - generated v1 has required `iterationReadiness` sections.
+   - schema validates the new field.
+   - v0 compatibility artifact still exists.
+
+Exit criteria:
+
+- The new tests fail for the expected missing behavior before implementation.
+
+## Phase 3 — Implementation
+
+1. Fix Python import resolution:
+   - update `_resolve_python_import` to emit alias-qualified absolute imports for `from pkg import a, b` while still allowing module-level imports like `from pkg.config import VALUE` to resolve to `pkg.config` through existing target-matching logic.
+2. Add deterministic source-analysis helpers:
+   - map component ids to graph nodes, paths, source text, symbol names, and provenance refs;
+   - count lines/classes/functions;
+   - derive behavioral tags from source patterns;
+   - discover configured local quality commands from `pyproject.toml` and package config.
+3. Enrich fixture model output:
+   - replace tautological responsibilities with summaries based on detected tags/symbols;
+   - add product cross-cutting concerns when deterministic evidence exists;
+   - add observable checks for pytest, ruff, and mypy/pyright when configured and safe.
+4. Extend `project_model_v1_from_snapshot`:
+   - build `iterationReadiness` from snapshot + graph;
+   - include component profiles, runtime contracts, external surfaces, product invariants, quality gates, priority backlog, and open questions.
+5. Update JSON schema:
+   - require `iterationReadiness` and validate its nested record shapes.
+6. Keep all changes deterministic and provenance-backed.
+
+Exit criteria:
+
+- New red tests pass.
+- Existing tests pass.
+
+## Phase 4 — Local verification
+
+Run:
+
+1. `uv run pytest tests -q`
+2. `uv run ruff check .`
+3. `uv run pyright`
+
+If any fail:
+
+- diagnose root cause;
+- patch the implementation or tests;
+- rerun the failing check and then the full suite.
+
+## Phase 5 — Regenerate FMC-MCP model
+
+1. Generate a new durable FMC-MCP snapshot under:
+   - `docs/verification/2026-06-07-project-model-iteration-usability/fmc-mcp-updated-model/`
+2. Command:
+   - `uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root <dir> --project-id fmc-mcp --goal "decompose FMC-MCP into iteration-ready responsibility-bearing components" --llm-mode fixture --overwrite`
+3. Gate it:
+   - `uv run python -m arena.project_model_cli gate --snapshot <manifest.json>`
+4. Run target local checks actually exposed as acceptance checks, at minimum:
+   - `uv run python -m pytest -q` in FMC-MCP;
+   - `uv run ruff check .` if exposed as configured quality gate;
+   - `uv run mypy src/fmc_mcp` if exposed as configured quality gate.
+5. Write a short regeneration report with snapshot id, gate status, and check outputs.
+
+Exit criteria:
+
+- Updated Project Model v1 exists.
+- Gate passes.
+- Actual local command output is captured.
+
+## Phase 6 — Three-model agreement
+
+1. Prepare a compact review packet containing:
+   - original three-model review;
+   - spec and plan;
+   - updated Project Model v1;
+   - regeneration report;
+   - local verification outputs.
+2. Ask Grok:
+   - Are the original review gaps addressed or explicitly represented?
+   - If not, identify blockers only.
+3. Ask Opus the same question.
+4. Perform the same Hermes grounded review by reading the updated model and source.
+5. If any reviewer identifies a valid blocker:
+   - implement a bounded repair;
+   - rerun local verification;
+   - regenerate the model if required;
+   - rerun the agreement check for the blocking area.
+
+Exit criteria:
+
+- Grok, Opus, and Hermes all return `agree` or equivalent non-blocking verdict.
+- Any non-blocking suggestions are recorded as future work, not hidden.
+
+## Phase 7 — Finalize
+
+1. Run final `git status --short` in Build Arena and FMC-MCP.
+2. Stage only Build Arena spec/plan/code/test/verification artifacts for this task.
+3. Commit with a concise message.
+4. Report:
+   - commit hash;
+   - updated snapshot id/path;
+   - verification commands and results;
+   - three-model agreement verdicts;
+   - any future-work notes.

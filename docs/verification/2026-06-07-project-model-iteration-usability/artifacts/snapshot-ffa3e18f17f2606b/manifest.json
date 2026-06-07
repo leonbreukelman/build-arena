@@ -1,0 +1,51 @@
+{
+  "artifact_hashes": {
+    "gate_report": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+    "graph_file": "ae02f20c5eee676e6a0282a0791f665b65e9abf600c620b4e91c5f747c8202f2",
+    "project_model_v0": "e47c598fb48d00ba1719e28e2036d766fc77ac15de0668e16ff66d01d9f5fb85",
+    "project_model_v1": "001d75989006188ac9416347e7377dcae795dc283b400369027441cc2310fb85",
+    "snapshot": "473e6f431ba8ca86090d76ffccf40f0963bdfe095cffb12aa53891e452489563"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "00a632ac950a8c411f8d8ac90197e28191f58619"
+  },
+  "encyclopedia_manifest_hash": "5515ecd6e7d61dbc4843f621c5d9d0dd10da16efe3f53d7e9a069cd7252da464",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+  "gate_report_path": "gate-report.json",
+  "goal": "produce an iteration-ready project model for FMC-MCP that exposes behavioral responsibilities, runtime/data-flow contracts, external surfaces, product invariants, quality gates, backlog priorities, and open questions",
+  "graph_file_hash": "ae02f20c5eee676e6a0282a0791f665b65e9abf600c620b4e91c5f747c8202f2",
+  "graph_hash": "f7d8edaa740e4bd83b02dde788b0d72762cf2b2e021089b0f244de17175b449e",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "f7d8edaa740e4bd83b02dde788b0d72762cf2b2e021089b0f244de17175b449e"
+  },
+  "model_ids": {
+    "decomposer": "fixture-good-model",
+    "probe_builder": "fixture-independent-probe-builder",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "output_hashes": {
+    "decomposer": "b58dd6a7ab1a1be62b6b028c3c40879678c2cef90f5e1dc923534a54e14c8454"
+  },
+  "project_id": "fmc-mcp",
+  "project_model_primary_path": "project-model-v1.json",
+  "project_model_v0_hash": "e47c598fb48d00ba1719e28e2036d766fc77ac15de0668e16ff66d01d9f5fb85",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_model_v1_hash": "001d75989006188ac9416347e7377dcae795dc283b400369027441cc2310fb85",
+  "project_model_v1_path": "project-model-v1.json",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "41905186339c02b133480b0036bd343854ba17ae4ae3ce694a06dfb5703a393a"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "473e6f431ba8ca86090d76ffccf40f0963bdfe095cffb12aa53891e452489563",
+  "snapshot_id": "snapshot-ffa3e18f17f2606b",
+  "snapshot_path": "snapshot.json"
+}

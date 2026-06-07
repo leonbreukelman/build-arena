@@ -1,0 +1,524 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "component-fmc-mcp-server",
+      "kind": "source",
+      "name": "Fmc Mcp Server responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/server.py"
+      ],
+      "responsibilities": [
+        "Coordinate concurrency back-pressure, runtime entrypoint, client injection, MCP server registration, read-only external operations, resource handlers via deployment_status_resource, devices_list_resource, get_deployment_status, lifespan, main with source-backed behavior in `fmc_mcp.server`."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-fmc-mcp-config",
+      "kind": "source",
+      "name": "Fmc Mcp Config responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-config"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/config.py"
+      ],
+      "responsibilities": [
+        "Coordinate concurrency back-pressure, configuration/secrets, pagination, rate limiting via FMCSettings, get_settings, log_config with source-backed behavior in `fmc_mcp.config`."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-fmc-mcp-resources",
+      "kind": "source",
+      "name": "Fmc Mcp Resources responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-resources"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/resources.py"
+      ],
+      "responsibilities": [
+        "Coordinate client injection, read-only external operations, resource handlers, tool handlers via get_client, get_deployment_status, get_system_info, list_devices, list_network_objects with source-backed behavior in `fmc_mcp.resources`."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-fmc-mcp-client",
+      "kind": "source",
+      "name": "Fmc Mcp Client responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-client"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/client.py"
+      ],
+      "responsibilities": [
+        "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-fmc-mcp-tools",
+      "kind": "source",
+      "name": "Fmc Mcp Tools responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-tools"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/tools.py"
+      ],
+      "responsibilities": [
+        "Coordinate concurrency back-pressure, client injection, read-only external operations, tool handlers via check_deployment_status, search_object_by_ip with source-backed behavior in `fmc_mcp.tools`."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-fmc-mcp-main",
+      "kind": "source",
+      "name": "Fmc Mcp Main responsibility",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-main"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/__main__.py"
+      ],
+      "responsibilities": [
+        "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp.__main__`."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "component.fmc-mcp-server imports component.fmc-mcp-config",
+      "fromComponent": "component-fmc-mcp-server",
+      "id": "contract-component-fmc-mcp-server-component-fmc-mcp-confi",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server"
+      ],
+      "toComponent": "component-fmc-mcp-config"
+    },
+    {
+      "description": "component.fmc-mcp-resources imports component.fmc-mcp-client",
+      "fromComponent": "component-fmc-mcp-resources",
+      "id": "contract-component-fmc-mcp-resources-component-fmc-mcp-cl",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-resources"
+      ],
+      "toComponent": "component-fmc-mcp-client"
+    },
+    {
+      "description": "component.fmc-mcp-server imports component.fmc-mcp-tools",
+      "fromComponent": "component-fmc-mcp-server",
+      "id": "contract-component-fmc-mcp-server-component-fmc-mcp-tools",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server"
+      ],
+      "toComponent": "component-fmc-mcp-tools"
+    },
+    {
+      "description": "component.fmc-mcp-client imports component.fmc-mcp-config",
+      "fromComponent": "component-fmc-mcp-client",
+      "id": "contract-component-fmc-mcp-client-component-fmc-mcp-confi",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-client"
+      ],
+      "toComponent": "component-fmc-mcp-config"
+    },
+    {
+      "description": "component.fmc-mcp-tools imports component.fmc-mcp-resources",
+      "fromComponent": "component-fmc-mcp-tools",
+      "id": "contract-component-fmc-mcp-tools-component-fmc-mcp-resour",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-tools"
+      ],
+      "toComponent": "component-fmc-mcp-resources"
+    },
+    {
+      "description": "component.fmc-mcp-main imports component.fmc-mcp-server",
+      "fromComponent": "component-fmc-mcp-main",
+      "id": "contract-component-fmc-mcp-main-component-fmc-mcp-server",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-main"
+      ],
+      "toComponent": "component-fmc-mcp-server"
+    },
+    {
+      "description": "component.fmc-mcp-server imports component.fmc-mcp-client",
+      "fromComponent": "component-fmc-mcp-server",
+      "id": "contract-component-fmc-mcp-server-component-fmc-mcp-clien",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server"
+      ],
+      "toComponent": "component-fmc-mcp-client"
+    },
+    {
+      "description": "component.fmc-mcp-server imports component.fmc-mcp-resources",
+      "fromComponent": "component-fmc-mcp-server",
+      "id": "contract-component-fmc-mcp-server-component-fmc-mcp-resou",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server"
+      ],
+      "toComponent": "component-fmc-mcp-resources"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-tools",
+        "component-fmc-mcp-main"
+      ]
+    }
+  ],
+  "goal": "produce an iteration-ready project model for FMC-MCP that exposes behavioral responsibilities, runtime/data-flow contracts, external surfaces, product invariants, quality gates, backlog priorities, and open questions",
+  "heldOutProbes": [
+    {
+      "componentId": "component-fmc-mcp-server",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-primary-file-bucket-negative",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative negative.fluent-file-bucket."
+    }
+  ],
+  "id": "fmc-mcp",
+  "invariants": [
+    {
+      "componentIds": [
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-tools",
+        "component-fmc-mcp-main"
+      ],
+      "description": "Accepted decomposition claims must trace to graph provenance.",
+      "id": "concern-anti-fabrication",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-tools",
+        "component-fmc-mcp-main"
+      ],
+      "description": "Snapshot artifacts are canonical and gateable without live APIs.",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-tools",
+        "component-fmc-mcp-main"
+      ],
+      "description": "Graph-derived evidence backs each accepted component and contract.",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-tools",
+        "component-fmc-mcp-main"
+      ],
+      "description": "Acceptance checks are local and allowlisted.",
+      "id": "concern-no-live-paid-api",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-tools"
+      ],
+      "description": "Concurrent external FMC requests are bounded by source-modeled back-pressure. Source settings define 10 concurrent connections.",
+      "id": "concern-concurrency-limit",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-main",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-tools"
+      ],
+      "description": "Credentialed live tests are present or implied and must remain outside default local acceptance unless explicitly enabled.",
+      "id": "concern-live-test-boundary",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-config",
+        "component-fmc-mcp-main",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-tools"
+      ],
+      "description": "Public MCP resources and tools are externally meaningful contract surfaces.",
+      "id": "concern-public-mcp-contract",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-config"
+      ],
+      "description": "Rate limiting behavior is a product invariant for external FMC API access. Source settings define 120 requests per minute.",
+      "id": "concern-rate-limit",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-resources",
+        "component-fmc-mcp-server",
+        "component-fmc-mcp-tools"
+      ],
+      "description": "FMC domain operations are modeled as read-oriented external calls; auth-token POSTs are separate from domain mutation behavior.",
+      "id": "concern-read-only-external-operations",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-fmc-mcp-client",
+        "component-fmc-mcp-config"
+      ],
+      "description": "Secret-bearing settings and credentials must remain redacted and must not be logged or exposed in model artifacts.",
+      "id": "concern-secret-safety",
+      "observableCheckIds": [
+        "check-component-fmc-mcp-server",
+        "check-component-fmc-mcp-config",
+        "check-component-fmc-mcp-resources",
+        "check-component-fmc-mcp-client",
+        "check-component-fmc-mcp-tools",
+        "check-component-fmc-mcp-main"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Treat adjacent files as one polished bucket.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "near-primary-path-bucket",
+      "whyNotPrimary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not treat file buckets as final components."
+    }
+  ],
+  "nonGoals": [
+    "do not treat file buckets as final components"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "component-fmc-mcp-server",
+      "description": "Observable local check for Fmc Mcp Server responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-server",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "component-fmc-mcp-config",
+      "description": "Observable local check for Fmc Mcp Config responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-config",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "component-fmc-mcp-resources",
+      "description": "Observable local check for Fmc Mcp Resources responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-resources",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "component-fmc-mcp-client",
+      "description": "Observable local check for Fmc Mcp Client responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-client",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "component-fmc-mcp-tools",
+      "description": "Observable local check for Fmc Mcp Tools responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-tools",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    },
+    {
+      "componentId": "component-fmc-mcp-main",
+      "description": "Observable local check for Fmc Mcp Main responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-fmc-mcp-main",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run python -m pytest -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/fmc-mcp",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": []
+}

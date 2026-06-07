@@ -54,6 +54,16 @@ def test_project_model_v1_schema_validates_ai_decomposer_primary_artifact(tmp_pa
     assert v1["models"]["primary"] == result.snapshot.primary_model_id
     assert {artifact["artifactType"] for artifact in v1["derivedArtifacts"]} >= {"jsonl-events", "sqlite-projection", "markdown-summary"}
 
+    iteration = v1["iterationReadiness"]
+    assert {"componentProfiles", "runtimeContracts", "externalSurfaces", "productInvariants", "qualityGates", "priorityBacklog", "openQuestions"} <= set(iteration)
+    assert iteration["componentProfiles"]
+    assert all("own the responsibility represented by" not in profile["responsibilitySummary"].lower() for profile in iteration["componentProfiles"])
+
+    legacy_without_iteration = dict(v1)
+    legacy_without_iteration.pop("iterationReadiness")
+    legacy_errors = sorted(Draft202012Validator(schema).iter_errors(legacy_without_iteration), key=lambda error: list(error.path))
+    assert legacy_errors == []
+
 
 def test_project_model_v1_schema_rejects_legacy_v0_shape() -> None:
     schema = _load_json(SCHEMA_PATH)

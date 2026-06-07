@@ -1,0 +1,21 @@
+[
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "fixture-independent-probe-builder",
+    "builder_prompt_hash": "ff4b7bd60a806e2a6d0686976353f4be6e992956765d849e386d97f6ec88c947",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe.primary-file-bucket-negative",
+    "planted_negative_id": "negative.fluent-file-bucket",
+    "provenance_refs": [
+      "prov:d10dbb159e6fb524"
+    ],
+    "target_component_ids": [
+      "component.fmc-mcp-server"
+    ],
+    "target_contract_ids": [
+      "contract.component-fmc-mcp-server-component-fmc-mcp-confi"
+    ]
+  }
+]

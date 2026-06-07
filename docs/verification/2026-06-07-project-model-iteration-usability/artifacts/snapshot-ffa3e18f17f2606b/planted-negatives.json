@@ -1,0 +1,8 @@
+[
+  {
+    "id": "negative.fluent-file-bucket",
+    "independent_from_probe_builder": true,
+    "kind": "fluent_file_bucket_negative",
+    "target_probe_id": "probe.primary-file-bucket-negative"
+  }
+]

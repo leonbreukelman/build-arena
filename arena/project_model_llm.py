@@ -11,6 +11,11 @@ from pathlib import Path
 from typing import Any
 
 from arena.project_graph import ProjectGraph
+from arena.project_iteration_readiness import (
+    quality_observable_checks,
+    snapshot_product_concerns,
+    source_profile_for_module,
+)
 
 REQUIRED_MODEL_OUTPUT_KEYS = {
     "model_id",
@@ -218,20 +223,23 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
     test_nodes = [node for node in nodes if node.kind == "test_file"]
     check_prov = _first_prov(test_nodes[0]) if test_nodes else first_prov
     check_command = "uv run python -m pytest -q"
+    preliminary_checks = quality_observable_checks(graph, component_ids=[], contract_ids=[], fallback_provenance=check_prov)
+    component_check_ids = [check["id"] for check in preliminary_checks] or ["check.local-tests"]
 
     components: list[dict[str, Any]] = []
     module_to_component: dict[str, str] = {}
     for node in selected:
         module = _component_module(node)
         component_id = _id("component", module or node.label)
+        source_profile = source_profile_for_module(graph, node)
         component = {
             "id": component_id,
             "name": _title(module or node.label, suffix=" responsibility"),
-            "responsibility": f"Own the responsibility represented by `{node.symbol or node.label}` and expose it through graph-resolvable code evidence.",
+            "responsibility": source_profile["responsibilitySummary"],
             "owned_node_ids": [node.id],
             "provenance_refs": [_first_prov(node)],
             "contract_ids": [],
-            "check_ids": ["check.local-tests"],
+            "check_ids": component_check_ids,
             "verification_gap_ids": [],
         }
         components.append(component)
@@ -319,6 +327,9 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
             "triggered_by": [],
         },
     ]
+    for concern in snapshot_product_concerns(graph, components, contracts):
+        if concern["id"] not in {existing["id"] for existing in concerns}:
+            concerns.append(concern)
     if any(node.kind == "protected_surface" or "protected" in node.tags for node in nodes):
         concerns.append(
             {
@@ -346,15 +357,14 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
 
     near_target = contracts[0]["id"] if contracts else components[0]["id"]
     probe_contract_ids = [contracts[0]["id"]] if contracts else []
-    return {
-        "model_id": "fixture-good-model",
-        "project_id": project_id,
-        "goal": goal,
-        "non_goals": non_goals,
-        "components": components,
-        "contracts": contracts,
-        "cross_cutting_concerns": concerns,
-        "observable_checks": [
+    observable_checks = quality_observable_checks(
+        graph,
+        component_ids=[component["id"] for component in components],
+        contract_ids=[contract["id"] for contract in contracts],
+        fallback_provenance=check_prov,
+    )
+    if not observable_checks:
+        observable_checks = [
             {
                 "id": "check.local-tests",
                 "description": "Run the local deterministic test suite or nearest safe local check.",
@@ -367,7 +377,23 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
                 "requires_network": False,
                 "requires_paid_api": False,
             }
-        ],
+        ]
+    acceptance_allowlist = sorted(
+        {
+            check_command,
+            *(check["command"] for check in observable_checks),
+            *(check["acceptance_command_id"] for check in observable_checks if check.get("acceptance_command_id")),
+        }
+    )
+    return {
+        "model_id": "fixture-good-model",
+        "project_id": project_id,
+        "goal": goal,
+        "non_goals": non_goals,
+        "components": components,
+        "contracts": contracts,
+        "cross_cutting_concerns": concerns,
+        "observable_checks": observable_checks,
         "held_out_probes": [
             {
                 "id": "probe.primary-file-bucket-negative",
@@ -393,7 +419,7 @@ def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: st
                 "provenance_refs": [first_prov],
             }
         ],
-        "acceptance_command_allowlist": ["local-pytest", check_command],
+        "acceptance_command_allowlist": acceptance_allowlist,
     }
 
 

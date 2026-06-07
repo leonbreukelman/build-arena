@@ -350,6 +350,7 @@ def _is_allowed_local_command(argv: list[str]) -> bool:
         "uv run python -m arena.project_model_cli",
         "uv run python scripts/",
         "uv run ruff check",
+        "uv run mypy",
         "uv run pyright",
         "python3 scripts/",
         "npm run build",

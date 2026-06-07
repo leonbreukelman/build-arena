@@ -5,6 +5,7 @@ import json
 from typing import Any
 
 from arena.project_graph import ProjectGraph, graph_to_dict
+from arena.project_iteration_readiness import build_iteration_readiness
 from arena.project_snapshot import (
     GateReport,
     ProjectModelSnapshot,
@@ -85,6 +86,7 @@ def project_model_v1_from_snapshot(
             "probeBuilders": sorted({probe.builder_model_id for probe in snapshot.held_out_probes}),
         },
         "derivedArtifacts": derived_artifacts or default_derived_artifacts,
+        "iterationReadiness": build_iteration_readiness(snapshot, graph),
         "compatibility": {
             "projectModelV0Path": compatibility_v0_path,
             "projectModelV0Role": "legacy compatibility projection; project-model/v1 is primary for enriched AI decomposer artifacts",
