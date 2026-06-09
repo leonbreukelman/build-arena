@@ -86,6 +86,37 @@ def test_build_project_model_snapshot_writes_sidecars_and_v0_projection(tmp_path
     )
 
 
+def test_build_project_model_snapshot_can_run_real_adversarial_probe(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo(repo)
+    artifacts = tmp_path / "artifacts"
+
+    result = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="api-project",
+        goal="decompose this repository into responsibility-bearing components",
+        non_goals=["do not treat file buckets as final components"],
+        llm_mode="fixture",
+        overwrite=True,
+        run_adversarial_probes=True,
+    )
+
+    assert result.gate_report.passed is True
+    assert len(result.snapshot.held_out_probes) == 1
+    probe = result.snapshot.held_out_probes[0]
+    assert probe.golden_control_passed is True
+    assert probe.discrimination_passed is True
+    assert probe.proof_artifact == "proofs/probe.path-bucket-contract-discrimination.json"
+    assert probe.verification_gap_ids == []
+    assert (result.snapshot_dir / probe.proof_artifact).exists()
+    planted_negatives = json.loads((result.snapshot_dir / "planted-negatives.json").read_text(encoding="utf-8"))
+    assert planted_negatives[0]["id"] == probe.planted_negative_id
+    assert planted_negatives[0]["snapshot_hash"]
+    assert any(gap.id == "gap.semantic-understanding-not-independently-validated" for gap in result.snapshot.verification_gaps)
+
+
 def test_build_project_model_snapshot_requires_overwrite_for_existing_snapshot_dir(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     repo.mkdir()

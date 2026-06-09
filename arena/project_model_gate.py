@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import shlex
 from pathlib import Path
@@ -13,15 +14,23 @@ from arena.project_snapshot import (
     gate_report_to_dict,
     snapshot_from_dict,
     snapshot_to_dict,
+    stable_hash_json,
 )
 
 VAGUE_TERMS = {"misc", "miscellaneous", "general", "other", "stuff", "everything", "all", "bucket"}
 UNIVERSAL_CONCERNS = {"anti_fabrication", "determinism", "provenance", "no_live_paid_api_acceptance"}
 HIGH_IMPACT_EDGE_KINDS = {"calls", "references", "depends_on", "contract_support"}
 FILE_BUCKET_KINDS = {"file", "test_file", "config", "protected_surface", "generated_surface", "verification_artifact"}
+PROBE_PROOF_SCHEMA_VERSION = "arena.project_probe_proof/v0.1"
 
 
-def run_project_model_gate(snapshot: ProjectModelSnapshot | dict[str, Any], graph: ProjectGraph | dict[str, Any]) -> GateReport:
+def run_project_model_gate(
+    snapshot: ProjectModelSnapshot | dict[str, Any],
+    graph: ProjectGraph | dict[str, Any],
+    *,
+    proof_artifact_base: str | Path | None = None,
+    _validate_probe_proofs: bool = True,
+) -> GateReport:
     snapshot_obj = snapshot_from_dict(snapshot) if isinstance(snapshot, dict) else snapshot
     graph_data = graph_to_dict(graph) if isinstance(graph, ProjectGraph) else graph
     violations: list[GateViolation] = []
@@ -214,7 +223,17 @@ def run_project_model_gate(snapshot: ProjectModelSnapshot | dict[str, Any], grap
         add("held_out_probe_presence", "Snapshot must include at least one held-out probe or an explicit semantic/probe validation gap.", "held_out_probes")
     for probe in snapshot_obj.held_out_probes:
         loc = f"held_out_probes[{probe.id}]"
-        _check_held_out_probe_metadata(probe, gap_ids, snapshot_obj.primary_model_id, add, loc)
+        _check_held_out_probe_metadata(
+            probe,
+            gap_ids,
+            snapshot_obj.primary_model_id,
+            add,
+            loc,
+            snapshot_obj=snapshot_obj,
+            graph_data=graph_data,
+            proof_artifact_base=proof_artifact_base,
+            validate_probe_proofs=_validate_probe_proofs,
+        )
         _check_provenance(probe.provenance_refs, provenance_ids, "provenance_completeness", loc, add)
 
     for gap in snapshot_obj.verification_gaps:
@@ -234,7 +253,7 @@ def run_project_model_gate_from_manifest(manifest_path: str | Path) -> GateRepor
     base = manifest_path.parent
     snapshot = json.loads((base / manifest["snapshot_path"]).read_text(encoding="utf-8"))
     graph = json.loads((base / manifest["graph_path"]).read_text(encoding="utf-8"))
-    return run_project_model_gate(snapshot, graph)
+    return run_project_model_gate(snapshot, graph, proof_artifact_base=base)
 
 
 def write_gate_report(path: str | Path, report: GateReport) -> None:
@@ -348,19 +367,35 @@ def _has_explicit_unproven_probe_gap(gaps: list[Any]) -> bool:
     return False
 
 
-def _check_held_out_probe_metadata(probe: Any, gap_ids: set[str], primary_model_id: str, add: Any, loc: str) -> None:
+def _check_held_out_probe_metadata(
+    probe: Any,
+    gap_ids: set[str],
+    primary_model_id: str,
+    add: Any,
+    loc: str,
+    *,
+    snapshot_obj: ProjectModelSnapshot,
+    graph_data: dict[str, Any],
+    proof_artifact_base: str | Path | None,
+    validate_probe_proofs: bool,
+) -> None:
     if not probe.builder_independent_from_decomposer or probe.builder_model_id == primary_model_id or not probe.hidden_from_primary_decomposer:
         add("held_out_probe_isolation", f"Probe {probe.id} is not isolated from the primary decomposer.", loc)
     if not probe.planted_negative_id:
         add("held_out_probe_discrimination", f"Probe {probe.id} declares no planted negative.", loc)
 
     proof_artifact = str(getattr(probe, "proof_artifact", "") or "").strip()
+    proof_path_valid = True
     if proof_artifact:
         proof_path = Path(proof_artifact)
         if proof_path.is_absolute() or any(part == ".." for part in proof_path.parts):
+            proof_path_valid = False
             add("held_out_probe_proof", f"Probe {probe.id} proof artifact must be workspace-relative.", loc)
     if (probe.discrimination_passed or probe.golden_control_passed) and not proof_artifact:
         add("held_out_probe_proof", f"Probe {probe.id} claims passed probe results without a proof artifact.", loc)
+    if probe.discrimination_passed and probe.golden_control_passed and proof_artifact and proof_path_valid and validate_probe_proofs:
+        base = Path(proof_artifact_base) if proof_artifact_base is not None else Path(snapshot_obj.project_root)
+        _check_probe_proof_artifact(probe, snapshot_obj, graph_data, base / proof_artifact, add, loc)
 
     verification_gap_ids = list(getattr(probe, "verification_gap_ids", []))
     for gap_id in verification_gap_ids:
@@ -368,6 +403,142 @@ def _check_held_out_probe_metadata(probe: Any, gap_ids: set[str], primary_model_
             add("verification_gaps", f"Probe {probe.id} references missing verification gap {gap_id}.", loc)
     if (not probe.discrimination_passed or not probe.golden_control_passed) and not verification_gap_ids:
         add("held_out_probe_discrimination", f"Probe {probe.id} is unproven or failed but references no verification gap.", loc)
+
+
+def _check_probe_proof_artifact(probe: Any, snapshot_obj: ProjectModelSnapshot, graph_data: dict[str, Any], proof_path: Path, add: Any, loc: str) -> None:
+    try:
+        proof_text = proof_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact cannot be read: {exc}.", loc)
+        return
+    try:
+        proof = json.loads(proof_text)
+    except json.JSONDecodeError as exc:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is not valid JSON: {exc}.", loc)
+        return
+    if not isinstance(proof, dict):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact must be a JSON object.", loc)
+        return
+
+    _check_probe_proof_identity(probe, snapshot_obj, proof, add, loc)
+    _check_probe_proof_hash(probe, proof, add, loc)
+    control_report = _check_probe_control_replay(probe, snapshot_obj, graph_data, proof, add, loc)
+    negative_report = _check_probe_negative_replay(probe, graph_data, proof, add, loc)
+    if control_report is None or negative_report is None:
+        return
+    _check_probe_delta(probe, proof, control_report, negative_report, add, loc)
+
+
+def _check_probe_proof_identity(probe: Any, snapshot_obj: ProjectModelSnapshot, proof: dict[str, Any], add: Any, loc: str) -> None:
+    expected = {
+        "schema_version": PROBE_PROOF_SCHEMA_VERSION,
+        "probe_id": probe.id,
+        "planted_negative_id": probe.planted_negative_id,
+        "graph_hash": snapshot_obj.graph_hash,
+    }
+    for key, expected_value in expected.items():
+        if proof.get(key) != expected_value:
+            add("held_out_probe_proof", f"Probe {probe.id} proof artifact {key} does not match the snapshot/probe.", loc)
+    if proof.get("golden_control_passed") is not True or proof.get("discrimination_passed") is not True:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact does not record passed golden/discrimination outcomes.", loc)
+
+
+def _check_probe_proof_hash(probe: Any, proof: dict[str, Any], add: Any, loc: str) -> None:
+    claimed = proof.get("deterministic_result_hash")
+    if not isinstance(claimed, str) or not claimed:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is missing deterministic_result_hash.", loc)
+        return
+    payload = copy.deepcopy(proof)
+    payload.pop("deterministic_result_hash", None)
+    actual = stable_hash_json(payload)
+    if claimed != actual:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact deterministic_result_hash does not recompute.", loc)
+
+
+def _check_probe_control_replay(probe: Any, snapshot_obj: ProjectModelSnapshot, graph_data: dict[str, Any], proof: dict[str, Any], add: Any, loc: str) -> GateReport | None:
+    golden = proof.get("golden_control_input")
+    if not isinstance(golden, dict):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is missing golden_control_input.", loc)
+        return None
+    control_data = snapshot_to_dict(snapshot_obj)
+    control_data["held_out_probes"] = []
+    control_hash = stable_hash_json(control_data)
+    if golden.get("snapshot_hash") != control_hash:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact control snapshot hash does not match the snapshot under gate.", loc)
+        return None
+    control_report = run_project_model_gate(control_data, graph_data, _validate_probe_proofs=False)
+    if not control_report.passed or golden.get("gate_passed") is not True:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact golden control does not replay as a passing gate report.", loc)
+    return control_report
+
+
+def _check_probe_negative_replay(probe: Any, graph_data: dict[str, Any], proof: dict[str, Any], add: Any, loc: str) -> GateReport | None:
+    negative = proof.get("planted_negative_input")
+    if not isinstance(negative, dict):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is missing planted_negative_input.", loc)
+        return None
+    if negative.get("planted_negative_id") != probe.planted_negative_id:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact planted negative id does not match.", loc)
+    negative_snapshot = negative.get("snapshot")
+    if not isinstance(negative_snapshot, dict):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is missing embedded planted-negative snapshot.", loc)
+        return None
+    negative_hash = stable_hash_json(negative_snapshot)
+    if negative.get("snapshot_hash") != negative_hash:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact planted-negative snapshot hash does not recompute.", loc)
+        return None
+    try:
+        snapshot_from_dict(negative_snapshot)
+    except Exception as exc:  # noqa: BLE001 - proof validation must fail closed with concise diagnostics.
+        add("held_out_probe_proof", f"Probe {probe.id} embedded planted-negative snapshot is invalid: {exc}.", loc)
+        return None
+    negative_report = run_project_model_gate(negative_snapshot, graph_data, _validate_probe_proofs=False)
+    if negative_report.passed or negative.get("gate_passed") is not False:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact planted negative does not replay as a failing gate report.", loc)
+    return negative_report
+
+
+def _check_probe_delta(probe: Any, proof: dict[str, Any], control_report: GateReport, negative_report: GateReport, add: Any, loc: str) -> None:
+    mutation = proof.get("negative_mutation")
+    if not isinstance(mutation, dict):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact is missing negative_mutation metadata.", loc)
+        return
+    expected_gate = str(mutation.get("expected_violation_gate") or "")
+    expected_location = str(mutation.get("expected_violation_location") or "")
+    expected_text = str(mutation.get("expected_violation_text") or "").lower()
+    if not (expected_gate and expected_location and expected_text):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact mutation metadata is incomplete.", loc)
+        return
+    negative_has_delta = _report_has_violation(negative_report, expected_gate, expected_location, expected_text)
+    control_has_delta = _report_has_violation(control_report, expected_gate, expected_location, expected_text)
+    if not negative_has_delta or control_has_delta:
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact does not replay the expected planted-negative discrimination delta.", loc)
+    checks = proof.get("checks")
+    if not isinstance(checks, list) or not _proof_checks_match_replay(checks, negative_has_delta=negative_has_delta, control_has_delta=control_has_delta, control_report=control_report, negative_report=negative_report):
+        add("held_out_probe_proof", f"Probe {probe.id} proof artifact checks do not match replayed gate outcomes.", loc)
+
+
+def _report_has_violation(report: GateReport, expected_gate: str, expected_location: str, expected_text: str) -> bool:
+    return any(
+        violation.gate == expected_gate and violation.location == expected_location and expected_text in violation.message.lower()
+        for violation in report.violations
+    )
+
+
+def _proof_checks_match_replay(checks: list[Any], *, negative_has_delta: bool, control_has_delta: bool, control_report: GateReport, negative_report: GateReport) -> bool:
+    by_id = {check.get("id"): check for check in checks if isinstance(check, dict)}
+    golden = by_id.get("golden-control-gate")
+    negative = by_id.get("planted-negative-gate")
+    delta = by_id.get("expected-discrimination-delta")
+    if not isinstance(golden, dict) or not isinstance(negative, dict) or not isinstance(delta, dict):
+        return False
+    if golden.get("actual_passed") is not control_report.passed or negative.get("actual_passed") is not negative_report.passed:
+        return False
+    if delta.get("present_in_planted_negative") is not negative_has_delta:
+        return False
+    if delta.get("absent_from_golden_control") is not (not control_has_delta):
+        return False
+    return delta.get("matched") is (negative_has_delta and not control_has_delta)
 
 
 def _unsafe_acceptance_command_reason(command: str) -> str | None:

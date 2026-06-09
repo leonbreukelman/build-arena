@@ -6,6 +6,11 @@ from pathlib import Path
 
 from arena.project_graph import ProjectGraph, build_project_graph
 from arena.project_model_gate import run_project_model_gate
+from arena.project_probe_runner import (
+    SEMANTIC_PROBE_GAP_ID,
+    run_path_bucket_adversarial_probe,
+    write_probe_proof_artifacts,
+)
 from arena.project_snapshot import (
     Component,
     Contract,
@@ -65,7 +70,7 @@ def _base_snapshot(graph: ProjectGraph) -> ProjectModelSnapshot:
     p2 = _prov(graph, worker_symbol)
     test_prov = _prov(graph, test_file)
     import_edge = next(edge for edge in graph.edges if edge.kind == "imports" and "pkg.worker" in edge.to_node_id)
-    return ProjectModelSnapshot(
+    snapshot = ProjectModelSnapshot(
         project_id="gate-project",
         project_root=graph.project_root,
         goal="decompose this repository into responsibility-bearing components",
@@ -139,6 +144,21 @@ def _base_snapshot(graph: ProjectGraph) -> ProjectModelSnapshot:
         ],
         acceptance_command_allowlist=["local-pytest"],
     )
+    snapshot.held_out_probes = []
+    snapshot.verification_gaps = [
+        VerificationGap(
+            id=SEMANTIC_PROBE_GAP_ID,
+            description="Semantic component quality has not been independently probe-validated; deterministic graph grounding still constrains project claims.",
+            severity="medium",
+            component_ids=[component.id for component in snapshot.components],
+            contract_ids=[contract.id for contract in snapshot.contracts],
+            provenance_refs=[p1],
+            proposed_closure_check="Generate independent planted-negative and golden-control probe artifacts, then rerun the deterministic gate.",
+        )
+    ]
+    result = run_path_bucket_adversarial_probe(snapshot, graph)
+    write_probe_proof_artifacts(Path(graph.project_root), result)
+    return result.snapshot
 
 
 def test_gate_passes_minimal_well_grounded_snapshot(tmp_path: Path) -> None:

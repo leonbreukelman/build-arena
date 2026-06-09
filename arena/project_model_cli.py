@@ -30,6 +30,7 @@ def main(argv: list[str] | None = None) -> int:
     snapshot.add_argument("--llm-mode", choices=["fixture", "recorded", "live", "off"], default="fixture")
     snapshot.add_argument("--model-output")
     snapshot.add_argument("--allow-live", action="store_true")
+    snapshot.add_argument("--run-adversarial-probes", action="store_true")
     snapshot.add_argument("--overwrite", action="store_true")
 
     gate = sub.add_parser("gate")
@@ -66,6 +67,7 @@ def _snapshot(args: argparse.Namespace) -> int:
             llm_mode=args.llm_mode,
             model_output_path=args.model_output,
             overwrite=args.overwrite,
+            run_adversarial_probes=args.run_adversarial_probes,
         )
     except Exception as exc:  # noqa: BLE001 - CLI must print concise diagnostics.
         print(str(exc), file=sys.stderr)

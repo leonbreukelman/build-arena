@@ -22,6 +22,11 @@ from arena.project_model_llm import (
     load_recorded_model_output,
 )
 from arena.project_model_v1 import project_model_v1_from_snapshot
+from arena.project_probe_runner import (
+    PathBucketProbeRun,
+    run_path_bucket_adversarial_probe,
+    write_probe_proof_artifacts,
+)
 from arena.project_snapshot import (
     Component,
     Contract,
@@ -64,6 +69,7 @@ def build_project_model_snapshot(
     live_model: str | None = None,
     live_base_url: str | None = None,
     overwrite: bool = False,
+    run_adversarial_probes: bool = False,
 ) -> BuildProjectModelResult:
     graph = build_project_graph(project)
     project_id = project_id or Path(graph.project_root).name
@@ -98,7 +104,10 @@ def build_project_model_snapshot(
     snapshot.input_hashes = {"graph": graph_hash}
     snapshot.model_output_hashes["decomposer"] = stable_hash_json(raw_output)
     snapshot = finalize_snapshot_identity(snapshot)
-    gate_report = run_project_model_gate(snapshot, graph)
+    probe_result: PathBucketProbeRun | None = None
+    if run_adversarial_probes:
+        probe_result = run_path_bucket_adversarial_probe(snapshot, graph)
+        snapshot = probe_result.snapshot
 
     root = Path(artifacts_root)
     snapshot_dir = root / snapshot.snapshot_id
@@ -108,6 +117,9 @@ def build_project_model_snapshot(
         else:
             raise FileExistsError(f"snapshot directory already exists: {snapshot_dir}; pass overwrite=True/--overwrite to replace it")
     snapshot_dir.mkdir(parents=True, exist_ok=True)
+    if probe_result is not None:
+        write_probe_proof_artifacts(snapshot_dir, probe_result)
+    gate_report = run_project_model_gate(snapshot, graph, proof_artifact_base=snapshot_dir)
 
     graph_file_hash = write_json(snapshot_dir / "graph.json", graph_to_dict(graph))
     encyclopedia_manifest = write_encyclopedia(graph, snapshot_dir / "encyclopedia")
@@ -156,7 +168,7 @@ def build_project_model_snapshot(
     write_json(model_dir / "skeptic-review.raw.json", skeptic_output)
     write_json(snapshot_dir / "near-neighbor-alternatives.json", snapshot.near_neighbor_alternatives)
     write_json(snapshot_dir / "held-out-probes.json", snapshot.held_out_probes)
-    planted_negatives = raw_output.get("planted_negatives") or [
+    planted_negatives = (probe_result.planted_negatives if probe_result is not None and probe_result.planted_negatives else raw_output.get("planted_negatives")) or [
         {
             "id": probe.planted_negative_id,
             "kind": "fluent_file_bucket_negative",
