@@ -723,7 +723,11 @@
         "provenance_refs",
         "safe_to_run_by_default",
         "requires_network",
-        "requires_paid_api"
+        "requires_paid_api",
+        "execution_dir",
+        "safety_status",
+        "execution_status",
+        "verification_gap_ids"
       ],
       "properties": {
         "id": {
@@ -755,7 +759,35 @@
         },
         "requires_paid_api": {
           "type": "boolean"
+        },
+        "execution_dir": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "safety_status": {
+          "enum": [
+            "safe_by_default",
+            "unsafe",
+            "requires_network",
+            "requires_paid_api",
+            "destructive",
+            "unknown"
+          ]
+        },
+        "execution_status": {
+          "enum": [
+            "declared_only",
+            "statically_validated",
+            "execution_proven",
+            "gapped"
+          ]
+        },
+        "proof_artifact": {
+          "$ref": "#/$defs/maybeString"
+        },
+        "verification_gap_ids": {
+          "$ref": "#/$defs/stringArray"
         }
+
       }
     },
     "heldOutProbe": {

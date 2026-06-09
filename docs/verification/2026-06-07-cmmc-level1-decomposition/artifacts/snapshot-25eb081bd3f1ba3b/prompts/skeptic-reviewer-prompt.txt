@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: Project Model v1 decomposition of the CMMC Level 1 readiness assistant from clean remote-synced git and filesystem truth; expose backend/frontend/security/compliance/reporting/runtime boundaries for review and future iteration planning
+Non-goals: ["do not use dirty local WIP from the canonical checkout", "do not require live production credentials, browser login, deployment, or paid LLM/API calls for acceptance"]

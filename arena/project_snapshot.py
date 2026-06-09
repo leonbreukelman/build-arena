@@ -55,6 +55,11 @@ class ObservableCheck:
     safe_to_run_by_default: bool = True
     requires_network: bool = False
     requires_paid_api: bool = False
+    execution_dir: str = "."
+    safety_status: str = "safe_by_default"
+    execution_status: str = "execution_proven"
+    proof_artifact: str | None = None
+    verification_gap_ids: list[str] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -158,7 +163,7 @@ def snapshot_from_dict(data: dict[str, Any]) -> ProjectModelSnapshot:
         components=[Component(**item) for item in data.get("components", [])],
         contracts=[Contract(**item) for item in data.get("contracts", [])],
         cross_cutting_concerns=[CrossCuttingConcern(**item) for item in data.get("cross_cutting_concerns", [])],
-        observable_checks=[ObservableCheck(**item) for item in data.get("observable_checks", [])],
+        observable_checks=[ObservableCheck(**_normalize_observable_check(item)) for item in data.get("observable_checks", [])],
         held_out_probes=[HeldOutProbe(**item) for item in data.get("held_out_probes", [])],
         verification_gaps=[VerificationGap(**item) for item in data.get("verification_gaps", [])],
         near_neighbor_alternatives=[NearNeighborAlternative(**item) for item in data.get("near_neighbor_alternatives", [])],
@@ -171,6 +176,17 @@ def snapshot_from_dict(data: dict[str, Any]) -> ProjectModelSnapshot:
 
 def canonical_snapshot_json(snapshot: ProjectModelSnapshot) -> str:
     return json.dumps(snapshot_to_dict(snapshot), sort_keys=True, separators=(",", ":"))
+
+
+def _normalize_observable_check(item: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(item)
+    normalized.setdefault("execution_dir", ".")
+    normalized.setdefault("safety_status", "safe_by_default")
+    if "execution_status" not in normalized:
+        normalized["execution_status"] = "execution_proven" if normalized.get("acceptance_command_id") else "statically_validated"
+    normalized.setdefault("proof_artifact", None)
+    normalized.setdefault("verification_gap_ids", [])
+    return normalized
 
 
 def stable_hash_json(data: Any) -> str:

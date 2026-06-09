@@ -1,0 +1,419 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "component-app-frontend-src-api-client",
+      "kind": "source",
+      "name": "App Frontend Src Api Client responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/api/client.ts"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.api.client` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-api-auth",
+      "kind": "source",
+      "name": "App Frontend Src Api Auth responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-auth"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/api/auth.ts"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.api.auth` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-components-reportpreview",
+      "kind": "source",
+      "name": "App Frontend Src Components Reportpreview responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-components-reportpreview"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/components/ReportPreview.tsx"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.components.ReportPreview` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-pages-app-test",
+      "kind": "source",
+      "name": "App Frontend Src Pages App Test responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-pages-app-test"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/pages/App.test.ts"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.pages.App.test` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-components-accessible-form-cont",
+      "kind": "source",
+      "name": "App Frontend Src Components Accessible Form Controls Test responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-components-accessible-form-cont"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/components/accessible-form-controls.test.tsx"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.components.accessible-form-controls.test` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-components-chatpanel",
+      "kind": "source",
+      "name": "App Frontend Src Components Chatpanel responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-components-chatpanel"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/components/ChatPanel.tsx"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.components.ChatPanel` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-components-remediationdashboard",
+      "kind": "source",
+      "name": "App Frontend Src Components Remediationdashboard responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-components-remediationdashboard"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/components/RemediationDashboard.tsx"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.components.RemediationDashboard` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-app-frontend-src-api-publicbetaauth-test",
+      "kind": "source",
+      "name": "App Frontend Src Api Publicbetaauth Test responsibility",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-publicbetaauth-test"
+      ],
+      "ownedSurfaces": [
+        "app/frontend/src/api/publicBetaAuth.test.ts"
+      ],
+      "responsibilities": [
+        "Own the responsibility represented by `app.frontend.src.api.publicBetaAuth.test` and expose it through graph-resolvable code evidence."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "component.app-frontend-src-api-client imports component.app-frontend-src-api-auth",
+      "fromComponent": "component-app-frontend-src-api-client",
+      "id": "contract-component-app-frontend-src-api-client-component",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client"
+      ],
+      "toComponent": "component-app-frontend-src-api-auth"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "component-app-frontend-src-api-client",
+        "component-app-frontend-src-api-auth",
+        "component-app-frontend-src-components-reportpreview",
+        "component-app-frontend-src-pages-app-test",
+        "component-app-frontend-src-components-accessible-form-cont",
+        "component-app-frontend-src-components-chatpanel",
+        "component-app-frontend-src-components-remediationdashboard",
+        "component-app-frontend-src-api-publicbetaauth-test"
+      ]
+    }
+  ],
+  "goal": "Project Model v1 decomposition of the CMMC Level 1 readiness assistant from clean remote-synced git and filesystem truth; expose backend/frontend/security/compliance/reporting/runtime boundaries for review and future iteration planning",
+  "heldOutProbes": [
+    {
+      "componentId": "component-app-frontend-src-api-client",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-primary-file-bucket-negative",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative negative.fluent-file-bucket."
+    }
+  ],
+  "id": "cmmc-level1-readiness-assistant",
+  "invariants": [
+    {
+      "componentIds": [
+        "component-app-frontend-src-api-client",
+        "component-app-frontend-src-api-auth",
+        "component-app-frontend-src-components-reportpreview",
+        "component-app-frontend-src-pages-app-test",
+        "component-app-frontend-src-components-accessible-form-cont",
+        "component-app-frontend-src-components-chatpanel",
+        "component-app-frontend-src-components-remediationdashboard",
+        "component-app-frontend-src-api-publicbetaauth-test"
+      ],
+      "description": "Accepted decomposition claims must trace to graph provenance.",
+      "id": "concern-anti-fabrication",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client",
+        "check-component-app-frontend-src-api-auth",
+        "check-component-app-frontend-src-components-reportpreview",
+        "check-component-app-frontend-src-pages-app-test",
+        "check-component-app-frontend-src-components-accessible-form-cont",
+        "check-component-app-frontend-src-components-chatpanel",
+        "check-component-app-frontend-src-components-remediationdashboard",
+        "check-component-app-frontend-src-api-publicbetaauth-test"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-app-frontend-src-api-client",
+        "component-app-frontend-src-api-auth",
+        "component-app-frontend-src-components-reportpreview",
+        "component-app-frontend-src-pages-app-test",
+        "component-app-frontend-src-components-accessible-form-cont",
+        "component-app-frontend-src-components-chatpanel",
+        "component-app-frontend-src-components-remediationdashboard",
+        "component-app-frontend-src-api-publicbetaauth-test"
+      ],
+      "description": "Snapshot artifacts are canonical and gateable without live APIs.",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client",
+        "check-component-app-frontend-src-api-auth",
+        "check-component-app-frontend-src-components-reportpreview",
+        "check-component-app-frontend-src-pages-app-test",
+        "check-component-app-frontend-src-components-accessible-form-cont",
+        "check-component-app-frontend-src-components-chatpanel",
+        "check-component-app-frontend-src-components-remediationdashboard",
+        "check-component-app-frontend-src-api-publicbetaauth-test"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-app-frontend-src-api-client",
+        "component-app-frontend-src-api-auth",
+        "component-app-frontend-src-components-reportpreview",
+        "component-app-frontend-src-pages-app-test",
+        "component-app-frontend-src-components-accessible-form-cont",
+        "component-app-frontend-src-components-chatpanel",
+        "component-app-frontend-src-components-remediationdashboard",
+        "component-app-frontend-src-api-publicbetaauth-test"
+      ],
+      "description": "Graph-derived evidence backs each accepted component and contract.",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client",
+        "check-component-app-frontend-src-api-auth",
+        "check-component-app-frontend-src-components-reportpreview",
+        "check-component-app-frontend-src-pages-app-test",
+        "check-component-app-frontend-src-components-accessible-form-cont",
+        "check-component-app-frontend-src-components-chatpanel",
+        "check-component-app-frontend-src-components-remediationdashboard",
+        "check-component-app-frontend-src-api-publicbetaauth-test"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-app-frontend-src-api-client",
+        "component-app-frontend-src-api-auth",
+        "component-app-frontend-src-components-reportpreview",
+        "component-app-frontend-src-pages-app-test",
+        "component-app-frontend-src-components-accessible-form-cont",
+        "component-app-frontend-src-components-chatpanel",
+        "component-app-frontend-src-components-remediationdashboard",
+        "component-app-frontend-src-api-publicbetaauth-test"
+      ],
+      "description": "Acceptance checks are local and allowlisted.",
+      "id": "concern-no-live-paid-api",
+      "observableCheckIds": [
+        "check-component-app-frontend-src-api-client",
+        "check-component-app-frontend-src-api-auth",
+        "check-component-app-frontend-src-components-reportpreview",
+        "check-component-app-frontend-src-pages-app-test",
+        "check-component-app-frontend-src-components-accessible-form-cont",
+        "check-component-app-frontend-src-components-chatpanel",
+        "check-component-app-frontend-src-components-remediationdashboard",
+        "check-component-app-frontend-src-api-publicbetaauth-test"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Treat adjacent files as one polished bucket.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "near-primary-path-bucket",
+      "whyNotPrimary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not use dirty local WIP from the canonical checkout."
+    }
+  ],
+  "nonGoals": [
+    "do not use dirty local WIP from the canonical checkout",
+    "do not require live production credentials, browser login, deployment, or paid LLM/API calls for acceptance"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "component-app-frontend-src-api-client",
+      "description": "Observable local check for App Frontend Src Api Client responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-api-client",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-api-auth",
+      "description": "Observable local check for App Frontend Src Api Auth responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-api-auth",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-components-reportpreview",
+      "description": "Observable local check for App Frontend Src Components Reportpreview responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-components-reportpreview",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-pages-app-test",
+      "description": "Observable local check for App Frontend Src Pages App Test responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-pages-app-test",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-components-accessible-form-cont",
+      "description": "Observable local check for App Frontend Src Components Accessible Form Controls Test responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-components-accessible-form-cont",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-components-chatpanel",
+      "description": "Observable local check for App Frontend Src Components Chatpanel responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-components-chatpanel",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-components-remediationdashboard",
+      "description": "Observable local check for App Frontend Src Components Remediationdashboard responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-components-remediationdashboard",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-app-frontend-src-api-publicbetaauth-test",
+      "description": "Observable local check for App Frontend Src Api Publicbetaauth Test responsibility.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-app-frontend-src-api-publicbetaauth-test",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local:cmmc-level1-decomposition",
+    "repo": "/home/leonb/projects/.decomposition-targets/cmmc-level1-readiness-assistant",
+    "task": "Second Build Arena real project decomposition: CMMC Level 1 readiness assistant"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": []
+}

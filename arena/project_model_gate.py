@@ -182,10 +182,15 @@ def run_project_model_gate(snapshot: ProjectModelSnapshot | dict[str, Any], grap
         )
     for check in snapshot_obj.observable_checks:
         loc = f"observable_checks[{check.id}]"
+        _check_observable_execution_metadata(check, gap_ids, add, loc)
         if check.acceptance_command_id and check.acceptance_command_id not in allowlist:
             add("no_live_paid_api_acceptance", f"Check {check.id} is not in acceptance allowlist.", loc)
         if check.acceptance_command_id and (check.requires_network or check.requires_paid_api):
             add("no_live_paid_api_acceptance", f"Check {check.id} requires network or paid API for acceptance.", loc)
+        if check.acceptance_command_id and (not check.safe_to_run_by_default or check.safety_status != "safe_by_default"):
+            add("no_live_paid_api_acceptance", f"Check {check.id} is not safe-by-default for acceptance.", loc)
+        if check.acceptance_command_id and check.execution_status != "execution_proven" and not check.proof_artifact:
+            add("observable_check_execution", f"Check {check.id} must be execution-proven or carry a proof artifact before acceptance.", loc)
         if check.acceptance_command_id:
             unsafe_reason = _unsafe_acceptance_command_reason(check.command)
             if unsafe_reason:
@@ -313,6 +318,27 @@ def _module_has_owned_descendant(node: dict[str, Any], owned_symbols: set[str]) 
     return any(owned == symbol or owned.startswith(symbol + ".") for owned in owned_symbols)
 
 
+def _check_observable_execution_metadata(check: Any, gap_ids: set[str], add: Any, loc: str) -> None:
+    allowed_safety = {"safe_by_default", "unsafe", "requires_network", "requires_paid_api", "destructive", "unknown"}
+    allowed_execution = {"declared_only", "statically_validated", "execution_proven", "gapped"}
+    execution_dir = str(getattr(check, "execution_dir", "") or "").strip()
+    if not execution_dir:
+        add("observable_check_execution", f"Check {check.id} must declare a non-empty execution directory.", loc)
+    else:
+        path = Path(execution_dir)
+        if path.is_absolute() or any(part == ".." for part in path.parts):
+            add("observable_check_execution", f"Check {check.id} execution directory must be workspace-relative.", loc)
+    if check.safety_status not in allowed_safety:
+        add("observable_check_execution", f"Check {check.id} has unsupported safety status {check.safety_status!r}.", loc)
+    if check.execution_status not in allowed_execution:
+        add("observable_check_execution", f"Check {check.id} has unsupported execution status {check.execution_status!r}.", loc)
+    for gap_id in check.verification_gap_ids:
+        if gap_id not in gap_ids:
+            add("verification_gaps", f"Check {check.id} references missing verification gap {gap_id}.", loc)
+    if check.execution_status == "gapped" and not check.verification_gap_ids:
+        add("observable_check_execution", f"Check {check.id} is gapped but references no verification gap.", loc)
+
+
 def _unsafe_acceptance_command_reason(command: str) -> str | None:
     text = command.strip()
     if not text:
@@ -390,13 +416,30 @@ def _check_owned_import_edge_coverage(snapshot_obj: ProjectModelSnapshot, nodes:
 
 
 def _component_pairs_for_import_edge(edge: dict[str, Any], nodes: dict[str, dict[str, Any]], components: dict[str, Any]) -> list[tuple[str, str]]:
-    edge_from = nodes.get(str(edge.get("from_node_id")), {})
+    edge_from_node_id = str(edge.get("from_node_id") or "")
+    edge_from = nodes.get(edge_from_node_id, {})
     edge_from_symbol = str(edge_from.get("symbol") or edge_from.get("path") or "")
     imported = _edge_import_target(edge)
     if not edge_from_symbol or not imported:
         return []
-    from_ids = [component_id for component_id, component in components.items() if any(_source_module_matches(edge_from_symbol, symbol) for symbol in _component_symbols(component, nodes))]
-    to_ids = [component_id for component_id, component in components.items() if any(_edge_coverage_target_matches(imported, symbol) for symbol in _component_symbols(component, nodes))]
+    direct_from_ids = [
+        component_id
+        for component_id, component in components.items()
+        if edge_from_node_id in {str(node_id) for node_id in component.owned_node_ids}
+    ]
+    from_ids = direct_from_ids or [
+        component_id
+        for component_id, component in components.items()
+        if any(_source_module_matches(edge_from_symbol, symbol) for symbol in _component_symbols(component, nodes))
+    ]
+    target_scores: dict[str, int] = {}
+    for component_id, component in components.items():
+        scores = [_edge_coverage_target_score(imported, symbol) for symbol in _component_symbols(component, nodes)]
+        scores = [score for score in scores if score > 0]
+        if scores:
+            target_scores[component_id] = max(scores)
+    best_target_score = max(target_scores.values(), default=0)
+    to_ids = [component_id for component_id, score in target_scores.items() if score == best_target_score]
     return [(from_id, to_id) for from_id in from_ids for to_id in to_ids]
 
 
@@ -448,15 +491,32 @@ def _target_module_matches(imported: str, component_symbol: str) -> bool:
     component_symbol = component_symbol.strip().removesuffix(".__init__")
     if not imported or not component_symbol:
         return False
-    return imported == component_symbol or component_symbol.startswith(imported + ".") or imported.startswith(component_symbol + ".")
+    return (
+        imported == component_symbol
+        or component_symbol.startswith(imported + ".")
+        or imported.startswith(component_symbol + ".")
+        or ("." in imported and component_symbol.endswith("." + imported))
+    )
 
 
-def _edge_coverage_target_matches(imported: str, component_symbol: str) -> bool:
+def _edge_coverage_target_score(imported: str, component_symbol: str) -> int:
     imported = imported.strip().removesuffix(".__init__")
     component_symbol = component_symbol.strip().removesuffix(".__init__")
     if not imported or not component_symbol:
-        return False
-    return imported == component_symbol or imported.startswith(component_symbol + ".")
+        return 0
+    if imported == component_symbol:
+        return 3_000 + len(component_symbol)
+    if imported.startswith(component_symbol + "."):
+        return 2_000 + len(component_symbol)
+    if "." in imported and component_symbol.endswith("." + imported):
+        return 1_500 + len(imported)
+    if component_symbol.startswith(imported + "."):
+        return 1_000 + len(imported)
+    return 0
+
+
+def _edge_coverage_target_matches(imported: str, component_symbol: str) -> bool:
+    return _edge_coverage_target_score(imported, component_symbol) > 0
 
 
 def _shares_significant_word(text: str, anchor: str) -> bool:
