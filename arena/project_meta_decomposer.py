@@ -99,8 +99,6 @@ def build_meta_model_output(graph: ProjectGraph, *, project_id: str, goal: str, 
     gap_dicts = sorted(gaps, key=lambda item: item["id"])
     first_prov = _first_graph_provenance(nodes)
     target_id = contract_dicts[0]["id"] if contract_dicts else (component_dicts[0]["id"] if component_dicts else "component.workspace")
-    target_component_ids = [component_dicts[0]["id"]] if component_dicts else []
-    target_contract_ids = [contract_dicts[0]["id"]] if contract_dicts else []
     return {
         "model_id": "fixture-meta-decomposer",
         "project_id": project_id,
@@ -110,21 +108,7 @@ def build_meta_model_output(graph: ProjectGraph, *, project_id: str, goal: str, 
         "contracts": contract_dicts,
         "cross_cutting_concerns": _cross_cutting_concerns(component_dicts, contract_dicts, nodes, first_prov),
         "observable_checks": check_dicts,
-        "held_out_probes": [
-            {
-                "id": "probe.responsibility-boundary-negative",
-                "target_component_ids": target_component_ids,
-                "target_contract_ids": target_contract_ids,
-                "builder_model_id": "fixture-independent-probe-builder",
-                "builder_prompt_hash": "8a38e79d5f4d5ed89a1dc06fdf601d5c9a83cd4d4a4f4bb63c0a0d4a4f3c7781",
-                "builder_independent_from_decomposer": True,
-                "planted_negative_id": "negative.file-bucket-boundary",
-                "discrimination_passed": True,
-                "golden_control_passed": True,
-                "hidden_from_primary_decomposer": True,
-                "provenance_refs": [first_prov],
-            }
-        ],
+        "held_out_probes": [],
         "verification_gaps": gap_dicts,
         "near_neighbor_alternatives": [
             {
@@ -432,6 +416,18 @@ def _add_unresolved_source_contract_gaps(gaps: list[dict[str, Any]], components:
 def _build_gaps(components: dict[str, ComponentDraft], contracts: dict[str, dict[str, Any]], checks: list[dict[str, Any]], node_by_id: dict[str, GraphNode]) -> list[dict[str, Any]]:
     gaps: list[dict[str, Any]] = []
     _add_unresolved_source_contract_gaps(gaps, components, contracts)
+    if components:
+        gaps.append(
+            {
+                "id": "gap.semantic-understanding-not-independently-validated",
+                "description": "Semantic component quality has not been independently probe-validated; deterministic graph grounding constrains project claims, but no planted-negative/golden-control probe artifacts were run.",
+                "severity": "medium",
+                "component_ids": sorted(components),
+                "contract_ids": sorted(contracts),
+                "provenance_refs": _component_provs(components.values()),
+                "proposed_closure_check": "Run independent planted-negative and golden-control probe artifacts, capture the proof outputs, and rerun the deterministic gate.",
+            }
+        )
     if any(check["execution_status"] == "gapped" for check in checks):
         gaps.append(
             {

@@ -202,6 +202,26 @@ def test_fixture_decomposer_output_is_deterministic(tmp_path: Path) -> None:
     assert first == second
 
 
+def test_fixture_decomposer_marks_unrun_semantic_probe_quality_as_gap_not_passed(tmp_path: Path) -> None:
+    _write_two_root_repo(tmp_path)
+    graph = build_project_graph(tmp_path)
+
+    output = build_fixture_model_output(
+        graph,
+        project_id="synthetic-two-root",
+        goal="decompose this repository into responsibility-bearing components",
+        non_goals=["do not treat file buckets as final components"],
+    )
+
+    assert output["held_out_probes"] == []
+    semantic_gap = next(
+        gap for gap in output["verification_gaps"] if gap["id"] == "gap.semantic-understanding-not-independently-validated"
+    )
+    assert semantic_gap["component_ids"]
+    assert "independently" in semantic_gap["description"]
+    assert "planted-negative" in semantic_gap["proposed_closure_check"]
+
+
 def test_decomposition_logic_has_no_target_identity_branches() -> None:
     source_files = [
         Path("arena/project_model_llm.py"),

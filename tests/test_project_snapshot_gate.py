@@ -14,6 +14,7 @@ from arena.project_snapshot import (
     NearNeighborAlternative,
     ObservableCheck,
     ProjectModelSnapshot,
+    VerificationGap,
 )
 
 
@@ -116,7 +117,21 @@ def _base_snapshot(graph: ProjectGraph) -> ProjectModelSnapshot:
             ObservableCheck(id="check.runtime-tests", description="Runtime behavior is checked by tests/test_core.py.", command="uv run pytest tests/test_core.py -q", component_ids=["component.runtime-core", "component.worker"], contract_ids=["contract.runtime-worker"], provenance_refs=[test_prov], acceptance_command_id="local-pytest", safe_to_run_by_default=True, requires_network=False, requires_paid_api=False)
         ],
         held_out_probes=[
-            HeldOutProbe(id="probe.runtime-bucket", target_component_ids=["component.runtime-core"], target_contract_ids=["contract.runtime-worker"], builder_model_id="independent-probe-model", builder_prompt_hash="probehash", builder_independent_from_decomposer=True, planted_negative_id="negative.path-bucket", discrimination_passed=True, golden_control_passed=True, hidden_from_primary_decomposer=True, provenance_refs=[p1])
+            HeldOutProbe(
+                id="probe.runtime-bucket",
+                target_component_ids=["component.runtime-core"],
+                target_contract_ids=["contract.runtime-worker"],
+                builder_model_id="independent-probe-model",
+                builder_prompt_hash="probehash",
+                builder_independent_from_decomposer=True,
+                planted_negative_id="negative.path-bucket",
+                discrimination_passed=True,
+                golden_control_passed=True,
+                hidden_from_primary_decomposer=True,
+                provenance_refs=[p1],
+                proof_artifact="proofs/probe-runtime-bucket.json",
+                verification_gap_ids=[],
+            )
         ],
         verification_gaps=[],
         near_neighbor_alternatives=[
@@ -179,6 +194,55 @@ def test_gate_requires_independent_probe_decoy_and_golden_control(tmp_path: Path
     assert report.passed is False
     assert any(v.gate == "held_out_probe_isolation" for v in report.violations)
     assert any(v.gate == "held_out_probe_discrimination" for v in report.violations)
+
+
+def test_gate_allows_missing_probe_when_explicit_semantic_gap_declares_unproven_quality(tmp_path: Path) -> None:
+    _write_repo(tmp_path)
+    graph = build_project_graph(tmp_path)
+    snapshot = _base_snapshot(graph)
+    snapshot.held_out_probes = []
+    snapshot.verification_gaps.append(
+        VerificationGap(
+            id="gap.semantic-understanding-not-independently-validated",
+            description="Semantic component quality has not been independently probe-validated; deterministic graph grounding still constrains project claims.",
+            severity="medium",
+            component_ids=["component.runtime-core", "component.worker"],
+            contract_ids=["contract.runtime-worker"],
+            provenance_refs=[snapshot.components[0].provenance_refs[0]],
+            proposed_closure_check="Generate independent planted-negative and golden-control probe artifacts, then rerun the deterministic gate.",
+        )
+    )
+
+    report = run_project_model_gate(snapshot, graph)
+
+    assert report.passed is True
+
+
+def test_gate_rejects_probe_success_without_proof_artifact(tmp_path: Path) -> None:
+    _write_repo(tmp_path)
+    graph = build_project_graph(tmp_path)
+    snapshot = _base_snapshot(graph)
+    snapshot.held_out_probes[0].proof_artifact = None
+
+    report = run_project_model_gate(snapshot, graph)
+
+    assert report.passed is False
+    assert any(v.gate == "held_out_probe_proof" and "proof artifact" in v.message for v in report.violations)
+
+
+def test_gate_requires_unproven_probe_to_reference_gap(tmp_path: Path) -> None:
+    _write_repo(tmp_path)
+    graph = build_project_graph(tmp_path)
+    snapshot = _base_snapshot(graph)
+    snapshot.held_out_probes[0].discrimination_passed = False
+    snapshot.held_out_probes[0].golden_control_passed = False
+    snapshot.held_out_probes[0].proof_artifact = None
+    snapshot.held_out_probes[0].verification_gap_ids = []
+
+    report = run_project_model_gate(snapshot, graph)
+
+    assert report.passed is False
+    assert any(v.gate == "held_out_probe_discrimination" and "verification gap" in v.message for v in report.violations)
 
 
 def test_gate_fails_live_paid_api_acceptance_checks_not_allowlisted(tmp_path: Path) -> None:

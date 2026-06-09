@@ -210,16 +210,11 @@ def run_project_model_gate(snapshot: ProjectModelSnapshot | dict[str, Any], grap
             add("near_neighbor_alternatives", f"Near-neighbor {near.id} does not cite snapshot goal/non-goals.", loc)
         _check_provenance(near.provenance_refs, provenance_ids, "provenance_completeness", loc, add)
 
-    if not snapshot_obj.held_out_probes:
-        add("held_out_probe_presence", "Snapshot must include at least one held-out probe or explicit blocker gap.", "held_out_probes")
+    if not snapshot_obj.held_out_probes and not _has_explicit_unproven_probe_gap(snapshot_obj.verification_gaps):
+        add("held_out_probe_presence", "Snapshot must include at least one held-out probe or an explicit semantic/probe validation gap.", "held_out_probes")
     for probe in snapshot_obj.held_out_probes:
         loc = f"held_out_probes[{probe.id}]"
-        if not probe.builder_independent_from_decomposer or probe.builder_model_id == snapshot_obj.primary_model_id or not probe.hidden_from_primary_decomposer:
-            add("held_out_probe_isolation", f"Probe {probe.id} is not isolated from the primary decomposer.", loc)
-        if not probe.planted_negative_id or not probe.discrimination_passed:
-            add("held_out_probe_discrimination", f"Probe {probe.id} did not discriminate against an independent planted negative.", loc)
-        if not probe.golden_control_passed:
-            add("held_out_probe_discrimination", f"Probe {probe.id} failed the known-good false-positive control.", loc)
+        _check_held_out_probe_metadata(probe, gap_ids, snapshot_obj.primary_model_id, add, loc)
         _check_provenance(probe.provenance_refs, provenance_ids, "provenance_completeness", loc, add)
 
     for gap in snapshot_obj.verification_gaps:
@@ -337,6 +332,42 @@ def _check_observable_execution_metadata(check: Any, gap_ids: set[str], add: Any
             add("verification_gaps", f"Check {check.id} references missing verification gap {gap_id}.", loc)
     if check.execution_status == "gapped" and not check.verification_gap_ids:
         add("observable_check_execution", f"Check {check.id} is gapped but references no verification gap.", loc)
+
+
+def _has_explicit_unproven_probe_gap(gaps: list[Any]) -> bool:
+    for gap in gaps:
+        text = " ".join(
+            [
+                str(getattr(gap, "id", "")),
+                str(getattr(gap, "description", "")),
+                str(getattr(gap, "proposed_closure_check", "")),
+            ]
+        ).lower()
+        if "probe" in text and any(marker in text for marker in ("semantic", "independent", "held-out", "planted-negative")):
+            return True
+    return False
+
+
+def _check_held_out_probe_metadata(probe: Any, gap_ids: set[str], primary_model_id: str, add: Any, loc: str) -> None:
+    if not probe.builder_independent_from_decomposer or probe.builder_model_id == primary_model_id or not probe.hidden_from_primary_decomposer:
+        add("held_out_probe_isolation", f"Probe {probe.id} is not isolated from the primary decomposer.", loc)
+    if not probe.planted_negative_id:
+        add("held_out_probe_discrimination", f"Probe {probe.id} declares no planted negative.", loc)
+
+    proof_artifact = str(getattr(probe, "proof_artifact", "") or "").strip()
+    if proof_artifact:
+        proof_path = Path(proof_artifact)
+        if proof_path.is_absolute() or any(part == ".." for part in proof_path.parts):
+            add("held_out_probe_proof", f"Probe {probe.id} proof artifact must be workspace-relative.", loc)
+    if (probe.discrimination_passed or probe.golden_control_passed) and not proof_artifact:
+        add("held_out_probe_proof", f"Probe {probe.id} claims passed probe results without a proof artifact.", loc)
+
+    verification_gap_ids = list(getattr(probe, "verification_gap_ids", []))
+    for gap_id in verification_gap_ids:
+        if gap_id not in gap_ids:
+            add("verification_gaps", f"Probe {probe.id} references missing verification gap {gap_id}.", loc)
+    if (not probe.discrimination_passed or not probe.golden_control_passed) and not verification_gap_ids:
+        add("held_out_probe_discrimination", f"Probe {probe.id} is unproven or failed but references no verification gap.", loc)
 
 
 def _unsafe_acceptance_command_reason(command: str) -> str | None:

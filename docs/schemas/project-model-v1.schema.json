@@ -839,6 +839,12 @@
         },
         "provenance_refs": {
           "$ref": "#/$defs/stringArray"
+        },
+        "proof_artifact": {
+          "$ref": "#/$defs/maybeString"
+        },
+        "verification_gap_ids": {
+          "$ref": "#/$defs/stringArray"
         }
       }
     },

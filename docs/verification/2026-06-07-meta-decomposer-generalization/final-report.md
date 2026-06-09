@@ -132,13 +132,23 @@ Candidate readiness note: before using `fmc-mcp` as a full APPLY/PROMOTE target,
 
 ## Remaining non-blocking risks
 
-1. Fixture probe is still scaffolding, not true adversarial proof. The held-out probe booleans are not yet independently computed.
+1. Independent adversarial probe generation remains future work. The fixture/meta-decomposer no longer marks probe booleans as passed without proof; it emits an explicit semantic-validation gap instead.
 2. Responsibility prose is still generic and directory-derived, not deeply semantic.
 3. Matcher logic is duplicated across decomposer and gate; future drift is possible.
 4. Single-segment import recall is conservative by design to avoid false positives.
 5. Some gate exclusions remain repo-shaped and should eventually become config-driven.
-6. The workspace currently contains many untracked verification artifacts from the iterative CMMC runs; final artifacts are clearly identified above, but cleanup/commit selection should be deliberate.
 
-## Current repo state
+## 2026-06-09 deterministic proof-honesty correction
 
-Code and verification artifacts are present in the working tree. They have not been committed in this session.
+Follow-up PR work corrected the overclaim called out above: fixture snapshots must not present held-out probe success unless real proof artifacts exist. The deterministic fixture path now emits no passed probe and records `gap.semantic-understanding-not-independently-validated`. The gate accepts read-only deterministic project understanding with that explicit gap, and rejects any claimed passed probe that lacks a workspace-relative proof artifact.
+
+Added/updated checks:
+
+- `tests/test_project_meta_decomposer.py::test_fixture_decomposer_marks_unrun_semantic_probe_quality_as_gap_not_passed`
+- `tests/test_project_snapshot_gate.py::test_gate_allows_missing_probe_when_explicit_semantic_gap_declares_unproven_quality`
+- `tests/test_project_snapshot_gate.py::test_gate_rejects_probe_success_without_proof_artifact`
+- `tests/test_project_snapshot_gate.py::test_gate_requires_unproven_probe_to_reference_gap`
+
+## Historical repo-state note
+
+The original report was written before PR packaging and commit. Later PR housekeeping committed and pushed the implementation branch; use git/PR state as the current source of truth.

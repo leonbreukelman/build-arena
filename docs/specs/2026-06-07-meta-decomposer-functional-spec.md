@@ -22,7 +22,7 @@ The immediate validation pressure comes from a CMMC decomposition failure, but C
 7. Unobservable or unverified surfaces become specific verification gaps, not silent omissions.
 8. Clustering and output serialization must be deterministic for identical inputs.
 9. Discovered commands are untrusted. A command may be modeled only with explicit safety status, execution-directory evidence, and either executable proof or a scoped gap explaining why proof was not obtained.
-10. Existing anti-fabrication, provenance, no-live-paid-API, protected-surface, generated-surface, held-out-probe, and coverage gates remain binding.
+10. Existing anti-fabrication, provenance, no-live-paid-API, protected-surface, generated-surface, held-out-probe, and coverage gates remain binding. A decomposer must not claim held-out probe success unless the result is backed by explicit proof artifacts; absent probe proof is represented as a verification gap, not as success.
 
 ## 3. Explicit anti-overfitting requirements
 
@@ -153,7 +153,11 @@ A gap records:
 
 Gaps must be specific. Blanket gaps that cover arbitrary unhandled files or edges fail the quality bar.
 
-### 4.9 Cross-cutting concern
+### 4.9 Probe proof honesty
+
+Held-out probe fields are proof claims, not placeholders. If `discrimination_passed` or `golden_control_passed` is true, the probe must carry a workspace-relative proof artifact that records the planted-negative/golden-control evaluation. If independent probe artifacts have not been generated, the fixture/meta-decomposer must emit no passed probe and must instead create a semantic-validation verification gap. This preserves deterministic project understanding without pretending adversarial proof exists.
+
+### 4.10 Cross-cutting concern
 
 A cross-cutting concern is a model-level invariant that applies across components, contracts, roots, or the whole workspace. It does not own source nodes. It records the concern category, affected components/contracts, provenance, and triggered-by evidence. Existing universal concerns remain required even when components are root-local.
 

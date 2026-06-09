@@ -119,6 +119,8 @@ Model identities:
 - primary decomposer model
 - independent probe-builder model ids when present
 
+Probe result booleans in the embedded snapshot are not advisory prose. A passed probe result requires a `proof_artifact`; otherwise consumers must treat the missing/failed probe as a verification gap. Empty `probeBuilders` is valid for deterministic read-only snapshots when the snapshot carries an explicit semantic/probe-validation gap.
+
 ### `derivedArtifacts`
 
 Strategy records for derived artifacts. The default contract names:

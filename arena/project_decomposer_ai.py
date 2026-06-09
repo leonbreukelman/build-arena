@@ -329,8 +329,8 @@ def _project_model_v0_projection(snapshot: ProjectModelSnapshot, graph: ProjectG
             {
                 "id": "risk-f3-wrong-target",
                 "level": "medium",
-                "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
-                "mitigation": "Run deterministic gates, held-out probes, and independent review.",
+                "description": "A fluent decomposition could optimize the wrong target; deterministic gates, near-neighbors, and explicit semantic-validation gaps keep that risk visible until probe proof exists.",
+                "mitigation": "Run deterministic gates now; close semantic-validation gaps with held-out probes before claiming independent adversarial validation.",
             }
         ],
         "nearNeighborAlternatives": [
@@ -338,7 +338,7 @@ def _project_model_v0_projection(snapshot: ProjectModelSnapshot, graph: ProjectG
                 "id": _identifier(near.id),
                 "description": near.alternative,
                 "whyNotPrimary": near.why_not_primary,
-                "distinguishingEvidence": ["graph provenance", "held-out probe discrimination"],
+                "distinguishingEvidence": ["graph provenance", "semantic-validation gap or held-out probe discrimination"],
             }
             for near in snapshot.near_neighbor_alternatives
         ],
@@ -384,7 +384,8 @@ def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], grap
     return (
         "Build an AI-first project decomposition from graph/wiki evidence only.\n"
         f"Project: {project_id}\nGoal: {goal}\nNon-goals: {json.dumps(non_goals, sort_keys=True)}\n"
-        "Reject vague/file-bucket leaves; produce components, contracts, concerns, checks, gaps, near-neighbors, and probes.\n"
+        "Reject vague/file-bucket leaves; produce components, contracts, concerns, checks, gaps, and near-neighbors. "
+        "Only claim probe pass/fail results when backed by explicit probe artifacts; otherwise record a semantic-validation gap.\n"
         f"Graph sample:\n{node_lines}\n"
     )
 
@@ -392,7 +393,7 @@ def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], grap
 def _skeptic_prompt(*, goal: str, non_goals: list[str]) -> str:
     return (
         "Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, "
-        "weak contracts, and held-out-probe leakage.\n"
+        "weak contracts, fake probe-proof claims, and unclosed semantic-validation gaps.\n"
         f"Goal: {goal}\nNon-goals: {json.dumps(non_goals, sort_keys=True)}\n"
     )
 
