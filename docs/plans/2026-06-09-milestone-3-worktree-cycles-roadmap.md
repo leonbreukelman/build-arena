@@ -341,4 +341,27 @@ hermes kanban --board build-arena unblock t_6ff0635f
   - `t_eeafe5ff` patch gate / diff proposer with fake transports
 - Wave-one interface dependency: `t_d099446a` should either merge first, or `t_c3ad0d70` and `t_eeafe5ff` must code against a frozen goal-config interface stub documented by `t_d099446a`.
 - Controller owns all `arena/loop.py` integration and all push/PR side effects.
+
+---
+
+## Milestone 3 close-out (BA-M3-07)
+
+**Status:** BA-M3-07 acceptance gate passed and committed on `ba/m3-pilot-acceptance-run` (commit `688c182`, 2026-06-10).
+
+**Evidence:** `docs/verification/2026-06-10-m3-pilot-cycle-evidence.md` plus the `docs/verification/2026-06-10-m3-pilot/` artifact tree (summary, per-cycle evidence, halt/reject evidence, dry-run PR bodies, candidate-branch diff audit, exact harness, candidate diff).
+
+**Gate results:** 5 cycles, 5 promoted candidate branches, 2 dry-run PR bodies with byte-traceable claims, injected budget halt (`BUDGET_EXHAUSTED_ZERO_PROMOTIONS`) and divergence halt (`BOUNDARY_VIOLATION_ATTEMPT`), one reject mapped to a `RejectReason` with transcript, canonical pilot checkout head/status unchanged before vs. after, configured worktree root empty after teardown. Verified clean: `pytest`, `ruff`, `pyright`, `git diff --check`.
+
+**Bug found and fixed during the pilot:** `CandidatePackager` used `git add -A` and could leak `.arena/` evidence/config/runtime artifacts into candidate branches. Fixed to reset all `.arena/` paths before the candidate commit with a fail-closed staged-path guard, with a regression test that plants `.arena/patches/` and a sibling `.arena/runtime.json` and asserts zero `.arena/` paths in the candidate diff while worktree evidence artifacts survive.
+
+**Honesty notes (read before treating M3 as broadly proven):**
+- The "every reject maps to a `RejectReason` and transcript" gate was exercised by exactly **one injected** `RUNNER_ERROR`. Organic reject-reason diversity is unproven.
+- All five promoted candidates are the **same static fake-transport patch** with identical `score_delta` (25.854327). This proves cycle/packaging/evidence mechanics, **not** organic candidate variation. "5 candidates promoted" must not be read as five independent successes.
+- Live LLM/API transport, organic rejects, and operator-authorized live PR push are explicitly deferred to M4.
+
+**Follow-up cards filed:**
+- `.arena/` allowlist enforcement as a standing boundary-invariant test (fold in the top-level `.arena` file edge case).
+- Organic reject-reason coverage matrix once live transport exists.
+
+**Fable review:** initial `ACCEPT_WITH_CHANGES` (widen artifact exclusion + commit), re-review `ACCEPT` after the `.arena/` widening. Transcripts embedded in the evidence report.
 - Worker self-reports are not proof. Proof is file diff + test output + mechanical evidence.
