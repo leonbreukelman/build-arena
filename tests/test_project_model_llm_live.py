@@ -7,7 +7,10 @@ from typing import Any
 
 import pytest
 
-from arena.project_decomposer_ai import build_project_model_snapshot
+from arena.project_decomposer_ai import (
+    _snapshot_from_model_output,
+    build_project_model_snapshot,
+)
 from arena.project_graph import build_project_graph
 from arena.project_model_llm import (
     LiveProjectModelLLM,
@@ -196,3 +199,77 @@ def _write_tiny_repo(project: Path) -> None:
     subprocess.run(["git", "config", "user.name", "Test"], cwd=project, check=True)
     subprocess.run(["git", "add", "."], cwd=project, check=True)
     subprocess.run(["git", "commit", "-m", "initial"], cwd=project, check=True, stdout=subprocess.DEVNULL)
+
+
+def test_snapshot_from_model_output_is_fail_closed_on_real_world_shape() -> None:
+    """A real model returns alias keys, extra fields, and missing list fields.
+
+    The build path must coerce tolerantly (accept provider aliases like 'checks'
+    for 'observable_checks', drop unknown invented keys, default missing list
+    fields) instead of crashing with a raw TypeError on **item splatting.
+    Regression for the grok-4.3 live run that crashed on an extra 'evidence' key.
+    """
+    raw = {
+        "model_id": "grok-x",
+        "goal": "decompose",
+        "non_goals": ["none"],
+        "components": [
+            {
+                "id": "c1",
+                "name": "Core",
+                "responsibility": "Owns the core orchestration responsibility for the loop",
+                "owned_node_ids": ["node:abc"],
+                "provenance_refs": ["prov:abc"],
+                "contract_ids": [],
+                "check_ids": ["chk1"],
+                # Unknown invented key the model added; must be dropped, not crash.
+                "evidence": ["some artifact"],
+                # verification_gap_ids intentionally omitted -> must default to [].
+            }
+        ],
+        # Provider alias keys instead of canonical names.
+        "checks": [
+            {
+                "id": "chk1",
+                "description": "runs the suite",
+                "command": "pytest -q",
+                "component_ids": ["c1"],
+                "contract_ids": [],
+                "provenance_refs": ["prov:abc"],
+            }
+        ],
+        "gaps": [],
+        "concerns": [],
+        "near_neighbors": [],
+    }
+    snapshot = _snapshot_from_model_output(
+        raw,
+        project_id="p",
+        project_root="/tmp/p",
+        goal="decompose",
+        non_goals=["none"],
+        graph_hash="",
+        prompt_hash="ph",
+    )
+    assert len(snapshot.components) == 1
+    component = snapshot.components[0]
+    assert component.id == "c1"
+    assert component.verification_gap_ids == []  # defaulted, not crashed
+    assert not hasattr(component, "evidence")  # invented key dropped
+    assert len(snapshot.observable_checks) == 1  # 'checks' alias resolved
+    assert snapshot.observable_checks[0].id == "chk1"
+
+
+def test_snapshot_from_model_output_rejects_nonconforming_component_cleanly() -> None:
+    """Missing required identity fields must raise a clear ValueError, not TypeError."""
+    raw = {"components": [{"name": "no id or responsibility"}]}
+    with pytest.raises(ValueError, match="missing required field.*Component schema"):
+        _snapshot_from_model_output(
+            raw,
+            project_id="p",
+            project_root="/tmp/p",
+            goal="g",
+            non_goals=["n"],
+            graph_hash="",
+            prompt_hash="ph",
+        )

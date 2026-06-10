@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import json
 import re
 import shutil
@@ -231,6 +232,74 @@ def build_project_model_snapshot(
     )
 
 
+_TOP_LEVEL_ALIASES: dict[str, tuple[str, ...]] = {
+    "observable_checks": ("observable_checks", "checks"),
+    "cross_cutting_concerns": ("cross_cutting_concerns", "concerns"),
+    "verification_gaps": ("verification_gaps", "gaps"),
+    "near_neighbor_alternatives": ("near_neighbor_alternatives", "near_neighbors"),
+    "held_out_probes": ("held_out_probes", "probes"),
+    "components": ("components",),
+    "contracts": ("contracts",),
+}
+
+
+def _resolve_list(raw: dict[str, Any], canonical: str) -> list[Any]:
+    """Return a list for a canonical key, accepting known provider aliases.
+
+    Fail-closed: a present-but-non-list value is an error rather than silently
+    coerced, so a malformed model response surfaces a clear diagnostic.
+    """
+    for key in _TOP_LEVEL_ALIASES.get(canonical, (canonical,)):
+        if key in raw and raw[key] is not None:
+            value = raw[key]
+            if not isinstance(value, list):
+                raise ValueError(f"model output field {key!r} must be a JSON array, got {type(value).__name__}")
+            return value
+    return []
+
+
+def _coerce_dataclass(cls: type, item: Any, *, collection: str, index: int) -> Any:
+    """Build a dataclass from a model-produced dict, fail-closed on identity gaps.
+
+    - Unknown keys the model invents are dropped (the full raw output is still
+      persisted to disk for audit).
+    - Missing list-typed fields default to empty lists so a structurally valid
+      decomposition still builds and reaches the deterministic gate.
+    - Missing required scalar identity fields (no dataclass default) raise a
+      clear error instead of a raw TypeError, so non-conforming model output is
+      a diagnostic, not a crash.
+    """
+    if not isinstance(item, dict):
+        raise ValueError(f"{collection}[{index}] must be a JSON object, got {type(item).__name__}")
+    fields = {f.name: f for f in dataclasses.fields(cls)}
+    kwargs: dict[str, Any] = {}
+    missing_required: list[str] = []
+    for name, spec in fields.items():
+        if name in item and item[name] is not None:
+            kwargs[name] = item[name]
+            continue
+        has_default = spec.default is not dataclasses.MISSING or spec.default_factory is not dataclasses.MISSING  # type: ignore[misc]
+        if has_default:
+            continue
+        if str(spec.type).replace(" ", "").startswith(("list[", "dict[")):
+            kwargs[name] = [] if str(spec.type).replace(" ", "").startswith("list[") else {}
+            continue
+        missing_required.append(name)
+    if missing_required:
+        raise ValueError(
+            f"{collection}[{index}] is missing required field(s) {sorted(missing_required)}; "
+            f"model output did not conform to the {cls.__name__} schema"
+        )
+    return cls(**kwargs)
+
+
+def _coerce_list(cls: type, raw: dict[str, Any], canonical: str) -> list[Any]:
+    return [
+        _coerce_dataclass(cls, item, collection=canonical, index=index)
+        for index, item in enumerate(_resolve_list(raw, canonical))
+    ]
+
+
 def _snapshot_from_model_output(
     raw: dict[str, Any],
     *,
@@ -241,6 +310,8 @@ def _snapshot_from_model_output(
     graph_hash: str,
     prompt_hash: str,
 ) -> ProjectModelSnapshot:
+    if not isinstance(raw, dict):
+        raise ValueError(f"model output must be a JSON object, got {type(raw).__name__}")
     return ProjectModelSnapshot(
         project_id=project_id,
         project_root=project_root,
@@ -248,13 +319,13 @@ def _snapshot_from_model_output(
         non_goals=list(raw.get("non_goals") or non_goals),
         primary_model_id=str(raw.get("model_id") or "unknown-model"),
         graph_hash=graph_hash,
-        components=[Component(**item) for item in raw.get("components", [])],
-        contracts=[Contract(**item) for item in raw.get("contracts", [])],
-        cross_cutting_concerns=[CrossCuttingConcern(**item) for item in raw.get("cross_cutting_concerns", [])],
-        observable_checks=[ObservableCheck(**item) for item in raw.get("observable_checks", [])],
-        held_out_probes=[HeldOutProbe(**item) for item in raw.get("held_out_probes", [])],
-        verification_gaps=[VerificationGap(**item) for item in raw.get("verification_gaps", [])],
-        near_neighbor_alternatives=[NearNeighborAlternative(**item) for item in raw.get("near_neighbor_alternatives", [])],
+        components=_coerce_list(Component, raw, "components"),
+        contracts=_coerce_list(Contract, raw, "contracts"),
+        cross_cutting_concerns=_coerce_list(CrossCuttingConcern, raw, "cross_cutting_concerns"),
+        observable_checks=_coerce_list(ObservableCheck, raw, "observable_checks"),
+        held_out_probes=_coerce_list(HeldOutProbe, raw, "held_out_probes"),
+        verification_gaps=_coerce_list(VerificationGap, raw, "verification_gaps"),
+        near_neighbor_alternatives=_coerce_list(NearNeighborAlternative, raw, "near_neighbor_alternatives"),
         acceptance_command_allowlist=list(raw.get("acceptance_command_allowlist", [])),
         prompt_hashes={"decomposer": prompt_hash},
     )
@@ -392,13 +463,52 @@ def _project_model_v0_projection(snapshot: ProjectModelSnapshot, graph: ProjectG
 
 
 def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], graph: ProjectGraph) -> str:
-    node_lines = "\n".join(f"- {node.kind}: {node.path or node.symbol or node.label}" for node in graph.nodes[:200])
+    # Give the model the real identifier vocabulary it must reuse. The deterministic
+    # gate resolves component.owned_node_ids against graph node ids, component
+    # provenance_refs against graph provenance ids, and contract.supporting_edge_ids
+    # against graph edge ids. A model that is never shown these ids cannot produce
+    # gate-passing output, so we surface a bounded, deterministic sample of them.
+    symbol_kinds = {"python_module", "python_class", "python_function", "javascript_module"}
+    symbol_nodes = [n for n in graph.nodes if n.kind in symbol_kinds]
+    node_lines = []
+    for node in symbol_nodes[:120]:
+        prov = node.provenance_refs[0].id if node.provenance_refs else ""
+        node_lines.append(f"- node_id={node.id} kind={node.kind} path={node.path or node.symbol or node.label} prov={prov}")
+    edge_lines = []
+    for edge in [e for e in graph.edges if e.kind in {"imports", "calls", "tests"}][:60]:
+        edge_lines.append(f"- edge_id={edge.id} kind={edge.kind} from={edge.from_node_id} to={edge.to_node_id}")
+    schema = (
+        "Output STRICT JSON with these exact keys (no markdown):\n"
+        '{\n'
+        '  "model_id": str, "project_id": str, "goal": str, "non_goals": [str],\n'
+        '  "components": [{"id": str, "name": str, "responsibility": str (>=6 words, a semantic responsibility not a file list),\n'
+        '     "owned_node_ids": [node_id from the list below], "provenance_refs": [prov id from a node you own],\n'
+        '     "contract_ids": [id of a contract you declare], "check_ids": [id of an observable_check you declare],\n'
+        '     "verification_gap_ids": [id of a verification_gap you declare]}],\n'
+        '  "contracts": [{"id": str, "name": str, "from_component_id": component id, "to_component_id": component id,\n'
+        '     "supporting_edge_ids": [edge_id from the list below connecting the two components],\n'
+        '     "near_neighbor_alternative_ids": [], "provenance_refs": [prov id]}],\n'
+        '  "cross_cutting_concerns": [{"id": str, "category": str, "description": str, "component_ids": [component id],\n'
+        '     "contract_ids": [], "provenance_refs": [prov id]}],\n'
+        '  "observable_checks": [{"id": str, "description": str, "command": str, "component_ids": [component id],\n'
+        '     "contract_ids": [], "provenance_refs": [prov id]}],\n'
+        '  "verification_gaps": [{"id": str, "description": str, "severity": "low|medium|high|blocker",\n'
+        '     "component_ids": [component id], "contract_ids": [], "provenance_refs": [prov id]}],\n'
+        '  "near_neighbor_alternatives": [{"id": str, "target_id": component id, "alternative": str,\n'
+        '     "why_not_primary": str, "provenance_refs": [prov id]}]\n'
+        '}\n'
+        "Rules: reuse only node_id/edge_id/prov ids shown below; never invent ids. "
+        "Every component must own >=1 node and cite a provenance id from a node it owns, and declare >=1 of "
+        "contract/check/gap. Reject vague/file-bucket leaves. Only claim probe pass/fail when backed by an explicit "
+        "artifact; otherwise record a verification_gap.\n"
+    )
     return (
-        "Build an AI-first project decomposition from graph/wiki evidence only.\n"
-        f"Project: {project_id}\nGoal: {goal}\nNon-goals: {json.dumps(non_goals, sort_keys=True)}\n"
-        "Reject vague/file-bucket leaves; produce components, contracts, concerns, checks, gaps, and near-neighbors. "
-        "Only claim probe pass/fail results when backed by explicit probe artifacts; otherwise record a semantic-validation gap.\n"
-        f"Graph sample:\n{node_lines}\n"
+        "Build an AI-first project decomposition from the deterministic graph evidence below. "
+        "You enrich the graph into responsibility-bearing components; you do not invent identifiers.\n"
+        f"Project: {project_id}\nGoal: {goal}\nNon-goals: {json.dumps(non_goals, sort_keys=True)}\n\n"
+        f"{schema}\n"
+        "Graph nodes (sample, reuse these ids):\n" + "\n".join(node_lines) + "\n\n"
+        "Graph edges (sample, reuse these ids for contract support):\n" + "\n".join(edge_lines) + "\n"
     )
 
 
