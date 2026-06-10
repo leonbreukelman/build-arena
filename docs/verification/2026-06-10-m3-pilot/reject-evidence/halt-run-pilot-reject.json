@@ -1,0 +1,188 @@
+{
+  "budget": {
+    "claude_code_credits_cap": null,
+    "claude_code_credits_used": 0,
+    "codex_credits_cap": null,
+    "codex_credits_used": 0,
+    "copilot_premium_cap": null,
+    "copilot_premium_used": 0,
+    "cycle_count_cap": 2,
+    "cycle_count_used": 2,
+    "promotions_total": 0,
+    "start_ts": 1781108005.7936,
+    "wall_clock_seconds_cap": 14400,
+    "wall_clock_seconds_used": 0
+  },
+  "events": [
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-reject-1",
+      "level": "info",
+      "payload": {
+        "git_head_at_start": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+        "run_id": "run-pilot-reject"
+      },
+      "payload_json_sha": "368ff47313e7d995e545c0a1a93a865c25bc9094b1636b16ca4c41aeabe388fa",
+      "run_id": "run-pilot-reject",
+      "seq": 1,
+      "ts": 1781108005.7929416,
+      "type": "RUN_STARTED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-2",
+      "level": "info",
+      "payload": {
+        "ordinal": 1,
+        "worktree_id": "cycle-1"
+      },
+      "payload_json_sha": "20b30e8955081b0a8f27ff7ab950bdbbfc7dedebf24960c8c8058bfb63f6531a",
+      "run_id": "run-pilot-reject",
+      "seq": 2,
+      "ts": 1781108005.8135984,
+      "type": "CYCLE_STARTED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-3",
+      "level": "info",
+      "payload": {
+        "baseline_id": "baseline-pilot-reject"
+      },
+      "payload_json_sha": "6aad617855dd0a8551ab504d01515749a8c11a1157054beea950df00c7f56a7e",
+      "run_id": "run-pilot-reject",
+      "seq": 3,
+      "ts": 1781108008.6230023,
+      "type": "SCAN_COMPLETE"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-4",
+      "level": "info",
+      "payload": {
+        "bandit_arm": "reject-injection\u00d7tests",
+        "fingerprint_id": "fe58dbc059b7c0abd3ea42d1c7728fae",
+        "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+        "target_files": [
+          "tests/test_resources.py"
+        ]
+      },
+      "payload_json_sha": "fcb9fab2badc5a82bfaff5dfca43040d781dc34f31863868172ecb284c87c751",
+      "run_id": "run-pilot-reject",
+      "seq": 4,
+      "ts": 1781108008.626108,
+      "type": "HYPOTHESIS_PROPOSED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-5",
+      "level": "info",
+      "payload": {
+        "command": "static reject injection",
+        "exit_code": 1,
+        "stderr": "intentional empty diff rejection"
+      },
+      "payload_json_sha": "d59b04a1ba4bb2e00d9b74c7e085eda2869269285be0c7e42bc196bfc1dd153f",
+      "run_id": "run-pilot-reject",
+      "seq": 5,
+      "ts": 1781108008.628151,
+      "type": "COMMAND_TRANSCRIPT"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-6",
+      "level": "info",
+      "payload": {
+        "fingerprint_id": "fe58dbc059b7c0abd3ea42d1c7728fae",
+        "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+        "outcome": "DISCARDED",
+        "reject_reason": "RUNNER_ERROR",
+        "score_delta": null,
+        "verdict_id": "verdict-hyp-cycle-1-3b6d0436cb04-runner_error"
+      },
+      "payload_json_sha": "35129521469afa219559346ebe39bbf5012c69843f8ef72533e6730d31331d7c",
+      "run_id": "run-pilot-reject",
+      "seq": 6,
+      "ts": 1781108008.6291971,
+      "type": "VERDICT_DECIDED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-7",
+      "level": "info",
+      "payload": {
+        "worktree_id": "cycle-1"
+      },
+      "payload_json_sha": "ff1e063f3a2997047265c49846c46d5ed7ff29f8d80de65dbe2c4d1d62585a8b",
+      "run_id": "run-pilot-reject",
+      "seq": 7,
+      "ts": 1781108008.6623662,
+      "type": "WORKTREE_TORN_DOWN"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-8",
+      "level": "info",
+      "payload": {
+        "cycle_id": "cycle-1"
+      },
+      "payload_json_sha": "85cd283f062e47ee8909b0dd476d0a067f69dfc0d477a560fab042028e75e61f",
+      "run_id": "run-pilot-reject",
+      "seq": 8,
+      "ts": 1781108008.6640074,
+      "type": "CYCLE_ENDED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-reject-9",
+      "level": "info",
+      "payload": {
+        "ordinal": 2,
+        "worktree_id": "cycle-2"
+      },
+      "payload_json_sha": "554c63cee75637cb116ae11e494ac091b29e9baa69ed223dcd84c9a12d5135bf",
+      "run_id": "run-pilot-reject",
+      "seq": 9,
+      "ts": 1781108008.681018,
+      "type": "CYCLE_STARTED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-reject-10",
+      "level": "info",
+      "payload": {
+        "baseline_id": "baseline-pilot-reject"
+      },
+      "payload_json_sha": "6aad617855dd0a8551ab504d01515749a8c11a1157054beea950df00c7f56a7e",
+      "run_id": "run-pilot-reject",
+      "seq": 10,
+      "ts": 1781108011.452211,
+      "type": "SCAN_COMPLETE"
+    },
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-reject-11",
+      "level": "error",
+      "payload": {
+        "detail": "cycle_count budget exhausted: used=2 cap=2 promotions=0",
+        "reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS"
+      },
+      "payload_json_sha": "51167d22ea2a232464d0cd98bdb0562bebf25507690f987cab429e4d2e6a590b",
+      "run_id": "run-pilot-reject",
+      "seq": 11,
+      "ts": 1781108011.4529417,
+      "type": "HALTED"
+    }
+  ],
+  "halt": {
+    "detail": "cycle_count budget exhausted: used=2 cap=2 promotions=0",
+    "id": "halt-run-pilot-reject-11",
+    "last_event_seq": 11,
+    "operator_ack_ts": null,
+    "reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS",
+    "run_id": "run-pilot-reject",
+    "ts": 1781108011.4529417
+  },
+  "run_id": "run-pilot-reject",
+  "schema_version": "halt-evidence/v1"
+}

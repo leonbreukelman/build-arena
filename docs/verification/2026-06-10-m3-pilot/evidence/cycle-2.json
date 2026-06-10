@@ -1,0 +1,251 @@
+{
+  "budget": {
+    "claude_code_credits_cap": null,
+    "claude_code_credits_used": 0,
+    "codex_credits_cap": null,
+    "codex_credits_used": 0,
+    "copilot_premium_cap": null,
+    "copilot_premium_used": 0,
+    "cycle_count_cap": 10,
+    "cycle_count_used": 2,
+    "promotions_total": 2,
+    "start_ts": 1781107964.4040382,
+    "wall_clock_seconds_cap": 14400,
+    "wall_clock_seconds_used": 0
+  },
+  "candidate": {
+    "branch": "arena/candidate/cycle-2",
+    "git_oid": "42cc295b9010068daddbbe2f48f8f309d8195703",
+    "id": "candidate-42cc295b9010",
+    "is_active": false,
+    "promoted_from_verdict_id": "verdict-92baf6443b72ca97",
+    "promoted_ts": 1781107978.1880374,
+    "run_id": "run-pilot-candidates",
+    "score_record_id": "score-42cc295b9010-30196d119ffb-6ef7fb1f4e6d"
+  },
+  "cycle_id": "cycle-2",
+  "events": [
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-candidates-1",
+      "level": "info",
+      "payload": {
+        "git_head_at_start": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+        "run_id": "run-pilot-candidates"
+      },
+      "payload_json_sha": "9be59ae14dfed3313d5d51772d0aaa3ae14445bdba1990e7b1282b71f7a88aee",
+      "run_id": "run-pilot-candidates",
+      "seq": 1,
+      "ts": 1781107964.3909743,
+      "type": "RUN_STARTED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-11",
+      "level": "info",
+      "payload": {
+        "ordinal": 2,
+        "worktree_id": "cycle-2"
+      },
+      "payload_json_sha": "554c63cee75637cb116ae11e494ac091b29e9baa69ed223dcd84c9a12d5135bf",
+      "run_id": "run-pilot-candidates",
+      "seq": 11,
+      "ts": 1781107972.6436687,
+      "type": "CYCLE_STARTED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-12",
+      "level": "info",
+      "payload": {
+        "baseline_id": "baseline-pilot"
+      },
+      "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+      "run_id": "run-pilot-candidates",
+      "seq": 12,
+      "ts": 1781107975.4438784,
+      "type": "SCAN_COMPLETE"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-13",
+      "level": "info",
+      "payload": {
+        "bandit_arm": "diff_proposal\u00d7tests/test_client.py",
+        "fingerprint_id": "05c0c81276721084c2c0b0cfa59c3bf8",
+        "hypothesis_id": "hyp-cycle-2-05c0c8127672",
+        "target_files": [
+          "tests/test_client.py"
+        ]
+      },
+      "payload_json_sha": "7ca894de1827ff73b5757a60be526d18ff1233664ccd6043a48632da66752f81",
+      "run_id": "run-pilot-candidates",
+      "seq": 13,
+      "ts": 1781107975.4451709,
+      "type": "HYPOTHESIS_PROPOSED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-14",
+      "level": "info",
+      "payload": {
+        "hypothesis_id": "hyp-cycle-2-05c0c8127672",
+        "patch_path": "/tmp/build-arena-m3-07/worktrees/cycle-2/.arena/patches/hyp-cycle-2-05c0c8127672.patch"
+      },
+      "payload_json_sha": "61644bf81a1627d77b0025ea2530d6afcbe694829b18f7f067f313f605d36a7f",
+      "run_id": "run-pilot-candidates",
+      "seq": 14,
+      "ts": 1781107975.4731967,
+      "type": "PATCH_APPLIED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-15",
+      "level": "info",
+      "payload": {
+        "id": "ablation-2677e8a7fee8dbce",
+        "load_bearing": true,
+        "probe_set": [
+          "EARLY_ANSWERING",
+          "FILLER_TOKENS",
+          "PARAPHRASING"
+        ],
+        "probes_changed_output": 3,
+        "quorum_threshold": 2,
+        "runner_used": "ollama",
+        "verdict_id": "verdict-92baf6443b72ca97"
+      },
+      "payload_json_sha": "e2e5755e982ea8d2e691451dc97b76ba98efa2d640a67351e56d6b4d7d359e20",
+      "run_id": "run-pilot-candidates",
+      "seq": 15,
+      "ts": 1781107978.178761,
+      "type": "ABLATION_RESULT"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-16",
+      "level": "info",
+      "payload": {
+        "fingerprint_id": "05c0c81276721084c2c0b0cfa59c3bf8",
+        "hypothesis_id": "hyp-cycle-2-05c0c8127672",
+        "outcome": "PROMOTED",
+        "reject_reason": null,
+        "score_delta": 25.854327,
+        "verdict_id": "verdict-92baf6443b72ca97"
+      },
+      "payload_json_sha": "ca17dfea8313ffb662f2f2f381747456f9b5174b9408f138d0441568ec06eb7d",
+      "run_id": "run-pilot-candidates",
+      "seq": 16,
+      "ts": 1781107978.1798334,
+      "type": "VERDICT_DECIDED"
+    },
+    {
+      "cycle_id": "cycle-2",
+      "id": "evt-run-pilot-candidates-17",
+      "level": "info",
+      "payload": {
+        "candidate": {
+          "git_oid": "42cc295b9010068daddbbe2f48f8f309d8195703",
+          "id": "candidate-42cc295b9010",
+          "is_active": false,
+          "promoted_from_verdict_id": "verdict-92baf6443b72ca97",
+          "promoted_ts": 1781107978.1880374,
+          "run_id": "run-pilot-candidates",
+          "score_record_id": "score-42cc295b9010-30196d119ffb-6ef7fb1f4e6d"
+        },
+        "candidate_branch": "arena/candidate/cycle-2",
+        "verdict_id": "verdict-92baf6443b72ca97"
+      },
+      "payload_json_sha": "8bffb8cde4ae5d6e9ec21713895b5f71d57690bf9aee44f08aaaf9317e78a2d6",
+      "run_id": "run-pilot-candidates",
+      "seq": 17,
+      "ts": 1781107980.8592758,
+      "type": "CANDIDATE_PACKAGED"
+    }
+  ],
+  "patch": {
+    "added_lines": 276,
+    "base_git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "deleted_lines": 1,
+    "files": [
+      {
+        "added_lines": 172,
+        "deleted_lines": 0,
+        "path": "tests/test_client.py"
+      },
+      {
+        "added_lines": 2,
+        "deleted_lines": 1,
+        "path": "tests/test_resources.py"
+      },
+      {
+        "added_lines": 102,
+        "deleted_lines": 0,
+        "path": "tests/test_server.py"
+      }
+    ],
+    "head_git_oid": "42cc295b9010068daddbbe2f48f8f309d8195703",
+    "path": "/tmp/build-arena-m3-07/worktrees/cycle-2/.arena/patches/hyp-cycle-2-05c0c8127672.patch",
+    "sha256": "7a2da00fa047be7c9be52e3d9650a2123fca9a0bfcf1f16a354aa2809902142e"
+  },
+  "run_id": "run-pilot-candidates",
+  "schema_version": "cycle-evidence/v1",
+  "score_after": {
+    "computed_ts": 1781107980.8591766,
+    "git_oid": "42cc295b9010068daddbbe2f48f8f309d8195703",
+    "goal_config_schema_version": "goal-config/v1",
+    "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+    "id": "score-42cc295b9010-30196d119ffb-6ef7fb1f4e6d",
+    "scorer_lock_sha": "30196d119ffb657290ed92418c8b84813a650527bac7fe0fb63c09222191c842",
+    "vector": {
+      "composite": 170.373835,
+      "coverage_pct": 86.55914,
+      "cyclomatic_avg": 1.744444,
+      "pyright_errors": 0,
+      "ruff_violations": 0,
+      "runtime_p95_ms": 10.0,
+      "tests_pass": true
+    }
+  },
+  "score_before": {
+    "computed_ts": 1781107964.3138921,
+    "git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "goal_config_schema_version": "goal-config/v1",
+    "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+    "id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "scorer_lock_sha": "30196d119ffb657290ed92418c8b84813a650527bac7fe0fb63c09222191c842",
+    "vector": {
+      "composite": 144.519508,
+      "coverage_pct": 74.731183,
+      "cyclomatic_avg": 1.942857,
+      "pyright_errors": 2,
+      "ruff_violations": 0,
+      "runtime_p95_ms": 10.0,
+      "tests_pass": true
+    }
+  },
+  "verdict": {
+    "ablation_result_id": "ablation-2677e8a7fee8dbce",
+    "decided_ts": 1781107978.1787045,
+    "hypothesis_id": "hyp-cycle-2-05c0c8127672",
+    "id": "verdict-92baf6443b72ca97",
+    "outcome": "PROMOTED",
+    "pinned_regression": null,
+    "reject_reason": null,
+    "score_after_id": "score-42cc295b9010-30196d119ffb-6ef7fb1f4e6d",
+    "score_before_id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "score_delta": 25.854327,
+    "tests_passed": true
+  },
+  "worktree": {
+    "base_git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "created_ts": 1781107972.6435986,
+    "cycle_id": "cycle-2",
+    "head_git_oid": null,
+    "id": "cycle-2",
+    "lock_reason": "arena cycle=cycle-2",
+    "path": "/tmp/build-arena-m3-07/worktrees/cycle-2",
+    "torn_down_ts": null
+  },
+  "worktree_root": "/tmp/build-arena-m3-07/worktrees"
+}

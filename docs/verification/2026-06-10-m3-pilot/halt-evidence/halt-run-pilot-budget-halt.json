@@ -1,0 +1,57 @@
+{
+  "budget": {
+    "claude_code_credits_cap": null,
+    "claude_code_credits_used": 0,
+    "codex_credits_cap": null,
+    "codex_credits_used": 0,
+    "copilot_premium_cap": null,
+    "copilot_premium_used": 0,
+    "cycle_count_cap": 0,
+    "cycle_count_used": 0,
+    "promotions_total": 0,
+    "start_ts": 1781108011.4550745,
+    "wall_clock_seconds_cap": 999,
+    "wall_clock_seconds_used": 0
+  },
+  "events": [
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-budget-halt-1",
+      "level": "info",
+      "payload": {
+        "git_head_at_start": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+        "run_id": "run-pilot-budget-halt"
+      },
+      "payload_json_sha": "74945a2f6ee8274abe7ac0f40930349e46235fc0f32aec36e3acc4b365451dee",
+      "run_id": "run-pilot-budget-halt",
+      "seq": 1,
+      "ts": 1781108011.4544938,
+      "type": "RUN_STARTED"
+    },
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-budget-halt-2",
+      "level": "error",
+      "payload": {
+        "detail": "cycle_count budget exhausted: used=0 cap=0 promotions=0",
+        "reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS"
+      },
+      "payload_json_sha": "01bd98c8b29df8ec3d84259e0807422e26307f1f98eb4dd9430e8444c402e790",
+      "run_id": "run-pilot-budget-halt",
+      "seq": 2,
+      "ts": 1781108011.4550943,
+      "type": "HALTED"
+    }
+  ],
+  "halt": {
+    "detail": "cycle_count budget exhausted: used=0 cap=0 promotions=0",
+    "id": "halt-run-pilot-budget-halt-2",
+    "last_event_seq": 2,
+    "operator_ack_ts": null,
+    "reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS",
+    "run_id": "run-pilot-budget-halt",
+    "ts": 1781108011.4550943
+  },
+  "run_id": "run-pilot-budget-halt",
+  "schema_version": "halt-evidence/v1"
+}

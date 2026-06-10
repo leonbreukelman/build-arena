@@ -1,0 +1,827 @@
+{
+  "budget_halt": {
+    "halt_reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS"
+  },
+  "candidate_branches": [
+    "arena/candidate/cycle-1",
+    "arena/candidate/cycle-2",
+    "arena/candidate/cycle-3",
+    "arena/candidate/cycle-4",
+    "arena/candidate/cycle-5"
+  ],
+  "candidate_run": {
+    "events": [
+      {
+        "cycle_id": null,
+        "id": "evt-run-pilot-candidates-1",
+        "level": "info",
+        "payload_inline": "{\"git_head_at_start\":\"dcefc9888603623fbae6291aa7f88bd0a44c9203\",\"run_id\":\"run-pilot-candidates\"}",
+        "payload_json_sha": "9be59ae14dfed3313d5d51772d0aaa3ae14445bdba1990e7b1282b71f7a88aee",
+        "run_id": "run-pilot-candidates",
+        "seq": 1,
+        "ts": 1781107964.3909743,
+        "type": "RUN_STARTED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-2",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":1,\"worktree_id\":\"cycle-1\"}",
+        "payload_json_sha": "20b30e8955081b0a8f27ff7ab950bdbbfc7dedebf24960c8c8058bfb63f6531a",
+        "run_id": "run-pilot-candidates",
+        "seq": 2,
+        "ts": 1781107964.4275177,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-3",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot\"}",
+        "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+        "run_id": "run-pilot-candidates",
+        "seq": 3,
+        "ts": 1781107967.1777353,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-4",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"diff_proposal\\u00d7tests/test_resources.py\",\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-1-8b3bf3ffb235\",\"target_files\":[\"tests/test_resources.py\"]}",
+        "payload_json_sha": "d02e06ed9c493026eda8ee8b213320db717617bb38244620feed3359d8e53e17",
+        "run_id": "run-pilot-candidates",
+        "seq": 4,
+        "ts": 1781107967.1793602,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-5",
+        "level": "info",
+        "payload_inline": "{\"hypothesis_id\":\"hyp-cycle-1-8b3bf3ffb235\",\"patch_path\":\"/tmp/build-arena-m3-07/worktrees/cycle-1/.arena/patches/hyp-cycle-1-8b3bf3ffb235.patch\"}",
+        "payload_json_sha": "57ebfab73d92a16ffe263ed9ea12a262af17f9e0e61c56acd0a2e540400307ec",
+        "run_id": "run-pilot-candidates",
+        "seq": 5,
+        "ts": 1781107967.2024393,
+        "type": "PATCH_APPLIED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-6",
+        "level": "info",
+        "payload_inline": "{\"id\":\"ablation-86f7093c4ff2f370\",\"load_bearing\":true,\"probe_set\":[\"EARLY_ANSWERING\",\"FILLER_TOKENS\",\"PARAPHRASING\"],\"probes_changed_output\":3,\"quorum_threshold\":2,\"runner_used\":\"ollama\",\"verdict_id\":\"verdict-a6efc5c494731732\"}",
+        "payload_json_sha": "6fbb598dddd8e57654f030a5d73f3776940724a10a8b7945974b6131dc71f257",
+        "run_id": "run-pilot-candidates",
+        "seq": 6,
+        "ts": 1781107969.9060128,
+        "type": "ABLATION_RESULT"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-7",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-1-8b3bf3ffb235\",\"outcome\":\"PROMOTED\",\"reject_reason\":null,\"score_delta\":25.854327,\"verdict_id\":\"verdict-a6efc5c494731732\"}",
+        "payload_json_sha": "e4c7262cad9c5e211b82d6c4ef6c024a3a24a39e96940d2d4ebc40ded95e132d",
+        "run_id": "run-pilot-candidates",
+        "seq": 7,
+        "ts": 1781107969.9068546,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-8",
+        "level": "info",
+        "payload_inline": "{\"candidate\":{\"git_oid\":\"4751357400cdfcabc59f9fc2b49434804afd085e\",\"id\":\"candidate-4751357400cd\",\"is_active\":false,\"promoted_from_verdict_id\":\"verdict-a6efc5c494731732\",\"promoted_ts\":1781107969.9232008,\"run_id\":\"run-pilot-candidates\",\"score_record_id\":\"score-4751357400cd-30196d119ffb-6ef7fb1f4e6d\"},\"candidate_branch\":\"arena/candidate/cycle-1\",\"verdict_id\":\"verdict-a6efc5c494731732\"}",
+        "payload_json_sha": "29a94050bee61bd0f07c1470ec9b3b6d6595f35723b370d0fb9941f3cfd27508",
+        "run_id": "run-pilot-candidates",
+        "seq": 8,
+        "ts": 1781107972.5994143,
+        "type": "CANDIDATE_PACKAGED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-9",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-1\"}",
+        "payload_json_sha": "ff1e063f3a2997047265c49846c46d5ed7ff29f8d80de65dbe2c4d1d62585a8b",
+        "run_id": "run-pilot-candidates",
+        "seq": 9,
+        "ts": 1781107972.6274943,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-candidates-10",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-1\"}",
+        "payload_json_sha": "85cd283f062e47ee8909b0dd476d0a067f69dfc0d477a560fab042028e75e61f",
+        "run_id": "run-pilot-candidates",
+        "seq": 10,
+        "ts": 1781107972.6291223,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-11",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":2,\"worktree_id\":\"cycle-2\"}",
+        "payload_json_sha": "554c63cee75637cb116ae11e494ac091b29e9baa69ed223dcd84c9a12d5135bf",
+        "run_id": "run-pilot-candidates",
+        "seq": 11,
+        "ts": 1781107972.6436687,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-12",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot\"}",
+        "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+        "run_id": "run-pilot-candidates",
+        "seq": 12,
+        "ts": 1781107975.4438784,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-13",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"diff_proposal\\u00d7tests/test_client.py\",\"fingerprint_id\":\"05c0c81276721084c2c0b0cfa59c3bf8\",\"hypothesis_id\":\"hyp-cycle-2-05c0c8127672\",\"target_files\":[\"tests/test_client.py\"]}",
+        "payload_json_sha": "7ca894de1827ff73b5757a60be526d18ff1233664ccd6043a48632da66752f81",
+        "run_id": "run-pilot-candidates",
+        "seq": 13,
+        "ts": 1781107975.4451709,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-14",
+        "level": "info",
+        "payload_inline": "{\"hypothesis_id\":\"hyp-cycle-2-05c0c8127672\",\"patch_path\":\"/tmp/build-arena-m3-07/worktrees/cycle-2/.arena/patches/hyp-cycle-2-05c0c8127672.patch\"}",
+        "payload_json_sha": "61644bf81a1627d77b0025ea2530d6afcbe694829b18f7f067f313f605d36a7f",
+        "run_id": "run-pilot-candidates",
+        "seq": 14,
+        "ts": 1781107975.4731967,
+        "type": "PATCH_APPLIED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-15",
+        "level": "info",
+        "payload_inline": "{\"id\":\"ablation-2677e8a7fee8dbce\",\"load_bearing\":true,\"probe_set\":[\"EARLY_ANSWERING\",\"FILLER_TOKENS\",\"PARAPHRASING\"],\"probes_changed_output\":3,\"quorum_threshold\":2,\"runner_used\":\"ollama\",\"verdict_id\":\"verdict-92baf6443b72ca97\"}",
+        "payload_json_sha": "e2e5755e982ea8d2e691451dc97b76ba98efa2d640a67351e56d6b4d7d359e20",
+        "run_id": "run-pilot-candidates",
+        "seq": 15,
+        "ts": 1781107978.178761,
+        "type": "ABLATION_RESULT"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-16",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"05c0c81276721084c2c0b0cfa59c3bf8\",\"hypothesis_id\":\"hyp-cycle-2-05c0c8127672\",\"outcome\":\"PROMOTED\",\"reject_reason\":null,\"score_delta\":25.854327,\"verdict_id\":\"verdict-92baf6443b72ca97\"}",
+        "payload_json_sha": "ca17dfea8313ffb662f2f2f381747456f9b5174b9408f138d0441568ec06eb7d",
+        "run_id": "run-pilot-candidates",
+        "seq": 16,
+        "ts": 1781107978.1798334,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-17",
+        "level": "info",
+        "payload_inline": "{\"candidate\":{\"git_oid\":\"42cc295b9010068daddbbe2f48f8f309d8195703\",\"id\":\"candidate-42cc295b9010\",\"is_active\":false,\"promoted_from_verdict_id\":\"verdict-92baf6443b72ca97\",\"promoted_ts\":1781107978.1880374,\"run_id\":\"run-pilot-candidates\",\"score_record_id\":\"score-42cc295b9010-30196d119ffb-6ef7fb1f4e6d\"},\"candidate_branch\":\"arena/candidate/cycle-2\",\"verdict_id\":\"verdict-92baf6443b72ca97\"}",
+        "payload_json_sha": "8bffb8cde4ae5d6e9ec21713895b5f71d57690bf9aee44f08aaaf9317e78a2d6",
+        "run_id": "run-pilot-candidates",
+        "seq": 17,
+        "ts": 1781107980.8592758,
+        "type": "CANDIDATE_PACKAGED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-18",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-2\"}",
+        "payload_json_sha": "32a93a528843378dfdae9318cd5aee5751c5bccfb93dea6d286e770d120c62f4",
+        "run_id": "run-pilot-candidates",
+        "seq": 18,
+        "ts": 1781107980.888011,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-candidates-19",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-2\"}",
+        "payload_json_sha": "969a9306f3a18e87e582317933d51f8ab7cd53e9ef21fc7fcb8079ed873711d3",
+        "run_id": "run-pilot-candidates",
+        "seq": 19,
+        "ts": 1781107980.8894594,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-20",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":3,\"worktree_id\":\"cycle-3\"}",
+        "payload_json_sha": "3f07ff2ad5b93106d94a0ce16353e77ba2859268d42f29c148985161a5695985",
+        "run_id": "run-pilot-candidates",
+        "seq": 20,
+        "ts": 1781107980.9059982,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-21",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot\"}",
+        "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+        "run_id": "run-pilot-candidates",
+        "seq": 21,
+        "ts": 1781107983.737147,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-22",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"diff_proposal\\u00d7tests/test_resources.py\",\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-3-8b3bf3ffb235\",\"target_files\":[\"tests/test_resources.py\"]}",
+        "payload_json_sha": "b7d7a452b0047f873aceae1eba43842bac72438976988a4a32659a22d039a9b2",
+        "run_id": "run-pilot-candidates",
+        "seq": 22,
+        "ts": 1781107983.7397962,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-23",
+        "level": "info",
+        "payload_inline": "{\"hypothesis_id\":\"hyp-cycle-3-8b3bf3ffb235\",\"patch_path\":\"/tmp/build-arena-m3-07/worktrees/cycle-3/.arena/patches/hyp-cycle-3-8b3bf3ffb235.patch\"}",
+        "payload_json_sha": "67f04f20ace5e6bcd0f3ae34d82176fd738eb8897047ac16bd9f3490121e9dd5",
+        "run_id": "run-pilot-candidates",
+        "seq": 23,
+        "ts": 1781107983.774284,
+        "type": "PATCH_APPLIED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-24",
+        "level": "info",
+        "payload_inline": "{\"id\":\"ablation-c4f4dce9f19eb30d\",\"load_bearing\":true,\"probe_set\":[\"EARLY_ANSWERING\",\"FILLER_TOKENS\",\"PARAPHRASING\"],\"probes_changed_output\":3,\"quorum_threshold\":2,\"runner_used\":\"ollama\",\"verdict_id\":\"verdict-d33cf89e31e6c625\"}",
+        "payload_json_sha": "e9a0125e1c520d66d4848601359988ebfe7801d74a061695a5a6de86ad5c400b",
+        "run_id": "run-pilot-candidates",
+        "seq": 24,
+        "ts": 1781107986.5374126,
+        "type": "ABLATION_RESULT"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-25",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-3-8b3bf3ffb235\",\"outcome\":\"PROMOTED\",\"reject_reason\":null,\"score_delta\":25.854327,\"verdict_id\":\"verdict-d33cf89e31e6c625\"}",
+        "payload_json_sha": "1e394a716eee22c81427c3aa75aac88e8c6789709f4fa2d150aeb0cc157bf69d",
+        "run_id": "run-pilot-candidates",
+        "seq": 25,
+        "ts": 1781107986.5384977,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-26",
+        "level": "info",
+        "payload_inline": "{\"candidate\":{\"git_oid\":\"859bef06483b9c6abbb5949a33fbe2bbab062000\",\"id\":\"candidate-859bef06483b\",\"is_active\":false,\"promoted_from_verdict_id\":\"verdict-d33cf89e31e6c625\",\"promoted_ts\":1781107986.554872,\"run_id\":\"run-pilot-candidates\",\"score_record_id\":\"score-859bef06483b-30196d119ffb-6ef7fb1f4e6d\"},\"candidate_branch\":\"arena/candidate/cycle-3\",\"verdict_id\":\"verdict-d33cf89e31e6c625\"}",
+        "payload_json_sha": "3ee8c634bd1ae7ca20337c6c45f3f7db9cc764c326fe218a3ed192ad459debc1",
+        "run_id": "run-pilot-candidates",
+        "seq": 26,
+        "ts": 1781107989.2695632,
+        "type": "CANDIDATE_PACKAGED"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-27",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-3\"}",
+        "payload_json_sha": "87f05a8f8d3eb8a630a195c30b9a0214acc4209f4ef28392d847e69845c1c769",
+        "run_id": "run-pilot-candidates",
+        "seq": 27,
+        "ts": 1781107989.3065903,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-3",
+        "id": "evt-run-pilot-candidates-28",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-3\"}",
+        "payload_json_sha": "fa74022cc4f11013cb7b879d9f63f54f02427b55fa310b1fd2762227bc208f1f",
+        "run_id": "run-pilot-candidates",
+        "seq": 28,
+        "ts": 1781107989.3088045,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-29",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":4,\"worktree_id\":\"cycle-4\"}",
+        "payload_json_sha": "b5c2929724ec45cdc103ab848226889f0dc7e72c4e81616e7b0eb5b307329e84",
+        "run_id": "run-pilot-candidates",
+        "seq": 29,
+        "ts": 1781107989.3300169,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-30",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot\"}",
+        "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+        "run_id": "run-pilot-candidates",
+        "seq": 30,
+        "ts": 1781107992.1838386,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-31",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"diff_proposal\\u00d7tests/test_client.py\",\"fingerprint_id\":\"05c0c81276721084c2c0b0cfa59c3bf8\",\"hypothesis_id\":\"hyp-cycle-4-05c0c8127672\",\"target_files\":[\"tests/test_client.py\"]}",
+        "payload_json_sha": "ce369b2394d5d52db7e1a8aa3f791a62c45bdf1a215c03763ad7533291ba60b0",
+        "run_id": "run-pilot-candidates",
+        "seq": 31,
+        "ts": 1781107992.1852372,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-32",
+        "level": "info",
+        "payload_inline": "{\"hypothesis_id\":\"hyp-cycle-4-05c0c8127672\",\"patch_path\":\"/tmp/build-arena-m3-07/worktrees/cycle-4/.arena/patches/hyp-cycle-4-05c0c8127672.patch\"}",
+        "payload_json_sha": "78761e284c3581532efdfd3f4631a7c40615f6f7ec5bfb444ca116dd0e08c1b3",
+        "run_id": "run-pilot-candidates",
+        "seq": 32,
+        "ts": 1781107992.1995676,
+        "type": "PATCH_APPLIED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-33",
+        "level": "info",
+        "payload_inline": "{\"id\":\"ablation-95c52d6cc3053bf7\",\"load_bearing\":true,\"probe_set\":[\"EARLY_ANSWERING\",\"FILLER_TOKENS\",\"PARAPHRASING\"],\"probes_changed_output\":3,\"quorum_threshold\":2,\"runner_used\":\"ollama\",\"verdict_id\":\"verdict-789a86ee613b33be\"}",
+        "payload_json_sha": "3bde251a955ba1f01b5d296d5d0744f9dbe4174254e85f14c26137d6f6781865",
+        "run_id": "run-pilot-candidates",
+        "seq": 33,
+        "ts": 1781107994.9282858,
+        "type": "ABLATION_RESULT"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-34",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"05c0c81276721084c2c0b0cfa59c3bf8\",\"hypothesis_id\":\"hyp-cycle-4-05c0c8127672\",\"outcome\":\"PROMOTED\",\"reject_reason\":null,\"score_delta\":25.854327,\"verdict_id\":\"verdict-789a86ee613b33be\"}",
+        "payload_json_sha": "0e4b82ebe8c494f0a9ccc56543091ff310f9abe59e9c7681afcb59416a8eae41",
+        "run_id": "run-pilot-candidates",
+        "seq": 34,
+        "ts": 1781107994.9298434,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-35",
+        "level": "info",
+        "payload_inline": "{\"candidate\":{\"git_oid\":\"1998f6492119a6eb112e5e8cd3208ce377bd7a2e\",\"id\":\"candidate-1998f6492119\",\"is_active\":false,\"promoted_from_verdict_id\":\"verdict-789a86ee613b33be\",\"promoted_ts\":1781107994.951994,\"run_id\":\"run-pilot-candidates\",\"score_record_id\":\"score-1998f6492119-30196d119ffb-6ef7fb1f4e6d\"},\"candidate_branch\":\"arena/candidate/cycle-4\",\"verdict_id\":\"verdict-789a86ee613b33be\"}",
+        "payload_json_sha": "25e3f301c6815e2e4ae449c78b6f2e9b6c6b4f5de80d76b041dcb0978e6a979b",
+        "run_id": "run-pilot-candidates",
+        "seq": 35,
+        "ts": 1781107997.6325495,
+        "type": "CANDIDATE_PACKAGED"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-36",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-4\"}",
+        "payload_json_sha": "013a3dc436380b9481350f81efbaf42c0a72d2439852ccba6bf3855adb577026",
+        "run_id": "run-pilot-candidates",
+        "seq": 36,
+        "ts": 1781107997.6487086,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-4",
+        "id": "evt-run-pilot-candidates-37",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-4\"}",
+        "payload_json_sha": "d767a2001d07a4d925c2e9aa31bbc219a50212b81f8ecd33b07abb4241583f3c",
+        "run_id": "run-pilot-candidates",
+        "seq": 37,
+        "ts": 1781107997.6500063,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-38",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":5,\"worktree_id\":\"cycle-5\"}",
+        "payload_json_sha": "d77cf924947ab3a5c72f2b38c358d935e91fffa42d6201274c9f0a451cab586c",
+        "run_id": "run-pilot-candidates",
+        "seq": 38,
+        "ts": 1781107997.6589289,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-39",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot\"}",
+        "payload_json_sha": "4384de0dde6a75faa78e2e825f063add00032919868eac2a0f5962e262af64cc",
+        "run_id": "run-pilot-candidates",
+        "seq": 39,
+        "ts": 1781108000.4083495,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-40",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"diff_proposal\\u00d7tests/test_resources.py\",\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-5-8b3bf3ffb235\",\"target_files\":[\"tests/test_resources.py\"]}",
+        "payload_json_sha": "585cd5c93ab6f09c68a1420b03055e4b3035fb86d0be6eca7579b837dddcad02",
+        "run_id": "run-pilot-candidates",
+        "seq": 40,
+        "ts": 1781108000.4111338,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-41",
+        "level": "info",
+        "payload_inline": "{\"hypothesis_id\":\"hyp-cycle-5-8b3bf3ffb235\",\"patch_path\":\"/tmp/build-arena-m3-07/worktrees/cycle-5/.arena/patches/hyp-cycle-5-8b3bf3ffb235.patch\"}",
+        "payload_json_sha": "ffaeb9f43bcafdf4dded0adf74521d1b8c445c2bc1dd64466c323fc4707ee52b",
+        "run_id": "run-pilot-candidates",
+        "seq": 41,
+        "ts": 1781108000.4359229,
+        "type": "PATCH_APPLIED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-42",
+        "level": "info",
+        "payload_inline": "{\"id\":\"ablation-7f2884b9ed5a3649\",\"load_bearing\":true,\"probe_set\":[\"EARLY_ANSWERING\",\"FILLER_TOKENS\",\"PARAPHRASING\"],\"probes_changed_output\":3,\"quorum_threshold\":2,\"runner_used\":\"ollama\",\"verdict_id\":\"verdict-873d326e263ddf3b\"}",
+        "payload_json_sha": "8530c2ee702fad944540fa9854958d2004941b19485d77d26ce1067cd9234e73",
+        "run_id": "run-pilot-candidates",
+        "seq": 42,
+        "ts": 1781108003.0996678,
+        "type": "ABLATION_RESULT"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-43",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"8b3bf3ffb2356cc39c3acd7f3ae88b49\",\"hypothesis_id\":\"hyp-cycle-5-8b3bf3ffb235\",\"outcome\":\"PROMOTED\",\"reject_reason\":null,\"score_delta\":25.854327,\"verdict_id\":\"verdict-873d326e263ddf3b\"}",
+        "payload_json_sha": "0c978d7e8a35a655cc19bbd4e5fec59d602eddc285dcf6682ee202a708fccebd",
+        "run_id": "run-pilot-candidates",
+        "seq": 43,
+        "ts": 1781108003.1009426,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-44",
+        "level": "info",
+        "payload_inline": "{\"candidate\":{\"git_oid\":\"1f5e6f9351076de14eec4d1bc7a776dac234d570\",\"id\":\"candidate-1f5e6f935107\",\"is_active\":false,\"promoted_from_verdict_id\":\"verdict-873d326e263ddf3b\",\"promoted_ts\":1781108003.109083,\"run_id\":\"run-pilot-candidates\",\"score_record_id\":\"score-1f5e6f935107-30196d119ffb-6ef7fb1f4e6d\"},\"candidate_branch\":\"arena/candidate/cycle-5\",\"verdict_id\":\"verdict-873d326e263ddf3b\"}",
+        "payload_json_sha": "d2606358150eef9857cf3a76bf59d0f6973a98e80bb632cef1d4d07c9682c304",
+        "run_id": "run-pilot-candidates",
+        "seq": 44,
+        "ts": 1781108005.7712545,
+        "type": "CANDIDATE_PACKAGED"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-45",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-5\"}",
+        "payload_json_sha": "b6edbc315a33fc814f7832919c8efd463c6374b55d04d87f0104f1cf1fcfb62b",
+        "run_id": "run-pilot-candidates",
+        "seq": 45,
+        "ts": 1781108005.7871246,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-5",
+        "id": "evt-run-pilot-candidates-46",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-5\"}",
+        "payload_json_sha": "87acfd80f153ac870746e1b59c032fb1fb2eead3cb080a2cda475793c66fda6f",
+        "run_id": "run-pilot-candidates",
+        "seq": 46,
+        "ts": 1781108005.7891772,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": null,
+        "id": "evt-run-pilot-candidates-47",
+        "level": "info",
+        "payload_inline": "{\"cycles_total\":5,\"promotions_total\":5}",
+        "payload_json_sha": "d432bdef32004e3aa8c37f128d3680c3cca77e9e73de02429df3e5e86ff63c09",
+        "run_id": "run-pilot-candidates",
+        "seq": 47,
+        "ts": 1781108005.78981,
+        "type": "RUN_COMPLETED"
+      }
+    ],
+    "result": {
+      "cycles_total": 5,
+      "promotions_total": 5
+    },
+    "selection": {
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "path": "tests/test_resources.py",
+          "rank": 1,
+          "score": 23.0,
+          "signals": {
+            "complexity": 10.0,
+            "coverage_gap": 0.0,
+            "git_churn": 1,
+            "lint_density": 0.0,
+            "lint_violations": 0,
+            "loc": 153,
+            "todo_count": 0
+          }
+        },
+        {
+          "path": "tests/test_client.py",
+          "rank": 2,
+          "score": 27.0,
+          "signals": {
+            "complexity": 12.0,
+            "coverage_gap": 0.0,
+            "git_churn": 1,
+            "lint_density": 0.0,
+            "lint_violations": 0,
+            "loc": 162,
+            "todo_count": 0
+          }
+        }
+      ],
+      "git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+      "goal_config_schema_version": "goal-config/v1",
+      "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+      "id": "target-selection-3b905d25fb8ff1e3-test-resources-client",
+      "omitted_count": 0,
+      "version": "target-selection/v1"
+    },
+    "transport_requests": [
+      {
+        "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+        "hypothesis_id": "hyp-cycle-1-8b3bf3ffb235",
+        "success_criterion": "score improves because pyright errors drop while tests still pass",
+        "target_path": "tests/test_resources.py"
+      },
+      {
+        "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+        "hypothesis_id": "hyp-cycle-2-05c0c8127672",
+        "success_criterion": "score improves because pyright errors drop while tests still pass",
+        "target_path": "tests/test_client.py"
+      },
+      {
+        "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+        "hypothesis_id": "hyp-cycle-3-8b3bf3ffb235",
+        "success_criterion": "score improves because pyright errors drop while tests still pass",
+        "target_path": "tests/test_resources.py"
+      },
+      {
+        "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+        "hypothesis_id": "hyp-cycle-4-05c0c8127672",
+        "success_criterion": "score improves because pyright errors drop while tests still pass",
+        "target_path": "tests/test_client.py"
+      },
+      {
+        "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+        "hypothesis_id": "hyp-cycle-5-8b3bf3ffb235",
+        "success_criterion": "score improves because pyright errors drop while tests still pass",
+        "target_path": "tests/test_resources.py"
+      }
+    ]
+  },
+  "canonical_after": {
+    "head": "00a632ac950a8c411f8d8ac90197e28191f58619",
+    "status": "## main...origin/main"
+  },
+  "canonical_before": {
+    "head": "00a632ac950a8c411f8d8ac90197e28191f58619",
+    "status": "## main...origin/main"
+  },
+  "canonical_repo": "/home/leonb/projects/fmc-mcp",
+  "divergence_halt": {
+    "halt_reason": "BOUNDARY_VIOLATION_ATTEMPT"
+  },
+  "dry_run_pr_bodies": [
+    {
+      "bytes": 990,
+      "cycle_id": "cycle-1",
+      "evidence_path": "/tmp/build-arena-m3-07/evidence/cycle-1.json",
+      "mode": "dry-run",
+      "path": "/tmp/build-arena-m3-07/pr-bodies/cycle-1.md"
+    },
+    {
+      "bytes": 990,
+      "cycle_id": "cycle-2",
+      "evidence_path": "/tmp/build-arena-m3-07/evidence/cycle-2.json",
+      "mode": "dry-run",
+      "path": "/tmp/build-arena-m3-07/pr-bodies/cycle-2.md"
+    }
+  ],
+  "evidence_files": [
+    "/tmp/build-arena-m3-07/evidence/cycle-1.json",
+    "/tmp/build-arena-m3-07/evidence/cycle-2.json",
+    "/tmp/build-arena-m3-07/evidence/cycle-3.json",
+    "/tmp/build-arena-m3-07/evidence/cycle-4.json",
+    "/tmp/build-arena-m3-07/evidence/cycle-5.json"
+  ],
+  "halt_evidence_files": [
+    "/tmp/build-arena-m3-07/halt-evidence/halt-run-pilot-budget-halt.json",
+    "/tmp/build-arena-m3-07/halt-evidence/halt-run-pilot-divergence-halt.json"
+  ],
+  "pilot_repo": "/tmp/build-arena-m3-07/fmc-mcp-pilot",
+  "pilot_status_after": "## main...origin/main [ahead 1]",
+  "reject_evidence_files": [
+    "/tmp/build-arena-m3-07/reject-evidence/cycle-1.json",
+    "/tmp/build-arena-m3-07/reject-evidence/halt-run-pilot-reject.json"
+  ],
+  "reject_run": {
+    "events": [
+      {
+        "cycle_id": null,
+        "id": "evt-run-pilot-reject-1",
+        "level": "info",
+        "payload_inline": "{\"git_head_at_start\":\"dcefc9888603623fbae6291aa7f88bd0a44c9203\",\"run_id\":\"run-pilot-reject\"}",
+        "payload_json_sha": "368ff47313e7d995e545c0a1a93a865c25bc9094b1636b16ca4c41aeabe388fa",
+        "run_id": "run-pilot-reject",
+        "seq": 1,
+        "ts": 1781108005.7929416,
+        "type": "RUN_STARTED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-2",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":1,\"worktree_id\":\"cycle-1\"}",
+        "payload_json_sha": "20b30e8955081b0a8f27ff7ab950bdbbfc7dedebf24960c8c8058bfb63f6531a",
+        "run_id": "run-pilot-reject",
+        "seq": 2,
+        "ts": 1781108005.8135984,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-3",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot-reject\"}",
+        "payload_json_sha": "6aad617855dd0a8551ab504d01515749a8c11a1157054beea950df00c7f56a7e",
+        "run_id": "run-pilot-reject",
+        "seq": 3,
+        "ts": 1781108008.6230023,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-4",
+        "level": "info",
+        "payload_inline": "{\"bandit_arm\":\"reject-injection\\u00d7tests\",\"fingerprint_id\":\"fe58dbc059b7c0abd3ea42d1c7728fae\",\"hypothesis_id\":\"hyp-cycle-1-3b6d0436cb04\",\"target_files\":[\"tests/test_resources.py\"]}",
+        "payload_json_sha": "fcb9fab2badc5a82bfaff5dfca43040d781dc34f31863868172ecb284c87c751",
+        "run_id": "run-pilot-reject",
+        "seq": 4,
+        "ts": 1781108008.626108,
+        "type": "HYPOTHESIS_PROPOSED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-5",
+        "level": "info",
+        "payload_inline": "{\"command\":\"static reject injection\",\"exit_code\":1,\"stderr\":\"intentional empty diff rejection\"}",
+        "payload_json_sha": "d59b04a1ba4bb2e00d9b74c7e085eda2869269285be0c7e42bc196bfc1dd153f",
+        "run_id": "run-pilot-reject",
+        "seq": 5,
+        "ts": 1781108008.628151,
+        "type": "COMMAND_TRANSCRIPT"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-6",
+        "level": "info",
+        "payload_inline": "{\"fingerprint_id\":\"fe58dbc059b7c0abd3ea42d1c7728fae\",\"hypothesis_id\":\"hyp-cycle-1-3b6d0436cb04\",\"outcome\":\"DISCARDED\",\"reject_reason\":\"RUNNER_ERROR\",\"score_delta\":null,\"verdict_id\":\"verdict-hyp-cycle-1-3b6d0436cb04-runner_error\"}",
+        "payload_json_sha": "35129521469afa219559346ebe39bbf5012c69843f8ef72533e6730d31331d7c",
+        "run_id": "run-pilot-reject",
+        "seq": 6,
+        "ts": 1781108008.6291971,
+        "type": "VERDICT_DECIDED"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-7",
+        "level": "info",
+        "payload_inline": "{\"worktree_id\":\"cycle-1\"}",
+        "payload_json_sha": "ff1e063f3a2997047265c49846c46d5ed7ff29f8d80de65dbe2c4d1d62585a8b",
+        "run_id": "run-pilot-reject",
+        "seq": 7,
+        "ts": 1781108008.6623662,
+        "type": "WORKTREE_TORN_DOWN"
+      },
+      {
+        "cycle_id": "cycle-1",
+        "id": "evt-run-pilot-reject-8",
+        "level": "info",
+        "payload_inline": "{\"cycle_id\":\"cycle-1\"}",
+        "payload_json_sha": "85cd283f062e47ee8909b0dd476d0a067f69dfc0d477a560fab042028e75e61f",
+        "run_id": "run-pilot-reject",
+        "seq": 8,
+        "ts": 1781108008.6640074,
+        "type": "CYCLE_ENDED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-reject-9",
+        "level": "info",
+        "payload_inline": "{\"ordinal\":2,\"worktree_id\":\"cycle-2\"}",
+        "payload_json_sha": "554c63cee75637cb116ae11e494ac091b29e9baa69ed223dcd84c9a12d5135bf",
+        "run_id": "run-pilot-reject",
+        "seq": 9,
+        "ts": 1781108008.681018,
+        "type": "CYCLE_STARTED"
+      },
+      {
+        "cycle_id": "cycle-2",
+        "id": "evt-run-pilot-reject-10",
+        "level": "info",
+        "payload_inline": "{\"baseline_id\":\"baseline-pilot-reject\"}",
+        "payload_json_sha": "6aad617855dd0a8551ab504d01515749a8c11a1157054beea950df00c7f56a7e",
+        "run_id": "run-pilot-reject",
+        "seq": 10,
+        "ts": 1781108011.452211,
+        "type": "SCAN_COMPLETE"
+      },
+      {
+        "cycle_id": null,
+        "id": "evt-run-pilot-reject-11",
+        "level": "error",
+        "payload_inline": "{\"detail\":\"cycle_count budget exhausted: used=2 cap=2 promotions=0\",\"reason\":\"BUDGET_EXHAUSTED_ZERO_PROMOTIONS\"}",
+        "payload_json_sha": "51167d22ea2a232464d0cd98bdb0562bebf25507690f987cab429e4d2e6a590b",
+        "run_id": "run-pilot-reject",
+        "seq": 11,
+        "ts": 1781108011.4529417,
+        "type": "HALTED"
+      }
+    ],
+    "ledger": [
+      {
+        "cycle_id": "cycle-1",
+        "fingerprint_id": "fe58dbc059b7c0abd3ea42d1c7728fae",
+        "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+        "outcome": "DISCARDED",
+        "reject_reason": "RUNNER_ERROR"
+      }
+    ],
+    "result": {
+      "cycles_total": 2,
+      "halt_reason": "BUDGET_EXHAUSTED_ZERO_PROMOTIONS",
+      "promotions_total": 0
+    }
+  },
+  "score_after_pilot_checkout": {
+    "computed_ts": 1781108014.0828602,
+    "git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "goal_config_schema_version": "goal-config/v1",
+    "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+    "id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "scorer_lock_sha": "30196d119ffb657290ed92418c8b84813a650527bac7fe0fb63c09222191c842",
+    "vector": {
+      "composite": 144.519508,
+      "coverage_pct": 74.731183,
+      "cyclomatic_avg": 1.942857,
+      "pyright_errors": 2,
+      "ruff_violations": 0,
+      "runtime_p95_ms": 10.0,
+      "tests_pass": true
+    }
+  },
+  "score_before": {
+    "computed_ts": 1781107964.3138921,
+    "git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "goal_config_schema_version": "goal-config/v1",
+    "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+    "id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "scorer_lock_sha": "30196d119ffb657290ed92418c8b84813a650527bac7fe0fb63c09222191c842",
+    "vector": {
+      "composite": 144.519508,
+      "coverage_pct": 74.731183,
+      "cyclomatic_avg": 1.942857,
+      "pyright_errors": 2,
+      "ruff_violations": 0,
+      "runtime_p95_ms": 10.0,
+      "tests_pass": true
+    }
+  },
+  "worktree_root_remaining": []
+}

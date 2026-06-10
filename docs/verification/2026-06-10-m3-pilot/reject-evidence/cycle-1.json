@@ -1,0 +1,163 @@
+{
+  "budget": {
+    "claude_code_credits_cap": null,
+    "claude_code_credits_used": 0,
+    "codex_credits_cap": null,
+    "codex_credits_used": 0,
+    "copilot_premium_cap": null,
+    "copilot_premium_used": 0,
+    "cycle_count_cap": 2,
+    "cycle_count_used": 1,
+    "promotions_total": 0,
+    "start_ts": 1781108005.7936,
+    "wall_clock_seconds_cap": 14400,
+    "wall_clock_seconds_used": 0
+  },
+  "candidate": null,
+  "cycle_id": "cycle-1",
+  "events": [
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-reject-1",
+      "level": "info",
+      "payload": {
+        "git_head_at_start": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+        "run_id": "run-pilot-reject"
+      },
+      "payload_json_sha": "368ff47313e7d995e545c0a1a93a865c25bc9094b1636b16ca4c41aeabe388fa",
+      "run_id": "run-pilot-reject",
+      "seq": 1,
+      "ts": 1781108005.7929416,
+      "type": "RUN_STARTED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-2",
+      "level": "info",
+      "payload": {
+        "ordinal": 1,
+        "worktree_id": "cycle-1"
+      },
+      "payload_json_sha": "20b30e8955081b0a8f27ff7ab950bdbbfc7dedebf24960c8c8058bfb63f6531a",
+      "run_id": "run-pilot-reject",
+      "seq": 2,
+      "ts": 1781108005.8135984,
+      "type": "CYCLE_STARTED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-3",
+      "level": "info",
+      "payload": {
+        "baseline_id": "baseline-pilot-reject"
+      },
+      "payload_json_sha": "6aad617855dd0a8551ab504d01515749a8c11a1157054beea950df00c7f56a7e",
+      "run_id": "run-pilot-reject",
+      "seq": 3,
+      "ts": 1781108008.6230023,
+      "type": "SCAN_COMPLETE"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-4",
+      "level": "info",
+      "payload": {
+        "bandit_arm": "reject-injection\u00d7tests",
+        "fingerprint_id": "fe58dbc059b7c0abd3ea42d1c7728fae",
+        "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+        "target_files": [
+          "tests/test_resources.py"
+        ]
+      },
+      "payload_json_sha": "fcb9fab2badc5a82bfaff5dfca43040d781dc34f31863868172ecb284c87c751",
+      "run_id": "run-pilot-reject",
+      "seq": 4,
+      "ts": 1781108008.626108,
+      "type": "HYPOTHESIS_PROPOSED"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-5",
+      "level": "info",
+      "payload": {
+        "command": "static reject injection",
+        "exit_code": 1,
+        "stderr": "intentional empty diff rejection"
+      },
+      "payload_json_sha": "d59b04a1ba4bb2e00d9b74c7e085eda2869269285be0c7e42bc196bfc1dd153f",
+      "run_id": "run-pilot-reject",
+      "seq": 5,
+      "ts": 1781108008.628151,
+      "type": "COMMAND_TRANSCRIPT"
+    },
+    {
+      "cycle_id": "cycle-1",
+      "id": "evt-run-pilot-reject-6",
+      "level": "info",
+      "payload": {
+        "fingerprint_id": "fe58dbc059b7c0abd3ea42d1c7728fae",
+        "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+        "outcome": "DISCARDED",
+        "reject_reason": "RUNNER_ERROR",
+        "score_delta": null,
+        "verdict_id": "verdict-hyp-cycle-1-3b6d0436cb04-runner_error"
+      },
+      "payload_json_sha": "35129521469afa219559346ebe39bbf5012c69843f8ef72533e6730d31331d7c",
+      "run_id": "run-pilot-reject",
+      "seq": 6,
+      "ts": 1781108008.6291971,
+      "type": "VERDICT_DECIDED"
+    }
+  ],
+  "patch": {
+    "added_lines": 0,
+    "base_git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "deleted_lines": 0,
+    "files": [],
+    "head_git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203"
+  },
+  "run_id": "run-pilot-reject",
+  "schema_version": "cycle-evidence/v1",
+  "score_after": null,
+  "score_before": {
+    "computed_ts": 1781107964.3138921,
+    "git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "goal_config_schema_version": "goal-config/v1",
+    "goal_config_sha": "6ef7fb1f4e6df615d7ff8ba321b701c7a3cd0404fd7d135e6f09757779315295",
+    "id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "scorer_lock_sha": "30196d119ffb657290ed92418c8b84813a650527bac7fe0fb63c09222191c842",
+    "vector": {
+      "composite": 144.519508,
+      "coverage_pct": 74.731183,
+      "cyclomatic_avg": 1.942857,
+      "pyright_errors": 2,
+      "ruff_violations": 0,
+      "runtime_p95_ms": 10.0,
+      "tests_pass": true
+    }
+  },
+  "verdict": {
+    "ablation_result_id": null,
+    "decided_ts": 1781108008.6287467,
+    "hypothesis_id": "hyp-cycle-1-3b6d0436cb04",
+    "id": "verdict-hyp-cycle-1-3b6d0436cb04-runner_error",
+    "outcome": "DISCARDED",
+    "pinned_regression": null,
+    "reject_reason": "RUNNER_ERROR",
+    "score_after_id": null,
+    "score_before_id": "score-dcefc9888603-30196d119ffb-6ef7fb1f4e6d",
+    "score_delta": null,
+    "tests_passed": false
+  },
+  "worktree": {
+    "base_git_oid": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+    "created_ts": 1781108005.8135011,
+    "cycle_id": "cycle-1",
+    "head_git_oid": null,
+    "id": "cycle-1",
+    "lock_reason": "arena cycle=cycle-1",
+    "path": "/tmp/build-arena-m3-07/reject-worktrees/cycle-1",
+    "torn_down_ts": null
+  },
+  "worktree_root": "/tmp/build-arena-m3-07/reject-worktrees"
+}

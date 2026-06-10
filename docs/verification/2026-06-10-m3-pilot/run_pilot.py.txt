@@ -1,0 +1,449 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import shutil
+import subprocess
+from dataclasses import replace
+from pathlib import Path
+from typing import Any
+
+from arena.budget import BudgetController
+from arena.divergence import DivergenceDetector
+from arena.events import EventLog
+from arena.evidence import CycleEvidenceWriter
+from arena.fingerprints import compute_fingerprint
+from arena.generated.models import Baseline, Hypothesis, RejectReason, Run, RunnerName
+from arena.hypothesizer import Arm, SymbolicHypothesizer, UCB1Bandit
+from arena.ledger import FingerprintFailureLedger
+from arena.loop import LoopContext, run_loop
+from arena.pr_packager import package_candidate_pr
+from arena.router import RunnerRouter
+from arena.runners.base import ApplyResult, RouterEvent
+from arena.runners.diff_proposer import DiffProposalRequest, DiffProposalResponse, DiffProposerRunner
+from arena.target_picker import TargetSelection, select_targets
+from arena.worktrees import CandidatePackager, WorktreeManager
+from scorer.engine import ScoreRecord, Scorer
+from verifier.engine import Verifier
+from verifier.config import VerifierConfig
+
+ROOT = Path("/tmp/build-arena-m3-07")
+CANONICAL = Path("/home/leonb/projects/fmc-mcp")
+BUILD_ARENA = Path("/home/leonb/projects/build-arena")
+PILOT = ROOT / "fmc-mcp-pilot"
+WORKTREE_ROOT = ROOT / "worktrees"
+EVIDENCE_ROOT = ROOT / "evidence"
+PR_ROOT = ROOT / "pr-bodies"
+SUMMARY = ROOT / "summary.json"
+
+
+def run(args: list[str], cwd: Path, *, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=cwd, text=True, capture_output=True, check=check)
+
+
+def out(args: list[str], cwd: Path) -> str:
+    return subprocess.check_output(args, cwd=cwd, text=True).strip()
+
+
+def enum_value(value: Any) -> str:
+    return str(getattr(value, "value", value))
+
+
+def run_model(run_id: str, score: ScoreRecord, config_prefix: str, ts: float) -> Run:
+    return Run(
+        id=run_id,
+        north_star_id="m3-pilot",
+        scorer_lock_sha=score.scorer_lock_sha,
+        config_sha=(config_prefix * 64)[:64],
+        git_head_at_start=score.git_oid,
+        started_ts=ts,
+    )
+
+
+def baseline(run_id: str, score: ScoreRecord, baseline_id: str) -> Baseline:
+    return Baseline(
+        id=baseline_id,
+        run_id=run_id,
+        git_oid=score.git_oid,
+        score_record_id=score.id,
+        promoted_ts=1.0,
+        is_active=True,
+    )
+
+
+def setup_pilot() -> dict[str, Any]:
+    if ROOT.exists():
+        shutil.rmtree(ROOT)
+    ROOT.mkdir(parents=True)
+    canonical_before = {
+        "head": out(["git", "rev-parse", "HEAD"], CANONICAL),
+        "status": out(["git", "status", "--short", "--branch"], CANONICAL),
+    }
+    shutil.copytree(CANONICAL, PILOT, ignore=shutil.ignore_patterns(".pytest_cache", ".ruff_cache", ".venv"))
+    goal = PILOT / ".arena" / "goal.toml"
+    goal.parent.mkdir(parents=True, exist_ok=True)
+    goal.write_text(
+        '''schema_version = "goal-config/v1"
+project_id = "fmc-mcp-pilot"
+goal = "Improve the fmc-mcp Python package while preserving read-only FMC behavior and tests."
+
+[commands]
+test = ["uv", "run", "--with", "pytest", "--with", "pytest-httpx", "--with", "pytest-asyncio", "python", "-m", "pytest", "tests", "-q"]
+lint = ["uv", "run", "--with", "ruff", "python", "-m", "ruff", "check", ".", "--output-format", "json", "--exit-zero"]
+typecheck = ["uv", "run", "--with", "pyright", "--with", "pytest", "--with", "pytest-httpx", "--with", "pytest-asyncio", "python", "-m", "pyright", "--outputjson"]
+coverage = ["uv", "run", "--with", "pytest", "--with", "pytest-httpx", "--with", "pytest-asyncio", "--with", "pytest-cov", "python", "-m", "pytest", "tests", "--cov=fmc_mcp", "--cov-report=json:coverage.json", "--cov-fail-under=70", "-q"]
+runtime_proxy = ["python3", "-c", "import json; print(json.dumps({'runtime_p95_ms': 10.0}))"]
+
+[coverage]
+source = "coverage.json"
+floor = 70.0
+
+[paths]
+source_roots = ["src", "tests"]
+out_of_scope = [".git", ".ruff_cache", ".pytest_cache", "coverage.json", ".coverage", "uv.lock"]
+read_only = [".arena/goal.toml"]
+
+[diff_caps]
+max_files = 4
+max_lines = 320
+
+[weights]
+coverage_pct = 2.0
+pyright_errors = -1.0
+ruff_violations = -1.0
+cyclomatic_avg = -1.0
+runtime_p95_ms = -0.1
+test_failure_penalty = -1000.0
+''',
+        encoding="utf-8",
+    )
+    run(["git", "add", ".arena/goal.toml"], PILOT)
+    run(["git", "commit", "-q", "-m", "arena pilot: add goal config"], PILOT)
+    return canonical_before
+
+
+def make_pyright_fix_patch() -> str:
+    patch_path = Path("/tmp/build_arena_m3_07_candidate.patch")
+    diff = patch_path.read_text(encoding="utf-8")
+    if not diff.strip():
+        raise RuntimeError("pilot patch is empty")
+    return diff
+
+
+class StaticDiffTransport:
+    def __init__(self, diff_text: str) -> None:
+        self.diff_text = diff_text
+        self.requests: list[dict[str, Any]] = []
+
+    def propose(self, request: DiffProposalRequest) -> DiffProposalResponse:
+        self.requests.append(
+            {
+                "hypothesis_id": request.hypothesis_id,
+                "target_path": request.target_path,
+                "goal_config_sha": request.goal_config_sha,
+                "success_criterion": request.success_criterion,
+            }
+        )
+        return DiffProposalResponse(
+            diff_text=self.diff_text,
+            intent="score improves because pyright errors drop while tests still pass",
+            provenance={"transport": "static-pilot-fixture"},
+        )
+
+
+class NoopScanner:
+    async def scan(self, worktree):
+        return {"ast_diff_pattern": "pyright_fixture_annotation"}
+
+
+class CycleTargetHypothesizer:
+    def __init__(self, selection: TargetSelection, success_criterion: str) -> None:
+        self.selection = selection
+        self.success_criterion = success_criterion
+
+    def propose(self, *, cycle_id: str, ast_diff_pattern: str):
+        ordinal = int(cycle_id.rsplit("-", 1)[-1])
+        candidate = self.selection.candidates[(ordinal - 1) % len(self.selection.candidates)]
+        intent = f"Improve {candidate.path}: {self.success_criterion}"
+        fingerprint = compute_fingerprint(
+            intent=intent,
+            target_files=(candidate.path,),
+            technique_tag="diff_proposal",
+            ast_diff_pattern=ast_diff_pattern,
+            first_seen_cycle_id=cycle_id,
+        )
+        hypothesis = Hypothesis(
+            id=f"hyp-{cycle_id}-{fingerprint.id[:12]}",
+            cycle_id=cycle_id,
+            intent=intent,
+            technique_tag="diff_proposal",
+            target_cluster=candidate.path,
+            target_files=[candidate.path],
+            fingerprint_id=fingerprint.id,
+            reasoning_blob_sha=self.selection.id,
+            proposed_ts=0.0,
+        )
+        arm = Arm(
+            technique_tag="diff_proposal",
+            target_cluster=candidate.path,
+            target_files=(candidate.path,),
+            intent_template=intent,
+        )
+        from arena.hypothesizer import HypothesisProposal
+
+        return HypothesisProposal(hypothesis=hypothesis, fingerprint=fingerprint, arm=arm)
+
+
+class CommitAfterApplyRunner:
+    def __init__(self, inner: DiffProposerRunner, paths: tuple[str, ...]) -> None:
+        self.inner = inner
+        self.paths = paths
+        self.name = inner.name
+        self.applied_hypotheses = inner.applied_hypotheses
+
+    async def apply(self, hypothesis, worktree: Path) -> Path:
+        patch_path = await self.inner.apply(hypothesis, worktree)
+        artifact_contents: list[tuple[Path, str]] = []
+        for artifact in (patch_path, patch_path.with_suffix(".patch.provenance.json")):
+            if artifact.exists():
+                artifact_contents.append((artifact, artifact.read_text(encoding="utf-8")))
+                artifact.unlink()
+        run(["git", "rm", "--cached", "-r", "--ignore-unmatch", ".arena/patches"], worktree, check=False)
+        run(["git", "add", "-A", "--", *self.paths], worktree)
+        staged = run(["git", "diff", "--cached", "--name-only"], worktree).stdout.splitlines()
+        missing = [path for path in self.paths if path not in staged]
+        if missing:
+            raise RuntimeError(f"candidate commit did not stage expected paths: missing={missing} staged={staged}")
+        if any(path.startswith(".arena/patches/") for path in staged):
+            raise RuntimeError(f"candidate commit tried to include evidence artifacts: {staged}")
+        run(["git", "commit", "-q", "--no-verify", "-m", f"arena candidate: {hypothesis.id}"], worktree)
+        for artifact, content in artifact_contents:
+            artifact.parent.mkdir(parents=True, exist_ok=True)
+            artifact.write_text(content, encoding="utf-8")
+        return patch_path
+
+
+class RejectRouter:
+    async def apply(self, hypothesis, worktree: Path) -> ApplyResult:
+        return ApplyResult(
+            hypothesis=hypothesis,
+            runner_used=None,
+            patch_path=None,
+            attempts=(RunnerName.codex,),
+            events=(
+                RouterEvent(
+                    type="COMMAND_TRANSCRIPT",
+                    payload={
+                        "command": "static reject injection",
+                        "exit_code": 1,
+                        "stderr": "intentional empty diff rejection",
+                    },
+                ),
+            ),
+            error_reason=RejectReason.RUNNER_ERROR,
+            error_detail="intentional reject injection",
+        )
+
+
+class HaltComponent:
+    pass
+
+
+def run_candidate_cycles(scorer: Scorer, score_before: ScoreRecord, patch_text: str) -> dict[str, Any]:
+    raw_selection = select_targets(PILOT, max_candidates=20)
+    candidates_by_path = {candidate.path: candidate for candidate in raw_selection.candidates}
+    selected_candidates = (
+        replace(candidates_by_path["tests/test_resources.py"], rank=1),
+        replace(candidates_by_path["tests/test_client.py"], rank=2),
+    )
+    selection = TargetSelection(
+        id=f"{raw_selection.id}-test-resources-client",
+        version=raw_selection.version,
+        git_oid=raw_selection.git_oid,
+        goal_config_sha=raw_selection.goal_config_sha,
+        goal_config_schema_version=raw_selection.goal_config_schema_version,
+        candidate_count=len(selected_candidates),
+        omitted_count=0,
+        candidates=selected_candidates,
+    )
+    transport = StaticDiffTransport(patch_text)
+    base_runner = DiffProposerRunner(
+        transport=transport,
+        success_criterion="score improves because pyright errors drop while tests still pass",
+    )
+    runner = CommitAfterApplyRunner(
+        base_runner,
+        ("tests/test_client.py", "tests/test_resources.py", "tests/test_server.py"),
+    )
+    model = run_model("run-pilot-candidates", score_before, "candidate", 1.0)
+    log = EventLog(ROOT / "events" / model.id, run_id=model.id)
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=14400, cycle_count_cap=10),
+        divergence=DivergenceDetector(log),
+        worktrees=WorktreeManager(repo=PILOT, worktree_root=WORKTREE_ROOT),
+        scanner=NoopScanner(),
+        scorer=scorer,
+        hypothesizer=CycleTargetHypothesizer(
+            selection=selection,
+            success_criterion="score improves because pyright errors drop while tests still pass",
+        ),
+        router=RunnerRouter(primary=runner, fallback=runner),
+        verifier=Verifier(VerifierConfig(ablation_advisory=True)),
+        promoter=CandidatePackager(main_repo=PILOT),
+        active_baseline=baseline(model.id, score_before, "baseline-pilot"),
+        active_score=score_before,
+        stop_after_promotions=5,
+        ledger=FingerprintFailureLedger(ROOT / "ledger.jsonl"),
+        evidence_writer=CycleEvidenceWriter(root=EVIDENCE_ROOT, worktree_root=WORKTREE_ROOT),
+    )
+    result = asyncio.run(run_loop(model, ctx))
+    return {
+        "result": {"promotions_total": result.promotions_total, "cycles_total": result.cycles_total},
+        "transport_requests": transport.requests,
+        "events": [event.model_dump(mode="json") for event in log.read_events()],
+        "selection": selection.to_jsonable(),
+    }
+
+
+def run_reject_cycle(scorer: Scorer, score_before: ScoreRecord) -> dict[str, Any]:
+    arm = Arm("reject-injection", "tests", ("tests/test_resources.py",), "Intentional reject for {target_cluster}")
+    model = run_model("run-pilot-reject", score_before, "reject", 2.0)
+    log = EventLog(ROOT / "events" / model.id, run_id=model.id)
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=14400, cycle_count_cap=2),
+        divergence=DivergenceDetector(log),
+        worktrees=WorktreeManager(repo=PILOT, worktree_root=ROOT / "reject-worktrees"),
+        scanner=NoopScanner(),
+        scorer=scorer,
+        hypothesizer=SymbolicHypothesizer(UCB1Bandit([arm])),
+        router=RejectRouter(),
+        verifier=HaltComponent(),
+        promoter=HaltComponent(),
+        active_baseline=baseline(model.id, score_before, "baseline-pilot-reject"),
+        active_score=score_before,
+        ledger=FingerprintFailureLedger(ROOT / "reject-ledger.jsonl"),
+        evidence_writer=CycleEvidenceWriter(root=ROOT / "reject-evidence", worktree_root=ROOT / "reject-worktrees"),
+    )
+    result = asyncio.run(run_loop(model, ctx))
+    return {
+        "result": {
+            "promotions_total": result.promotions_total,
+            "cycles_total": result.cycles_total,
+            "halt_reason": enum_value(result.halt_record.reason) if result.halt_record else None,
+        },
+        "events": [event.model_dump(mode="json") for event in log.read_events()],
+        "ledger": FingerprintFailureLedger(ROOT / "reject-ledger.jsonl").iter_records(),
+    }
+
+
+def run_budget_halt(score_before: ScoreRecord) -> dict[str, Any]:
+    model = run_model("run-pilot-budget-halt", score_before, "budget", 3.0)
+    log = EventLog(ROOT / "events" / model.id, run_id=model.id)
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=999, cycle_count_cap=0),
+        divergence=DivergenceDetector(log),
+        worktrees=HaltComponent(),
+        scanner=HaltComponent(),
+        scorer=HaltComponent(),
+        hypothesizer=HaltComponent(),
+        router=HaltComponent(),
+        verifier=HaltComponent(),
+        promoter=HaltComponent(),
+        active_baseline=baseline(model.id, score_before, "baseline-budget"),
+        active_score=score_before,
+        evidence_writer=CycleEvidenceWriter(root=ROOT / "halt-evidence", worktree_root=ROOT / "budget-worktrees"),
+    )
+    result = asyncio.run(run_loop(model, ctx))
+    return {"halt_reason": enum_value(result.halt_record.reason) if result.halt_record else None}
+
+
+def run_divergence_halt(score_before: ScoreRecord) -> dict[str, Any]:
+    model = run_model("run-pilot-divergence-halt", score_before, "diverge", 4.0)
+    log = EventLog(ROOT / "events" / model.id, run_id=model.id)
+    for index in range(3):
+        log.emit("BOUNDARY_VIOLATION", cycle_id=f"injected-{index}", payload={"hypothesis_id": f"hyp-{index}"})
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=999, cycle_count_cap=60),
+        divergence=DivergenceDetector(log, boundary_violation_attempts_max=3),
+        worktrees=HaltComponent(),
+        scanner=HaltComponent(),
+        scorer=HaltComponent(),
+        hypothesizer=HaltComponent(),
+        router=HaltComponent(),
+        verifier=HaltComponent(),
+        promoter=HaltComponent(),
+        active_baseline=baseline(model.id, score_before, "baseline-divergence"),
+        active_score=score_before,
+        evidence_writer=CycleEvidenceWriter(root=ROOT / "halt-evidence", worktree_root=ROOT / "divergence-worktrees"),
+    )
+    result = asyncio.run(run_loop(model, ctx))
+    return {"halt_reason": enum_value(result.halt_record.reason) if result.halt_record else None}
+
+
+def render_pr_bodies() -> list[dict[str, Any]]:
+    PR_ROOT.mkdir(parents=True, exist_ok=True)
+    rendered = []
+    candidate_evidence: list[tuple[str, Path]] = []
+    for evidence_path in sorted(EVIDENCE_ROOT.glob("cycle-*.json")):
+        payload = json.loads(evidence_path.read_text(encoding="utf-8"))
+        if payload.get("candidate"):
+            candidate_evidence.append((str(payload["cycle_id"]), evidence_path))
+    if len(candidate_evidence) < 2:
+        raise RuntimeError(f"expected at least two candidate evidence files, found {len(candidate_evidence)}")
+    for cycle_id, evidence_path in candidate_evidence[:2]:
+        result = package_candidate_pr(
+            evidence_path=evidence_path,
+            target_repo=PILOT,
+            build_arena_repo=BUILD_ARENA,
+            dry_run=True,
+        )
+        body_path = PR_ROOT / f"{cycle_id}.md"
+        body_path.write_text(result.body, encoding="utf-8")
+        rendered.append({"cycle_id": cycle_id, "evidence_path": str(evidence_path), "path": str(body_path), "mode": result.mode, "bytes": len(result.body)})
+    return rendered
+
+
+def main() -> None:
+    canonical_before = setup_pilot()
+    scorer = Scorer(BUILD_ARENA)
+    score_before = scorer.score_repo(PILOT)
+    patch_text = make_pyright_fix_patch()
+    candidate_run = run_candidate_cycles(scorer, score_before, patch_text)
+    reject_run = run_reject_cycle(scorer, score_before)
+    budget_halt = run_budget_halt(score_before)
+    divergence_halt = run_divergence_halt(score_before)
+    pr_bodies = render_pr_bodies()
+    canonical_after = {
+        "head": out(["git", "rev-parse", "HEAD"], CANONICAL),
+        "status": out(["git", "status", "--short", "--branch"], CANONICAL),
+    }
+    branches = out(["git", "branch", "--format=%(refname:short)"], PILOT).splitlines()
+    summary = {
+        "pilot_repo": str(PILOT),
+        "canonical_repo": str(CANONICAL),
+        "canonical_before": canonical_before,
+        "canonical_after": canonical_after,
+        "pilot_status_after": out(["git", "status", "--short", "--branch"], PILOT),
+        "score_before": score_before.to_jsonable(),
+        "score_after_pilot_checkout": scorer.score_repo(PILOT).to_jsonable(),
+        "candidate_run": candidate_run,
+        "reject_run": reject_run,
+        "budget_halt": budget_halt,
+        "divergence_halt": divergence_halt,
+        "candidate_branches": [branch for branch in branches if branch.startswith("arena/candidate/")],
+        "evidence_files": sorted(str(path) for path in EVIDENCE_ROOT.glob("cycle-*.json")),
+        "reject_evidence_files": sorted(str(path) for path in (ROOT / "reject-evidence").glob("*.json")),
+        "halt_evidence_files": sorted(str(path) for path in (ROOT / "halt-evidence").glob("*.json")),
+        "dry_run_pr_bodies": pr_bodies,
+        "worktree_root_remaining": sorted(str(path) for path in WORKTREE_ROOT.glob("*")) if WORKTREE_ROOT.exists() else [],
+    }
+    SUMMARY.write_text(json.dumps(summary, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(summary, sort_keys=True, indent=2))
+
+
+if __name__ == "__main__":
+    main()

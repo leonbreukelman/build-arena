@@ -125,6 +125,10 @@ class CandidatePackager:
         worktree_path = Path(worktree.path)
         _remove_runtime_artifacts(worktree_path)
         _run(["git", "add", "-A"], cwd=worktree_path)
+        _run(["git", "reset", "--", ".arena"], cwd=worktree_path, check=False)
+        staged_paths = _run(["git", "diff", "--cached", "--name-only"], cwd=worktree_path).stdout.splitlines()
+        if any(path.startswith(".arena/") for path in staged_paths):
+            raise RuntimeError(f"candidate branch tried to include arena artifacts: {staged_paths}")
         if _run(["git", "diff", "--cached", "--quiet"], cwd=worktree_path, check=False).returncode != 0:
             _run(["git", "commit", "-m", f"arena candidate: {verdict.hypothesis_id}"], cwd=worktree_path)
         head_oid = _run(["git", "rev-parse", "HEAD"], cwd=worktree_path).stdout.strip()
