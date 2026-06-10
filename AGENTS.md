@@ -29,11 +29,11 @@
 
 ## Current implementation status
 
-Phase 1-4 foundation is implemented and verified. The loop uses JSONL events as canonical state, locked git worktrees for cycle isolation, ff-only promotion foundation, live wall-clock budget checks, and hard divergence halts.
+Phase 1-4 foundation is implemented and verified against the synthetic calibration repo. The loop uses JSONL events as canonical state, locked git worktrees for cycle isolation, ff-only promotion foundation, live wall-clock budget checks, and hard divergence halts. It has not yet produced a verified improvement on a real target repo.
 
 The post-Phase-4 AI-first decomposer is also implemented. AI decomposer snapshots now write `project-model-v1.json` as the primary Project Model v1 enriched artifact and `project-model-v0.json` as compatibility output for v0 consumers. `LiveProjectModelLLM` provides the direct xAI/OpenAI-compatible bounded live path behind the CLI `--allow-live` guard.
 
-The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Build Arena is not ready for broad autonomous live loops: dry-run hypothesis generation from v1, worktree patch cycles, and promotion remain blocked until readiness blockers close. The dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution remain unimplemented.
+The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Build Arena is not ready for broad autonomous live loops: decomposition-informed/v1 hypothesis generation, promotion, dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution remain blocked or unimplemented. Milestone 3 now separates a narrower naive worktree-only pilot path; that path is blocked only by internal Build Arena prerequisites (generic scorer, fail-closed proposer tests, and per-repo boundary config), not by Project Model v1 cross-repo adoption. The current ablation keyword gate is advisory for real cycles until a real ablation runner exists; it must not be treated as a load-bearing semantic gate for the Milestone 3 pilot.
 
 ## Commands
 

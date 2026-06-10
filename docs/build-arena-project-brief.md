@@ -18,7 +18,7 @@ The project was originally built verifier-first to avoid a loop that optimizes c
 
 ## Current implementation status
 
-Phase 1-4 foundation is implemented and verified. The codebase now contains:
+Phase 1-4 foundation is implemented and verified against the synthetic calibration repo. The codebase now contains:
 
 - Phase 1 scorer calibration: `.arena/scorer.lock.toml`, the deterministic `scorer/engine.py`, scorer-lock validation in `scorer/lock.py`, and a 13-diff synthetic calibration catalog with positive, negative, and neutral patches rebuilt by `scripts/rebuild_calibration.py`.
 - Phase 2 verifier calibration: `verifier/engine.py`, `verifier/ablation.py`, `verifier/config.py`, and `verifier/calibration.py`. Verification combines score delta, test status, pinned regressions, and a deterministic ablation quorum. The deterministic runner stands in for the live Ollama adapter at this stage.
@@ -36,7 +36,7 @@ The post-Phase-4 AI-first decomposer is also implemented:
 - `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, and `gate`; live mode is guarded by `--allow-live` and refuses routine live spend without that explicit flag.
 
-Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Dry-run hypothesis generation from Project Model v1, worktree patch cycles using that model, and real promotion remain blocked until readiness blockers close. The dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution are not implemented.
+Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Decomposition-informed dry-run hypothesis generation from Project Model v1, real promotion, dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution remain blocked or unimplemented. Milestone 3 now tracks a narrower naive worktree-only pilot path; it is blocked by internal Build Arena prerequisites (generic scorer, fail-closed proposer tests, and per-repo boundary config) rather than Project Model v1 cross-repo adoption.
 
 ---
 
@@ -127,7 +127,7 @@ uv run python -m arena.project_model_cli snapshot --project <repo> --artifacts-r
 Blockers before broad live autonomy:
 
 1. Dry-run hypothesis generation from Project Model v1 is not implemented.
-2. Worktree patch cycles driven by v1 snapshots are not implemented.
+2. Worktree patch cycles driven by v1 snapshots are not implemented. A narrower naive Milestone 3 worktree-only pilot is planned separately and remains blocked until generic scoring, fail-closed proposal, and per-repo boundary config land.
 3. Real promotion remains blocked behind readiness-register closure and operator-controlled rollout.
 4. Dashboard control plane is not implemented.
 5. Rollback endpoint is not implemented.
@@ -139,7 +139,7 @@ Near-term useful work:
 1. Keep doc/status tests guarding active orientation docs against calibration-era drift.
 2. Exercise fixture-mode AI-first snapshots against this repo and held-out repos without live spend.
 3. Define the dry-run hypothesis-generation contract over Project Model v1.
-4. Prove a full worktree patch cycle with no promotion first, then add the promotion gate only after rollback/readiness blockers are closed.
+4. Prove the Milestone 3 naive worktree-only pilot with no promotion first, then evaluate decomposition-informed/v1 cycles and promotion only after their separate blockers close.
 5. Update dated current-state artifacts or mark them historical when they conflict with README.md, AGENTS.md, or this brief.
 
 ---
@@ -152,7 +152,7 @@ Near-term useful work:
 - Do not run `git checkout`, `git branch -f`, `git reset --hard`, `git rebase`, or `git push` inside a cycle worktree.
 - Do not hand-edit generated artifacts. Run `make generated` after intentional schema changes.
 - Do not run live Build Arena provider/decomposition calls unless explicitly authorized.
-- Do not claim broad loop readiness while `not_ready_blockers_remain` is still present in the readiness register.
+- Do not claim broad loop readiness while `not_ready_blockers_remain` is still present in the readiness register. Treat the current verifier ablation keyword gate as advisory for real cycles until a real ablation runner exists.
 - Keep commits and promotions separate: normal repo commits are operator/agent packaging; arena promotions must use the promoter path and ff-only merge semantics.
 
 ---

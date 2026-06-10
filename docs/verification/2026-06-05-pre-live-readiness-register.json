@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pre-live-readiness-register/v1",
-  "generatedAtUtc": "2026-06-05T03:32:43Z",
+  "generatedAtUtc": "2026-06-10T04:11:14Z",
   "overallStatus": "not_ready_blockers_remain",
   "safeLiveTestLadder": [
     {
@@ -21,12 +21,23 @@
     {
       "step": 4,
       "mode": "dry_run_hypothesis_generation_from_v1_snapshot",
-      "status": "blocked_until_v1_consumer_and_gap_policy_enforcement"
+      "status": "blocked_until_build_arena_v1_consumer_exists",
+      "scope": "decomposition-informed Project Model v1 hypothesis generation; not the Milestone 3 naive target-picker path"
     },
     {
       "step": 5,
       "mode": "one_cycle_worktree_only_no_promotion",
-      "status": "blocked_until_gap_policy_and_graph_adequacy_are_proven"
+      "status": "blocked_until_m3_internal_prereqs",
+      "requiredInternalCriteria": [
+        "generic scorer exists",
+        "fail-closed proposer tests pass",
+        "per-repo boundary config exists"
+      ],
+      "notBlockedBy": [
+        "PMV1-002 related-repo adoption",
+        "PMV1-003 related-repo adoption",
+        "GRAPH-001 graph/indexer depth for decomposition-informed cycles"
+      ]
     },
     {
       "step": 6,
@@ -89,8 +100,9 @@
       "proofCommand": "python3 -m json.tool docs/verification/2026-06-05-grok-live-rca/live-smoke/compact-decomposer/compact-gate-summary.json >/dev/null",
       "blocksReadOnlyLiveSmoke": false,
       "blocksDryRunHypothesisGeneration": true,
-      "blocksWorktreeOnlyPatchCycle": true,
-      "blocksPromotionMerge": true
+      "blocksWorktreeOnlyPatchCycle": false,
+      "blocksPromotionMerge": true,
+      "phase0Scope": "Blocks decomposition-informed/live decomposer use, not naive Milestone 3 worktree-only cycles."
     },
     {
       "id": "PMV1-001",
@@ -110,26 +122,28 @@
       "title": "Elenchus Core v1 consumer adoption is not yet implemented",
       "severity": "high",
       "affectedProject": "elenchus-core",
-      "status": "open_related_repo_adoption",
+      "status": "non_blocking_ecosystem_tracking",
       "evidencePath": "docs/verification/2026-06-05-related-repos-v1-status.md",
       "proofCommand": "inspect Elenchus Core repo and save v1 adoption prompt/status",
       "blocksReadOnlyLiveSmoke": false,
-      "blocksDryRunHypothesisGeneration": true,
-      "blocksWorktreeOnlyPatchCycle": true,
-      "blocksPromotionMerge": true
+      "blocksDryRunHypothesisGeneration": false,
+      "blocksWorktreeOnlyPatchCycle": false,
+      "blocksPromotionMerge": false,
+      "phase0Scope": "Related-repo Project Model v1 adoption is ecosystem tracking and does not block Build Arena naive internal cycles."
     },
     {
       "id": "PMV1-003",
       "title": "Arena Calibration v1 fixture and evaluator adoption is not yet implemented",
       "severity": "high",
       "affectedProject": "arena-calibration",
-      "status": "open_related_repo_adoption",
+      "status": "non_blocking_ecosystem_tracking",
       "evidencePath": "docs/verification/2026-06-05-related-repos-v1-status.md",
       "proofCommand": "inspect Arena Calibration repo and save v1 adoption prompt/status",
       "blocksReadOnlyLiveSmoke": false,
-      "blocksDryRunHypothesisGeneration": true,
-      "blocksWorktreeOnlyPatchCycle": true,
-      "blocksPromotionMerge": true
+      "blocksDryRunHypothesisGeneration": false,
+      "blocksWorktreeOnlyPatchCycle": false,
+      "blocksPromotionMerge": false,
+      "phase0Scope": "Related-repo Project Model v1 adoption is ecosystem tracking and does not block Build Arena naive internal cycles."
     },
     {
       "id": "GRAPH-001",
@@ -141,8 +155,9 @@
       "proofCommand": "uv run pytest tests/test_project_model_v1_contract.py tests/test_project_decomposer_ai.py -q",
       "blocksReadOnlyLiveSmoke": false,
       "blocksDryRunHypothesisGeneration": false,
-      "blocksWorktreeOnlyPatchCycle": true,
-      "blocksPromotionMerge": true
+      "blocksWorktreeOnlyPatchCycle": false,
+      "blocksPromotionMerge": true,
+      "phase0Scope": "Graph/indexer depth blocks decomposition-informed cycles and promotion confidence, not the naive Milestone 3 target-picker path."
     },
     {
       "id": "GAP-001",
@@ -153,9 +168,41 @@
       "evidencePath": "docs/specs/2026-06-05-project-model-v1-shared-contract-spec.md#live-action-policy-for-verification-gaps",
       "proofCommand": "uv run pytest tests/test_project_model_v1_contract.py -q",
       "blocksReadOnlyLiveSmoke": false,
-      "blocksDryRunHypothesisGeneration": true,
+      "blocksDryRunHypothesisGeneration": false,
+      "blocksWorktreeOnlyPatchCycle": false,
+      "blocksPromotionMerge": true,
+      "phase0Scope": "Verification-gap policy remains relevant to live/decomposition-informed mutation and promotion; naive cycles must instead be bounded by per-repo boundary config and patch gate."
+    },
+    {
+      "id": "M3-001",
+      "title": "Milestone 3 naive worktree-only internal prerequisites are not yet implemented",
+      "severity": "critical",
+      "affectedProject": "build-arena",
+      "status": "open_internal_m3_prerequisites",
+      "evidencePath": "docs/plans/2026-06-09-milestone-3-worktree-cycles-roadmap.md#phase-1--goal-config-and-generic-scoring",
+      "proofCommand": "test -f scorer/goal_config.py -a -f arena/patch_gate.py -a -f arena/runners/diff_proposer.py && uv run pytest tests/test_goal_config.py tests/test_generic_scorer.py tests/test_patch_gate.py tests/test_diff_proposer.py -q",
+      "blocksReadOnlyLiveSmoke": false,
+      "blocksDryRunHypothesisGeneration": false,
       "blocksWorktreeOnlyPatchCycle": true,
-      "blocksPromotionMerge": true
+      "blocksPromotionMerge": true,
+      "requiredInternalCriteria": [
+        "generic scorer accepts per-repo goal.toml and is no longer calibration-repo hardcoded",
+        "fail-closed diff proposer and patch gate pass fake-transport tests",
+        "per-repo boundary/read-only/out-of-scope config exists for the selected pilot repo"
+      ],
+      "closureCriteria": "Complete BA-M3-01 through BA-M3-04 with tests before running BA-M3-05 worktree-cycle wiring or BA-M3-07 pilot cycles."
     }
-  ]
+  ],
+  "phase0Milestone3Update": {
+    "updatedAtUtc": "2026-06-10T04:11:14Z",
+    "source": "docs/plans/2026-06-09-milestone-3-worktree-cycles-roadmap.md",
+    "policy": "Naive Milestone 3 worktree-only cycles are blocked only by internal Build Arena prerequisites. Project Model v1 cross-repo adoption, graph/indexer depth, and decomposer semantic quality gaps track decomposition-informed or ecosystem work and do not block the naive target-picker/diff-proposer path.",
+    "selectedPilotRepo": "/home/leonb/projects/fmc-mcp",
+    "configuredWorktreeRoot": "/home/leonb/projects/build-arena/.arena/worktrees",
+    "internalPrerequisites": [
+      "generic scorer accepts per-repo goal.toml and is no longer calibration-repo hardcoded",
+      "fail-closed diff proposer and patch gate pass fake-transport tests",
+      "per-repo boundary/read-only/out-of-scope config exists for the selected pilot repo"
+    ]
+  }
 }
