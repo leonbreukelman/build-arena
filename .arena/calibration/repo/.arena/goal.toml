@@ -3,11 +3,11 @@ project_id = "arena-calibration-fixture"
 goal = "Preserve the synthetic calibration fixture ordering across positive, negative, and neutral patches."
 
 [commands]
-test = ["uv", "run", "--with", "pytest", "python", "-m", "pytest", "tests", "-q"]
-lint = ["uv", "run", "--with", "ruff", "python", "-m", "ruff", "check", "."]
-typecheck = ["uv", "run", "--with", "pyright", "python", "-m", "pyright"]
-coverage = ["uv", "run", "--with", "pytest", "--with", "pytest-cov", "python", "-m", "pytest", "tests", "--cov=validatorlib", "--cov-report=json:coverage.json", "--cov-fail-under=85", "-q"]
-runtime_proxy = ["uv", "run", "python", "benchmarks/runtime_proxy.py"]
+test = ["uv", "run", "--no-project", "--with", "pytest", "python", "-m", "pytest", "tests", "-q"]
+lint = ["uv", "run", "--no-project", "--with", "ruff", "python", "-m", "ruff", "check", ".", "--output-format", "json", "--exit-zero"]
+typecheck = ["uv", "run", "--no-project", "--with", "pyright", "python", "-m", "pyright", "--outputjson"]
+coverage = ["uv", "run", "--no-project", "--with", "pytest", "--with", "pytest-cov", "python", "-m", "pytest", "tests", "--cov=validatorlib", "--cov-report=json:coverage.json", "--cov-fail-under=85", "-q"]
+runtime_proxy = ["python3", "benchmarks/runtime_proxy.py"]
 
 [coverage]
 source = "coverage.json"

@@ -257,4 +257,6 @@ def test_calibration_fixture_goal_config_file_loads(calibration_repo: Path) -> N
     assert config.project_id == "arena-calibration-fixture"
     assert config.coverage.source == "coverage.json"
     assert config.paths.source_roots == ("src",)
-    assert config.commands.runtime_proxy == ("uv", "run", "python", "benchmarks/runtime_proxy.py")
+    assert config.commands.runtime_proxy == ("python3", "benchmarks/runtime_proxy.py")
+    assert config.commands.coverage is not None
+    assert "--no-project" in config.commands.coverage

@@ -612,31 +612,58 @@ def test_scorer_error_and_fallback_paths(tmp_path: Path, monkeypatch: pytest.Mon
     record = _score_record()
     assert record.to_jsonable()["vector"]["coverage_pct"] == 90.0
 
-    def failing_git(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    from scorer.goal_config import load_goal_config
+
+    def write_goal_config(*, runtime_proxy: bool = False) -> Any:
+        runtime_line = '\nruntime_proxy = ["python3", "benchmarks/runtime_proxy.py"]' if runtime_proxy else ""
+        (tmp_path / ".arena").mkdir(exist_ok=True)
+        (tmp_path / ".arena" / "goal.toml").write_text(
+            f'''
+schema_version = "goal-config/v1"
+project_id = "fallbacks"
+
+[commands]
+test = ["python3", "-c", "pass"]
+lint = ["python3", "-c", "pass"]
+typecheck = ["python3", "-c", "pass"]
+coverage = ["python3", "-c", "pass"]{runtime_line}
+
+[coverage]
+source = "coverage.json"
+floor = 0.0
+'''.strip()
+            + "\n",
+            encoding="utf-8",
+        )
+        return load_goal_config(tmp_path)
+
+    def failing_git(*args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(args, 1, stdout="", stderr="fatal")
 
     monkeypatch.setattr(scorer_engine, "_run", failing_git)
     with pytest.raises(RuntimeError, match="git rev-parse failed"):
         scorer_engine._git_oid(tmp_path)
 
-    def invalid_coverage(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    goal_config = write_goal_config()
+
+    def invalid_coverage(args: Any, repo: Path, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         (repo / "coverage.json").write_text("not json", encoding="utf-8")
         return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
 
     monkeypatch.setattr(scorer_engine, "_run", invalid_coverage)
-    assert scorer_engine._pytest_coverage(tmp_path) == (True, 0.0)
+    assert scorer_engine._test_and_coverage(tmp_path, goal_config) == (True, 0.0)
 
-    def invalid_stdout(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    def invalid_stdout(args: Any, repo: Path, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(args, 0, stdout="not json", stderr="")
 
     monkeypatch.setattr(scorer_engine, "_run", invalid_stdout)
-    assert scorer_engine._ruff_violations(tmp_path) == 999
-    assert scorer_engine._pyright_errors(tmp_path) == 999
-    assert scorer_engine._runtime_proxy(tmp_path) == 0.0
+    assert scorer_engine._ruff_violations(tmp_path, goal_config) == 999
+    assert scorer_engine._pyright_errors(tmp_path, goal_config) == 999
+    assert scorer_engine._runtime_proxy(tmp_path, goal_config) == 0.0
     (tmp_path / "benchmarks").mkdir()
     (tmp_path / "benchmarks" / "runtime_proxy.py").write_text("raise SystemExit(1)\n", encoding="utf-8")
     monkeypatch.setattr(scorer_engine, "_run", failing_git)
-    assert scorer_engine._runtime_proxy(tmp_path) == 9999.0
+    assert scorer_engine._runtime_proxy(tmp_path, write_goal_config(runtime_proxy=True)) == 9999.0
 
     tree = ast.parse(
         "def f(x, y):\n"
@@ -652,7 +679,7 @@ def test_scorer_error_and_fallback_paths(tmp_path: Path, monkeypatch: pytest.Mon
     empty_src = tmp_path / "empty-src"
     empty_src.mkdir()
     (empty_src / "module.py").write_text("VALUE = 1\n", encoding="utf-8")
-    assert scorer_engine._cyclomatic_average(empty_src) == 0.0
+    assert scorer_engine._cyclomatic_average([empty_src]) == 0.0
     with pytest.raises(AssertionError, match="axis composite differs"):
         scorer_engine.assert_vectors_close(_score_record(composite=1.0).vector, _score_record(composite=2.0).vector)
     assert scorer_engine.score_axes_delta(_score_record(composite=1.0).vector, _score_record(composite=2.0).vector)["composite"] == 1.0

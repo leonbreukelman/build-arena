@@ -4,8 +4,8 @@ goal = "Close the smallest useful Build Arena loop: generic scoring, determinist
 
 [commands]
 test = ["uv", "run", "pytest", "tests", "-q"]
-lint = ["uv", "run", "ruff", "check", "."]
-typecheck = ["uv", "run", "pyright"]
+lint = ["uv", "run", "ruff", "check", ".", "--output-format", "json", "--exit-zero"]
+typecheck = ["uv", "run", "pyright", "--outputjson"]
 coverage = ["uv", "run", "pytest", "tests", "--cov=arena", "--cov=scorer", "--cov=verifier", "--cov=scripts", "--cov-report=json:coverage.json", "-q"]
 
 [coverage]
