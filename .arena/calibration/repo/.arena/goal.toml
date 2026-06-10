@@ -1,0 +1,31 @@
+schema_version = "goal-config/v1"
+project_id = "arena-calibration-fixture"
+goal = "Preserve the synthetic calibration fixture ordering across positive, negative, and neutral patches."
+
+[commands]
+test = ["uv", "run", "--with", "pytest", "python", "-m", "pytest", "tests", "-q"]
+lint = ["uv", "run", "--with", "ruff", "python", "-m", "ruff", "check", "."]
+typecheck = ["uv", "run", "--with", "pyright", "python", "-m", "pyright"]
+coverage = ["uv", "run", "--with", "pytest", "--with", "pytest-cov", "python", "-m", "pytest", "tests", "--cov=validatorlib", "--cov-report=json:coverage.json", "--cov-fail-under=85", "-q"]
+runtime_proxy = ["uv", "run", "python", "benchmarks/runtime_proxy.py"]
+
+[coverage]
+source = "coverage.json"
+floor = 85.0
+
+[paths]
+source_roots = ["src"]
+out_of_scope = [".git", ".ruff_cache", ".pytest_cache", "coverage.json"]
+read_only = []
+
+[diff_caps]
+max_files = 4
+max_lines = 160
+
+[weights]
+coverage_pct = 2.0
+pyright_errors = -5.0
+ruff_violations = -0.75
+cyclomatic_avg = -2.0
+runtime_p95_ms = -1.0
+test_failure_penalty = -1000.0

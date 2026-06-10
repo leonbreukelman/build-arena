@@ -1,0 +1,44 @@
+schema_version = "goal-config/v1"
+project_id = "build-arena"
+goal = "Close the smallest useful Build Arena loop: generic scoring, deterministic target selection, fail-closed diff proposal, worktree-only verification, and owner-gated PR evidence."
+
+[commands]
+test = ["uv", "run", "pytest", "tests", "-q"]
+lint = ["uv", "run", "ruff", "check", "."]
+typecheck = ["uv", "run", "pyright"]
+coverage = ["uv", "run", "pytest", "tests", "--cov=arena", "--cov=scorer", "--cov=verifier", "--cov=scripts", "--cov-report=json:coverage.json", "-q"]
+
+[coverage]
+source = "coverage.json"
+floor = 85.0
+
+[paths]
+source_roots = ["arena", "scorer", "verifier", "scripts"]
+out_of_scope = [
+  ".git",
+  ".venv",
+  ".arena/worktrees",
+  ".arena/runs",
+  ".arena/blobs",
+  ".arena/git",
+  "docs/verification",
+]
+read_only = [
+  "scorer",
+  "verifier",
+  "schema",
+  "arena/generated",
+  ".arena/scorer.lock.toml",
+]
+
+[diff_caps]
+max_files = 8
+max_lines = 400
+
+[weights]
+coverage_pct = 2.0
+pyright_errors = -5.0
+ruff_violations = -0.75
+cyclomatic_avg = -2.0
+runtime_p95_ms = -1.0
+test_failure_penalty = -1000.0
