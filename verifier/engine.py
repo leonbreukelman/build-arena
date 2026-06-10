@@ -132,7 +132,7 @@ class Verifier:
             return RejectReason.PINNED_METRIC_REGRESSION
         if self.config.require_score_delta_gt0 and score_delta <= 0:
             return RejectReason.SCORE_DELTA_NONPOSITIVE
-        if not load_bearing:
+        if not load_bearing and not self.config.ablation_advisory:
             return RejectReason.ABLATION_REASONING_NOT_LOAD_BEARING
         return None
 

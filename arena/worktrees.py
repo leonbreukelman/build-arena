@@ -100,6 +100,50 @@ class GitPromoter:
         )
 
 
+class CandidatePackager:
+    """Package a cycle worktree as an owner-gated candidate branch.
+
+    This keeps the existing promoter-shaped loop seam while deliberately not
+    merging into or advancing the main checkout. The packaged branch is
+    `arena/candidate/<cycle_id>` and must be created from the cycle worktree
+    before WorktreeManager.teardown removes `arena/cycle/<cycle_id>`.
+    """
+
+    candidate_only = True
+
+    def __init__(self, *, main_repo: Path) -> None:
+        self.main_repo = main_repo.resolve()
+
+    def promote(
+        self,
+        verdict: Verdict,
+        worktree: Worktree,
+        *,
+        run_id: str,
+        score_record_id: str,
+    ) -> Baseline:
+        worktree_path = Path(worktree.path)
+        _remove_runtime_artifacts(worktree_path)
+        _run(["git", "add", "-A"], cwd=worktree_path)
+        if _run(["git", "diff", "--cached", "--quiet"], cwd=worktree_path, check=False).returncode != 0:
+            _run(["git", "commit", "-m", f"arena candidate: {verdict.hypothesis_id}"], cwd=worktree_path)
+        head_oid = _run(["git", "rev-parse", "HEAD"], cwd=worktree_path).stdout.strip()
+        _run(["git", "update-ref", f"refs/heads/{self.branch_name(worktree.cycle_id)}", head_oid], cwd=self.main_repo)
+        return Baseline(
+            id=f"candidate-{head_oid[:12]}",
+            run_id=run_id,
+            git_oid=head_oid,
+            score_record_id=score_record_id,
+            promoted_from_verdict_id=verdict.id,
+            promoted_ts=time.time(),
+            is_active=False,
+        )
+
+    @staticmethod
+    def branch_name(cycle_id: str) -> str:
+        return _candidate_branch_name(cycle_id)
+
+
 def _remove_runtime_artifacts(repo: Path) -> None:
     for relative in ("coverage.json", ".coverage"):
         path = repo / relative
@@ -118,3 +162,7 @@ def _remove_runtime_artifacts(repo: Path) -> None:
 
 def _branch_name(cycle_id: str) -> str:
     return f"arena/cycle/{cycle_id}"
+
+
+def _candidate_branch_name(cycle_id: str) -> str:
+    return f"arena/candidate/{cycle_id}"
