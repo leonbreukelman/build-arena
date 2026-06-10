@@ -325,6 +325,13 @@ def _primary_inventory_nodes(nodes: dict[str, dict[str, Any]]) -> list[dict[str,
     return result
 
 
+# Public alias: single source of truth for "which modules the inventory gate scores".
+# The decomposer prompt imports this so the prompt's coverage list cannot drift from
+# what the gate actually checks.
+def primary_inventory_nodes(nodes: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    return _primary_inventory_nodes(nodes)
+
+
 def _module_has_owned_descendant(node: dict[str, Any], owned_symbols: set[str]) -> bool:
     symbol = str(node.get("symbol") or "").strip().removesuffix(".__init__")
     if not symbol:
