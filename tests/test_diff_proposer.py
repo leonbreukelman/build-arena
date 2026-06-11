@@ -250,6 +250,14 @@ def test_openai_compatible_diff_transport_strips_single_markdown_diff_fence() ->
     assert response.diff_text == _valid_diff()
 
 
+def test_openai_compatible_diff_transport_adds_missing_final_newline() -> None:
+    transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(_chat_result(_valid_diff().rstrip("\n"))))
+
+    response = transport.propose(_diff_request())
+
+    assert response.diff_text == _valid_diff()
+
+
 def test_diff_proposer_applies_live_transport_valid_diff_after_patch_gate(tmp_path: Path) -> None:
     repo = _repo(tmp_path)
     transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(_chat_result(_valid_diff())))

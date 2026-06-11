@@ -85,7 +85,7 @@ class OpenAICompatibleDiffTransport:
             raise RunnerError(f"diff proposal provider failed: {exc}") from exc
         if str(result.finish_reason).lower() == "length":
             raise RunnerError("diff proposal truncated")
-        diff_text = _strip_single_markdown_fence(result.text)
+        diff_text = _ensure_trailing_newline(_strip_single_markdown_fence(result.text))
         if not diff_text.strip():
             raise RunnerError("diff proposal empty")
         if not _looks_like_unified_diff(diff_text):
@@ -173,6 +173,12 @@ def _strip_single_markdown_fence(text: str) -> str:
     if first_newline == -1 or last_fence <= first_newline:
         return text
     return stripped[first_newline + 1 : last_fence]
+
+
+def _ensure_trailing_newline(text: str) -> str:
+    if text and not text.endswith("\n"):
+        return text + "\n"
+    return text
 
 
 def _looks_like_unified_diff(text: str) -> bool:
