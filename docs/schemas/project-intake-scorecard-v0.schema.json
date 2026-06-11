@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://build-arena.local/schemas/project-intake-scorecard-v0.schema.json",
+  "title": "Project Intake Scorecard v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "projectRoot", "snapshotPath", "snapshotId", "snapshotHash", "repoHead", "profile", "weights", "advisoryOnly", "findings", "improvementCandidates", "firstRecommendedImprovement"],
+  "properties": {
+    "schemaVersion": {"const": "project-intake-scorecard/v0"},
+    "id": {"type": "string"},
+    "projectRoot": {"type": "string"},
+    "snapshotPath": {"type": "string"},
+    "snapshotId": {"type": "string"},
+    "snapshotHash": {"type": "string"},
+    "repoHead": {"type": ["string", "null"]},
+    "profile": {"enum": ["new-project", "active-development", "production", "documentation-first"]},
+    "weights": {"type": "object", "additionalProperties": {"type": "integer"}},
+    "advisoryOnly": {"const": true},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
+    "improvementCandidates": {"type": "array", "items": {"type": "object"}},
+    "firstRecommendedImprovement": {"type": ["object", "null"]}
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "dimension", "title", "severity", "confidence", "evidence", "whyItMatters", "recommendedAction", "verification", "autonomyBoundary", "estimatedEffort", "impactOnFutureIteration", "riskReduction", "verificationGain", "docKnowledgeGain", "priorityScore", "rank"],
+      "properties": {
+        "id": {"type": "string"},
+        "dimension": {"enum": ["documentation_project_knowledge", "reproducible_verification", "architecture_specs_contracts", "ai_agent_usability", "decision_history", "backlog_change_governance", "security_supply_chain_hygiene", "operations_release_rollback"]},
+        "title": {"type": "string"},
+        "severity": {"enum": ["low", "medium", "high", "critical"]},
+        "confidence": {"enum": ["low", "medium", "high"]},
+        "evidence": {"type": "array", "items": {"type": "object"}},
+        "whyItMatters": {"type": "string"},
+        "recommendedAction": {"type": "string"},
+        "verification": {"type": "array", "items": {"type": "string"}},
+        "autonomyBoundary": {"type": "string"},
+        "estimatedEffort": {"enum": ["small", "medium", "large", "unknown"]},
+        "impactOnFutureIteration": {"type": "integer", "minimum": 1, "maximum": 5},
+        "riskReduction": {"type": "integer", "minimum": 1, "maximum": 5},
+        "verificationGain": {"type": "integer", "minimum": 1, "maximum": 5},
+        "docKnowledgeGain": {"type": "integer", "minimum": 1, "maximum": 5},
+        "priorityScore": {"type": "number"},
+        "rank": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

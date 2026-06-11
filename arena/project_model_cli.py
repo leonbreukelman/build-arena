@@ -8,6 +8,7 @@ from typing import Any
 
 from arena.project_decomposer_ai import build_project_model_snapshot
 from arena.project_graph import build_project_graph, graph_to_dict, write_graph_json
+from arena.project_model_freshness import assess_project_model_freshness, freshness_to_dict
 from arena.project_model_gate import (
     gate_report_to_dict,
     run_project_model_gate_from_manifest,
@@ -44,6 +45,10 @@ def main(argv: list[str] | None = None) -> int:
     graph.add_argument("--project", required=True)
     graph.add_argument("--output", required=True)
 
+    freshness = sub.add_parser("freshness")
+    freshness.add_argument("--project", required=True)
+    freshness.add_argument("--snapshot", required=True)
+
     args = parser.parse_args(argv)
     if args.command == "snapshot":
         return _snapshot(args)
@@ -51,6 +56,8 @@ def main(argv: list[str] | None = None) -> int:
         return _gate(args)
     if args.command == "graph":
         return _graph(args)
+    if args.command == "freshness":
+        return _freshness(args)
     parser.error("unknown command")
     return 2
 
@@ -119,6 +126,13 @@ def _graph(args: argparse.Namespace) -> int:
         raise TypeError("graph serialization failed")
     print(json.dumps(summary, sort_keys=True))
     return 0
+
+
+def _freshness(args: argparse.Namespace) -> int:
+    report = assess_project_model_freshness(args.project, args.snapshot)
+    payload = freshness_to_dict(report)
+    print(json.dumps(payload, sort_keys=True))
+    return report.exit_code
 
 
 if __name__ == "__main__":
