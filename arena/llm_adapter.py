@@ -27,6 +27,7 @@ class OpenAIProviderConfig:
     base_url: str
     api_key_env: str
     model: str
+    model_source: str = "explicit"
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,6 +39,12 @@ class OpenAIChatResult:
     finish_reason: str
     usage: Any
     metadata: dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class ApiKeyResolution:
+    value: str
+    source: str
 
 
 PROVIDER_PRESETS: dict[str, ProviderPreset] = {
@@ -78,6 +85,7 @@ def resolve_provider_config(
     base_url: str | None = None,
     api_key_env: str | None = None,
     model: str | None = None,
+    require_explicit_model: bool = False,
 ) -> OpenAIProviderConfig:
     provider_key = provider.strip().lower()
     try:
@@ -89,25 +97,40 @@ def resolve_provider_config(
     provider_env_prefix = "BUILD_ARENA_" + re.sub(r"[^A-Z0-9]+", "_", provider_key.upper()).strip("_")
     resolved_base_url = base_url or os.environ.get(f"{provider_env_prefix}_BASE_URL") or os.environ.get("BUILD_ARENA_LLM_BASE_URL") or preset.base_url
     resolved_api_key_env = api_key_env or os.environ.get(f"{provider_env_prefix}_API_KEY_ENV") or os.environ.get("BUILD_ARENA_LLM_API_KEY_ENV") or preset.api_key_env
-    resolved_model = model or os.environ.get("BUILD_ARENA_LLM_MODEL")
+    resolved_model = model
+    model_source = "argument" if resolved_model else ""
+    if not resolved_model:
+        resolved_model = os.environ.get("BUILD_ARENA_LLM_MODEL")
+        if resolved_model:
+            model_source = "env:BUILD_ARENA_LLM_MODEL"
     if not resolved_model:
         for env_name in preset.default_model_envs:
             resolved_model = os.environ.get(env_name)
             if resolved_model:
+                model_source = f"env:{env_name}"
                 break
-    resolved_model = resolved_model or preset.default_model
+    if not resolved_model:
+        if require_explicit_model:
+            envs = ", ".join(("BUILD_ARENA_LLM_MODEL", *preset.default_model_envs))
+            raise ValueError(
+                "live model provider requires an explicit model via argument/--live-model "
+                f"or one of these environment variables: {envs}"
+            )
+        resolved_model = preset.default_model
+        model_source = "provider_default"
     return OpenAIProviderConfig(
         provider=preset.provider,
         base_url=resolved_base_url.rstrip("/"),
         api_key_env=resolved_api_key_env,
         model=resolved_model,
+        model_source=model_source,
     )
 
 
-def resolve_api_key(env_name: str) -> str:
+def resolve_api_key_with_source(env_name: str) -> ApiKeyResolution:
     value = os.environ.get(env_name)
     if value:
-        return value
+        return ApiKeyResolution(value=value, source="environment")
     env_path = Path.home() / ".hermes" / ".env"
     if env_path.exists():
         for line in env_path.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -117,8 +140,12 @@ def resolve_api_key(env_name: str) -> str:
             if key.strip() == env_name:
                 value = raw_value.strip().strip('"\'')
                 if value:
-                    return value
+                    return ApiKeyResolution(value=value, source="hermes_env_file")
     raise ValueError(f"live model provider requires {env_name} in the environment or ~/.hermes/.env")
+
+
+def resolve_api_key(env_name: str) -> str:
+    return resolve_api_key_with_source(env_name).value
 
 
 @dataclass(slots=True)
@@ -128,6 +155,7 @@ class OpenAICompatibleChatClient:
     max_tokens: int = 4096
     temperature: float = 0
     urlopen: Callable[..., Any] = field(default=urllib.request.urlopen)
+    require_served_model_match: bool = False
 
     def complete(
         self,
@@ -136,7 +164,7 @@ class OpenAICompatibleChatClient:
         response_format: dict[str, Any] | None = None,
         max_tokens: int | None = None,
     ) -> OpenAIChatResult:
-        api_key = resolve_api_key(self.config.api_key_env)
+        api_key = resolve_api_key_with_source(self.config.api_key_env)
         payload: dict[str, Any] = {
             "model": self.config.model,
             "messages": messages,
@@ -148,7 +176,7 @@ class OpenAICompatibleChatClient:
         request = urllib.request.Request(
             self.config.base_url.rstrip("/") + "/chat/completions",
             data=json.dumps(payload).encode(),
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            headers={"Authorization": f"Bearer {api_key.value}", "Content-Type": "application/json"},
             method="POST",
         )
         try:
@@ -177,14 +205,23 @@ class OpenAICompatibleChatClient:
         if not content.strip():
             raise ValueError(f"live model provider returned empty content with finish_reason={finish_reason!r}")
         served_model = str(packet.get("model") or self.config.model)
+        served_model_matches_requested = served_model == self.config.model
+        if self.require_served_model_match and not served_model_matches_requested:
+            raise ValueError(
+                "live model provider served unexpected model: "
+                f"requested {self.config.model!r}, served {served_model!r}"
+            )
         prompt_hash = hashlib.sha256(json.dumps(messages, sort_keys=True).encode()).hexdigest()
         content_hash = hashlib.sha256(content.encode()).hexdigest()
         metadata = {
             "provider": self.config.provider,
             "api_mode": "openai_chat_completions",
             "base_url": self.config.base_url.rstrip("/"),
+            "api_key_source": api_key.source,
             "model": served_model,
             "requested_model": self.config.model,
+            "requested_model_source": self.config.model_source,
+            "served_model_matches_requested": served_model_matches_requested,
             "status_code": status,
             "finish_reason": finish_reason,
             "prompt_hash": prompt_hash,

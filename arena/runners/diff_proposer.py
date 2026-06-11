@@ -55,17 +55,29 @@ class OpenAICompatibleDiffTransport:
     ) -> None:
         if chat_client is None and provider_config is None and model is None:
             raise ValueError("live diff transport requires an explicit model or provider_config")
+        if provider_config is None and chat_client is not None:
+            provider_config = getattr(chat_client, "config", None) or OpenAIProviderConfig(
+                provider="injected",
+                base_url="",
+                api_key_env="",
+                model="injected-client",
+                model_source="injected_client",
+            )
         self.provider_config = provider_config or resolve_provider_config(
             provider,
             base_url=base_url,
             api_key_env=api_key_env,
             model=model,
+            require_explicit_model=True,
         )
+        if self.provider_config.model_source == "provider_default":
+            raise ValueError("live diff transport requires an explicit model or provider_config with explicit model source")
         self.max_tokens = max_tokens
         self.chat_client = chat_client or OpenAICompatibleChatClient(
             config=self.provider_config,
             timeout_seconds=timeout_seconds,
             max_tokens=max_tokens,
+            require_served_model_match=True,
         )
 
     def propose(self, request: DiffProposalRequest) -> DiffProposalResponse:

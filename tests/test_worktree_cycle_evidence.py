@@ -6,8 +6,6 @@ import subprocess
 from dataclasses import replace
 from pathlib import Path
 
-import pytest
-
 from arena.budget import BudgetController
 from arena.divergence import DivergenceDetector
 from arena.events import EventLog
@@ -26,7 +24,6 @@ from arena.runners.diff_proposer import (
 from arena.target_picker import TargetSelection, select_targets
 from arena.worktrees import CandidatePackager, WorktreeManager
 from scorer.engine import Scorer, ScoreRecord, ScoreVector
-from scorer.goal_config import GoalConfigError
 from verifier.engine import Verifier
 
 
@@ -198,10 +195,15 @@ def test_malformed_present_goal_config_fails_closed(tmp_path: Path) -> None:
         active_score=_score_record(),
     )
 
-    with pytest.raises(GoalConfigError):
-        asyncio.run(run_loop(_run_model(), ctx))
+    result = asyncio.run(run_loop(_run_model(), ctx))
 
-    assert "GOAL_CONFIG_FALLBACK" not in [event.type for event in log.read_events()]
+    assert result.halt_record is not None
+    assert result.halt_record.reason == HaltReason.RUNNER_UNAVAILABLE
+    assert result.halt_record.detail is not None
+    assert result.halt_record.detail.startswith("unexpected_exception:GoalConfigError:")
+    event_types = [event.type for event in log.read_events()]
+    assert "GOAL_CONFIG_FALLBACK" not in event_types
+    assert event_types[-1] == "HALTED"
 
 
 def test_worktree_cycle_packages_candidate_branch_and_writes_mechanical_evidence(

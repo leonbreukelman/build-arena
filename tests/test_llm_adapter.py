@@ -10,9 +10,11 @@ from typing import Any, cast
 import pytest
 
 from arena.llm_adapter import (
+    ApiKeyResolution,
     OpenAICompatibleChatClient,
     OpenAIProviderConfig,
     resolve_api_key,
+    resolve_api_key_with_source,
     resolve_provider_config,
 )
 
@@ -47,6 +49,7 @@ def test_provider_registry_presets_are_openai_compatible(monkeypatch: pytest.Mon
         base_url="https://api.x.ai/v1",
         api_key_env="XAI_API_KEY",
         model="grok-test",
+        model_source="env:BUILD_ARENA_XAI_MODEL",
     )
     assert openai.base_url == "https://api.openai.com/v1"
     assert openai.api_key_env == "OPENAI_API_KEY"
@@ -121,6 +124,8 @@ def test_chat_client_posts_visible_messages_and_records_metadata(monkeypatch: py
     assert result.finish_reason == "stop"
     assert result.usage == {"prompt_tokens": 3, "completion_tokens": 5}
     assert result.metadata["api_mode"] == "openai_chat_completions"
+    assert result.metadata["api_key_source"] == "environment"
+    assert result.metadata["served_model_matches_requested"] is False
     assert result.metadata["prompt_hash"]
     assert result.metadata["content_hash"]
 
@@ -210,3 +215,73 @@ def test_chat_client_reads_api_key_from_hermes_env_file(monkeypatch: pytest.Monk
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
 
     assert resolve_api_key("OPENROUTER_API_KEY") == "from-file"
+    assert resolve_api_key_with_source("OPENROUTER_API_KEY") == ApiKeyResolution(
+        value="from-file",
+        source="hermes_env_file",
+    )
+
+
+def test_chat_client_records_hermes_env_api_key_source_without_leaking_key(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    hermes = tmp_path / ".hermes"
+    hermes.mkdir()
+    hermes_secret = "from-hermes-file-secret"
+    (hermes / ".env").write_text(f"XAI_API_KEY={hermes_secret}\n", encoding="utf-8")
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("XAI_API_KEY", raising=False)
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeHTTPResponse:
+        return _FakeHTTPResponse(
+            {
+                "model": "grok-test",
+                "choices": [{"finish_reason": "stop", "message": {"content": "visible text"}}],
+            }
+        )
+
+    client = OpenAICompatibleChatClient(
+        config=resolve_provider_config("xai", model="grok-test"),
+        urlopen=fake_urlopen,
+    )
+
+    result = client.complete(messages=[{"role": "user", "content": "hello"}])
+
+    serialized_metadata = json.dumps(result.metadata, sort_keys=True)
+    assert result.metadata["api_key_source"] == "hermes_env_file"
+    assert hermes_secret not in serialized_metadata
+
+
+def test_resolve_provider_config_can_require_explicit_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    for env_name in ["BUILD_ARENA_LLM_MODEL", "BUILD_ARENA_XAI_MODEL", "XAI_MODEL"]:
+        monkeypatch.delenv(env_name, raising=False)
+
+    with pytest.raises(ValueError, match="explicit model"):
+        resolve_provider_config("xai", require_explicit_model=True)
+
+    monkeypatch.setenv("BUILD_ARENA_XAI_MODEL", "grok-env")
+    config = resolve_provider_config("xai", require_explicit_model=True)
+
+    assert config.model == "grok-env"
+    assert config.model_source == "env:BUILD_ARENA_XAI_MODEL"
+
+
+def test_chat_client_strict_served_model_match_fails_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeHTTPResponse:
+        return _FakeHTTPResponse(
+            {
+                "model": "unexpected-served-model",
+                "choices": [{"finish_reason": "stop", "message": {"content": "visible text"}}],
+            }
+        )
+
+    client = OpenAICompatibleChatClient(
+        config=resolve_provider_config("xai", model="grok-requested"),
+        urlopen=fake_urlopen,
+        require_served_model_match=True,
+    )
+
+    with pytest.raises(ValueError, match="served unexpected model"):
+        client.complete(messages=[{"role": "user", "content": "hello"}])

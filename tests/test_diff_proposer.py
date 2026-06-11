@@ -291,6 +291,40 @@ def test_openai_compatible_diff_transport_requires_explicit_model_without_inject
         OpenAICompatibleDiffTransport()
 
 
+def test_openai_compatible_diff_transport_strictly_rejects_served_model_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+
+    class MismatchResponse:
+        status = 200
+
+        def __enter__(self) -> MismatchResponse:
+            return self
+
+        def __exit__(self, *exc: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {
+                    "model": "unexpected-served-model",
+                    "choices": [{"finish_reason": "stop", "message": {"content": _valid_diff()}}],
+                }
+            ).encode()
+
+    def fake_urlopen(request: Any, timeout: int) -> MismatchResponse:
+        return MismatchResponse()
+
+    client = OpenAICompatibleChatClient(
+        config=resolve_provider_config("xai", model="grok-requested"),
+        urlopen=fake_urlopen,
+        require_served_model_match=True,
+    )
+    transport = OpenAICompatibleDiffTransport(chat_client=client)
+
+    with pytest.raises(RunnerError, match="served unexpected model"):
+        transport.propose(_diff_request())
+
+
 def test_diff_proposer_applies_valid_fake_diff_after_patch_gate(tmp_path: Path) -> None:
     repo = _repo(tmp_path)
     transport = FakeTransport(

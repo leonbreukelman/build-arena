@@ -177,6 +177,16 @@ class StaticVerifier:
         self.verdict = verdict
 
     def verify_worktree(self, **kwargs: Any) -> Any:
+        kwargs["scorer"].score_repo(kwargs["worktree"])
+        return type(
+            "Verification",
+            (),
+            {"verdict": self.verdict, "ablation_result": type("Ablation", (), {"model_dump": lambda self, mode: {"ok": True}})()},
+        )()
+
+
+class NoScoreVerifier(StaticVerifier):
+    def verify_worktree(self, **kwargs: Any) -> Any:
         return type(
             "Verification",
             (),
@@ -242,6 +252,7 @@ def _loop_context(
     hypothesis: Hypothesis,
     router_result: ApplyResult | None = None,
     verifier_verdict: Verdict | None = None,
+    verifier: Any | None = None,
     ledger: RecordingLedger | None = None,
     structural_validator: Any | None = None,
     stop_after_promotions: int | None = None,
@@ -273,7 +284,7 @@ def _loop_context(
         scorer=NoopScorer(),
         hypothesizer=StaticHypothesizer(hypothesis),
         router=StaticRouter(router_result),
-        verifier=StaticVerifier(verifier_verdict),
+        verifier=verifier or StaticVerifier(verifier_verdict),
         promoter=RecordingPromoter(),
         active_baseline=_baseline(),
         active_score=_score_record("score-before"),
@@ -484,6 +495,35 @@ def test_loop_discards_boundary_failed_ledger_apply_and_structural_cases(tmp_pat
     assert "PATCH_APPLIED" in [event.type for event in structural_events]
     verdict_payload = next(json.loads(event.payload_inline or "{}") for event in structural_events if event.type == "VERDICT_DECIDED")
     assert verdict_payload["reject_reason"] == RejectReason.STRUCTURAL_VALIDATION_FAIL.value
+
+
+def test_loop_halts_before_promotion_when_verifier_does_not_score_worktree(tmp_path: Path) -> None:
+    verifier_verdict = Verdict(
+        id="verdict-promote-without-score",
+        hypothesis_id="hyp-1",
+        outcome=VerdictOutcome.PROMOTED,
+        score_delta=1.0,
+        score_before_id="score-before",
+        score_after_id="score-after",
+        tests_passed=True,
+        decided_ts=1.0,
+    )
+    ctx = _loop_context(
+        tmp_path / "promote-without-score",
+        hypothesis=_hypothesis(),
+        verifier_verdict=verifier_verdict,
+        verifier=NoScoreVerifier(verifier_verdict),
+    )
+
+    result = asyncio.run(run_loop(_run_model(), ctx))
+
+    event_types = [event.type for event in ctx.event_log.read_events()]
+    assert result.halt_record is not None
+    assert result.halt_record.reason == HaltReason.RUNNER_UNAVAILABLE
+    assert result.halt_record.detail is not None
+    assert "did not return a score_after record" in result.halt_record.detail
+    assert "VERDICT_DECIDED" not in event_types
+    assert "PROMOTED" not in event_types
 
 
 def test_loop_promotes_then_continues_until_budget_and_helper_edges(

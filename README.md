@@ -7,19 +7,19 @@ Repo identity: this main loop/system repo is `build-arena`. Internal
 repo identity. The separate `arena-calibration` repo is the smaller public
 calibration harness.
 
-Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer now writes `project-model-v1.json` as the primary Project Model v1 enriched artifact and also writes `project-model-v0.json` as the compatibility projection for existing v0 consumers. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and decomposition-informed/v1 hypothesis generation plus promotion remain blocked. Milestone 3 now tracks a narrower naive worktree-only pilot path that is blocked by internal Build Arena prerequisites instead of Project Model v1 cross-repo adoption. The current branch has local commits ahead of origin until pushed.
+Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer now writes `project-model-v1.json` as the primary Project Model v1 enriched artifact and also writes `project-model-v0.json` as the compatibility projection for existing v0 consumers. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and decomposition-informed/v1 hypothesis generation plus promotion remain blocked. Milestone 3 now tracks a narrower naive worktree-only pilot path that is blocked by internal Build Arena prerequisites instead of Project Model v1 cross-repo adoption.
 
 Implemented acceptance gates:
 
 - `.arena/scorer.lock.toml` pins scorer source by content hash.
 - Re-scoring the same git OID is deterministic within `1e-6` on every axis.
 - Calibration catalog has 13 diffs: 5 positive, 5 negative, 3 neutral.
-- Phase 1 scorer ordering assertions pass across the full catalog.
+- Phase 1 scorer ordering assertions pass across the full catalog. The scorer is configurable through each target's per-repo goal config, but genericity depends on protecting read-only measurement surfaces such as `benchmarks/runtime_proxy.py`.
 - Hypotheses touching `scorer/`, `verifier/`, `schema/`, generated artifacts, or scorer lock files are rejected before runner spawn.
 - Phase 2 verifier evaluates score delta, tests, pinned regressions, and ablation quorum independently.
 - Coverage is a pinned axis by floor, not by monotonic movement: drops that remain above the configured floor are allowed, while drops below the floor reject.
-- Ablation configuration defaults to the `ollama` runner identity with 3 Lanham probes and a 2-of-3 quorum; Phase 2 uses a deterministic no-API stand-in and defers the live Ollama adapter to the runner-integration phase.
-- Verifier calibration separately measures false positives and false negatives over the curated diff catalog: FP = 0, FN rate <= 10%. On the current 5-positive catalog this means 0 missed positives.
+- Ablation configuration defaults to the `ollama` runner identity with 3 Lanham probes and a 2-of-3 quorum; Phase 2 uses a deterministic no-API stand-in, not a live Lanham ablation gate. The replacement target is recorded in `docs/decisions/2026-06-11-ablation-runner-replacement.md`.
+- Verifier calibration separately measures false positives and false negatives over the curated diff catalog against that deterministic stand-in: FP = 0, FN rate <= 10%. On the current 5-positive catalog this means 0 missed positives; it is not a live ablation-performance claim.
 - Verifier calls rescore live worktrees and rerun probes instead of reusing cached probe results.
 - Phase 3 fingerprints are deterministic, model-scoped, target-order-insensitive, and shaped as 32-hex blake2b ids with SHA-256 component metadata.
 - Phase 3 intent embeddings are deterministic no-API SHA-256 expansions seeded by the pinned embedding model name; the live `BAAI/bge-small-en-v1.5` embedding adapter is deferred to the loop/integration phase.
@@ -31,7 +31,7 @@ Implemented acceptance gates:
 - Phase 4 budget checks run from the loop with live wall-clock time and convert breaches into `HaltRecord`s.
 - Phase 4 divergence detection halts on boundary-attempt thresholds, failed fingerprint clusters, and wired scorer/verifier disagreement streaks.
 - Phase 4 worktree management creates locked git worktrees and promotes verified changes via ff-only merge after runtime-artifact cleanup.
-- Phase 4 loop glue is a plain async `match state:` orchestrator and the calibration E2E promotes at least one positive patch.
+- Phase 4 loop glue is a plain async `match state:` orchestrator and the calibration E2E promotes at least one positive patch. Unexpected loop exceptions are converted into `HaltRecord` evidence and active worktree teardown is attempted before halt.
 - `make generated`, `ruff`, `pyright`, and `pytest` are green.
 
 Post-Phase-4 decomposer status:
@@ -39,8 +39,8 @@ Post-Phase-4 decomposer status:
 - The AI-first decomposer builds a graph, wiki/encyclopedia, snapshot, deterministic gate report, and sidecar manifest from git/filesystem truth.
 - AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact and `project-model-v0.json` as compatibility output.
 - The v1 manifest records the primary, v1, and v0 artifact paths plus hashes and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
-- The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, and truncated responses and remains guarded by `--allow-live` for bounded read-only smoke only.
-- The shared OpenAI-compatible LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration. The proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
+- The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, truncated, and strict served-model match failures and remains guarded by `--allow-live` for bounded read-only smoke only. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key.
+- The shared OpenAI-compatible LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration. Live surfaces require an explicit model ID, enforce served-model match checks, and the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model before handing output to the deterministic patch gate.
 - With mock/no-network verification green, Build Arena is ready to attempt a bounded, operator-authorized real run, not an unattended broad live loop; provider acceptance remains unverified until live smoke and any real attempt still needs an explicit model ID plus call budget.
 - Elenchus Core and Arena Calibration remain v0-only follow-up repos for v1 adoption.
 

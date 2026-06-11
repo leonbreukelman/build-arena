@@ -16,7 +16,7 @@ floor = 85.0
 [paths]
 source_roots = ["src"]
 out_of_scope = [".git", ".ruff_cache", ".pytest_cache", "coverage.json"]
-read_only = []
+read_only = ["benchmarks/runtime_proxy.py"]
 
 [diff_caps]
 max_files = 4

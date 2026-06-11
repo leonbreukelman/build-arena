@@ -149,6 +149,34 @@ def test_live_project_model_llm_rejects_truncated_or_empty_content(monkeypatch: 
         llm.generate("return JSON")
 
 
+def test_live_project_model_llm_requires_explicit_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+    for env_name in ["BUILD_ARENA_LLM_MODEL", "BUILD_ARENA_XAI_MODEL", "XAI_MODEL"]:
+        monkeypatch.delenv(env_name, raising=False)
+
+    llm = LiveProjectModelLLM(urlopen=lambda request, timeout: None)
+
+    with pytest.raises(ValueError, match="explicit model"):
+        llm.generate("return JSON")
+
+
+def test_live_project_model_llm_rejects_served_model_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeHTTPResponse:
+        return _FakeHTTPResponse(
+            {
+                "model": "unexpected-served-model",
+                "choices": [{"finish_reason": "stop", "message": {"content": "{}"}}],
+            }
+        )
+
+    llm = LiveProjectModelLLM(model="grok-live-test", urlopen=fake_urlopen)
+
+    with pytest.raises(ValueError, match="served unexpected model"):
+        llm.generate("return JSON")
+
+
 def test_build_project_model_snapshot_live_uses_injected_llm_and_records_hashes(tmp_path: Path) -> None:
     project = tmp_path / "repo"
     _write_tiny_repo(project)

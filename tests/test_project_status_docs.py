@@ -32,6 +32,7 @@ def test_readme_describes_ai_first_v1_and_bounded_live_status() -> None:
 
     stale_strings = [
         "Current implementation status: Phase 4 loop glue, budget, divergence, event projection, and worktree promotion foundation is complete.",
+        "The current branch has local commits ahead of origin until pushed.",
     ]
     assert [text for text in stale_strings if text in readme] == []
 
@@ -149,6 +150,29 @@ def test_project_brief_current_status_matches_implemented_foundation() -> None:
     assert [phrase for phrase in forbidden_overclaims if phrase in lowered_for_overclaim_scan] == []
 
 
+def test_current_state_doc_is_historical_not_live_calibration_instructions() -> None:
+    current_state = _read("docs/build-arena-current-state.md")
+
+    required_markers = [
+        "Historical status snapshot",
+        "superseded",
+        "AGENTS.md",
+        "README.md",
+        "docs/build-arena-project-brief.md",
+    ]
+    missing = [marker for marker in required_markers if marker not in current_state]
+    assert missing == []
+
+    stale_calibration_paths = [
+        "arena/llm.py",
+        "arena/runner.py",
+        "exercise_verifier.py",
+        "patch_eq.py",
+        "results/run_",
+    ]
+    assert [path for path in stale_calibration_paths if path in current_state] == []
+
+
 def test_agents_preserves_safety_boundaries() -> None:
     agents = _read("AGENTS.md")
 
@@ -190,6 +214,69 @@ def test_docs_describe_bounded_real_run_attempt_not_unqualified_readiness() -> N
         assert missing == [], f"{relative} missing {missing}"
         lowered = text.lower().replace("ready to attempt a bounded, operator-authorized real run", "")
         assert "ready for a real run" not in lowered
+
+
+def test_live_provider_docs_disclose_credentials_and_model_enforcement() -> None:
+    required_markers = [
+        "~/.hermes/.env",
+        "api_key_source",
+        "explicit model ID",
+        "served-model match",
+    ]
+    for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
+        text = _read(relative)
+        missing = [marker for marker in required_markers if marker not in text]
+        assert missing == [], f"{relative} missing {missing}"
+
+
+def test_docs_caveat_ablation_stand_in_and_replacement_decision() -> None:
+    decision = _read("docs/decisions/2026-06-11-ablation-runner-replacement.md")
+    required_decision_markers = [
+        "DeterministicOllamaAblationRunner",
+        "deterministic no-API stand-in",
+        "Arena Calibration regeneration/Lanham verifier",
+        "discrimination matrix",
+        "patch-generalization axis",
+        "Elenchus",
+        "advisory",
+    ]
+    missing = [marker for marker in required_decision_markers if marker not in decision]
+    assert missing == []
+
+    required_active_doc_markers = [
+        "deterministic no-API stand-in",
+        "not a live Lanham ablation gate",
+    ]
+    for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
+        text = _read(relative)
+        missing = [marker for marker in required_active_doc_markers if marker not in text]
+        assert missing == [], f"{relative} missing {missing}"
+
+
+def test_docs_caveat_scorer_genericity_and_measurement_boundaries() -> None:
+    required_markers = [
+        "per-repo goal config",
+        "read-only measurement surfaces",
+        "benchmarks/runtime_proxy.py",
+    ]
+    for relative in ("README.md", "docs/build-arena-project-brief.md"):
+        text = _read(relative)
+        missing = [marker for marker in required_markers if marker not in text]
+        assert missing == [], f"{relative} missing {missing}"
+
+
+def test_verification_evidence_retention_policy_is_documented() -> None:
+    policy = _read("docs/decisions/2026-06-11-verification-evidence-retention.md")
+    required_markers = [
+        "docs/verification",
+        "1043/1218",
+        "summary reports",
+        "manifests",
+        "hash pointers",
+        "non-destructive migration",
+    ]
+    missing = [marker for marker in required_markers if marker not in policy]
+    assert missing == []
 
 
 def test_documented_cli_surfaces_exist() -> None:

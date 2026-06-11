@@ -67,12 +67,14 @@ class LiveProjectModelLLM:
             base_url=self.base_url,
             api_key_env=self.api_key_env,
             model=self.model,
+            require_explicit_model=True,
         )
         client = OpenAICompatibleChatClient(
             config=config,
             timeout_seconds=self.timeout_seconds,
             max_tokens=self.max_tokens,
             urlopen=self.urlopen,
+            require_served_model_match=True,
         )
         result = client.complete(
             messages=[

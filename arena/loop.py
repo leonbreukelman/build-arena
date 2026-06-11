@@ -58,6 +58,7 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
     worktree: Worktree | None = None
     hypothesis = None
     verdict: Verdict | None = None
+    verified_score_after: Any | None = None
     patch_path: Path | None = None
     project: Any | None = None
     promotions_total = 0
@@ -69,6 +70,7 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
             ctx.divergence.check_and_raise(run.id)
             match state:
                 case LoopState.SCAN:
+                    verified_score_after = None
                     cycles_total += 1
                     ctx.budget.record_cycle_started()
                     cycle = Cycle(
@@ -142,20 +144,25 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
                             state = LoopState.VERIFY
                 case LoopState.VERIFY:
                     assert cycle is not None and worktree is not None and hypothesis is not None and patch_path is not None
+                    score_capture = _ScoreCapture(ctx.scorer)
                     verification = ctx.verifier.verify_worktree(
                         hypothesis_id=hypothesis.id,
                         reasoning=hypothesis.intent,
                         score_before=ctx.active_score,
                         worktree=Path(worktree.path),
-                        scorer=ctx.scorer,
+                        scorer=score_capture,
                     )
+                    verified_score_after = score_capture.last_score
                     verified_verdict: Verdict = verification.verdict
                     verdict = verified_verdict
                     ctx.event_log.emit("ABLATION_RESULT", cycle_id=cycle.id, payload=verification.ablation_result.model_dump(mode="json"))
                     state = LoopState.PROMOTE if verified_verdict.outcome == VerdictOutcome.PROMOTED else LoopState.DISCARD
                 case LoopState.PROMOTE:
                     assert cycle is not None and worktree is not None and verdict is not None and hypothesis is not None
+                    if verified_score_after is None:
+                        raise RuntimeError("verifier did not return a score_after record through scorer.score_repo")
                     score_before = ctx.active_score
+                    score_after = verified_score_after
                     ctx.event_log.emit("VERDICT_DECIDED", cycle_id=cycle.id, payload=_verdict_payload(verdict, hypothesis.fingerprint_id))
                     _emit_disagreement_if_needed(ctx, cycle.id, verdict)
                     packaged = await _call(
@@ -165,7 +172,6 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
                         run_id=run.id,
                         score_record_id=verdict.score_after_id or verdict.score_before_id,
                     )
-                    score_after = ctx.scorer.score_repo(Path(worktree.path))
                     promotions_total += 1
                     ctx.budget.record_promotion()
                     candidate_only = bool(getattr(ctx.promoter, "candidate_only", False))
@@ -245,6 +251,16 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
             halt_record = _halt(ctx, run.id, diverged.reason, diverged.detail)
             _write_halt_evidence(ctx, run.id, halt_record)
             return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total, halt_record=halt_record)
+        except Exception as exc:  # noqa: BLE001 - convert unexpected loop crashes into canonical halt evidence.
+            if cycle is not None and worktree is not None:
+                await _cleanup_after_unexpected_exception(ctx, worktree, cycle.id)
+            detail = f"unexpected_exception:{type(exc).__name__}: {exc}"
+            # Schema/generated files are protected in this maintenance slice, so
+            # unexpected loop faults reuse RUNNER_UNAVAILABLE with a structured
+            # detail prefix until a future schema migration can add INTERNAL_ERROR.
+            halt_record = _halt(ctx, run.id, HaltReason.RUNNER_UNAVAILABLE, detail)
+            _write_halt_evidence(ctx, run.id, halt_record)
+            return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total, halt_record=halt_record)
 
 
 async def _call(func, *args, **kwargs):
@@ -252,6 +268,28 @@ async def _call(func, *args, **kwargs):
     if inspect.isawaitable(result):
         return await result
     return result
+
+
+class _ScoreCapture:
+    def __init__(self, scorer: Any) -> None:
+        self.scorer = scorer
+        self.last_score: Any | None = None
+
+    def score_repo(self, repo: Path) -> Any:
+        self.last_score = self.scorer.score_repo(repo)
+        return self.last_score
+
+
+async def _cleanup_after_unexpected_exception(ctx: LoopContext, worktree: Worktree, cycle_id: str) -> None:
+    try:
+        await _cleanup(ctx, worktree, cycle_id)
+    except Exception as exc:  # noqa: BLE001 - cleanup failure must not hide the primary halt.
+        ctx.event_log.emit(
+            "WORKTREE_CLEANUP_FAILED",
+            cycle_id=cycle_id,
+            payload={"worktree_id": worktree.id, "error_type": type(exc).__name__, "detail": str(exc)},
+            level="error",
+        )
 
 
 def _emit_run_started(run: Run, ctx: LoopContext) -> None:
