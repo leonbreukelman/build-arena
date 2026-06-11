@@ -33,8 +33,11 @@ The post-Phase-4 AI-first decomposer is also implemented:
 - `arena/project_graph.py`, `arena/project_snapshot.py`, `arena/project_encyclopedia.py`, and `arena/project_model_gate.py` build the graph, snapshot, encyclopedia, and deterministic gate sidecars from git/filesystem truth.
 - `arena/project_decomposer_ai.py` creates snapshot bundles and writes `project-model-v1.json` as the primary Project Model v1 enriched artifact plus `project-model-v0.json` as compatibility output for v0 consumers.
 - `arena/project_model_v1.py` wraps the enriched snapshot, graph, gate report, provenance, hashes, model IDs, derived-artifact strategy, and v0 compatibility pointer in the shared v1 contract.
-- `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path.
+- `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path, backed by the shared OpenAI-compatible client.
+- `arena/runners/diff_proposer.py` contains the deterministic diff proposer runner plus an OpenAI-compatible proposal transport. The shared LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration; the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, and `gate`; live mode is guarded by `--allow-live` and refuses routine live spend without that explicit flag.
+
+With mock/no-network verification green, Build Arena is ready to attempt a bounded, operator-authorized real run, not an unattended broad live loop; provider acceptance remains unverified until live smoke and any real attempt still needs an explicit model ID plus call budget.
 
 Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Decomposition-informed dry-run hypothesis generation from Project Model v1, real promotion, dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution remain blocked or unimplemented. Milestone 3 now tracks a narrower naive worktree-only pilot path; it is blocked by internal Build Arena prerequisites (generic scorer, fail-closed proposer tests, and per-repo boundary config) rather than Project Model v1 cross-repo adoption.
 
@@ -104,11 +107,13 @@ uv run python -m arena.project_model_cli graph --project <repo> --output <graph.
 uv run python -m arena.project_model_cli gate --snapshot <manifest.json>
 ```
 
-Bounded read-only live smoke, only when explicitly authorized:
+Bounded read-only live smoke, only when explicitly authorized and with an explicit model ID:
 
 ```bash
-uv run python -m arena.project_model_cli snapshot --project <repo> --artifacts-root <dir> --project-id <id> --goal <goal> --llm-mode live --allow-live
+uv run python -m arena.project_model_cli snapshot --project <repo> --artifacts-root <dir> --project-id <id> --goal <goal> --llm-mode live --allow-live --live-model <explicit-model>
 ```
+
+Provider/base URL/API-key-env are operator-switchable with `--live-provider`, `--live-base-url`, and `--live-api-key-env`.
 
 ---
 

@@ -67,8 +67,10 @@ def build_project_model_snapshot(
     llm_mode: str = "fixture",
     model_output_path: str | Path | None = None,
     live_llm: Any | None = None,
+    live_provider: str = "xai",
     live_model: str | None = None,
     live_base_url: str | None = None,
+    live_api_key_env: str | None = None,
     overwrite: bool = False,
     run_adversarial_probes: bool = False,
 ) -> BuildProjectModelResult:
@@ -88,7 +90,12 @@ def build_project_model_snapshot(
     elif llm_mode == "off":
         raw_output = build_noop_model_output(graph, project_id=project_id, goal=goal, non_goals=non_goals)
     elif llm_mode == "live":
-        adapter = live_llm or LiveProjectModelLLM(model=live_model, base_url=live_base_url or "https://api.x.ai/v1")
+        adapter = live_llm or LiveProjectModelLLM(
+            provider=live_provider,
+            model=live_model,
+            base_url=live_base_url,
+            api_key_env=live_api_key_env,
+        )
         raw_output = adapter.generate(prompt)
     else:
         raise ValueError(f"unsupported llm_mode {llm_mode!r}")

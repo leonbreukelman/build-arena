@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 def _run(cmd: list[str], cwd: Path, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, check=check)
@@ -147,6 +149,82 @@ def test_snapshot_cli_refuses_live_mode_without_explicit_live_flag(tmp_path: Pat
 
     assert proc.returncode == 2
     assert "--allow-live" in proc.stderr
+
+
+def test_snapshot_cli_refuses_live_mode_without_explicit_model(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from arena import project_model_cli
+
+    called = False
+
+    def fake_build_project_model_snapshot(*args: object, **kwargs: object) -> object:
+        nonlocal called
+        called = True
+        raise RuntimeError("should not construct live model")
+
+    monkeypatch.setattr(project_model_cli, "build_project_model_snapshot", fake_build_project_model_snapshot)
+
+    rc = project_model_cli.main(
+        [
+            "snapshot",
+            "--project",
+            str(tmp_path),
+            "--artifacts-root",
+            str(tmp_path / "artifacts"),
+            "--llm-mode",
+            "live",
+            "--allow-live",
+        ]
+    )
+
+    captured = capsys.readouterr()
+    assert rc == 2
+    assert called is False
+    assert "--live-model" in captured.err
+
+
+def test_snapshot_cli_forwards_live_provider_switches(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from arena import project_model_cli
+
+    captured: dict[str, object] = {}
+
+    def fake_build_project_model_snapshot(*args: object, **kwargs: object) -> object:
+        captured["args"] = args
+        captured.update(kwargs)
+        raise RuntimeError("stop before network")
+
+    monkeypatch.setattr(project_model_cli, "build_project_model_snapshot", fake_build_project_model_snapshot)
+
+    rc = project_model_cli.main(
+        [
+            "snapshot",
+            "--project",
+            str(tmp_path),
+            "--artifacts-root",
+            str(tmp_path / "artifacts"),
+            "--llm-mode",
+            "live",
+            "--allow-live",
+            "--live-provider",
+            "openrouter",
+            "--live-base-url",
+            "https://openrouter.ai/api/v1",
+            "--live-model",
+            "anthropic/claude-opus-4.1",
+            "--live-api-key-env",
+            "OPENROUTER_API_KEY",
+        ]
+    )
+
+    assert rc == 2
+    assert captured["llm_mode"] == "live"
+    assert captured["live_provider"] == "openrouter"
+    assert captured["live_base_url"] == "https://openrouter.ai/api/v1"
+    assert captured["live_model"] == "anthropic/claude-opus-4.1"
+    assert captured["live_api_key_env"] == "OPENROUTER_API_KEY"
 
 
 def test_gate_and_graph_cli(tmp_path: Path) -> None:

@@ -40,6 +40,8 @@ Post-Phase-4 decomposer status:
 - AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact and `project-model-v0.json` as compatibility output.
 - The v1 manifest records the primary, v1, and v0 artifact paths plus hashes and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
 - The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, and truncated responses and remains guarded by `--allow-live` for bounded read-only smoke only.
+- The shared OpenAI-compatible LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration. The proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
+- With mock/no-network verification green, Build Arena is ready to attempt a bounded, operator-authorized real run, not an unattended broad live loop; provider acceptance remains unverified until live smoke and any real attempt still needs an explicit model ID plus call budget.
 - Elenchus Core and Arena Calibration remain v0-only follow-up repos for v1 adoption.
 
 No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation and readiness register blockers remain green/closed.
@@ -86,7 +88,7 @@ uv run python -m arena.project_model_cli snapshot \
   --llm-mode fixture
 ```
 
-A bounded read-only live smoke is guarded by `--allow-live` and live mode. `XAI_API_KEY` may be required by the live adapter, but broad loops must not use this path until readiness blockers close:
+A bounded read-only live smoke is guarded by `--allow-live` and live mode. Provider settings are operator-switchable with `--live-provider`, `--live-base-url`, `--live-model`, and `--live-api-key-env`. An explicit `--live-model` should be used for any real attempt; broad loops must not use this path until readiness blockers close:
 
 ```bash
 uv run python -m arena.project_model_cli snapshot \

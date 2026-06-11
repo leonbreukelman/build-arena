@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-import hashlib
 import json
-import os
-import urllib.error
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from arena.llm_adapter import OpenAICompatibleChatClient, resolve_provider_config
 from arena.project_graph import ProjectGraph
 from arena.project_meta_decomposer import build_meta_model_output
 
@@ -57,73 +55,38 @@ def normalize_model_output(raw: Any) -> dict[str, Any]:
 class LiveProjectModelLLM:
     model: str | None = None
     provider: str = "xai"
-    base_url: str = "https://api.x.ai/v1"
-    api_key_env: str = "XAI_API_KEY"
+    base_url: str | None = None
+    api_key_env: str | None = None
     timeout_seconds: int = 120
     max_tokens: int = 4096
     urlopen: Callable[..., Any] = field(default=urllib.request.urlopen)
 
     def generate(self, prompt: str) -> dict[str, Any]:
-        api_key = _resolve_api_key(self.api_key_env)
-        model = self.model or os.environ.get("BUILD_ARENA_XAI_MODEL") or os.environ.get("XAI_MODEL") or "grok-4.20-0309-non-reasoning"
-        payload = {
-            "model": model,
-            "messages": [
+        config = resolve_provider_config(
+            self.provider,
+            base_url=self.base_url,
+            api_key_env=self.api_key_env,
+            model=self.model,
+        )
+        client = OpenAICompatibleChatClient(
+            config=config,
+            timeout_seconds=self.timeout_seconds,
+            max_tokens=self.max_tokens,
+            urlopen=self.urlopen,
+        )
+        result = client.complete(
+            messages=[
                 {"role": "system", "content": "Return only strict JSON. No markdown."},
                 {"role": "user", "content": prompt},
             ],
-            "temperature": 0,
-            "max_tokens": self.max_tokens,
-            "response_format": {"type": "json_object"},
-        }
-        request = urllib.request.Request(
-            self.base_url.rstrip("/") + "/chat/completions",
-            data=json.dumps(payload).encode(),
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            method="POST",
+            response_format={"type": "json_object"},
         )
         try:
-            with self.urlopen(request, timeout=self.timeout_seconds) as response:
-                response_text = response.read().decode("utf-8", errors="replace")
-                status = int(getattr(response, "status", 200))
-        except urllib.error.HTTPError as exc:
-            body = exc.read().decode("utf-8", errors="replace")
-            raise ValueError(f"live model provider returned HTTP {exc.code}: {_redact_error(body)}") from exc
-        except Exception as exc:  # noqa: BLE001 - convert provider details to a concise fail-closed diagnostic.
-            raise ValueError(f"live model provider request failed: {_redact_error(str(exc))}") from exc
-
-        try:
-            packet = json.loads(response_text)
-        except json.JSONDecodeError as exc:
-            raise ValueError("live model provider response envelope was not valid JSON") from exc
-        choices = packet.get("choices") or []
-        if not choices:
-            raise ValueError("live model provider response had no choices")
-        choice = choices[0]
-        finish_reason = str(choice.get("finish_reason") or "")
-        if finish_reason.lower() == "length":
-            raise ValueError("live model provider response was truncated with finish_reason='length'")
-        message = choice.get("message") or {}
-        content = str(message.get("content") or "")
-        if not content.strip():
-            raise ValueError(f"live model provider returned empty content with finish_reason={finish_reason!r}")
-
-        try:
-            output = normalize_model_output(_parse_json_text(content))
+            output = normalize_model_output(_parse_json_text(result.text))
         except ValueError as exc:
             raise ValueError("live model provider content was not valid Build Arena JSON") from exc
-        output["model_id"] = str(packet.get("model") or output.get("model_id") or model)
-        output["_provider_metadata"] = {
-            "provider": self.provider,
-            "api_mode": "openai_chat_completions",
-            "base_url": self.base_url.rstrip("/"),
-            "model": output["model_id"],
-            "status_code": status,
-            "finish_reason": finish_reason,
-            "prompt_hash": hashlib.sha256(prompt.encode()).hexdigest(),
-            "content_hash": hashlib.sha256(content.encode()).hexdigest(),
-            "usage": packet.get("usage"),
-        }
+        output["model_id"] = str(result.model or output.get("model_id") or config.model)
+        output["_provider_metadata"] = dict(result.metadata)
         return output
 
 
@@ -145,30 +108,6 @@ def _parse_json_text(text: str) -> Any:
     except json.JSONDecodeError as exc:
         raise ValueError("text is not valid JSON") from exc
 
-
-def _resolve_api_key(env_name: str) -> str:
-    value = os.environ.get(env_name)
-    if value:
-        return value
-    env_path = Path.home() / ".hermes" / ".env"
-    if env_path.exists():
-        for line in env_path.read_text(encoding="utf-8", errors="replace").splitlines():
-            if not line or line.lstrip().startswith("#") or "=" not in line:
-                continue
-            key, raw_value = line.split("=", 1)
-            if key.strip() == env_name:
-                value = raw_value.strip().strip('"\'')
-                if value:
-                    return value
-    raise ValueError(f"live model provider requires {env_name} in the environment or ~/.hermes/.env")
-
-
-def _redact_error(text: str) -> str:
-    import re
-
-    text = re.sub(r"Bearer\s+[A-Za-z0-9._\-]+", "Bearer [REDACTED]", text)
-    text = re.sub(r"(?i)(api[_-]?key|token|password|secret|authorization)\s*[:=]\s*[^\s,]+", r"\1=[REDACTED]", text)
-    return text[:500]
 
 
 def build_fixture_model_output(graph: ProjectGraph, *, project_id: str, goal: str, non_goals: list[str]) -> dict[str, Any]:

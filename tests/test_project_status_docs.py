@@ -176,6 +176,22 @@ def test_june5_final_report_records_committed_outcome_not_precommit_state() -> N
     assert "not pushed, merged, deployed" in report
 
 
+def test_docs_describe_bounded_real_run_attempt_not_unqualified_readiness() -> None:
+    required_markers = [
+        "operator-switchable",
+        "OpenAI-compatible",
+        "proposal",
+        "ready to attempt a bounded, operator-authorized real run",
+        "provider acceptance remains unverified until live smoke",
+    ]
+    for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
+        text = _read(relative)
+        missing = [marker for marker in required_markers if marker not in text]
+        assert missing == [], f"{relative} missing {missing}"
+        lowered = text.lower().replace("ready to attempt a bounded, operator-authorized real run", "")
+        assert "ready for a real run" not in lowered
+
+
 def test_documented_cli_surfaces_exist() -> None:
     checks = [
         (
@@ -188,7 +204,18 @@ def test_documented_cli_surfaces_exist() -> None:
         ),
         (
             ["uv", "run", "python", "-m", "arena.project_model_cli", "snapshot", "--help"],
-            ["--project", "--artifacts-root", "--project-id", "--goal", "--llm-mode", "--allow-live"],
+            [
+                "--project",
+                "--artifacts-root",
+                "--project-id",
+                "--goal",
+                "--llm-mode",
+                "--allow-live",
+                "--live-provider",
+                "--live-base-url",
+                "--live-model",
+                "--live-api-key-env",
+            ],
         ),
         (
             ["uv", "run", "python", "-m", "arena.project_model_cli", "graph", "--help"],

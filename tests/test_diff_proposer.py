@@ -9,9 +9,20 @@ from typing import Any
 import pytest
 
 from arena.generated.models import Hypothesis, RunnerName
+from arena.llm_adapter import (
+    OpenAIChatResult,
+    OpenAICompatibleChatClient,
+    OpenAIProviderConfig,
+    resolve_provider_config,
+)
 from arena.router import RunnerRouter
 from arena.runners.base import RunnerError
-from arena.runners.diff_proposer import DiffProposalResponse, DiffProposerRunner
+from arena.runners.diff_proposer import (
+    DiffProposalRequest,
+    DiffProposalResponse,
+    DiffProposerRunner,
+    OpenAICompatibleDiffTransport,
+)
 
 
 def _run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
@@ -94,6 +105,182 @@ class FakeTransport:
     def propose(self, request: Any) -> DiffProposalResponse:
         self.requests.append(request)
         return self.response
+
+
+class FakeChatClient:
+    def __init__(self, result: OpenAIChatResult) -> None:
+        self.result = result
+        self.calls: list[dict[str, Any]] = []
+
+    def complete(
+        self,
+        *,
+        messages: list[dict[str, Any]],
+        response_format: dict[str, Any] | None = None,
+        max_tokens: int | None = None,
+    ) -> OpenAIChatResult:
+        self.calls.append({"messages": messages, "response_format": response_format, "max_tokens": max_tokens})
+        return self.result
+
+
+def _chat_result(text: str, *, finish_reason: str = "stop") -> OpenAIChatResult:
+    return OpenAIChatResult(
+        text=text,
+        provider="xai",
+        model="grok-served",
+        requested_model="grok-requested",
+        finish_reason=finish_reason,
+        usage={"prompt_tokens": 10, "completion_tokens": 20},
+        metadata={
+            "provider": "xai",
+            "api_mode": "openai_chat_completions",
+            "base_url": "https://api.x.ai/v1",
+            "model": "grok-served",
+            "requested_model": "grok-requested",
+            "finish_reason": finish_reason,
+            "prompt_hash": "p" * 64,
+            "content_hash": "c" * 64,
+            "usage": {"prompt_tokens": 10, "completion_tokens": 20},
+        },
+    )
+
+
+def _diff_request() -> DiffProposalRequest:
+    return DiffProposalRequest(
+        hypothesis_id="hyp-diff-1",
+        target_path="src/app.py",
+        file_contents="def value() -> int:\n    return 1\n",
+        success_criterion="value returns 2",
+        goal_config_sha="g" * 64,
+        intent="Return the safer value",
+    )
+
+
+def test_openai_compatible_diff_transport_requests_unified_diff_and_records_provenance() -> None:
+    chat = FakeChatClient(_chat_result(_valid_diff()))
+    transport = OpenAICompatibleDiffTransport(chat_client=chat)
+
+    response = transport.propose(_diff_request())
+
+    prompt = chat.calls[0]["messages"][-1]["content"]
+    assert chat.calls[0]["response_format"] is None
+    assert chat.calls[0]["max_tokens"] == 4096
+    assert "Return only a unified diff" in prompt
+    assert "src/app.py" in prompt
+    assert "def value() -> int:" in prompt
+    assert "value returns 2" in prompt
+    assert response.diff_text == _valid_diff()
+    assert response.intent == "Return the safer value"
+    assert response.truncated is False
+    assert response.provenance is not None
+    assert response.provenance["provider"] == "xai"
+    assert response.provenance["model"] == "grok-served"
+    assert response.provenance["requested_model"] == "grok-requested"
+
+
+@pytest.mark.parametrize(
+    "result, match",
+    [
+        (_chat_result(_valid_diff(), finish_reason="length"), "truncated"),
+        (_chat_result("   "), "empty"),
+        (_chat_result("Please edit the file."), "unified diff"),
+    ],
+)
+def test_openai_compatible_diff_transport_rejects_truncated_empty_and_non_diff(
+    result: OpenAIChatResult,
+    match: str,
+) -> None:
+    transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(result))
+
+    with pytest.raises(RunnerError, match=match):
+        transport.propose(_diff_request())
+
+
+def test_openai_compatible_diff_transport_converts_real_client_errors_to_runner_error(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+
+    class LengthResponse:
+        status = 200
+
+        def __enter__(self) -> LengthResponse:
+            return self
+
+        def __exit__(self, *exc: object) -> None:
+            return None
+
+        def read(self) -> bytes:
+            return json.dumps(
+                {
+                    "model": "grok-served",
+                    "choices": [
+                        {
+                            "finish_reason": "length",
+                            "message": {"content": _valid_diff()},
+                        }
+                    ],
+                }
+            ).encode()
+
+    def fake_urlopen(request: Any, timeout: int) -> LengthResponse:
+        return LengthResponse()
+
+    client = OpenAICompatibleChatClient(
+        config=OpenAIProviderConfig(
+            provider="xai",
+            base_url="https://api.x.ai/v1",
+            api_key_env="XAI_API_KEY",
+            model="grok-test",
+        ),
+        urlopen=fake_urlopen,
+    )
+    transport = OpenAICompatibleDiffTransport(chat_client=client)
+
+    with pytest.raises(RunnerError, match="truncated|length"):
+        transport.propose(_diff_request())
+
+
+def test_openai_compatible_diff_transport_strips_single_markdown_diff_fence() -> None:
+    fenced = "```diff\n" + _valid_diff() + "```\n"
+    transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(_chat_result(fenced)))
+
+    response = transport.propose(_diff_request())
+
+    assert response.diff_text == _valid_diff()
+
+
+def test_diff_proposer_applies_live_transport_valid_diff_after_patch_gate(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(_chat_result(_valid_diff())))
+    runner = DiffProposerRunner(transport=transport, success_criterion="value returns 2")
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(), repo))
+
+    assert patch_path.read_text(encoding="utf-8") == _valid_diff()
+    assert (repo / "src" / "app.py").read_text(encoding="utf-8") == "def value() -> int:\n    return 2\n"
+    provenance = json.loads(patch_path.with_suffix(".patch.provenance.json").read_text(encoding="utf-8"))
+    assert provenance["provider"] == "xai"
+    assert provenance["model"] == "grok-served"
+    assert provenance["hypothesis_id"] == "hyp-diff-1"
+
+
+def test_same_diff_transport_config_can_target_xai_openai_openrouter() -> None:
+    configs = [
+        resolve_provider_config("xai", model="grok-test"),
+        resolve_provider_config("openai", model="gpt-test"),
+        resolve_provider_config("openrouter", model="openrouter-test"),
+    ]
+
+    transports = [OpenAICompatibleDiffTransport(provider_config=config) for config in configs]
+
+    assert [transport.provider_config.provider for transport in transports] == ["xai", "openai", "openrouter"]
+    assert [transport.provider_config.model for transport in transports] == ["grok-test", "gpt-test", "openrouter-test"]
+
+
+def test_openai_compatible_diff_transport_requires_explicit_model_without_injected_client() -> None:
+    with pytest.raises(ValueError, match="explicit model"):
+        OpenAICompatibleDiffTransport()
 
 
 def test_diff_proposer_applies_valid_fake_diff_after_patch_gate(tmp_path: Path) -> None:
