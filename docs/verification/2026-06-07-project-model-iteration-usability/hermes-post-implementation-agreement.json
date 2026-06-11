@@ -1,0 +1,22 @@
+{
+  "reviewer": "hermes",
+  "addressed": true,
+  "confidence": "high",
+  "blockers": [],
+  "non_blocking_followups": [
+    "live_test_boundary remains enforcement=gap by design; a future FMC-MCP iteration should decide whether test_live.py becomes credential-gated automation or explicitly documented as manual-only.",
+    "quality.mypy is visible but advisory because uv could not spawn mypy in this environment; it should only become runnable acceptance after the target repo can actually execute it.",
+    "component profile tag attribution can be sharpened later so configuration components do not inherit behavioral tags that are mostly client-owned."
+  ],
+  "evidence": [
+    "Final snapshot snapshot-ffa3e18f17f2606b has gateReport.passed=true with no violations, and its explicit gate rerun returned {passed: true, violations: []}.",
+    "Component profiles are semantic and prioritized: component.fmc-mcp-client ranks 1/high risk with auth, rate_limit, concurrency, pagination, read_only behavior and source symbols including FMCClient and RateLimiter; component.fmc-mcp-main ranks last/low risk. This addresses the original templated-responsibility and risk-signal gap.",
+    "Runtime contracts include constructs, injects, delegates_to, registers_resource, registers_tool, exposes_runtime_mode, and imports. The combined import defect is covered by tests and the final model includes distinct server-to-resources and server-to-tools contracts.",
+    "External surfaces include the expected MCP resources, MCP tools, console script mcp-server-fmc, FMC REST endpoint families, real FMC settings names, runtime mode, and FastMCP/httpx dependencies.",
+    "Product invariants cover read_only_external_operations, secret_safety, rate_limit, concurrency_limit, live_test_boundary, and public_mcp_contract; the final quick checks show concrete 120 requests per minute and 10 concurrent connections and category-scoped surfaces such as secret_safety -> environment_variable only.",
+    "Quality gates and observable checks are honest: pytest and ruff are runnable acceptance checks; quality.mypy remains advisory with safeToRunByDefault=false and includedInAcceptance=false after direct FMC-MCP execution proved mypy could not spawn.",
+    "Priority backlog items and open questions are deterministic, provenance-backed, and tied to source-observable gaps rather than broad generic questions.",
+    "Build Arena make verify passed after final refinements; FMC-MCP uv run python -m pytest -q passed with 19 tests; FMC-MCP uv run ruff check . passed."
+  ],
+  "questions": []
+}

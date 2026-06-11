@@ -7,7 +7,7 @@ from pathlib import Path
 from arena.budget import BudgetController
 from arena.divergence import DivergenceDetector
 from arena.events import EventLog
-from arena.generated.models import Baseline, HaltReason, Run, RunnerName
+from arena.generated.models import Baseline, HaltReason, Run, RunnerName, Worktree
 from arena.hypothesizer import Arm, SymbolicHypothesizer, UCB1Bandit
 from arena.loop import LoopContext, run_loop
 from arena.router import RunnerRouter
@@ -63,6 +63,53 @@ class UnusedComponent:
 class NoopScanner:
     async def scan(self, worktree):
         return {"ast_diff_pattern": "runtime_lookup"}
+
+
+class CrashScanner:
+    async def scan(self, worktree):
+        raise RuntimeError("scanner boom")
+
+
+class RecordingWorktrees:
+    def __init__(self, root: Path) -> None:
+        self.root = root
+        self.torn_down: list[Worktree] = []
+
+    async def create(self, cycle_id: str, base_oid: str) -> Worktree:
+        path = self.root / cycle_id
+        path.mkdir(parents=True, exist_ok=True)
+        return Worktree(
+            id=cycle_id,
+            cycle_id=cycle_id,
+            path=str(path),
+            base_git_oid=base_oid,
+            created_ts=1.0,
+        )
+
+    async def teardown(self, worktree: Worktree) -> None:
+        self.torn_down.append(worktree)
+
+
+class FailingTeardownWorktrees(RecordingWorktrees):
+    async def teardown(self, worktree: Worktree) -> None:
+        self.torn_down.append(worktree)
+        raise RuntimeError("teardown boom")
+
+
+class CountingScorer:
+    def __init__(self, scorer: Scorer) -> None:
+        self.scorer = scorer
+        self.score_repo_calls = 0
+        self.scored_records: list[ScoreRecord] = []
+
+    def score_repo(self, repo: Path) -> ScoreRecord:
+        self.score_repo_calls += 1
+        record = self.scorer.score_repo(repo)
+        self.scored_records.append(record)
+        return record
+
+    def drift_check(self, active_score: ScoreRecord, worktree: Path) -> None:
+        self.scorer.drift_check(active_score, worktree)
 
 
 class CalibrationPatchRunner:
@@ -135,6 +182,64 @@ def test_run_loop_enforces_wall_clock_budget_before_starting_cycle(tmp_path, mon
     assert [event.type for event in log.read_events()] == ["RUN_STARTED", "HALTED"]
 
 
+def test_run_loop_turns_unexpected_exception_into_halt_record_and_tears_down_worktree(tmp_path: Path) -> None:
+    log = EventLog(tmp_path / "run-crash", run_id="run-1")
+    run = _run_model("a" * 40)
+    worktrees = RecordingWorktrees(tmp_path / "worktrees")
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=999, cycle_count_cap=99),
+        divergence=DivergenceDetector(log),
+        worktrees=worktrees,
+        scanner=CrashScanner(),
+        scorer=UnusedComponent(),
+        hypothesizer=UnusedComponent(),
+        router=UnusedComponent(),
+        verifier=UnusedComponent(),
+        promoter=UnusedComponent(),
+        active_baseline=_baseline(run.id, "a" * 40, "score-before"),
+        active_score=_dummy_score(),
+    )
+
+    result = asyncio.run(run_loop(run, ctx))
+
+    assert result.halt_record is not None
+    assert result.halt_record.reason == HaltReason.RUNNER_UNAVAILABLE
+    assert result.halt_record.detail is not None
+    assert result.halt_record.detail.startswith("unexpected_exception:RuntimeError: scanner boom")
+    assert [worktree.id for worktree in worktrees.torn_down] == ["cycle-1"]
+    assert log.read_events()[-1].type == "HALTED"
+
+
+def test_run_loop_records_cleanup_failure_without_masking_unexpected_halt(tmp_path: Path) -> None:
+    log = EventLog(tmp_path / "run-crash-cleanup", run_id="run-1")
+    run = _run_model("a" * 40)
+    worktrees = FailingTeardownWorktrees(tmp_path / "worktrees")
+    ctx = LoopContext(
+        event_log=log,
+        budget=BudgetController(wall_clock_seconds_cap=999, cycle_count_cap=99),
+        divergence=DivergenceDetector(log),
+        worktrees=worktrees,
+        scanner=CrashScanner(),
+        scorer=UnusedComponent(),
+        hypothesizer=UnusedComponent(),
+        router=UnusedComponent(),
+        verifier=UnusedComponent(),
+        promoter=UnusedComponent(),
+        active_baseline=_baseline(run.id, "a" * 40, "score-before"),
+        active_score=_dummy_score(),
+    )
+
+    result = asyncio.run(run_loop(run, ctx))
+
+    event_types = [event.type for event in log.read_events()]
+    assert result.halt_record is not None
+    assert result.halt_record.detail is not None
+    assert result.halt_record.detail.startswith("unexpected_exception:RuntimeError: scanner boom")
+    assert "WORKTREE_CLEANUP_FAILED" in event_types
+    assert event_types[-1] == "HALTED"
+
+
 def test_verified_discard_emits_single_verdict_and_disagreement(
     project_root: Path,
     calibration_repo: Path,
@@ -188,6 +293,7 @@ def test_calibration_loop_promotes_one_positive_patch(
 ) -> None:
     scorer = Scorer(project_root)
     score_before = scorer.score_repo(calibration_repo)
+    counting_scorer = CountingScorer(scorer)
     run = _run_model(score_before.git_oid)
     log = EventLog(tmp_path / "run-1", run_id=run.id)
     arm = Arm(
@@ -207,7 +313,7 @@ def test_calibration_loop_promotes_one_positive_patch(
         divergence=DivergenceDetector(log),
         worktrees=WorktreeManager(repo=calibration_repo, worktree_root=tmp_path / "worktrees"),
         scanner=NoopScanner(),
-        scorer=scorer,
+        scorer=counting_scorer,
         hypothesizer=hypothesizer,
         router=router,
         verifier=Verifier(),
@@ -224,5 +330,7 @@ def test_calibration_loop_promotes_one_positive_patch(
     assert result.halt_record is None
     assert "PROMOTED" in event_types
     assert "BASELINE_ADVANCED" in event_types
+    assert counting_scorer.score_repo_calls == 1
+    assert ctx.active_score == counting_scorer.scored_records[0]
     assert subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=calibration_repo, text=True).strip() == ctx.active_baseline.git_oid
     assert patch_runner.applied_hypothesis_ids

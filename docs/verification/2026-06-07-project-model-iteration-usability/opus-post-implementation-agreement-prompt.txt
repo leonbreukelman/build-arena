@@ -1,0 +1,1585 @@
+You are reviewing Build Arena implementation results as the opus reviewer. Use only the packet below as evidence. Do not request live API access. Decide whether the spec and original three-model review gaps were addressed by the implemented decomposer and regenerated FMC-MCP Project Model. Treat the mypy deviation as acceptable only if the packet proves it is visible as advisory and excluded from runnable acceptance. Return concise JSON matching required_judgment_schema; no markdown fences. The JSON reviewer field MUST be exactly "opus".
+
+PACKET:
+{
+  "review_task": "Determine whether Project Model v1 iteration-usability gaps from the three-model FMC-MCP review were addressed after implementation, refinement, and regeneration. Return a clear yes/no verdict with blockers if any.",
+  "original_findings_source": "docs/verification/2026-06-06-fmc-mcp-first-decomposition/three-model-project-model-usability-review.md",
+  "accepted_snapshot": "snapshot-ffa3e18f17f2606b",
+  "spec": "# Project Model v1 Iteration Usability Enrichment Spec\n\nDate: 2026-06-07\nStatus: proposed for implementation in this session\nSource review: `docs/verification/2026-06-06-fmc-mcp-first-decomposition/three-model-project-model-usability-review.md`\n\n## 1. Problem statement\n\nThe first FMC-MCP Project Model v1 was accepted by the deterministic Build Arena gate, but the Grok/Opus/Hermes review found that it is mostly a static ownership/import map. It orients an agent to files and tests, but it does not yet make the project easy to improve from the model alone.\n\nThe missing usability signals are:\n\n1. semantic component responsibilities instead of tautological module ownership;\n2. product invariants such as read-only behavior, secret safety, rate/concurrency limits, and live-test boundaries;\n3. runtime/data-flow contracts such as construction, injection, registration, and delegation;\n4. explicit external surfaces such as MCP resources/tools, console scripts, environment variables, and HTTP endpoint families;\n5. risk/priority metadata that tells an agent where improvement effort should start;\n6. configured quality checks beyond the nearest local pytest command;\n7. a fix for combined import resolution so `from package import a, b` can generate separate component contracts when `a` and `b` are owned modules.\n\n## 2. Lightweight weighted intake scorecard\n\nThis is a narrow Build Arena agent-usability improvement. The weighted intake dimensions from `AGENTS.md` are applied in lightweight mode:\n\n| Dimension | Weight | Rationale |\n| --- | ---: | --- |\n| AI-agent usability | 30 | Directly improves whether Grok/Opus/Hermes can identify safe next work from the model. |\n| Architecture/spec contracts | 24 | Adds runtime/data-flow/external-surface contract metadata. |\n| Reproducible verification | 18 | Adds configured local quality checks and schema tests. |\n| Documentation/project knowledge | 12 | Captures the review-derived contract in versioned repo docs. |\n| Security/safety hygiene | 10 | Product invariants include secret handling, read-only defaults, live-test boundary, and rate limits. |\n| Operations/rollback | 6 | Keeps all changes local, deterministic, and compatible with current gate artifacts. |\n\nDecision: prioritize Project Model v1 enrichment before autonomous FMC-MCP implementation work.\n\n## 3. Scope\n\n### In scope\n\n1. Extend newly emitted `project-model/v1` artifacts with an `iterationReadiness` top-level object.\n2. Keep `schemaVersion: project-model/v1`. `iterationReadiness` is optional in the JSON schema so historical v1 artifacts remain valid, but this implementation's decomposer path must always emit it and tests must assert its presence on newly generated artifacts.\n3. Keep `ProjectModelSnapshot.schema_version: project-model-snapshot/v0.1`; do not mutate the internal snapshot version unless required.\n4. Improve deterministic fixture decomposition output so snapshots also contain better component responsibilities, product concerns, and configured quality checks.\n5. Improve Python import resolution for combined absolute imports.\n6. Regenerate the FMC-MCP model using the updated decomposer and verify that the new v1 artifact exposes the review findings.\n7. Obtain post-implementation agreement from Grok, Opus, and Hermes that the review gaps are addressed or explicitly represented.\n\n### Out of scope\n\n1. No mutation under `scorer/`, `verifier/`, root `schema/`, or `arena/generated/`.\n2. No autonomous FMC-MCP code changes in this slice.\n3. No live FMC API calls.\n4. No broad autonomous worktree patch/promotion loop.\n5. No Tree-sitter/SCIP/CodeQL parser integration in this slice.\n\n## 4. Contract extension\n\nNewly generated `project-model-v1.json` artifacts must include this top-level field:\n\n```json\n\"iterationReadiness\": {\n  \"summary\": \"...\",\n  \"componentProfiles\": [],\n  \"runtimeContracts\": [],\n  \"externalSurfaces\": [],\n  \"productInvariants\": [],\n  \"qualityGates\": [],\n  \"priorityBacklog\": [],\n  \"openQuestions\": []\n}\n```\n\n### 4.1 `componentProfiles`\n\nEach selected production component gets a profile:\n\n- `componentId`: existing snapshot component id.\n- `ownedNodeIds`: owned graph nodes.\n- `responsibilitySummary`: non-tautological summary derived from source evidence.\n- `keySymbols`: classes/functions/public symbols from the component source.\n- `behavioralTags`: deterministic tags such as `auth`, `rate_limit`, `concurrency`, `pagination`, `mcp_server`, `configuration`, `resource_handlers`, `tool_handlers`, `entrypoint`, `read_only`.\n- `riskLevel`: `low`, `medium`, or `high`.\n- `priorityRank`: integer; 1 is highest priority.\n- `whyPriority`: short reason grounded in source facts.\n- `provenanceRefs`: ProjectGraph provenance refs.\n\nFMC-MCP acceptance target: `component.fmc-mcp-client` must explicitly mention auth/session lifecycle, rate limiting, retry/pagination, and endpoint wrappers. It must rank ahead of the tiny entrypoint.\n\nObjective anti-tautology rule: a `responsibilitySummary` is acceptable only if it includes at least two source-derived symbols or behavioral tags and is not equivalent to the component id/module name with punctuation/title-case changes. Tests must reject summaries matching patterns like \"own the responsibility represented by `<module>`.\"\n\n### 4.2 `runtimeContracts`\n\nRuntime/data-flow contracts are deterministic, evidence-backed records:\n\n- `id`\n- `kind`: one of `constructs`, `injects`, `registers_resource`, `registers_tool`, `delegates_to`, `exposes_runtime_mode`, `imports`\n- `fromComponentId`\n- `toComponentId` when applicable\n- `description`\n- `supportingNodeIds`\n- `supportingEdgeIds`\n- `provenanceRefs`\n\nThese records may be inferred from source-span text evidence rather than graph call edges. A runtime contract is not required to have a supporting import edge when its `kind` is not `imports`; in that case `supportingEdgeIds` may be empty, but `provenanceRefs` must point to source file/line provenance for the construct, registration, injection, or delegation text. This is intentionally separate from the deterministic gate's import-edge coverage checks.\n\nFMC-MCP acceptance targets:\n\n- server constructs or owns creation of `FMCClient` during lifespan;\n- server injects the client through `resources.set_client`;\n- tools obtain/depend on the injected resource client;\n- server registers MCP resources;\n- server registers MCP tools;\n- server delegates MCP tool handlers to `tools.py`;\n- stdio and HTTP/SSE runtime modes are surfaced.\n\n### 4.3 `externalSurfaces`\n\nExternal surfaces describe what users, CLIs, protocols, or remote services touch:\n\n- `id`\n- `surfaceType`: `mcp_resource`, `mcp_tool`, `console_script`, `environment_variable`, `http_endpoint_family`, `runtime_mode`, `dependency`\n- `name`\n- `ownerComponentIds`\n- `description`\n- `provenanceRefs`\n\nFMC-MCP acceptance targets:\n\n- resource URIs including `fmc://system/info`, `fmc://devices/list`, `fmc://objects/network`, `fmc://deployment/status`;\n- MCP tools including IP object search and deployment-status check;\n- console script `mcp-server-fmc`;\n- relevant environment/settings names;\n- FMC REST endpoint families;\n- FastMCP and httpx dependencies.\n\n### 4.4 `productInvariants`\n\nProduct invariants separate target-project safety from Build Arena process concerns:\n\n- `id`\n- `category`: examples `read_only_external_operations`, `secret_safety`, `rate_limit`, `concurrency_limit`, `live_test_boundary`, `public_mcp_contract`\n- `description`\n- `componentIds`\n- `externalSurfaceIds`\n- `enforcement`: `modeled`, `tested`, `configured`, or `gap`\n- `provenanceRefs`\n\nFMC-MCP acceptance targets:\n\n- read-only external operations are modeled, with auth-token POSTs distinguished from domain-operation reads;\n- `SecretStr`/settings redaction is modeled;\n- 120 requests/minute and 10 concurrent requests are modeled when present in source;\n- live/credentialed tests are distinguished from default local acceptance;\n- public MCP resources/tools are modeled as contract surfaces.\n\n### 4.5 `qualityGates`\n\nQuality gates expose configured safe local commands and whether they are currently acceptance commands:\n\n- `id`\n- `command`\n- `source`: `detected_pyproject`, `detected_package_json`, `snapshot_observable_check`, or `manual`\n- `mode`: `test`, `lint`, `typecheck`, `build`, `other`\n- `safeToRunByDefault`\n- `includedInAcceptance`\n- `provenanceRefs`\n\nFMC-MCP acceptance target: pytest, ruff, and mypy are visible when configured. They may be separate observable checks; all acceptance commands must pass the existing no-live/paid API allowlist guard.\n\n### 4.6 `priorityBacklog`\n\nThe model must include advisory improvement targets, not autonomous mutation instructions:\n\n- `id`\n- `rank`\n- `title`\n- `rationale`\n- `componentIds`\n- `relatedInvariantIds`\n- `relatedSurfaceIds`\n- `suggestedVerification`\n- `provenanceRefs`\n\nFMC-MCP expected top items:\n\n1. verify or test read-only behavior;\n2. verify server/resources/tools wiring;\n3. run or expose configured lint/type checks;\n4. document or refactor client sub-responsibilities.\n\n### 4.7 `openQuestions`\n\nQuestions should be generated only when the model cannot prove the answer from source. They must help a future agent ask targeted clarification rather than rediscovering broad context.\n\nObjective open-question rule: each question must be tied to a named source signal or absent verification signal, and questions must be stably ordered by category and id. Examples: if a live test file exists but no safe local live-smoke check is configured, emit the live-test-boundary question; if a high-risk client component has many behavioral tags but no helper/subcomponent boundary in the model, emit the client-splitting question.\n\nFMC-MCP expected examples:\n\n- Is `test_live.py` intentionally manual-only or should it become a credential-gated smoke profile?\n- Should `client.py` remain a single responsibility component or be split into helpers?\n- Should default acceptance become pytest + ruff + mypy, or should lint/typecheck remain advisory?\n\n## 5. Deterministic generation rules\n\n1. All records must be derived from `ProjectGraph` nodes/edges, source file text, and config files read from the target repo.\n2. No cached prior Project Model may be used as source truth.\n3. Every record must include provenance refs resolving to graph evidence.\n4. Source-span provenance is acceptable evidence for inferred runtime contracts, product invariants, and external surfaces when no graph edge exists; these inferred records must not pretend to be graph call edges.\n5. Heuristics may use source text patterns but must fail safe: if a signal is uncertain, emit an open question or verification gap rather than a hard invariant.\n6. Priority ranking, backlog ordering, and open-question ordering must use stable deterministic sort keys.\n7. The output must remain deterministic for a fixed git/filesystem state.\n8. Additional snapshot observable checks must use safe local commands only.\n\n## 6. Validation and acceptance\n\nMinimum Build Arena acceptance:\n\n1. Unit tests fail before implementation for:\n   - combined Python import resolution;\n   - `iterationReadiness` emitted presence and schema shape for newly generated artifacts;\n   - semantic component profile/priority on a fixture repo;\n   - configured ruff/mypy check discovery.\n2. Unit tests pass after implementation.\n3. `docs/schemas/project-model-v1.schema.json` validates generated artifacts.\n4. `uv run pytest tests -q` passes.\n5. `uv run ruff check .` passes.\n6. `uv run pyright` passes, or any failure is diagnosed and fixed.\n7. FMC-MCP snapshot regeneration passes deterministic gate.\n8. FMC-MCP local checks that the model exposes as acceptance commands are actually run and recorded.\n9. Grok, Opus, and Hermes all agree that the original review gaps are addressed or explicitly represented in the updated FMC-MCP model.\n\n## 7. Non-regression requirements\n\n1. v0 compatibility output remains present.\n2. Existing v1 top-level fields remain unchanged; `iterationReadiness` is additive and optional for legacy schema validation but mandatory for this emitter's new artifacts.\n3. The deterministic gate still rejects stale graph hashes, file buckets, missing provenance, unsafe acceptance commands, missing edge coverage, and protected/generated ownership.\n4. No generated files under `arena/generated/` are hand-edited.\n5. No root `schema/` files are modified.\n",
+  "plan": "# Implementation Plan \u2014 Project Model v1 Iteration Usability Enrichment\n\nDate: 2026-06-07\nSpec: `docs/specs/2026-06-07-project-model-iteration-usability-enrichment.md`\nReview source: `docs/verification/2026-06-06-fmc-mcp-first-decomposition/three-model-project-model-usability-review.md`\n\n## Objective\n\nMake the Project Model v1 generated by the decomposer useful as an iteration guide, not just a static map. The implementation must enrich the v1 artifact and snapshot output enough that Grok, Opus, and Hermes agree the FMC-MCP review gaps are addressed or explicitly represented.\n\n## Guardrails\n\n1. Do not modify `scorer/`, `verifier/`, root `schema/`, `.arena/scorer.lock.toml`, or `arena/generated/`.\n2. Do not mutate FMC-MCP source in this slice.\n3. Do not use live FMC credentials or `--allow-live`.\n4. Keep v0 output and existing v1 fields compatible.\n5. Ground all records in filesystem/git/source evidence from the target repo.\n\n## Phase 1 \u2014 Opus-reviewed design\n\n1. Write spec and plan artifacts.\n2. Send both to Opus with this review question:\n   - Does the spec/plan address every Grok/Opus/Hermes review gap?\n   - Is the contract implementable without overfitting to FMC-MCP?\n   - Are any acceptance criteria missing before implementation?\n3. Patch the spec/plan if Opus identifies valid gaps.\n4. Record the Opus review and accepted changes under `docs/verification/2026-06-07-project-model-iteration-usability/`.\n\nExit criteria:\n\n- Spec and plan exist.\n- Opus review exists.\n- Accepted feedback is incorporated or explicitly rejected with rationale.\n\n## Phase 2 \u2014 Red tests\n\nAdd failing tests before implementation:\n\n1. `tests/test_project_graph.py` or existing decomposer tests:\n   - repo with `from pkg import resources, tools` produces import edges/contract coverage for both `pkg.resources` and `pkg.tools` when those modules exist.\n2. `tests/test_project_decomposer_ai.py`:\n   - fixture repo with `client.py`, `server.py`, `resources.py`, and `tools.py` emits non-tautological component responsibilities.\n   - client profile/risk signals rank the stateful/auth/rate-limited client ahead of a tiny entrypoint.\n   - configured `ruff` and `mypy` commands are detected when present in `pyproject.toml`.\n3. `tests/test_project_model_v1_contract.py`:\n   - generated v1 has emitted `iterationReadiness` sections.\n   - schema validates artifacts with and without the optional field so historical v1 artifacts remain reproducible.\n   - v0 compatibility artifact still exists.\n   - component responsibility tests reject tautological summaries and require at least two source-derived symbols/tags.\n\nExit criteria:\n\n- The new tests fail for the expected missing behavior before implementation.\n\n## Phase 3 \u2014 Implementation\n\n1. Fix Python import resolution:\n   - update `_resolve_python_import` to emit alias-qualified absolute imports for `from pkg import a, b` while still allowing module-level imports like `from pkg.config import VALUE` to resolve to `pkg.config` through existing target-matching logic.\n2. Add deterministic source-analysis helpers:\n   - map component ids to graph nodes, paths, source text, symbol names, and provenance refs;\n   - count lines/classes/functions;\n   - derive behavioral tags from source patterns;\n   - discover configured local quality commands from `pyproject.toml` and package config.\n   - produce source-span-backed inferred records without pretending they are graph call edges.\n3. Enrich fixture model output:\n   - replace tautological responsibilities with summaries based on detected tags/symbols;\n   - add product cross-cutting concerns when deterministic evidence exists;\n   - add observable checks for pytest, ruff, and mypy/pyright when configured and safe.\n4. Extend `project_model_v1_from_snapshot`:\n   - build `iterationReadiness` from snapshot + graph;\n   - include component profiles, runtime contracts, external surfaces, product invariants, quality gates, priority backlog, and open questions.\n5. Update JSON schema:\n   - define optional `iterationReadiness` and validate its nested record shapes while preserving validation for legacy v1 artifacts without the field.\n6. Keep all changes deterministic and provenance-backed.\n7. Include Opus-flagged non-blocking review signals where source-supported:\n   - capture the `FMCClient.test_connection` naming smell as a backlog/open-question item;\n   - capture the server-to-tools indirection as a delegation contract plus a question about intentionality.\n\nExit criteria:\n\n- New red tests pass.\n- Existing tests pass.\n\n## Phase 4 \u2014 Local verification\n\nRun:\n\n1. `uv run pytest tests -q`\n2. `uv run ruff check .`\n3. `uv run pyright`\n\nIf any fail:\n\n- diagnose root cause;\n- patch the implementation or tests;\n- rerun the failing check and then the full suite.\n\n## Phase 5 \u2014 Regenerate FMC-MCP model\n\n1. Generate a new durable FMC-MCP snapshot under:\n   - `docs/verification/2026-06-07-project-model-iteration-usability/fmc-mcp-updated-model/`\n2. Command:\n   - `uv run python -m arena.project_model_cli snapshot --project /home/leonb/projects/fmc-mcp --artifacts-root <dir> --project-id fmc-mcp --goal \"decompose FMC-MCP into iteration-ready responsibility-bearing components\" --llm-mode fixture --overwrite`\n3. Gate it:\n   - `uv run python -m arena.project_model_cli gate --snapshot <manifest.json>`\n4. Run target local checks actually exposed as acceptance checks, at minimum:\n   - `uv run python -m pytest -q` in FMC-MCP;\n   - `uv run ruff check .` if exposed as configured quality gate;\n   - `uv run mypy src/fmc_mcp` if exposed as configured quality gate.\n5. Write a short regeneration report with snapshot id, gate status, and check outputs.\n\nExit criteria:\n\n- Updated Project Model v1 exists.\n- Gate passes.\n- Actual local command output is captured.\n\n## Phase 6 \u2014 Three-model agreement\n\n1. Prepare a compact review packet containing:\n   - original three-model review;\n   - spec and plan;\n   - updated Project Model v1;\n   - regeneration report;\n   - local verification outputs.\n2. Ask Grok:\n   - Are the original review gaps addressed or explicitly represented?\n   - If not, identify blockers only.\n3. Ask Opus the same question.\n4. Perform the same Hermes grounded review by reading the updated model and source.\n5. If any reviewer identifies a valid blocker:\n   - implement a bounded repair;\n   - rerun local verification;\n   - regenerate the model if required;\n   - rerun the agreement check for the blocking area.\n\nExit criteria:\n\n- Grok, Opus, and Hermes all return `agree` or equivalent non-blocking verdict.\n- Any non-blocking suggestions are recorded as future work, not hidden.\n\n## Phase 7 \u2014 Finalize\n\n1. Run final `git status --short` in Build Arena and FMC-MCP.\n2. Stage only Build Arena spec/plan/code/test/verification artifacts for this task.\n3. Commit with a concise message.\n4. Report:\n   - commit hash;\n   - updated snapshot id/path;\n   - verification commands and results;\n   - three-model agreement verdicts;\n   - any future-work notes.\n",
+  "opus_spec_plan_review_disposition": "# Opus spec/plan review disposition\n\nDate: 2026-06-07\nReview artifact: `opus-spec-plan-review.md`\n\n## Verdict\n\nOpus returned `approve_with_required_changes`. All three required changes were accepted and patched before implementation.\n\n## Required changes accepted\n\n1. Schema/versioning contradiction resolved. `iterationReadiness` is optional in the JSON schema for legacy v1 reproducibility, but newly generated artifacts from this implementation must emit it and tests assert that.\n2. Evidence model clarified. Inferred runtime contracts, product invariants, and external surfaces may use source-span provenance when no graph call edge exists; they must not pretend to be graph call edges and are separate from import-edge coverage.\n3. Objective predicates added. Non-tautological responsibilities require source-derived symbols/tags and reject module-name-only templates; open questions must tie to named source or absent-verification signals and use deterministic ordering.\n\n## Non-blocking suggestions accepted\n\n- Deterministic ranking/question ordering is now explicit.\n- `FMCClient.test_connection` naming smell and server-to-tools indirection are added to the plan as backlog/open-question/delegation outputs when source-supported.\n\n## Rejected feedback\n\nNone.\n",
+  "implementation_summary": {
+    "changed_code": [
+      "arena/project_iteration_readiness.py: deterministic source analyzer and iterationReadiness builder",
+      "arena/project_graph.py: resolves package import aliases like from pkg import resources, tools",
+      "arena/project_model_llm.py: source-backed fixture responsibilities, product concerns, quality observable checks",
+      "arena/project_model_v1.py: emits top-level iterationReadiness",
+      "arena/project_model_gate.py: conservative uv run mypy allowlist support for explicit local commands",
+      "docs/schemas/project-model-v1.schema.json: optional iterationReadiness schema definition",
+      "tests/test_project_graph.py, tests/test_project_decomposer_ai.py, tests/test_project_model_v1_contract.py: red/green coverage"
+    ],
+    "important_deviation_resolved": "Initial regeneration emitted uv run mypy src/fmc_mcp as runnable acceptance; actual FMC-MCP environment could not spawn mypy. The decomposer now keeps mypy visible as advisory quality.mypy with safeToRunByDefault=false and includedInAcceptance=false, while emitted observable checks are runnable pytest and ruff only.",
+    "post_review_refinements_resolved": [
+      "Environment surfaces now use real settings names from source such as FMC_HOST/FMC_PASSWORD/FMC_RATE_LIMIT/FMC_MAX_CONNECTIONS instead of noisy all-caps token fragments such as API.",
+      "Rate-limit and concurrency invariants now surface concrete configured defaults: 120 requests per minute and 10 concurrent connections.",
+      "Priority backlog records now carry provenanceRefs and scoped relatedSurfaceIds instead of empty provenance and all-surface dumps.",
+      "Product invariants now scope related external surfaces by invariant category: secret_safety only environment variables; public_mcp_contract only MCP resources/tools; read_only_external_operations only HTTP endpoint families plus MCP resources/tools."
+    ],
+    "verification_results": [
+      "Build Arena make verify after final scoped-invariant refinement: passed",
+      "FMC-MCP regenerated snapshot gate: passed, 0 violations",
+      "FMC-MCP uv run python -m pytest -q: 19 passed",
+      "FMC-MCP uv run ruff check .: All checks passed",
+      "FMC-MCP uv run mypy src/fmc_mcp: failed to spawn in this environment, intentionally advisory not acceptance"
+    ]
+  },
+  "updated_model_evidence": {
+    "id": "snapshot-ffa3e18f17f2606b",
+    "gateReport": {
+      "passed": true,
+      "violations": []
+    },
+    "components": [
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+          "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+        ],
+        "id": "component.fmc-mcp-server",
+        "name": "Fmc Mcp Server responsibility",
+        "owned_node_ids": [
+          "node:9810fbe9bc4ff06aee73"
+        ],
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524"
+        ],
+        "responsibility": "Coordinate concurrency back-pressure, runtime entrypoint, client injection, MCP server registration, read-only external operations, resource handlers via deployment_status_resource, devices_list_resource, get_deployment_status, lifespan, main with source-backed behavior in `fmc_mcp.server`.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-client-component-fmc-mcp-confi"
+        ],
+        "id": "component.fmc-mcp-config",
+        "name": "Fmc Mcp Config responsibility",
+        "owned_node_ids": [
+          "node:257d836fb3f003e3e2c2"
+        ],
+        "provenance_refs": [
+          "prov:b380701c2879efce"
+        ],
+        "responsibility": "Coordinate concurrency back-pressure, configuration/secrets, pagination, rate limiting via FMCSettings, get_settings, log_config with source-backed behavior in `fmc_mcp.config`.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+          "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+        ],
+        "id": "component.fmc-mcp-resources",
+        "name": "Fmc Mcp Resources responsibility",
+        "owned_node_ids": [
+          "node:84a7c7e4c189e28cb1bb"
+        ],
+        "provenance_refs": [
+          "prov:4e62ae79d2c07a9c"
+        ],
+        "responsibility": "Coordinate client injection, read-only external operations, resource handlers, tool handlers via get_client, get_deployment_status, get_system_info, list_devices, list_network_objects with source-backed behavior in `fmc_mcp.resources`.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+          "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-clien"
+        ],
+        "id": "component.fmc-mcp-client",
+        "name": "Fmc Mcp Client responsibility",
+        "owned_node_ids": [
+          "node:4042451215c279f0dca7"
+        ],
+        "provenance_refs": [
+          "prov:bcfd8e782d7fe500"
+        ],
+        "responsibility": "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+          "contract.component-fmc-mcp-tools-component-fmc-mcp-resour"
+        ],
+        "id": "component.fmc-mcp-tools",
+        "name": "Fmc Mcp Tools responsibility",
+        "owned_node_ids": [
+          "node:a32d71cbbae4bcadc234"
+        ],
+        "provenance_refs": [
+          "prov:750d7fda533e438c"
+        ],
+        "responsibility": "Coordinate concurrency back-pressure, client injection, read-only external operations, tool handlers via check_deployment_status, search_object_by_ip with source-backed behavior in `fmc_mcp.tools`.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.pytest",
+          "check.ruff"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-main-component-fmc-mcp-server"
+        ],
+        "id": "component.fmc-mcp-main",
+        "name": "Fmc Mcp Main responsibility",
+        "owned_node_ids": [
+          "node:b3d9c9b0b868f763b2b8"
+        ],
+        "provenance_refs": [
+          "prov:da6e96a18d26d1cf"
+        ],
+        "responsibility": "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp.__main__`.",
+        "verification_gap_ids": []
+      }
+    ],
+    "contracts": [
+      {
+        "from_component_id": "component.fmc-mcp-server",
+        "id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "name": "component.fmc-mcp-server imports component.fmc-mcp-config",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524",
+          "prov:b380701c2879efce"
+        ],
+        "supporting_edge_ids": [
+          "edge:1dbd45e8683cedc3c87a",
+          "edge:70b02da26b7d5371300e"
+        ],
+        "to_component_id": "component.fmc-mcp-config"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-resources",
+        "id": "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "name": "component.fmc-mcp-resources imports component.fmc-mcp-client",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:4e62ae79d2c07a9c",
+          "prov:bcfd8e782d7fe500"
+        ],
+        "supporting_edge_ids": [
+          "edge:25c3c6d20a305beeeca9"
+        ],
+        "to_component_id": "component.fmc-mcp-client"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-server",
+        "id": "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "name": "component.fmc-mcp-server imports component.fmc-mcp-tools",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524",
+          "prov:750d7fda533e438c"
+        ],
+        "supporting_edge_ids": [
+          "edge:36e31fda6d2df7b6c8ff"
+        ],
+        "to_component_id": "component.fmc-mcp-tools"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-client",
+        "id": "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "name": "component.fmc-mcp-client imports component.fmc-mcp-config",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:bcfd8e782d7fe500",
+          "prov:b380701c2879efce"
+        ],
+        "supporting_edge_ids": [
+          "edge:4db395dbd95108d60b32",
+          "edge:5962c73618f92db925d1"
+        ],
+        "to_component_id": "component.fmc-mcp-config"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-tools",
+        "id": "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "name": "component.fmc-mcp-tools imports component.fmc-mcp-resources",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:750d7fda533e438c",
+          "prov:4e62ae79d2c07a9c"
+        ],
+        "supporting_edge_ids": [
+          "edge:68860f44ca677cc65828",
+          "edge:85277c562519c8594ad7"
+        ],
+        "to_component_id": "component.fmc-mcp-resources"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-main",
+        "id": "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "name": "component.fmc-mcp-main imports component.fmc-mcp-server",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:da6e96a18d26d1cf",
+          "prov:d10dbb159e6fb524"
+        ],
+        "supporting_edge_ids": [
+          "edge:b2b2314baf57aa2e487d",
+          "edge:ca5e1295204bdf16bacf"
+        ],
+        "to_component_id": "component.fmc-mcp-server"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-server",
+        "id": "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "name": "component.fmc-mcp-server imports component.fmc-mcp-client",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524",
+          "prov:bcfd8e782d7fe500"
+        ],
+        "supporting_edge_ids": [
+          "edge:cbfc0096826b93771472"
+        ],
+        "to_component_id": "component.fmc-mcp-client"
+      },
+      {
+        "from_component_id": "component.fmc-mcp-server",
+        "id": "contract.component-fmc-mcp-server-component-fmc-mcp-resou",
+        "name": "component.fmc-mcp-server imports component.fmc-mcp-resources",
+        "near_neighbor_alternative_ids": [
+          "near.primary-path-bucket"
+        ],
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524",
+          "prov:4e62ae79d2c07a9c"
+        ],
+        "supporting_edge_ids": [
+          "edge:e7d89d2157e18cc96de3",
+          "edge:f5439cc4db4e0ea6bf94"
+        ],
+        "to_component_id": "component.fmc-mcp-resources"
+      }
+    ],
+    "observable_checks": [
+      {
+        "acceptance_command_id": "local-pytest",
+        "command": "uv run python -m pytest -q",
+        "component_ids": [
+          "component.fmc-mcp-server",
+          "component.fmc-mcp-config",
+          "component.fmc-mcp-resources",
+          "component.fmc-mcp-client",
+          "component.fmc-mcp-tools",
+          "component.fmc-mcp-main"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+          "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+          "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+        ],
+        "description": "Run the local deterministic pytest suite.",
+        "id": "check.pytest",
+        "provenance_refs": [
+          "prov:de169aac696fc2e0"
+        ],
+        "requires_network": false,
+        "requires_paid_api": false,
+        "safe_to_run_by_default": true
+      },
+      {
+        "acceptance_command_id": "local-ruff",
+        "command": "uv run ruff check .",
+        "component_ids": [
+          "component.fmc-mcp-server",
+          "component.fmc-mcp-config",
+          "component.fmc-mcp-resources",
+          "component.fmc-mcp-client",
+          "component.fmc-mcp-tools",
+          "component.fmc-mcp-main"
+        ],
+        "contract_ids": [
+          "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+          "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+          "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+          "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+          "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+        ],
+        "description": "Run configured Ruff lint checks.",
+        "id": "check.ruff",
+        "provenance_refs": [
+          "prov:e3613801121c5bb2"
+        ],
+        "requires_network": false,
+        "requires_paid_api": false,
+        "safe_to_run_by_default": true
+      }
+    ],
+    "iterationReadiness": {
+      "componentProfiles": [
+        {
+          "behavioralTags": [
+            "auth",
+            "concurrency",
+            "configuration",
+            "external_http",
+            "injection",
+            "pagination",
+            "rate_limit",
+            "read_only",
+            "tool_handlers"
+          ],
+          "componentId": "component.fmc-mcp-client",
+          "keySymbols": [
+            "FMCClient",
+            "RateLimiter",
+            "__aenter__",
+            "__aexit__",
+            "__init__",
+            "_authenticate",
+            "_refill",
+            "_refresh_auth_token",
+            "_request",
+            "acquire",
+            "base_url",
+            "close",
+            "connect",
+            "domain_uuid",
+            "get",
+            "get_all_items",
+            "get_deployable_devices",
+            "get_devices",
+            "get_domain_info",
+            "get_host_objects",
+            "get_json",
+            "get_network_objects",
+            "get_server_version",
+            "test_connection"
+          ],
+          "ownedNodeIds": [
+            "node:4042451215c279f0dca7"
+          ],
+          "priorityRank": 1,
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "responsibilitySummary": "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__.",
+          "riskLevel": "high",
+          "whyPriority": "Risk score 42 from source tags: auth, concurrency, configuration, external_http, injection, pagination, rate_limit, read_only, tool_handlers."
+        },
+        {
+          "behavioralTags": [
+            "concurrency",
+            "entrypoint",
+            "injection",
+            "mcp_server",
+            "read_only",
+            "resource_handlers",
+            "tool_handlers"
+          ],
+          "componentId": "component.fmc-mcp-server",
+          "keySymbols": [
+            "deployment_status_resource",
+            "devices_list_resource",
+            "get_deployment_status",
+            "lifespan",
+            "main",
+            "network_objects_resource",
+            "search_object_by_ip",
+            "system_info_resource"
+          ],
+          "ownedNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "priorityRank": 2,
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "responsibilitySummary": "Coordinate concurrency back-pressure, runtime entrypoint, client injection, MCP server registration, read-only external operations, resource handlers via deployment_status_resource, devices_list_resource, get_deployment_status, lifespan, main with source-backed behavior in `fmc_mcp.server`.",
+          "riskLevel": "high",
+          "whyPriority": "Risk score 19 from source tags: concurrency, entrypoint, injection, mcp_server, read_only, resource_handlers, tool_handlers."
+        },
+        {
+          "behavioralTags": [
+            "concurrency",
+            "configuration",
+            "pagination",
+            "rate_limit"
+          ],
+          "componentId": "component.fmc-mcp-config",
+          "keySymbols": [
+            "FMCSettings",
+            "get_settings",
+            "log_config"
+          ],
+          "ownedNodeIds": [
+            "node:257d836fb3f003e3e2c2"
+          ],
+          "priorityRank": 3,
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "responsibilitySummary": "Coordinate concurrency back-pressure, configuration/secrets, pagination, rate limiting via FMCSettings, get_settings, log_config with source-backed behavior in `fmc_mcp.config`.",
+          "riskLevel": "high",
+          "whyPriority": "Risk score 14 from source tags: concurrency, configuration, pagination, rate_limit."
+        },
+        {
+          "behavioralTags": [
+            "concurrency",
+            "injection",
+            "read_only",
+            "tool_handlers"
+          ],
+          "componentId": "component.fmc-mcp-tools",
+          "keySymbols": [
+            "check_deployment_status",
+            "search_object_by_ip"
+          ],
+          "ownedNodeIds": [
+            "node:a32d71cbbae4bcadc234"
+          ],
+          "priorityRank": 4,
+          "provenanceRefs": [
+            "prov:750d7fda533e438c"
+          ],
+          "responsibilitySummary": "Coordinate concurrency back-pressure, client injection, read-only external operations, tool handlers via check_deployment_status, search_object_by_ip with source-backed behavior in `fmc_mcp.tools`.",
+          "riskLevel": "high",
+          "whyPriority": "Risk score 14 from source tags: concurrency, injection, read_only, tool_handlers."
+        },
+        {
+          "behavioralTags": [
+            "injection",
+            "read_only",
+            "resource_handlers",
+            "tool_handlers"
+          ],
+          "componentId": "component.fmc-mcp-resources",
+          "keySymbols": [
+            "get_client",
+            "get_deployment_status",
+            "get_system_info",
+            "list_devices",
+            "list_network_objects",
+            "set_client"
+          ],
+          "ownedNodeIds": [
+            "node:84a7c7e4c189e28cb1bb"
+          ],
+          "priorityRank": 5,
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c"
+          ],
+          "responsibilitySummary": "Coordinate client injection, read-only external operations, resource handlers, tool handlers via get_client, get_deployment_status, get_system_info, list_devices, list_network_objects with source-backed behavior in `fmc_mcp.resources`.",
+          "riskLevel": "high",
+          "whyPriority": "Risk score 13 from source tags: injection, read_only, resource_handlers, tool_handlers."
+        },
+        {
+          "behavioralTags": [
+            "entrypoint"
+          ],
+          "componentId": "component.fmc-mcp-main",
+          "keySymbols": [],
+          "ownedNodeIds": [
+            "node:b3d9c9b0b868f763b2b8"
+          ],
+          "priorityRank": 6,
+          "provenanceRefs": [
+            "prov:da6e96a18d26d1cf"
+          ],
+          "responsibilitySummary": "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp.__main__`.",
+          "riskLevel": "low",
+          "whyPriority": "Risk score 0 from source tags: entrypoint."
+        }
+      ],
+      "externalSurfaces": [
+        {
+          "description": "Console script `mcp-server-fmc` -> `fmc_mcp:main`.",
+          "id": "surface.console-script-mcp-server-fmc",
+          "name": "mcp-server-fmc",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-main",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "provenanceRefs": [
+            "prov:e3613801121c5bb2"
+          ],
+          "surfaceType": "console_script"
+        },
+        {
+          "description": "MCP server framework dependency.",
+          "id": "surface.dependency-fastmcp",
+          "name": "FastMCP",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "dependency"
+        },
+        {
+          "description": "HTTP client dependency used for FMC REST access.",
+          "id": "surface.dependency-httpx",
+          "name": "httpx",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "dependency"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_DOMAIN_UUID`.",
+          "id": "surface.environment-variable-fmc-domain-uuid",
+          "name": "FMC_DOMAIN_UUID",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_HOST`.",
+          "id": "surface.environment-variable-fmc-host",
+          "name": "FMC_HOST",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_MAX_CONNECTIONS`.",
+          "id": "surface.environment-variable-fmc-max-connections",
+          "name": "FMC_MAX_CONNECTIONS",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_PASSWORD`.",
+          "id": "surface.environment-variable-fmc-password",
+          "name": "FMC_PASSWORD",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_RATE_LIMIT`.",
+          "id": "surface.environment-variable-fmc-rate-limit",
+          "name": "FMC_RATE_LIMIT",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_TIMEOUT`.",
+          "id": "surface.environment-variable-fmc-timeout",
+          "name": "FMC_TIMEOUT",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_USERNAME`.",
+          "id": "surface.environment-variable-fmc-username",
+          "name": "FMC_USERNAME",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `FMC_VERIFY_SSL`.",
+          "id": "surface.environment-variable-fmc-verify-ssl",
+          "name": "FMC_VERIFY_SSL",
+          "ownerComponentIds": [
+            "component.fmc-mcp-config"
+          ],
+          "provenanceRefs": [
+            "prov:b380701c2879efce"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "Environment/settings boundary `MCP_HOST`.",
+          "id": "surface.environment-variable-mcp-host",
+          "name": "MCP_HOST",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "environment_variable"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_config/v1/domain/{self.domain_uuid}/deployment/deployabledevices`.",
+          "id": "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-deployment-deploy",
+          "name": "/api/fmc_config/v1/domain/{self.domain_uuid}/deployment/deployabledevices",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_config/v1/domain/{self.domain_uuid}/devices/devicerecords`.",
+          "id": "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-devices-devicerec",
+          "name": "/api/fmc_config/v1/domain/{self.domain_uuid}/devices/devicerecords",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_config/v1/domain/{self.domain_uuid}/object/hosts`.",
+          "id": "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-hosts",
+          "name": "/api/fmc_config/v1/domain/{self.domain_uuid}/object/hosts",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_config/v1/domain/{self.domain_uuid}/object/networks`.",
+          "id": "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-networks",
+          "name": "/api/fmc_config/v1/domain/{self.domain_uuid}/object/networks",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_platform/v1/auth/generatetoken`.",
+          "id": "surface.http-endpoint-family-api-fmc-platform-v1-auth-generatetoken",
+          "name": "/api/fmc_platform/v1/auth/generatetoken",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_platform/v1/auth/refreshtoken`.",
+          "id": "surface.http-endpoint-family-api-fmc-platform-v1-auth-refreshtoken",
+          "name": "/api/fmc_platform/v1/auth/refreshtoken",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_platform/v1/info/domain`.",
+          "id": "surface.http-endpoint-family-api-fmc-platform-v1-info-domain",
+          "name": "/api/fmc_platform/v1/info/domain",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "FMC REST endpoint family `/api/fmc_platform/v1/info/serverversion`.",
+          "id": "surface.http-endpoint-family-api-fmc-platform-v1-info-serverversion",
+          "name": "/api/fmc_platform/v1/info/serverversion",
+          "ownerComponentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "surfaceType": "http_endpoint_family"
+        },
+        {
+          "description": "Public MCP resource URI `fmc://deployment/status`.",
+          "id": "surface.mcp-resource-fmc-deployment-status",
+          "name": "fmc://deployment/status",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_resource"
+        },
+        {
+          "description": "Public MCP resource URI `fmc://devices/list`.",
+          "id": "surface.mcp-resource-fmc-devices-list",
+          "name": "fmc://devices/list",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_resource"
+        },
+        {
+          "description": "Public MCP resource URI `fmc://objects/network`.",
+          "id": "surface.mcp-resource-fmc-objects-network",
+          "name": "fmc://objects/network",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_resource"
+        },
+        {
+          "description": "Public MCP resource URI `fmc://system/info`.",
+          "id": "surface.mcp-resource-fmc-system-info",
+          "name": "fmc://system/info",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_resource"
+        },
+        {
+          "description": "Public MCP tool `check_deployment_status`.",
+          "id": "surface.mcp-tool-check-deployment-status",
+          "name": "check_deployment_status",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_tool"
+        },
+        {
+          "description": "Public MCP tool `get_deployment_status`.",
+          "id": "surface.mcp-tool-get-deployment-status",
+          "name": "get_deployment_status",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_tool"
+        },
+        {
+          "description": "Public MCP tool `search_object_by_ip`.",
+          "id": "surface.mcp-tool-search-object-by-ip",
+          "name": "search_object_by_ip",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "mcp_tool"
+        },
+        {
+          "description": "Runtime transport mode selection.",
+          "id": "surface.runtime-mode-stdio-http-sse",
+          "name": "stdio/http-sse",
+          "ownerComponentIds": [
+            "component.fmc-mcp-server"
+          ],
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "surfaceType": "runtime_mode"
+        }
+      ],
+      "openQuestions": [
+        {
+          "id": "question.client-boundary",
+          "question": "Should the stateful client remain one component, or should auth, retry, rate limiting, pagination, and endpoint wrappers become helpers/subcomponents?",
+          "trigger": "high-risk client profile has multiple behavioral tags"
+        },
+        {
+          "id": "question.live-test-boundary",
+          "question": "Is `test_live.py` intentionally manual-only, or should it become a credential-gated live smoke profile?",
+          "trigger": "live test file exists without a safe default live acceptance gate"
+        },
+        {
+          "id": "question.quality-default",
+          "question": "Should default acceptance become pytest plus configured lint/type checks, or should lint/typecheck remain advisory?",
+          "trigger": "configured lint/typecheck commands detected"
+        },
+        {
+          "id": "question.server-tools-indirection",
+          "question": "Is the server wrapper around tools-module functions intentional registration indirection, or should it be consolidated?",
+          "trigger": "server-to-tools delegation detected"
+        },
+        {
+          "id": "question.test-connection-name",
+          "question": "Should production `test_connection` keep its `test_` prefix, or be renamed/documented to avoid tool and human confusion?",
+          "trigger": "production source exposes a `test_connection` symbol"
+        }
+      ],
+      "priorityBacklog": [
+        {
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "id": "backlog.verify-read-only-external-behavior",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:750d7fda533e438c",
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524"
+          ],
+          "rank": 1,
+          "rationale": "Add or run checks proving domain FMC operations stay read-only while auth token POST remains allowed.",
+          "relatedInvariantIds": [
+            "invariant.read-only-external-operations"
+          ],
+          "relatedSurfaceIds": [
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-deployment-deploy",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-devices-devicerec",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-hosts",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-networks",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-generatetoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-refreshtoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-domain",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-serverversion",
+            "surface.mcp-tool-check-deployment-status",
+            "surface.mcp-tool-get-deployment-status",
+            "surface.mcp-tool-search-object-by-ip"
+          ],
+          "suggestedVerification": "Static scan or mocked client test for HTTP methods.",
+          "title": "Verify read-only external behavior"
+        },
+        {
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-main",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "id": "backlog.verify-server-resources-tools-wiring",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:750d7fda533e438c",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524",
+            "prov:da6e96a18d26d1cf"
+          ],
+          "rank": 2,
+          "rationale": "Exercise runtime construction, client injection, and delegation through resource/tool handlers.",
+          "relatedInvariantIds": [],
+          "relatedSurfaceIds": [
+            "surface.mcp-resource-fmc-deployment-status",
+            "surface.mcp-resource-fmc-devices-list",
+            "surface.mcp-resource-fmc-objects-network",
+            "surface.mcp-resource-fmc-system-info",
+            "surface.mcp-tool-check-deployment-status",
+            "surface.mcp-tool-get-deployment-status",
+            "surface.mcp-tool-search-object-by-ip",
+            "surface.runtime-mode-stdio-http-sse"
+          ],
+          "suggestedVerification": "Mocked server lifespan/resource/tool wiring test.",
+          "title": "Verify server/resources/tools wiring"
+        },
+        {
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-main",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "id": "backlog.run-configured-lint-and-type-checks",
+          "provenanceRefs": [
+            "prov:de169aac696fc2e0",
+            "prov:e3613801121c5bb2"
+          ],
+          "rank": 3,
+          "rationale": "Configured quality commands are now visible and should be part of improvement verification.",
+          "relatedInvariantIds": [],
+          "relatedSurfaceIds": [],
+          "suggestedVerification": "Run ruff and mypy/pyright commands reported in qualityGates, respecting advisory flags.",
+          "title": "Run configured lint and type checks"
+        },
+        {
+          "componentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "id": "backlog.document-or-split-high-risk-client-responsibilities",
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "rank": 4,
+          "rationale": "High-risk stateful client code combines auth, retry, rate limiting, pagination, and endpoint wrappers.",
+          "relatedInvariantIds": [],
+          "relatedSurfaceIds": [],
+          "suggestedVerification": "Targeted unit tests for each client sub-responsibility.",
+          "title": "Document or split high-risk client responsibilities"
+        },
+        {
+          "componentIds": [
+            "component.fmc-mcp-client"
+          ],
+          "id": "backlog.review-production-test-connection-naming",
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500"
+          ],
+          "rank": 5,
+          "rationale": "A production method with a `test_` prefix can confuse humans and tools even when pytest collection is currently scoped.",
+          "relatedInvariantIds": [],
+          "relatedSurfaceIds": [],
+          "suggestedVerification": "Decide whether to rename or document the method.",
+          "title": "Review production `test_connection` naming"
+        }
+      ],
+      "productInvariants": [
+        {
+          "category": "concurrency_limit",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "description": "Concurrent external FMC requests are bounded by source-modeled back-pressure. Source settings define 10 concurrent connections.",
+          "enforcement": "modeled",
+          "externalSurfaceIds": [
+            "surface.environment-variable-fmc-domain-uuid",
+            "surface.environment-variable-fmc-host",
+            "surface.environment-variable-fmc-max-connections",
+            "surface.environment-variable-fmc-password",
+            "surface.environment-variable-fmc-rate-limit",
+            "surface.environment-variable-fmc-timeout",
+            "surface.environment-variable-fmc-username",
+            "surface.environment-variable-fmc-verify-ssl",
+            "surface.environment-variable-mcp-host",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-deployment-deploy",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-devices-devicerec",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-hosts",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-networks",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-generatetoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-refreshtoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-domain",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-serverversion"
+          ],
+          "id": "invariant.concurrency-limit",
+          "provenanceRefs": [
+            "prov:750d7fda533e438c",
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524"
+          ]
+        },
+        {
+          "category": "live_test_boundary",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-main",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "description": "Credentialed live tests are present or implied and must remain outside default local acceptance unless explicitly enabled.",
+          "enforcement": "gap",
+          "externalSurfaceIds": [],
+          "id": "invariant.live-test-boundary",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:750d7fda533e438c",
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524",
+            "prov:da6e96a18d26d1cf"
+          ]
+        },
+        {
+          "category": "public_mcp_contract",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config",
+            "component.fmc-mcp-main",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "description": "Public MCP resources and tools are externally meaningful contract surfaces.",
+          "enforcement": "modeled",
+          "externalSurfaceIds": [
+            "surface.mcp-resource-fmc-deployment-status",
+            "surface.mcp-resource-fmc-devices-list",
+            "surface.mcp-resource-fmc-objects-network",
+            "surface.mcp-resource-fmc-system-info",
+            "surface.mcp-tool-check-deployment-status",
+            "surface.mcp-tool-get-deployment-status",
+            "surface.mcp-tool-search-object-by-ip"
+          ],
+          "id": "invariant.public-mcp-contract",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:750d7fda533e438c",
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524",
+            "prov:da6e96a18d26d1cf"
+          ]
+        },
+        {
+          "category": "rate_limit",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config"
+          ],
+          "description": "Rate limiting behavior is a product invariant for external FMC API access. Source settings define 120 requests per minute.",
+          "enforcement": "modeled",
+          "externalSurfaceIds": [
+            "surface.environment-variable-fmc-domain-uuid",
+            "surface.environment-variable-fmc-host",
+            "surface.environment-variable-fmc-max-connections",
+            "surface.environment-variable-fmc-password",
+            "surface.environment-variable-fmc-rate-limit",
+            "surface.environment-variable-fmc-timeout",
+            "surface.environment-variable-fmc-username",
+            "surface.environment-variable-fmc-verify-ssl",
+            "surface.environment-variable-mcp-host",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-deployment-deploy",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-devices-devicerec",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-hosts",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-networks",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-generatetoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-refreshtoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-domain",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-serverversion"
+          ],
+          "id": "invariant.rate-limit",
+          "provenanceRefs": [
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "read_only_external_operations",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-resources",
+            "component.fmc-mcp-server",
+            "component.fmc-mcp-tools"
+          ],
+          "description": "FMC domain operations are modeled as read-oriented external calls; auth-token POSTs are separate from domain mutation behavior.",
+          "enforcement": "modeled",
+          "externalSurfaceIds": [
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-deployment-deploy",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-devices-devicerec",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-hosts",
+            "surface.http-endpoint-family-api-fmc-config-v1-domain-self-domain-uuid-object-networks",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-generatetoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-auth-refreshtoken",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-domain",
+            "surface.http-endpoint-family-api-fmc-platform-v1-info-serverversion",
+            "surface.mcp-resource-fmc-deployment-status",
+            "surface.mcp-resource-fmc-devices-list",
+            "surface.mcp-resource-fmc-objects-network",
+            "surface.mcp-resource-fmc-system-info",
+            "surface.mcp-tool-check-deployment-status",
+            "surface.mcp-tool-get-deployment-status",
+            "surface.mcp-tool-search-object-by-ip"
+          ],
+          "id": "invariant.read-only-external-operations",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:750d7fda533e438c",
+            "prov:bcfd8e782d7fe500",
+            "prov:d10dbb159e6fb524"
+          ]
+        },
+        {
+          "category": "secret_safety",
+          "componentIds": [
+            "component.fmc-mcp-client",
+            "component.fmc-mcp-config"
+          ],
+          "description": "Secret-bearing settings and credentials must remain redacted and must not be logged or exposed in model artifacts.",
+          "enforcement": "modeled",
+          "externalSurfaceIds": [
+            "surface.environment-variable-fmc-domain-uuid",
+            "surface.environment-variable-fmc-host",
+            "surface.environment-variable-fmc-max-connections",
+            "surface.environment-variable-fmc-password",
+            "surface.environment-variable-fmc-rate-limit",
+            "surface.environment-variable-fmc-timeout",
+            "surface.environment-variable-fmc-username",
+            "surface.environment-variable-fmc-verify-ssl",
+            "surface.environment-variable-mcp-host"
+          ],
+          "id": "invariant.secret-safety",
+          "provenanceRefs": [
+            "prov:b380701c2879efce",
+            "prov:bcfd8e782d7fe500"
+          ]
+        }
+      ],
+      "qualityGates": [
+        {
+          "command": "uv run python -m pytest -q",
+          "id": "check.pytest",
+          "includedInAcceptance": true,
+          "mode": "test",
+          "provenanceRefs": [
+            "prov:de169aac696fc2e0"
+          ],
+          "safeToRunByDefault": true,
+          "source": "snapshot_observable_check"
+        },
+        {
+          "command": "uv run ruff check .",
+          "id": "check.ruff",
+          "includedInAcceptance": true,
+          "mode": "lint",
+          "provenanceRefs": [
+            "prov:e3613801121c5bb2"
+          ],
+          "safeToRunByDefault": true,
+          "source": "detected_pyproject"
+        },
+        {
+          "command": "uv run mypy src/fmc_mcp",
+          "id": "quality.mypy",
+          "includedInAcceptance": false,
+          "mode": "typecheck",
+          "provenanceRefs": [
+            "prov:e3613801121c5bb2"
+          ],
+          "safeToRunByDefault": false,
+          "source": "detected_pyproject_advisory"
+        }
+      ],
+      "runtimeContracts": [
+        {
+          "description": "Constructs the client during runtime setup/lifespan.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.constructs-component-fmc-mcp-server-component-fmc-mcp-client",
+          "kind": "constructs",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": "component.fmc-mcp-client"
+        },
+        {
+          "description": "component.fmc-mcp-client imports component.fmc-mcp-config",
+          "fromComponentId": "component.fmc-mcp-client",
+          "id": "runtime.contract-component-fmc-mcp-client-component-fmc-mcp-confi",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:bcfd8e782d7fe500",
+            "prov:b380701c2879efce"
+          ],
+          "supportingEdgeIds": [
+            "edge:4db395dbd95108d60b32",
+            "edge:5962c73618f92db925d1"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-config"
+        },
+        {
+          "description": "component.fmc-mcp-main imports component.fmc-mcp-server",
+          "fromComponentId": "component.fmc-mcp-main",
+          "id": "runtime.contract-component-fmc-mcp-main-component-fmc-mcp-server",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:da6e96a18d26d1cf",
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [
+            "edge:b2b2314baf57aa2e487d",
+            "edge:ca5e1295204bdf16bacf"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-server"
+        },
+        {
+          "description": "component.fmc-mcp-resources imports component.fmc-mcp-client",
+          "fromComponentId": "component.fmc-mcp-resources",
+          "id": "runtime.contract-component-fmc-mcp-resources-component-fmc-mcp-cl",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:4e62ae79d2c07a9c",
+            "prov:bcfd8e782d7fe500"
+          ],
+          "supportingEdgeIds": [
+            "edge:25c3c6d20a305beeeca9"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-client"
+        },
+        {
+          "description": "component.fmc-mcp-server imports component.fmc-mcp-client",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.contract-component-fmc-mcp-server-component-fmc-mcp-clien",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524",
+            "prov:bcfd8e782d7fe500"
+          ],
+          "supportingEdgeIds": [
+            "edge:cbfc0096826b93771472"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-client"
+        },
+        {
+          "description": "component.fmc-mcp-server imports component.fmc-mcp-config",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.contract-component-fmc-mcp-server-component-fmc-mcp-confi",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524",
+            "prov:b380701c2879efce"
+          ],
+          "supportingEdgeIds": [
+            "edge:1dbd45e8683cedc3c87a",
+            "edge:70b02da26b7d5371300e"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-config"
+        },
+        {
+          "description": "component.fmc-mcp-server imports component.fmc-mcp-resources",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.contract-component-fmc-mcp-server-component-fmc-mcp-resou",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524",
+            "prov:4e62ae79d2c07a9c"
+          ],
+          "supportingEdgeIds": [
+            "edge:e7d89d2157e18cc96de3",
+            "edge:f5439cc4db4e0ea6bf94"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-resources"
+        },
+        {
+          "description": "component.fmc-mcp-server imports component.fmc-mcp-tools",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.contract-component-fmc-mcp-server-component-fmc-mcp-tools",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524",
+            "prov:750d7fda533e438c"
+          ],
+          "supportingEdgeIds": [
+            "edge:36e31fda6d2df7b6c8ff"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-tools"
+        },
+        {
+          "description": "component.fmc-mcp-tools imports component.fmc-mcp-resources",
+          "fromComponentId": "component.fmc-mcp-tools",
+          "id": "runtime.contract-component-fmc-mcp-tools-component-fmc-mcp-resour",
+          "kind": "imports",
+          "provenanceRefs": [
+            "prov:750d7fda533e438c",
+            "prov:4e62ae79d2c07a9c"
+          ],
+          "supportingEdgeIds": [
+            "edge:68860f44ca677cc65828",
+            "edge:85277c562519c8594ad7"
+          ],
+          "supportingNodeIds": [],
+          "toComponentId": "component.fmc-mcp-resources"
+        },
+        {
+          "description": "Delegates registered MCP tool handlers to the tools module.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.delegates-to-component-fmc-mcp-server-component-fmc-mcp-tools",
+          "kind": "delegates_to",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": "component.fmc-mcp-tools"
+        },
+        {
+          "description": "Obtains the injected client through the resources access point.",
+          "fromComponentId": "component.fmc-mcp-tools",
+          "id": "runtime.delegates-to-component-fmc-mcp-tools-component-fmc-mcp-resources",
+          "kind": "delegates_to",
+          "provenanceRefs": [
+            "prov:750d7fda533e438c"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:a32d71cbbae4bcadc234"
+          ],
+          "toComponentId": "component.fmc-mcp-resources"
+        },
+        {
+          "description": "Exposes stdio and/or HTTP/SSE runtime mode selection.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.exposes-runtime-mode-component-fmc-mcp-server",
+          "kind": "exposes_runtime_mode",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": ""
+        },
+        {
+          "description": "Injects the runtime client into the shared resources module.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.injects-component-fmc-mcp-server-component-fmc-mcp-resources",
+          "kind": "injects",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": "component.fmc-mcp-resources"
+        },
+        {
+          "description": "Registers public MCP resource handlers.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.registers-resource-component-fmc-mcp-server",
+          "kind": "registers_resource",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": ""
+        },
+        {
+          "description": "Registers public MCP tool handlers.",
+          "fromComponentId": "component.fmc-mcp-server",
+          "id": "runtime.registers-tool-component-fmc-mcp-server",
+          "kind": "registers_tool",
+          "provenanceRefs": [
+            "prov:d10dbb159e6fb524"
+          ],
+          "supportingEdgeIds": [],
+          "supportingNodeIds": [
+            "node:9810fbe9bc4ff06aee73"
+          ],
+          "toComponentId": ""
+        }
+      ],
+      "summary": "Iteration guidance covers 6 components, 6 product invariants, 28 external surfaces, and 3 local quality gates. Highest-risk components: component.fmc-mcp-client, component.fmc-mcp-server, component.fmc-mcp-config."
+    },
+    "quick_checks": {
+      "environment_surface_names": [
+        "FMC_DOMAIN_UUID",
+        "FMC_HOST",
+        "FMC_MAX_CONNECTIONS",
+        "FMC_PASSWORD",
+        "FMC_RATE_LIMIT",
+        "FMC_TIMEOUT",
+        "FMC_USERNAME",
+        "FMC_VERIFY_SSL",
+        "MCP_HOST"
+      ],
+      "rate_and_concurrency_invariant_descriptions": {
+        "concurrency_limit": "Concurrent external FMC requests are bounded by source-modeled back-pressure. Source settings define 10 concurrent connections.",
+        "rate_limit": "Rate limiting behavior is a product invariant for external FMC API access. Source settings define 120 requests per minute."
+      },
+      "invariant_surface_types": {
+        "concurrency_limit": [
+          "environment_variable",
+          "http_endpoint_family"
+        ],
+        "public_mcp_contract": [
+          "mcp_resource",
+          "mcp_tool"
+        ],
+        "rate_limit": [
+          "environment_variable",
+          "http_endpoint_family"
+        ],
+        "read_only_external_operations": [
+          "http_endpoint_family",
+          "mcp_resource",
+          "mcp_tool"
+        ],
+        "secret_safety": [
+          "environment_variable"
+        ]
+      },
+      "backlog_provenance_counts": [
+        [
+          1,
+          5,
+          11
+        ],
+        [
+          2,
+          5,
+          8
+        ],
+        [
+          3,
+          2,
+          0
+        ],
+        [
+          4,
+          1,
+          0
+        ],
+        [
+          5,
+          1,
+          0
+        ]
+      ],
+      "quality_gates": [
+        [
+          "check.pytest",
+          "uv run python -m pytest -q",
+          true,
+          true
+        ],
+        [
+          "check.ruff",
+          "uv run ruff check .",
+          true,
+          true
+        ],
+        [
+          "quality.mypy",
+          "uv run mypy src/fmc_mcp",
+          false,
+          false
+        ]
+      ]
+    }
+  },
+  "required_judgment_schema": {
+    "reviewer": "grok|opus|hermes",
+    "addressed": "boolean",
+    "confidence": "low|medium|high",
+    "blockers": [
+      "list only issues that prevent saying addressed=true"
+    ],
+    "non_blocking_followups": [
+      "list remaining improvements that can wait"
+    ],
+    "evidence": [
+      "cite concrete evidence from packet/model"
+    ],
+    "questions": [
+      "questions, if any, that still block acceptance"
+    ]
+  }
+}

@@ -12,13 +12,14 @@ import ast
 import json
 import os
 import subprocess
-import sys
 import time
+from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
 from scorer.exceptions import ScorerNonDeterministicError
+from scorer.goal_config import CompositeWeights, GoalConfig, load_goal_config
 from scorer.lock import DEFAULT_LOCK_PATH, load_scorer_lock
 
 DETERMINISM_TOLERANCE = 1.0e-6
@@ -54,6 +55,8 @@ class ScoreRecord:
     scorer_lock_sha: str
     vector: ScoreVector
     computed_ts: float
+    goal_config_sha: str = ""
+    goal_config_schema_version: str = ""
 
     def to_jsonable(self) -> dict[str, Any]:
         data = asdict(self)
@@ -101,17 +104,20 @@ class Scorer:
 
     def score_repo(self, repo: Path) -> ScoreRecord:
         target = repo.resolve()
+        goal_config = load_goal_config(target)
         # Re-validate at every score call so source changes fail closed.
         self.lock = load_scorer_lock(self.project_root, self.lock_path, validate=True)
-        vector = self._score_vector(target)
+        vector = self._score_vector(target, goal_config)
         git_oid = _git_oid(target)
-        record_id = f"score-{git_oid[:12]}-{self.lock.scorer_sha[:12]}"
+        record_id = f"score-{git_oid[:12]}-{self.lock.scorer_sha[:12]}-{goal_config.content_hash[:12]}"
         return ScoreRecord(
             id=record_id,
             git_oid=git_oid,
             scorer_lock_sha=self.lock.scorer_sha,
             vector=vector,
             computed_ts=time.time(),
+            goal_config_sha=goal_config.content_hash,
+            goal_config_schema_version=goal_config.schema_version,
         )
 
     def drift_check(self, baseline_record: ScoreRecord, repo: Path) -> None:
@@ -120,6 +126,11 @@ class Scorer:
             raise ScorerNonDeterministicError(
                 f"baseline git oid changed: expected {baseline_record.git_oid}, actual {current.git_oid}"
             )
+        if current.goal_config_sha != baseline_record.goal_config_sha:
+            raise ScorerNonDeterministicError(
+                "goal config hash changed: "
+                f"expected {baseline_record.goal_config_sha}, actual {current.goal_config_sha}"
+            )
         for axis, expected in baseline_record.vector.numeric_axes().items():
             actual = current.vector.numeric_axes()[axis]
             if abs(actual - expected) > self.tolerance:
@@ -127,12 +138,12 @@ class Scorer:
                     f"axis {axis} drifted by {abs(actual - expected)}: expected {expected}, actual {actual}"
                 )
 
-    def _score_vector(self, repo: Path) -> ScoreVector:
-        tests_pass, coverage_pct = _pytest_coverage(repo)
-        pyright_errors = _pyright_errors(repo)
-        ruff_violations = _ruff_violations(repo)
-        cyclomatic_avg = _cyclomatic_average(repo / "src")
-        runtime_p95_ms = _runtime_proxy(repo)
+    def _score_vector(self, repo: Path, goal_config: GoalConfig) -> ScoreVector:
+        tests_pass, coverage_pct = _test_and_coverage(repo, goal_config)
+        pyright_errors = _pyright_errors(repo, goal_config)
+        ruff_violations = _ruff_violations(repo, goal_config)
+        cyclomatic_avg = _cyclomatic_average(repo / root for root in goal_config.paths.source_roots)
+        runtime_p95_ms = _runtime_proxy(repo, goal_config)
         composite = _composite(
             tests_pass=tests_pass,
             coverage_pct=coverage_pct,
@@ -140,6 +151,7 @@ class Scorer:
             ruff_violations=ruff_violations,
             cyclomatic_avg=cyclomatic_avg,
             runtime_p95_ms=runtime_p95_ms,
+            weights=goal_config.weights,
         )
         return ScoreVector(
             composite=round(composite, 6),
@@ -160,25 +172,36 @@ def _composite(
     ruff_violations: int,
     cyclomatic_avg: float,
     runtime_p95_ms: float,
+    weights: CompositeWeights,
 ) -> float:
-    if not tests_pass:
-        return -1000.0 + coverage_pct - (10.0 * pyright_errors) - runtime_p95_ms
-    return (
-        (2.0 * coverage_pct)
-        - (5.0 * pyright_errors)
-        - (0.75 * ruff_violations)
-        - (2.0 * cyclomatic_avg)
-        - runtime_p95_ms
+    score = (
+        (weights.coverage_pct * coverage_pct)
+        + (weights.pyright_errors * pyright_errors)
+        + (weights.ruff_violations * ruff_violations)
+        + (weights.cyclomatic_avg * cyclomatic_avg)
+        + (weights.runtime_p95_ms * runtime_p95_ms)
     )
+    if not tests_pass:
+        score += weights.test_failure_penalty
+    return score
 
 
-def _run(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+def _run(
+    args: Sequence[str],
+    repo: Path,
+    *,
+    timeout: int = 120,
+    source_roots: Iterable[str] = ("src",),
+) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["PYTHONHASHSEED"] = "0"
+    env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["TZ"] = "UTC"
-    src = repo / "src"
-    env["PYTHONPATH"] = str(src) + os.pathsep + env.get("PYTHONPATH", "")
-    return subprocess.run(args, cwd=repo, env=env, text=True, capture_output=True, timeout=timeout, check=False)
+    pythonpath = [str(repo / root) for root in source_roots]
+    if existing := env.get("PYTHONPATH"):
+        pythonpath.append(existing)
+    env["PYTHONPATH"] = os.pathsep.join(pythonpath)
+    return subprocess.run(list(args), cwd=repo, env=env, text=True, capture_output=True, timeout=timeout, check=False)
 
 
 def _git_oid(repo: Path) -> str:
@@ -188,46 +211,50 @@ def _git_oid(repo: Path) -> str:
     return proc.stdout.strip()
 
 
-def _pytest_coverage(repo: Path) -> tuple[bool, float]:
-    coverage_file = repo / "coverage.json"
+def _test_and_coverage(repo: Path, goal_config: GoalConfig) -> tuple[bool, float]:
+    coverage_file = repo / goal_config.coverage.source
     if coverage_file.exists():
         coverage_file.unlink()
-    proc = _run(
-        [
-            sys.executable,
-            "-m",
-            "pytest",
-            "tests",
-            "--cov=validatorlib",
-            "--cov-report=json:coverage.json",
-            "--cov-fail-under=85",
-            "-q",
-        ],
+    test_proc = _run(
+        goal_config.commands.test,
         repo,
         timeout=180,
+        source_roots=goal_config.paths.source_roots,
     )
+    coverage_proc = None
+    if goal_config.commands.coverage is not None:
+        coverage_proc = _run(
+            goal_config.commands.coverage,
+            repo,
+            timeout=180,
+            source_roots=goal_config.paths.source_roots,
+        )
     coverage_pct = 0.0
     if coverage_file.exists():
         try:
             coverage_pct = float(json.loads(coverage_file.read_text())["totals"]["percent_covered"])
         except (KeyError, json.JSONDecodeError, TypeError, ValueError):
             coverage_pct = 0.0
-    return proc.returncode == 0, coverage_pct
+        coverage_file.unlink()
+    (repo / ".coverage").unlink(missing_ok=True)
+    coverage_command_ok = coverage_proc is None or coverage_proc.returncode == 0
+    tests_pass = test_proc.returncode == 0 and coverage_command_ok and coverage_pct >= goal_config.coverage.floor
+    return tests_pass, coverage_pct
 
 
-def _ruff_violations(repo: Path) -> int:
-    proc = _run(
-        [sys.executable, "-m", "ruff", "check", ".", "--output-format", "json", "--exit-zero"],
-        repo,
-    )
+def _ruff_violations(repo: Path, goal_config: GoalConfig) -> int:
+    proc = _run(goal_config.commands.lint, repo, source_roots=goal_config.paths.source_roots)
     try:
-        return len(json.loads(proc.stdout or "[]"))
+        payload = json.loads(proc.stdout or "[]")
     except json.JSONDecodeError:
         return 999
+    if isinstance(payload, list):
+        return len(payload)
+    return 999
 
 
-def _pyright_errors(repo: Path) -> int:
-    proc = _run([sys.executable, "-m", "pyright", "--outputjson"], repo, timeout=180)
+def _pyright_errors(repo: Path, goal_config: GoalConfig) -> int:
+    proc = _run(goal_config.commands.typecheck, repo, timeout=180, source_roots=goal_config.paths.source_roots)
     try:
         payload = json.loads(proc.stdout)
     except json.JSONDecodeError:
@@ -236,14 +263,16 @@ def _pyright_errors(repo: Path) -> int:
     return sum(1 for diag in diagnostics if diag.get("severity") == "error")
 
 
-def _runtime_proxy(repo: Path) -> float:
-    proxy = repo / "benchmarks" / "runtime_proxy.py"
-    if not proxy.exists():
+def _runtime_proxy(repo: Path, goal_config: GoalConfig) -> float:
+    if goal_config.commands.runtime_proxy is None:
         return 0.0
-    proc = _run([sys.executable, str(proxy)], repo)
+    proc = _run(goal_config.commands.runtime_proxy, repo, source_roots=goal_config.paths.source_roots)
     if proc.returncode != 0:
         return 9999.0
-    return float(json.loads(proc.stdout)["runtime_p95_ms"])
+    try:
+        return float(json.loads(proc.stdout)["runtime_p95_ms"])
+    except (KeyError, json.JSONDecodeError, TypeError, ValueError):
+        return 9999.0
 
 
 class _ComplexityVisitor(ast.NodeVisitor):
@@ -278,13 +307,14 @@ def _function_complexity(function: ast.FunctionDef | ast.AsyncFunctionDef) -> in
     return visitor.current
 
 
-def _cyclomatic_average(src_root: Path) -> float:
+def _cyclomatic_average(src_roots: Iterable[Path]) -> float:
     complexities: list[int] = []
-    for path in sorted(src_root.rglob("*.py")):
-        tree = ast.parse(path.read_text())
-        for node in ast.walk(tree):
-            if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
-                complexities.append(_function_complexity(node))
+    for src_root in src_roots:
+        for path in sorted(src_root.rglob("*.py")):
+            tree = ast.parse(path.read_text())
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
+                    complexities.append(_function_complexity(node))
     if not complexities:
         return 0.0
     return sum(complexities) / len(complexities)

@@ -1,0 +1,19 @@
+## arena/candidate/cycle-1
+ tests/test_client.py    | 172 ++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/test_resources.py |   3 +-
+ tests/test_server.py    | 102 ++++++++++++++++++++++++++++
+ 3 files changed, 276 insertions(+), 1 deletion(-)
+
+M	tests/test_client.py
+M	tests/test_resources.py
+A	tests/test_server.py
+
+## arena/candidate/cycle-2
+ tests/test_client.py    | 172 ++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/test_resources.py |   3 +-
+ tests/test_server.py    | 102 ++++++++++++++++++++++++++++
+ 3 files changed, 276 insertions(+), 1 deletion(-)
+
+M	tests/test_client.py
+M	tests/test_resources.py
+A	tests/test_server.py

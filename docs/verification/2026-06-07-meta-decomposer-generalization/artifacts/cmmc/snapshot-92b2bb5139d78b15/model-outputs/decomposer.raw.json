@@ -1,0 +1,4014 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+        "contract.component-app-backend-source-alembic-imports-component-app-back-b4f5407e"
+      ],
+      "id": "component.app-backend-source-alembic",
+      "name": "Backend Alembic behavior",
+      "owned_node_ids": [
+        "node:34df15c439e136d2fe18",
+        "node:40bf37b7b4ddbbb54b00",
+        "node:a2a4c9278c442a4cef06",
+        "node:d621e72c70f9e3ad03af",
+        "node:ee3ee15c0f6545d68239"
+      ],
+      "provenance_refs": [
+        "prov:dc3cd91b08e6bedb",
+        "prov:466b86195f34f132",
+        "prov:c307cecf258b4bb7",
+        "prov:d0dd51543ede77ed",
+        "prov:ba0bd2c06958bc7b"
+      ],
+      "responsibility": "Provide the alembic responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.app-backend-source-alembic-versions",
+      "name": "Backend Alembic Versions behavior",
+      "owned_node_ids": [
+        "node:072409ab479e0af91f02",
+        "node:0756c8f07ce15ae48e04",
+        "node:0df066e24e0e4e091c8d",
+        "node:1e9480044d8ccbbd5495",
+        "node:34afc0024468e71fabc9",
+        "node:37fa09832d09d993be8f",
+        "node:38a7777a995d704c1531",
+        "node:42b6bd5e2ca62f1d52ad",
+        "node:471fcbb0d21c74c87cc7",
+        "node:6c43728314e4fd1614f0",
+        "node:6db3f3ca35567fd884ee",
+        "node:7880c922721b99c667ac",
+        "node:813f813e2b5e0b2ffecf",
+        "node:8e6e621fcb2db8edc152",
+        "node:a38e2c7b103e1e04c945",
+        "node:b0022842c8d45bb80b33",
+        "node:bb48fe5dd51ab3b1e5f7",
+        "node:bc041a167009a0f07f59",
+        "node:d4480f2c9b3e0ab1aa99",
+        "node:d91f8544db86047d7064",
+        "node:e31bbb055f2d597c19a4",
+        "node:eb66d8be9801895f8e37",
+        "node:ed9741a878ce6e557c79",
+        "node:ef05d1d40a37a2107600",
+        "node:f312326ef24f72c41d5a",
+        "node:fdcb47364f8d200f7677"
+      ],
+      "provenance_refs": [
+        "prov:3419defabca5a76b",
+        "prov:521feecb6b36fa50",
+        "prov:cc526270fa6c89b6",
+        "prov:47dd6808d6580490",
+        "prov:34e142a55071263b"
+      ],
+      "responsibility": "Provide the alembic-versions responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.app-backend-source-api",
+      "name": "Backend Api behavior",
+      "owned_node_ids": [
+        "node:0519800720847c71dc45",
+        "node:7600eb3b477b9b92eb0c"
+      ],
+      "provenance_refs": [
+        "prov:db833102e568082d",
+        "prov:010671fe1976e4eb"
+      ],
+      "responsibility": "Provide the api responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-assessment-imports-component-app-b-34940020",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-533d1504",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c878fe71",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c8dc9598",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-d01b72ba",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-fcfd681e",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-889bd777",
+        "contract.component-app-backend-source-main-imports-component-app-backend-1190c75e",
+        "contract.component-app-backend-source-reports-imports-component-app-back-057517be",
+        "contract.component-app-backend-verification-imports-component-app-backen-a044c6e4"
+      ],
+      "id": "component.app-backend-source-assessment",
+      "name": "Backend Assessment behavior",
+      "owned_node_ids": [
+        "node:006f7f0dc8cae0cb0dea",
+        "node:008912863508d0500ec1",
+        "node:00f3f6d69d642a897835",
+        "node:01d69c570f3fe6407f89",
+        "node:034117cc204ce8eba314",
+        "node:0b01f6d8cdee6ca1e17e",
+        "node:0b259472e712c5db7a41",
+        "node:0b91de1d82f85a071fe5",
+        "node:0c6431207c5c1e70d2b8",
+        "node:0cc8690cfdb158d5aaf3",
+        "node:0e5caea55a448f173ce8",
+        "node:105a1e2188ce45ace769",
+        "node:167ede395acee562b354",
+        "node:16e1bda9ff31773d2143",
+        "node:199fd7fad9318dd7b246",
+        "node:1a150f101380d929af41",
+        "node:1f33b2c6c5349525cdf1",
+        "node:20f6f5f49dcb8d5b43a0",
+        "node:22eaf42d59eb6fd3552a",
+        "node:259f766b2c45ffa151d1",
+        "node:28392e9d46048b2bd67e",
+        "node:2a3301faf029c6ed218e",
+        "node:3141b6cb8ed9d55b4274",
+        "node:38646360ccd18b4cd19c",
+        "node:390e1156c21100170284",
+        "node:3aefb117505da8bffd7e",
+        "node:3b2eb0109edd18b1f67c",
+        "node:3c592ac63ea9cd455360",
+        "node:3ea1799406f0167e55f1",
+        "node:3eab79001bcbf9eb8ba4",
+        "node:3ef5d05760966329574c",
+        "node:457effeb3381e991cf2d",
+        "node:46a5d744224db0d01461",
+        "node:46f2b9e8983224dbb0ee",
+        "node:476f759a768611333919",
+        "node:50673500b09548d936d9",
+        "node:5797efa91b4da5866131",
+        "node:5ab8f2c69afe47e47a06",
+        "node:5d3fe003e54c2858321a",
+        "node:5eefdeb65119e2026f8b",
+        "node:60791cc3cf1c780289dc",
+        "node:6421ebecf60a4c47baf1",
+        "node:6a7cabeb39ea1980d351",
+        "node:6a86056d50b841d56d36",
+        "node:6c2c7fbd22b1dce23b86",
+        "node:6d9c847c993396cb4342",
+        "node:6e66c8d2f192c7ee8ca7",
+        "node:7812ff0b56e4233f3981",
+        "node:78f0e072651e8e41b792",
+        "node:7b012327621756cc4629",
+        "node:7caf530b35a9d85b7b5c",
+        "node:830170c1a076f1ae8a94",
+        "node:858b5393844f44a4019a",
+        "node:86f76bf2ef099c53df50",
+        "node:877af42da680c12b88be",
+        "node:8839b8799ff0b6665fb3",
+        "node:8a1217738901762dfcdd",
+        "node:938bbadf635410e5b94b",
+        "node:93c668a53ec9222257f7",
+        "node:93d3a68845c0eabe0cc6",
+        "node:9423771e34b940b25719",
+        "node:94bf6bd556d3ef5767f8",
+        "node:9540306f5a694844d7e8",
+        "node:966aed307e466efa3941",
+        "node:993a79dcfd14a9e8e594",
+        "node:9f87a7f51597bde28f48",
+        "node:a2847d5c783cfaa306ee",
+        "node:a41d2fdb7bd44120335f",
+        "node:a5977392105c2be9c10f",
+        "node:a5f3a685c488345c7b30",
+        "node:ab5f5fcee222c7ead312",
+        "node:ad62100a6cdf72e6fca5",
+        "node:aff29cc36f62bf9f8abf",
+        "node:b21ba873c89cdb0e3723",
+        "node:b5f443ac958da04350af",
+        "node:b93156326ff5bd6cf650",
+        "node:bb26f92b23a092ff88bd",
+        "node:bb4d74396db5c7c78cf7",
+        "node:bbadf3c1abd3ef78083c",
+        "node:bce0c9972a6bd8ff300c",
+        "node:c101d86a978d900e94a3",
+        "node:c6351bf9def20a1b04b2",
+        "node:c6b8dc68835bb6d49442",
+        "node:c8cc1d03067949ff4c7c",
+        "node:c8fcc3a30446a7f943ed",
+        "node:ce09a4bf03d0e1d64a68",
+        "node:ce2a90ecb96ffb8bdd8b",
+        "node:d0b0374357ed418e8487",
+        "node:d1bd81f39429ddbf4f34",
+        "node:d3c802d2412578141c9d",
+        "node:d6678363d8b66de79d35",
+        "node:d6d11d9f59826bf02a1a",
+        "node:d6d1c947bbbd2f4dda67",
+        "node:d7f15d26aa40bc3a3043",
+        "node:d817ad60c127742c1967",
+        "node:da91af657484c3595996",
+        "node:db83f59139f4095c24c0",
+        "node:dc2802c972fc990d26d0",
+        "node:deb6df9d5c81e20aff74",
+        "node:df2a40f88b0ea1e39b60",
+        "node:e5ace655d85b9eb4d2fe",
+        "node:e9671d1f0564397b3085",
+        "node:e9cb6c38c645759d7f9f",
+        "node:ea8dbb9f53fb375eb761",
+        "node:eb92b02f81ff67775d94",
+        "node:edb5b957a8acd5c0cdca",
+        "node:efaa8d57ba401f7950d0",
+        "node:f12aba0e7700a2874f49",
+        "node:f4a3494b2a45c2bd9f6b",
+        "node:f7116dd86af04a6b5da3"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:7e0ff9b41c0b43a3",
+        "prov:23ac1eb134c098cd",
+        "prov:de403db3e96eb5fe",
+        "prov:1baeffc6dff2256b"
+      ],
+      "responsibility": "Provide the assessment responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-audit-imports-component-app-backen-07d9571e",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-a94edf25",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-9c8016be",
+        "contract.component-app-backend-source-main-imports-component-app-backend-79aaa598",
+        "contract.component-app-backend-verification-imports-component-app-backen-d7f3a5ff"
+      ],
+      "id": "component.app-backend-source-audit",
+      "name": "Backend Audit behavior",
+      "owned_node_ids": [
+        "node:01f3d319008d70b24843",
+        "node:042fb7a86a6f883a2380",
+        "node:4698da300ef88dde6498",
+        "node:7f025bc6a106589b90e2",
+        "node:83b680f9de55ab388b94",
+        "node:9b47a95e91f4cad86757",
+        "node:d665f905b3436d25aa91"
+      ],
+      "provenance_refs": [
+        "prov:8ffd7b6050ea39b7",
+        "prov:58b4c447b8803050",
+        "prov:c704029766495fb8",
+        "prov:77db71dba6f622f3",
+        "prov:544e1abfaad03c6b"
+      ],
+      "responsibility": "Provide the audit responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-auth-imports-component-app-backend-2adff5ba",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-465fa083",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-9c8016be",
+        "contract.component-app-backend-source-main-imports-component-app-backend-a6296c41",
+        "contract.component-app-backend-verification-imports-component-app-backen-826d86f2"
+      ],
+      "id": "component.app-backend-source-auth",
+      "name": "Backend Auth behavior",
+      "owned_node_ids": [
+        "node:03fc08c12456ef8c5f57",
+        "node:052b1d194b2871c91e7b",
+        "node:17d81cf28aff20ced73a",
+        "node:18aecd9cbbda0ec83d8d",
+        "node:26541073587e5661982d",
+        "node:2a6f92b76afa747615e7",
+        "node:3118580ee8eb6d7618a2",
+        "node:3d5760a8176bda4a6d89",
+        "node:3d6785154620441dd3bb",
+        "node:4aadaa2f100b5e4fd16c",
+        "node:5701faf8accb30e2afb3",
+        "node:5b41cb0e30f8068e6d93",
+        "node:5d8712d0492879300aa2",
+        "node:6ce83534ca178546568b",
+        "node:6e095d9f94cab82012dc",
+        "node:71cd94a5504951908f9a",
+        "node:7a393973385a27284914",
+        "node:833e9e436ecb49ef551a",
+        "node:8a617166b8fa5ce719a7",
+        "node:94a74e0727befc8123ff",
+        "node:9aac932d23d238914fd2",
+        "node:9ba3219106df36abdc7f",
+        "node:a59a19c37ffdffc002b4",
+        "node:a8fbce9d74f3a55faa0b",
+        "node:aa69004f7dc8fa5c2281",
+        "node:abf01d5509d7b0317030",
+        "node:ac3f5aeadb6daa7ca8cd",
+        "node:b20e1f22e85e64d72a02",
+        "node:bfd05250ec5dea50f492",
+        "node:c7214aa8c495cbf623a7",
+        "node:cfd3cf4e11f2ae2db3cd",
+        "node:da73e2a3e210b3107d73",
+        "node:e41317c1eefc5a131b14",
+        "node:ec08d9dc54636d1b3144",
+        "node:f28820798a1f427a14b7",
+        "node:fa41b580b50165fc0cd0",
+        "node:febad885939fa756b1bb"
+      ],
+      "provenance_refs": [
+        "prov:3646836f8a5b1552",
+        "prov:4230b3f9d25ad1f0",
+        "prov:d23f22ea15f84ebd",
+        "prov:4e528f7e6da26f02",
+        "prov:da0d9b70dae1686a"
+      ],
+      "responsibility": "Provide the auth responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-533d1504",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-2adff5ba",
+        "contract.component-app-backend-source-controls-imports-component-app-bac-0943c2bd",
+        "contract.component-app-backend-source-database-imports-component-app-bac-94f16575",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-ceace79e",
+        "contract.component-app-backend-source-main-imports-component-app-backend-13edf898",
+        "contract.component-app-backend-verification-imports-component-app-backen-83ee7505"
+      ],
+      "id": "component.app-backend-source-config",
+      "name": "Backend Config behavior",
+      "owned_node_ids": [
+        "node:417730c652a28d9dac72",
+        "node:47f8c480f93bf3c6aeb9",
+        "node:52b376322052d405b22d",
+        "node:56fd0be3573ccd1387eb",
+        "node:68c3649b812d9fcda973",
+        "node:6da3bf710454d7b21049",
+        "node:88c79bf3427ce4cf6b76",
+        "node:99672fe7a4541b2a3000",
+        "node:ae03e9c71a761dad6d10",
+        "node:daa6f59937d4f8bc70bf",
+        "node:e402f44e0bb4b0e47e27",
+        "node:f7b6d34591ab987c718c",
+        "node:fafe4d2dbcbe329927a8",
+        "node:fbb5d66d110832ac37d1",
+        "node:ff661101ad3ca8ef28f8"
+      ],
+      "provenance_refs": [
+        "prov:4a214e54ce20930b",
+        "prov:c230b32cca5ce1c7",
+        "prov:cd4cb31798052f10",
+        "prov:742e79454839969f",
+        "prov:0b6379679fa6fe39"
+      ],
+      "responsibility": "Provide the config responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c878fe71",
+        "contract.component-app-backend-source-controls-imports-component-app-bac-0943c2bd",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-d3a1d238",
+        "contract.component-app-backend-source-main-imports-component-app-backend-b8ea409a",
+        "contract.component-app-backend-source-reports-imports-component-app-back-2d44b67c",
+        "contract.component-app-backend-verification-imports-component-app-backen-dd0fc40e"
+      ],
+      "id": "component.app-backend-source-controls",
+      "name": "Backend Controls behavior",
+      "owned_node_ids": [
+        "node:1ed13df6fb685e411102",
+        "node:2cd4bd69526950faaa3a",
+        "node:2f823439e98c7794b578",
+        "node:33d28340fcaa60b7cf30",
+        "node:5c2b064ab713f3f5a227",
+        "node:5d8cb6182a855dbd939a",
+        "node:68d6e10e3ccb6aeae979",
+        "node:7f584c0d47835ad0e0ac",
+        "node:b477bf9fabf414f3d4ff",
+        "node:e50148294a42248ed8d2"
+      ],
+      "provenance_refs": [
+        "prov:b9055d33abc8c621",
+        "prov:9f1142d6d5b3aaac",
+        "prov:1b70be23bb52290e",
+        "prov:333d7dc88ff86d96",
+        "prov:5745ea0d73416508"
+      ],
+      "responsibility": "Provide the controls responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-b4f5407e",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-34940020",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-07d9571e",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-465fa083",
+        "contract.component-app-backend-source-database-imports-component-app-bac-94f16575",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-401778c1",
+        "contract.component-app-backend-source-main-imports-component-app-backend-bff76356",
+        "contract.component-app-backend-source-reports-imports-component-app-back-70d0abcc",
+        "contract.component-app-backend-verification-imports-component-app-backen-538ae493"
+      ],
+      "id": "component.app-backend-source-database",
+      "name": "Backend Database behavior",
+      "owned_node_ids": [
+        "node:05aa61b3bc7cf7ea4d0d",
+        "node:062e2c50f3fa6ca9b226",
+        "node:0c5488f45e60a3fb0313",
+        "node:14766de4b53af7db9fed",
+        "node:1f905d326ffde4ec7e58",
+        "node:2fb552dd8778c3a04783",
+        "node:37edd6fcbcac77f2e968",
+        "node:426ef841eaadf0f7b09f",
+        "node:479d847d779c829ea897",
+        "node:4cf60d651a8c52363876",
+        "node:73423850700b16b85494",
+        "node:7906682af19aa78aae99",
+        "node:891c7061e976aca5b923",
+        "node:944271e5a327dfed86d3",
+        "node:a142570018f7390485f2",
+        "node:a5d34acda9c010791654",
+        "node:aaf3a07112bc60932d0f",
+        "node:abb6817718a667b52b20",
+        "node:bbf8913cb45bda6c230e",
+        "node:c88d7fd4ceb6ea1b8c24",
+        "node:d55e7c7293735fb4333a",
+        "node:ddddcbeefc8bc02bf69a"
+      ],
+      "provenance_refs": [
+        "prov:3f7ff035549a670f",
+        "prov:dca1bc97c5521505",
+        "prov:0f70b9228e75418a",
+        "prov:268b34be849eb3bf",
+        "prov:33e93732c4a3a5c5"
+      ],
+      "responsibility": "Provide the database responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.app-backend-source-evidence",
+      "name": "Backend Evidence behavior",
+      "owned_node_ids": [
+        "node:5b8bf8bd3c2e84e4ae40",
+        "node:f1727a41dbfbfd221819"
+      ],
+      "provenance_refs": [
+        "prov:c132423fca6c5ea3",
+        "prov:cee6ba6fc6e5c243"
+      ],
+      "responsibility": "Provide the evidence responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.app-backend-source-init",
+      "name": "Backend Init behavior",
+      "owned_node_ids": [
+        "node:6df193a4136384a5ff58",
+        "node:d14b259a5365675da7d8"
+      ],
+      "provenance_refs": [
+        "prov:e22473c71b5811dc",
+        "prov:de6e321536b47865"
+      ],
+      "responsibility": "Provide the init responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-assessment-imports-component-app-b-fcfd681e",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-401778c1",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-4c1a971d",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-889bd777",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-ceace79e",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-d3a1d238",
+        "contract.component-app-backend-source-main-imports-component-app-backend-caec6438",
+        "contract.component-app-backend-verification-imports-component-app-backen-bf48f60b"
+      ],
+      "id": "component.app-backend-source-llm",
+      "name": "Backend Llm behavior",
+      "owned_node_ids": [
+        "node:0030889485dac760d4fe",
+        "node:053ed3075937ea426c85",
+        "node:05dc4eb8ffd566c94a92",
+        "node:0704c5a8e9e28ea679a5",
+        "node:0b79efc24fff8de97016",
+        "node:10aa8411573014020ee6",
+        "node:14422103616840674124",
+        "node:1cbb2c6a9843101d72dd",
+        "node:22757520bccb4c770660",
+        "node:24e65039f97c13ff5ef2",
+        "node:27aceef336c80ea92cbe",
+        "node:2e0c148b88f7087f954e",
+        "node:309c22373aa2b93a97d7",
+        "node:3349672435ed9760c237",
+        "node:35e6f0f3e547c8026c92",
+        "node:3c2ca3477798ead3dbca",
+        "node:3d74efbc653190d8a03d",
+        "node:485abf5d8529a214aeab",
+        "node:493aff3077cdf9077c9e",
+        "node:4b0a960c7789707fc744",
+        "node:51f61520161ec3a4ab94",
+        "node:54eab33937aa61d6f29c",
+        "node:6062262177cacaadfa93",
+        "node:62d4c5c39935c71327a0",
+        "node:63b4198b4de11e416e6f",
+        "node:72113e9d040c1f78030e",
+        "node:72da206ac84d35b8c124",
+        "node:75e63690b6cca3759cd7",
+        "node:7ed1363cf0a9b5010d5e",
+        "node:82e2f241eb352f811cdc",
+        "node:903a16cd0e5cfa2a97b9",
+        "node:991b6e48cbd741c40729",
+        "node:9de5faeef43f0e10acf2",
+        "node:9f6e7929d968061c36fb",
+        "node:a6539d7640c9f1b338f4",
+        "node:b405a9bf19cb323dfb37",
+        "node:c33e520ad7a739579588",
+        "node:c6da3294c32ed78b6493",
+        "node:c966921d65374eff8b51",
+        "node:cb585419d82e88338267",
+        "node:cda91b23ac158ac5ca88",
+        "node:ce3ac607dacf23bab57f",
+        "node:d34977adbbfe03877dc2",
+        "node:d8aff767a1eae56ff8aa",
+        "node:ddfe4ddd2434a26124f4",
+        "node:dfce82a23addee9c1199",
+        "node:ed463dcde688b2db75d0",
+        "node:eed2aaf8ef6fd64b6657",
+        "node:f1cf72c3c4709e91255d",
+        "node:fca03078a9ec61d820b9"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:aad4db59631a972d",
+        "prov:4d2efe364d661b68",
+        "prov:6e7208878caab605",
+        "prov:e3979cb5722eeffd"
+      ],
+      "responsibility": "Provide the llm responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-main-imports-component-app-backend-1190c75e",
+        "contract.component-app-backend-source-main-imports-component-app-backend-13edf898",
+        "contract.component-app-backend-source-main-imports-component-app-backend-79aaa598",
+        "contract.component-app-backend-source-main-imports-component-app-backend-7f0ee012",
+        "contract.component-app-backend-source-main-imports-component-app-backend-a6296c41",
+        "contract.component-app-backend-source-main-imports-component-app-backend-b8ea409a",
+        "contract.component-app-backend-source-main-imports-component-app-backend-bff76356",
+        "contract.component-app-backend-source-main-imports-component-app-backend-caec6438",
+        "contract.component-app-backend-source-main-imports-component-app-backend-e8433387"
+      ],
+      "id": "component.app-backend-source-main",
+      "name": "Backend Main behavior",
+      "owned_node_ids": [
+        "node:01ca780ba9a92da02d9e",
+        "node:08011b270157105a305a",
+        "node:1029cb2d1f39cbaf2936",
+        "node:1340dee98dab800e2920",
+        "node:1ba6a6d629b82c9a63f6",
+        "node:39f98bd274dfa667f657",
+        "node:3b9eb117acdf40b0e298",
+        "node:3d6a189ea332d50e1460",
+        "node:43749fe55caf40a0ca3a",
+        "node:43ee40588a3b4d1cb8fe",
+        "node:5557b6c651e1bb7aaf97",
+        "node:595d849d5553168e7767",
+        "node:65f3aade6e4becddef9d",
+        "node:6f000412f97b9522f81c",
+        "node:6f0f35865492fd2ec7bf",
+        "node:782415936810d94e1717",
+        "node:7ddf8940348a3f7b4f61",
+        "node:815f693cb15e7bbc768a",
+        "node:8186dc77f42810d82e44",
+        "node:88f4b45fb2efc9994234",
+        "node:95cfefb55715ccd46a29",
+        "node:963154b3e95f9a8e91d0",
+        "node:9884bccdde9695d62a69",
+        "node:9ab4657fd975c074eafb",
+        "node:9c27efd19544d2522f89",
+        "node:a0655c5bd87881edaa45",
+        "node:a3ae3b8e91da9661e779",
+        "node:a4aaab7bcbaf6519f9bd",
+        "node:a5b3508eb49a8481c8ba",
+        "node:a75898c197ce1ddf33e2",
+        "node:a7df38046b2af218a2ac",
+        "node:aab92648593e2dcba61a",
+        "node:abc9a3c13c52373b2363",
+        "node:ae017014a092506b6b6e",
+        "node:ba73bea689e425aef303",
+        "node:bfbedb6b32f24a74deb5",
+        "node:c049001e04e27715cc65",
+        "node:c29cfba6893d94e2e48f",
+        "node:c52b677f2aa0be0a0d85",
+        "node:c73332127706f438adc7",
+        "node:c8cc36194dc53ecf8ba8",
+        "node:cfd2f58a9b5f9c084d86",
+        "node:e2f7ba84843c174d0112"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:0b1c9110efb02c7a",
+        "prov:4dd1b4dfca1163c9",
+        "prov:0a7600ec9678ca84",
+        "prov:65e0402b00660902"
+      ],
+      "responsibility": "Provide the main responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-assessment-imports-component-app-b-d01b72ba",
+        "contract.component-app-backend-source-main-imports-component-app-backend-7f0ee012",
+        "contract.component-app-backend-source-reports-imports-component-app-back-057517be",
+        "contract.component-app-backend-source-reports-imports-component-app-back-2d44b67c",
+        "contract.component-app-backend-source-reports-imports-component-app-back-30e035d8",
+        "contract.component-app-backend-source-reports-imports-component-app-back-70d0abcc",
+        "contract.component-app-backend-verification-imports-component-app-backen-4c4edad0"
+      ],
+      "id": "component.app-backend-source-reports",
+      "name": "Backend Reports behavior",
+      "owned_node_ids": [
+        "node:06c08392272fdfcf784f",
+        "node:0d87d14364e3958edcd7",
+        "node:13fc8519f3f9cd564939",
+        "node:175000b99c070af27cb9",
+        "node:1778035b8808dbf82d0f",
+        "node:17e3803b9836b7c07a3c",
+        "node:2750fc2d869fb863f67a",
+        "node:3180e012d9711a5bca06",
+        "node:360eff1aadf80d35dfef",
+        "node:4beac8c0eec35f00db7c",
+        "node:59884f6a1eaaaaea99a1",
+        "node:62e010c47735534a7ab6",
+        "node:7a02bb00726a70882a39",
+        "node:7f6d2e8b7202c363c5e7",
+        "node:99dafddd3766b90a2861",
+        "node:9c52960a496b9c8fb389",
+        "node:9f70b28c8bfdb1ad2900",
+        "node:a51a467d55300a2b5420",
+        "node:a545a4f28a1d91e477c1",
+        "node:bd1e09cc459e4caa3267",
+        "node:bd8dbb47f041a9e860e3",
+        "node:c1324db9bde99aa895d5",
+        "node:c290653fde61b8462d79",
+        "node:d45a3a44cd2638cc8e95",
+        "node:d4b99d9859dbd3e7c198",
+        "node:d599318c7f3e24e9f441",
+        "node:dc6b7a1535ac41e91a58",
+        "node:defa193c0d8ae5a3c6ee",
+        "node:e43df46d4c2e4e940bea",
+        "node:e4ed6e753a319e23782d",
+        "node:fe3dd535ff9480d859d7"
+      ],
+      "provenance_refs": [
+        "prov:92d607b784f53207",
+        "prov:4ac1bd98d30ed60b",
+        "prov:56fc1cbc5e8b88f8",
+        "prov:222e759cf0f4738b",
+        "prov:fed4f4b3f8c7bb41"
+      ],
+      "responsibility": "Provide the reports responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c8dc9598",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-a94edf25",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-4c1a971d",
+        "contract.component-app-backend-source-main-imports-component-app-backend-e8433387",
+        "contract.component-app-backend-source-reports-imports-component-app-back-30e035d8",
+        "contract.component-app-backend-verification-imports-component-app-backen-5db50c1e"
+      ],
+      "id": "component.app-backend-source-security",
+      "name": "Backend Security behavior",
+      "owned_node_ids": [
+        "node:08d158c587dbbc373745",
+        "node:0c98f26ba17c62780bca",
+        "node:12151d1844ec8e30c243",
+        "node:3291478dc2decc3247e9",
+        "node:4808f87900bb1a8b9d79",
+        "node:5151c7a256d4c2ffcd7a",
+        "node:539e1a879822b49ea86f",
+        "node:7461bd8448840a380d27",
+        "node:81cb49eb0e7100e27dab",
+        "node:926b65e184eb65459ae9",
+        "node:9fd1f9531ad565fa75e4",
+        "node:a396c380d4feec916a8f",
+        "node:aee44b937f13d47ff664",
+        "node:b8e1bafbf910aba67ffa",
+        "node:bd9fc9301ac070f2053c",
+        "node:deab2d1d2e8b30f7e112",
+        "node:e545c30207bf662676dd",
+        "node:e61d63b217bdc27338c9",
+        "node:e8b19cb84551e8746ccc",
+        "node:ee818e62af297f589087",
+        "node:f56aad4671520b9c1f8a"
+      ],
+      "provenance_refs": [
+        "prov:14d39377c3a519dd",
+        "prov:758bed5176ac336f",
+        "prov:ad5dde324eb6ec11",
+        "prov:7e7213f9c9837104",
+        "prov:18995f85efb84600"
+      ],
+      "responsibility": "Provide the security responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-verification-imports-component-app-backen-834e3968"
+      ],
+      "id": "component.app-backend-source-testing",
+      "name": "Backend Testing behavior",
+      "owned_node_ids": [
+        "node:3021404a52e0b464a24c",
+        "node:5be96f182c35591fe16e",
+        "node:6f5b94c695b5b7ae98ad",
+        "node:798a96c6cc4fd711722c",
+        "node:9ef17b5739a8cdb52788",
+        "node:9f8dce1c957750154d68",
+        "node:d4e564ec2ef3a49cd71d",
+        "node:daf184d860134908a0f9",
+        "node:fe70195eb814bb60b5de"
+      ],
+      "provenance_refs": [
+        "prov:53d98160ac529e58",
+        "prov:9c0e330e28ffe7ee",
+        "prov:cbf07e409b7638bf",
+        "prov:5f5b17abd8ba0fa5",
+        "prov:61fb2fe382247d6b"
+      ],
+      "responsibility": "Provide the testing responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.app-backend-tooling",
+      "name": "Backend Tooling support",
+      "owned_node_ids": [
+        "node:1cfc1f7ae45d463efa9b",
+        "node:2875fd61293cd62f4105",
+        "node:8333c97cf64cd8fe796f",
+        "node:d0de6efe8473f272a1f9"
+      ],
+      "provenance_refs": [
+        "prov:944fc72201ac9628",
+        "prov:630701ac2ce98b36",
+        "prov:7ca29d04c604aa4b",
+        "prov:c64789dc2e90deaa"
+      ],
+      "responsibility": "Support the tooling responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-app-backend-tooling-verification"
+      ]
+    },
+    {
+      "check_ids": [
+        "check.app-backend-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-verification-imports-component-app-backen-4c4edad0",
+        "contract.component-app-backend-verification-imports-component-app-backen-538ae493",
+        "contract.component-app-backend-verification-imports-component-app-backen-5db50c1e",
+        "contract.component-app-backend-verification-imports-component-app-backen-826d86f2",
+        "contract.component-app-backend-verification-imports-component-app-backen-834e3968",
+        "contract.component-app-backend-verification-imports-component-app-backen-83ee7505",
+        "contract.component-app-backend-verification-imports-component-app-backen-a044c6e4",
+        "contract.component-app-backend-verification-imports-component-app-backen-bf48f60b",
+        "contract.component-app-backend-verification-imports-component-app-backen-d7f3a5ff",
+        "contract.component-app-backend-verification-imports-component-app-backen-dd0fc40e"
+      ],
+      "id": "component.app-backend-verification",
+      "name": "Backend Verification support",
+      "owned_node_ids": [
+        "node:0002c4682d3cfd6e13ba",
+        "node:0007d0ecc3ee58348ef3",
+        "node:003e655b24d6a36540a2",
+        "node:00486a542248fe0a8000",
+        "node:006f79b1d07a3031d4d4",
+        "node:0110f14efe2144fda104",
+        "node:01298432b41d0cebca10",
+        "node:014aa2bfa76cd4f8c0ea",
+        "node:01978c1109b657bff7af",
+        "node:019842d84e2c09bc95b0",
+        "node:01992d37a2a3bd9d324c",
+        "node:02542b05247e3f0d7da4",
+        "node:03351372ec8375bc2edb",
+        "node:036cbdaccdd82d4548fc",
+        "node:0402dbdb7922967a0fe6",
+        "node:0428f7d7c961fae22f9a",
+        "node:0509033dde848894eeaa",
+        "node:0518d9970dc0650f858a",
+        "node:056784ebc11b2fde4698",
+        "node:058a1a1fb2c03ed4c225",
+        "node:069cb6f80ce44831cec1",
+        "node:06b1c9e8191a951bab08",
+        "node:074a6572914fcb15a644",
+        "node:07843afad00f94699179",
+        "node:07e494bbd4140fb0a6dd",
+        "node:08de555cf8f01fda8a18",
+        "node:08fe2a6a43d22a3aa9e1",
+        "node:098dfd6cd76f21ec3a47",
+        "node:09dd7d80c3a4c19854bd",
+        "node:0a9e6bb171848f87c471",
+        "node:0afc72fc70ed0b58bca9",
+        "node:0c1566abd3f30fd3a6ec",
+        "node:0c18b0755fc076164e03",
+        "node:0c20989d1f3e8927afed",
+        "node:0c281f09547ba7a01ab4",
+        "node:0d07dc136764def4d09e",
+        "node:0d6b1eac80952588b248",
+        "node:0e1acc98c788b73b1480",
+        "node:0e383984c689c5ed3dc8",
+        "node:0e4663a7dbfc1c98c84c",
+        "node:0edf16d5fab625fa30c0",
+        "node:0f058c3e790ff0542b19",
+        "node:0fd92b61f12c47f108e9",
+        "node:0ff5a17803d230bff0e1",
+        "node:1008cb534c384e7027e1",
+        "node:106da919a3df1140407a",
+        "node:122a3e643d2227560e8d",
+        "node:12c2cfe7b0c3daaec0cb",
+        "node:12d501cdb42dbc9dd08b",
+        "node:1313ebb05758a9e2abe5",
+        "node:13aa0dd717f735119820",
+        "node:13bc2b633d77226b6ca8",
+        "node:142257d364c01900b5ac",
+        "node:14364ba22b5f82530053",
+        "node:146e473f40e0394fc2d1",
+        "node:14807e2800115965ad43",
+        "node:16a4970013b583b4493b",
+        "node:16e0bc50c220d165939d",
+        "node:17274a52a309e423f805",
+        "node:17f91b69b23e159e9a16",
+        "node:18ba58166073c34cbb21",
+        "node:19523d6e42c2802855b3",
+        "node:1990d8b3a937430f8ca8",
+        "node:19aeab97be7660e204cd",
+        "node:19afc1a9f6b5988b33e8",
+        "node:19f4e398e4a159e51997",
+        "node:1b0d4acaef67472ff45e",
+        "node:1b6f005c54860d37f38c",
+        "node:1bc393eb1ffb2f9f5100",
+        "node:1bfa3e5bf64c8024e341",
+        "node:1c3a5f40e65b1932a963",
+        "node:1c70376fc9a2c793b2b4",
+        "node:1cdbdc53cfac0ebc608d",
+        "node:1d996ee25fb25baac166",
+        "node:1dacbf8217941d95e2b2",
+        "node:1f2841f297863b643158",
+        "node:2023a2cc33194089f97d",
+        "node:21347499979e7d8f72cf",
+        "node:215447bf5b5c6982b671",
+        "node:217951c929060829ff3a",
+        "node:21bdc4314f8a118b0c1b",
+        "node:21dcc34073e7c00a7ab6",
+        "node:235b0f1e4b0056c436fe",
+        "node:2386693762297baaf831",
+        "node:23cb5ac90ff92412b574",
+        "node:24df466262e562dc593a",
+        "node:25934b62aa6cae7a0db4",
+        "node:26e2911ac665c80a287e",
+        "node:2715f442273d9525c162",
+        "node:292ab78232a1821aef9a",
+        "node:29eabee6e72769e3a360",
+        "node:2a5551db89c524e9f59a",
+        "node:2a5cedf07d92f5043d3f",
+        "node:2af045507eacde05f073",
+        "node:2bc575fd1980930cb598",
+        "node:2c6ddfbd9dcff173a6cb",
+        "node:2d32cbd0fa72d31b856b",
+        "node:2d6a859c88d38df7fbc0",
+        "node:2dedf6b8dce866b5fbdf",
+        "node:2e0675a375a40aa8bf3f",
+        "node:31b34458abf7db47b44d",
+        "node:31d5d03fb967776acca5",
+        "node:3220ec15131087f20dc4",
+        "node:324ce43b1e364e022ed1",
+        "node:327068ddc5a471f4c2b2",
+        "node:32fbd84ff97c83380abd",
+        "node:340053d62339d51c6848",
+        "node:34afecfb423fbbd1d669",
+        "node:34e16f9d1867cb4d2429",
+        "node:34e73a95e7a17f307621",
+        "node:3513d2fa8058be355472",
+        "node:35d33fcdb3bfedb4aa26",
+        "node:364de03f34efe3f50e8d",
+        "node:3723dabb04cb037fd675",
+        "node:378bef301b2fab7dad1d",
+        "node:383cb3caee99f9722a96",
+        "node:3874f0ac7a52240e18eb",
+        "node:39f5b73d36d0cfb1fe3f",
+        "node:3a91eda334699bbd84cb",
+        "node:3abb90fb2f7814ec41aa",
+        "node:3b5d10bf3b20863b5283",
+        "node:3c888dc23d485c0cc414",
+        "node:3cadd6e200cd90860592",
+        "node:3ce8af116482f13ae336",
+        "node:3d359dea41e6c07992b7",
+        "node:3d79ba813d5569def496",
+        "node:3dbdf6909d2c314c3d8c",
+        "node:3e7a499b07203f812294",
+        "node:3e7ee4ab673687d389a2",
+        "node:3e82910535f7a78be36e",
+        "node:3ed60ce4566974da4bc3",
+        "node:404afde0ca453145af71",
+        "node:41338973d4e4ae3bf0c1",
+        "node:414494368527804f6dd9",
+        "node:414f881fb3a879059b51",
+        "node:418def91ccd32add0bf2",
+        "node:4211e9ec152846f80bd3",
+        "node:4275768bdb8ac6683ff6",
+        "node:427c4e2ddf56b5bf0ee7",
+        "node:42e4a67ff176a77ec477",
+        "node:439f7bc67a1b327e32a7",
+        "node:43aa1908703fb9a3aa36",
+        "node:43b2cbe3f0f95b7e8de5",
+        "node:443ff0d8bac97818a633",
+        "node:4442a4685a077e103b9f",
+        "node:445cc63450b92d4aae74",
+        "node:44834a9de81ed4263308",
+        "node:454cfb263d4f8d513c67",
+        "node:47d06d449d697af1eea2",
+        "node:48385234144c8f8137c9",
+        "node:48a3317ce716e3d0b69f",
+        "node:4913fd1fcbd679927d45",
+        "node:4951f2982223a5f20543",
+        "node:4a3498aea43f364e00d1",
+        "node:4b1608c5cf2bc7952291",
+        "node:4b5cc27f61139f33ba86",
+        "node:4bbd87817d8302f00406",
+        "node:4bd98a5547869793025e",
+        "node:4bfa663f730e39120de7",
+        "node:4d56f5903964a759a8c2",
+        "node:4db8aa95979428afeca7",
+        "node:4e2bc4d8429468979d74",
+        "node:4ed5d24966a9c2629b30",
+        "node:4fa1365d683e329938ea",
+        "node:4fd731dd88e129df7398",
+        "node:502db7b6151993c7a40b",
+        "node:50c24c2f97ef9e03c385",
+        "node:51c3e687782b79a52fb7",
+        "node:5360326736a05c64d6e0",
+        "node:54dfb23135d2281759fb",
+        "node:54ff205c52467c5bf972",
+        "node:54ff662810f413cc3c33",
+        "node:55336f1ed134f9ee71d7",
+        "node:555de606def13791c626",
+        "node:55792793bd6d1272a813",
+        "node:557afa14e993f92eae32",
+        "node:55db1265808d77a99089",
+        "node:5652b0bc0845d273847a",
+        "node:5781360fbe93591ca00b",
+        "node:57f0d69a26009b623150",
+        "node:57fd9e9434f6a0d0ee1d",
+        "node:584327d3f2ce828653e1",
+        "node:5868f2ed7e466ea8ab8d",
+        "node:5876cf1ca5d2c0474ba8",
+        "node:5963a7ab36f01e2e5aca",
+        "node:5987027b371cbc5df586",
+        "node:59b64eba49a37303c758",
+        "node:59e7e38a630e2112ba2b",
+        "node:5a09d74933a7779d795d",
+        "node:5a1d5cc9b3bc336401a3",
+        "node:5ab8f8243b7a02b7b132",
+        "node:5b64539609161bcd62fa",
+        "node:5bb13b0711faf31fb7dc",
+        "node:5c050137deecaafbb0fa",
+        "node:5c7a104268da5b0b805b",
+        "node:5cb81c7dfba46a5af558",
+        "node:5cf6974ac2eca746dd8f",
+        "node:5d1dbf170c5c485b009d",
+        "node:5e1d58e737670bef0b4d",
+        "node:5e520dc65c07bafebd09",
+        "node:5f70153ad3c0570e9add",
+        "node:60dab2ef49ee760a4541",
+        "node:6152a5642c2a086aec0d",
+        "node:618be3c3e56bf1ce3bb2",
+        "node:61d26291fd066256f8fa",
+        "node:627e3d5cee5ed65056df",
+        "node:63617df6178b8b456a20",
+        "node:638b36fcadcd1e815fca",
+        "node:63a26da9b8879f1b8533",
+        "node:64d2445db5d2dd303886",
+        "node:676a4869bd9489938086",
+        "node:67788563272c41e5bda5",
+        "node:6778a99567be43c5f8c8",
+        "node:6787ca07eb4a1f4b098c",
+        "node:67e7b06957e4e37ece0c",
+        "node:67fdc0ecdc5cad14511b",
+        "node:67fecc54fb1352bf9847",
+        "node:6856db28b402cef7858b",
+        "node:695f007eb70e3fa0af3f",
+        "node:696403b634a8f4747505",
+        "node:69b672511a7c4011625d",
+        "node:6a7987d2de7f9b38b490",
+        "node:6a869f0844ba1a61bfa1",
+        "node:6a8d2f9d34d04a583274",
+        "node:6acaeb0b98ccac90684e",
+        "node:6b2e418aaf5b4f85281e",
+        "node:6b99180373fc8c549880",
+        "node:6b9fe2bc43bfc2de4279",
+        "node:6d2ffccf4e94a8e2f4dd",
+        "node:6d50fe96cf2295700b02",
+        "node:6d708913112bb0dc6251",
+        "node:6e00b49232851abe8382",
+        "node:6e784f30fe2d841cf6dd",
+        "node:6e9886500aa0c63338bf",
+        "node:6f2bf65ccf6a1332ab76",
+        "node:6f4737570601059d019c",
+        "node:6f5a7d693e355dc05638",
+        "node:6f6951e2e1963bfe9ed3",
+        "node:709bd8f86a2ae5f4b332",
+        "node:71598cdbcc6f17ef35ff",
+        "node:71bb49d17fba3461ec3f",
+        "node:71e3544311a8440a6193",
+        "node:7204a9c88ba3b6672a59",
+        "node:724e33eebfa01989d404",
+        "node:72b73bfdacce7cbfc699",
+        "node:73199f81c1c7bf134e01",
+        "node:7364460ce2515301feb0",
+        "node:7387cf266998581c0ee7",
+        "node:7388718efda18d238008",
+        "node:738f7dbf2ec098607f27",
+        "node:73da564a15584142803f",
+        "node:741b1bcdc7839002adcf",
+        "node:743fff753a96e23431b2",
+        "node:74c18a30d2ff3011350d",
+        "node:74d335f6f5618f926b4b",
+        "node:74f83d2f3b8ce6c31559",
+        "node:752e984e8cae89350776",
+        "node:75ef6fd8df8c58d988e8",
+        "node:765cd9968a687e62b6b1",
+        "node:76df9b62818e264383e9",
+        "node:772313c2b5ce04079037",
+        "node:777a18acc69cd0b88fbb",
+        "node:77a87deaaf4dc0694945",
+        "node:77ad925be14e01ab0abd",
+        "node:787a6112d4668a71f304",
+        "node:78ba4ba4a601f9aa5c2e",
+        "node:7941bc4acdd4960fcddb",
+        "node:794c681200e1f3abd3a6",
+        "node:79f727eadb895ecba1ca",
+        "node:7abb9dbf19511a9b0759",
+        "node:7ac9309ca25bdd11b413",
+        "node:7af357abed4231441a6c",
+        "node:7b368f8e809e9f7ed81d",
+        "node:7b7e834f2414b0d17e89",
+        "node:7ba9ad6c6158d737f488",
+        "node:7cb542905b98c6f36c80",
+        "node:7d7d0b24d09d409c1515",
+        "node:7da3bb49853a5157acb3",
+        "node:7ee1f275d71f9ee8f9a6",
+        "node:7f5762771f56ad680c3c",
+        "node:7f771e75a98f36477be7",
+        "node:7fc5142c8e3e86304546",
+        "node:812fca4f91695e5ab523",
+        "node:820c60f5d1f87ce8d4ab",
+        "node:8270cb14562e73de6e69",
+        "node:82a34bac7fa4c773b570",
+        "node:82d3ed054cc53a116ef1",
+        "node:830f93b699febfe74853",
+        "node:8392604df853dde8f223",
+        "node:83aa288846279441a2a8",
+        "node:8445169cf2a44b278e2b",
+        "node:847f4efcbb6e8d14e17a",
+        "node:84ba9d3fea96f5339764",
+        "node:84fa471647d34d94fe06",
+        "node:84fba327aa23e7e718ed",
+        "node:851ef55e3d3e169419d7",
+        "node:852e0fcd8e9c6433d7db",
+        "node:8698b5b6fc2ae348db21",
+        "node:86fae3245781c70fe855",
+        "node:876e84a0756099961aae",
+        "node:87ddf5a333f2f583317f",
+        "node:8859b5649fa8b0f7d0ba",
+        "node:8904682892f853e1992c",
+        "node:89701499c1503a791734",
+        "node:897e5447e4ac98078fa1",
+        "node:89f635d995c325364f74",
+        "node:8a51a96dff7717228600",
+        "node:8a59deef5527c6b74288",
+        "node:8ae6956f534779ffdf48",
+        "node:8afb68c789e99198be40",
+        "node:8b078f990bbb682117d4",
+        "node:8b2dc3c906d9b5cdb1f1",
+        "node:8b33375b9a5244f23196",
+        "node:8b55ebfebfdb421a18f8",
+        "node:8b74308ed686d5e815df",
+        "node:8bda951a34a8ce91e778",
+        "node:8bdd5553e125c53a372c",
+        "node:8d1df8a4ad9042120062",
+        "node:8d46be38b41bc0cb5343",
+        "node:8df8cd07954bfaac6dab",
+        "node:8e1b4246ddf4df9ac259",
+        "node:8e2a0eb99256b60ba2ce",
+        "node:8e8c20ab8a925e98bfba",
+        "node:8f2a65ab34bdba4ddd1b",
+        "node:8fabebd14106b7a09c0f",
+        "node:8fd179eb645081da17b2",
+        "node:900923ba38c171c5f8d5",
+        "node:90c7c0ff0da30755a377",
+        "node:9128f1413149fba40af0",
+        "node:912edd5e0533687204b1",
+        "node:917f0fc1c763fffc8e49",
+        "node:9189d80aaa3ceb67bf74",
+        "node:91afc44ef5c7d21d65da",
+        "node:91f33b947b423f6340df",
+        "node:927723c107f90fe8d238",
+        "node:92c6b36bcebd6aedec13",
+        "node:92e25007e5afb99ca6dc",
+        "node:9404f096ee7ddc1a9ba0",
+        "node:946ee37f83e278b25907",
+        "node:95466e7f2aa2420b6e44",
+        "node:95d17aa1c5d63ba2d085",
+        "node:96517a71c9e5dac4ea56",
+        "node:96e591595d5dff2d4ccc",
+        "node:97e4e75a0039dc5fb683",
+        "node:986d80cd9c17da384be1",
+        "node:98c775e43127117c8486",
+        "node:993bc3a40a25193edabe",
+        "node:9977978cf8fce9e30bc9",
+        "node:99fde6d10abdd75013a4",
+        "node:9a93aff6ced3712ad6d2",
+        "node:9b363792f647f2d01b2c",
+        "node:9b5a0dcce1bc4e01eb91",
+        "node:9c5a19d153f771ade636",
+        "node:9c665014e7312c2d9674",
+        "node:9d87d799fb34ef68d34f",
+        "node:9dac86562fcc31d5d6b2",
+        "node:9e596bc37751d72eeb28",
+        "node:9f4a4a70dcd53a78f4fc",
+        "node:9fb5212fe57fe2247b63",
+        "node:9fe157f84fa771687271",
+        "node:9fe4ddf258746a60b2f8",
+        "node:a1198e76926040211efd",
+        "node:a14160221b3464ae8806",
+        "node:a1d1d36638cf6b03349c",
+        "node:a20e902c2bd299c80d6b",
+        "node:a32422c1f7aeb935c0ce",
+        "node:a3c209b131e6982a354f",
+        "node:a3f7e9b174a6354678f7",
+        "node:a43065afa5443a995457",
+        "node:a4c851294c2208c7a083",
+        "node:a4cd465b49f7f64a306c",
+        "node:a4eac4609e7800aadcc8",
+        "node:a566b6a57594bd635cf6",
+        "node:a5ae8ddd73fb2cd4c435",
+        "node:a73e6f6c09ece6801770",
+        "node:a79944086600f396ad01",
+        "node:a7d811965099b4644290",
+        "node:aa84897b4a8051ffa145",
+        "node:abc4c557a698d44779a0",
+        "node:abe1aec8a8eae07fbae4",
+        "node:ac03153564ead55bd3ba",
+        "node:acba9710b1146295e53f",
+        "node:adb7f3dc1aee6a1205ae",
+        "node:adcfcb1729d680e82289",
+        "node:aeb00b7da268b0577936",
+        "node:af1c0738423c6ae94499",
+        "node:af3d2cb882d13c35431b",
+        "node:af5842031156081c897d",
+        "node:b06758f95788b9b97772",
+        "node:b06e0d8e427ca533875c",
+        "node:b0a2beb7452508ef1c86",
+        "node:b0f5cb3bbe5d9e6a5776",
+        "node:b11eb2cfa1afb5a609e8",
+        "node:b129e13ece56699268bf",
+        "node:b18fdc2f1ac6e0abcaf8",
+        "node:b1d93169b5b780f0fab3",
+        "node:b26289f8e2e97736f2aa",
+        "node:b37159cb764a935c7811",
+        "node:b380ae7427b6544ca941",
+        "node:b3cc8566f84fb36bd381",
+        "node:b423c93f538fe7dfe0f5",
+        "node:b45807e1cdcdc2703245",
+        "node:b46db4e38b7c7a6fb28f",
+        "node:b4867987a45f43f65dab",
+        "node:b4912d80a9f5f2210ab9",
+        "node:b4b9a27ac083f7e38dab",
+        "node:b4c249ae46790b6b47da",
+        "node:b504f5f072b2f63a8590",
+        "node:b6037373dc15d0c5f4d1",
+        "node:b7367c24a30b627ac849",
+        "node:b8be6b09a34967ecefb3",
+        "node:b95dc04a1c2e964a2290",
+        "node:ba7890cb81f073626c05",
+        "node:bb04758a324628a43f07",
+        "node:bbde4c7d99a74afbc9b7",
+        "node:bcc5cac35fbbb41d8fdc",
+        "node:bd627a9e20348b60f504",
+        "node:beac369a52ef7119cd9a",
+        "node:bf26c06230df9eee3443",
+        "node:bf2a8259066a40fc15ff",
+        "node:bfa70d08e53d3517dd2c",
+        "node:c0313105b2a56ed3b955",
+        "node:c06aee73154793b2b424",
+        "node:c0de4736aa15971e42db",
+        "node:c1e32e5812f185b517b3",
+        "node:c21b61d81d8f55c288b7",
+        "node:c23685cf4665eeb2fdcf",
+        "node:c245fb9f42a737a5024c",
+        "node:c335a1fd62e0b9f3cc69",
+        "node:c3cc84bdab71be27b696",
+        "node:c437aff42f8f49f5c6f0",
+        "node:c4801d46f0e9bb3b95fb",
+        "node:c54835e422a581df4256",
+        "node:c59225ae996a6177bb19",
+        "node:c621f348ecf8af71b831",
+        "node:c65857bf4471b89e20dd",
+        "node:c6faa5bc57bebd8872d1",
+        "node:c7a09ba6b50fdacbd173",
+        "node:c7db6c899e6571fb4cf0",
+        "node:c8f587c0b0517f990b1c",
+        "node:c9033468d9484304bed6",
+        "node:c9762e879226c902b7f5",
+        "node:c9b5ba8c5c9deed9b40e",
+        "node:c9fb20d777636dfb97a3",
+        "node:cacc663ae19c75c2dc05",
+        "node:cb8c65d210ac21f74fd4",
+        "node:cc648adeb8422289087c",
+        "node:cc87888ca414667805d4",
+        "node:ccc46852bd1f8e068df3",
+        "node:cd8a815320df0dbbf616",
+        "node:cd8d116f4b60b5dec7f2",
+        "node:cda2ce9e20b7194ec618",
+        "node:cde76467dbb221b795b3",
+        "node:ce96c16596ad542ab40e",
+        "node:ceb7734dba6c5c3aa707",
+        "node:ced13f00a07e3e3010f3",
+        "node:cef1833508ace3517bbb",
+        "node:cf016f44ac9ea2c9b6bf",
+        "node:d1280254beb847d62ceb",
+        "node:d1e2c93cdcd6d1075e6b",
+        "node:d1eaebff655699506dbd",
+        "node:d2c23525f0b73554c9f0",
+        "node:d34ffbdce29eef425731",
+        "node:d37b31bfe2fa465a6a5a",
+        "node:d49f9c862b5f2a722ba1",
+        "node:d4bcf0391f3a4af2c9c1",
+        "node:d55e75a8050345129051",
+        "node:d560dd3faf16cba45db3",
+        "node:d58536149d215d3aea68",
+        "node:d64a85864ab300c78803",
+        "node:d6e87aa6b9bf338d2555",
+        "node:d7b745fbc8a00ce416d1",
+        "node:d7c6479a02ba2659b40f",
+        "node:d7d5da5c227442d89d3d",
+        "node:d86b5bcd87eb36804ebf",
+        "node:d86bc2677ea01787e30a",
+        "node:d8b98780e91b38c44943",
+        "node:d92095cf2bb556979e7d",
+        "node:d9c7e392f78fe0f3c16b",
+        "node:d9eb79df11f89351b421",
+        "node:da4cb98cd0599fd2739a",
+        "node:da60f307789b2b462f0b",
+        "node:daa9a09adb11a2e2ee77",
+        "node:dadeaf176424b8038a8e",
+        "node:db2fa509f64f707286b0",
+        "node:db307d378b16d99e368e",
+        "node:db713cb825942b2486c5",
+        "node:dbc702ed077fbef0a52a",
+        "node:dc0af5bb560925c49a13",
+        "node:dc183940160e02dc3353",
+        "node:dc21c604bc7c91a6f541",
+        "node:dc7d18ca5fec2b6b3638",
+        "node:dca819e6ff413c95383d",
+        "node:dd28fd625d865460649b",
+        "node:dd9fb91598d95aafd761",
+        "node:ddd55283455528c16ec0",
+        "node:de497d9d083f46ca5108",
+        "node:de5364413ed5f7b8fabf",
+        "node:de95c9d4ab0b5a16047b",
+        "node:dea4d35ee64ead5e5200",
+        "node:dec25ce2695b39718ca3",
+        "node:df05ef1c8d639b8a043a",
+        "node:df73bb0ca5ddf7ba6a93",
+        "node:e05c3594f3beb891f2d4",
+        "node:e09eb50784397672a6ea",
+        "node:e0a8693247b2d8b26196",
+        "node:e33fad6a6db9f8f9bd51",
+        "node:e35d1d951a5254dc6bd1",
+        "node:e38d832cd8204aaf1e68",
+        "node:e3aec49b328b310c680f",
+        "node:e52c51859d67e815a4e3",
+        "node:e5beb0d5a6566f8c0604",
+        "node:e616da6f0946bf48a35a",
+        "node:e6c402430a27cd778ecb",
+        "node:e80b96cdee619b888f35",
+        "node:e9f94927ce0cabeb1e29",
+        "node:ea6fa1ee9bd2c9d4fb4a",
+        "node:ea86761deb9750004085",
+        "node:eb178d0fee155523e8cc",
+        "node:ebebab1fea13e32d5731",
+        "node:ed1db744a0e19b915ed1",
+        "node:ede7ca261eab919a8be1",
+        "node:ee63d8d20c8022eb6694",
+        "node:eed3027933e7c79724cb",
+        "node:ef20094b1692c64eb02d",
+        "node:efbe2fe49c5c5bb26bb3",
+        "node:efc9f46fe38ebd1d252c",
+        "node:f020c2fd1c1a64356b72",
+        "node:f051fa663cfb8bdcffd0",
+        "node:f0bb04be7680ac39dc84",
+        "node:f120e5e3618c835fdc5d",
+        "node:f20ba7c05420d1c20be7",
+        "node:f34e6bbdfea52f61334d",
+        "node:f400adf6700313a23107",
+        "node:f46efdfe53532d38d9fd",
+        "node:f508df94d90ab25e0634",
+        "node:f520ed65420d22ff024b",
+        "node:f541f0911837040ebf3c",
+        "node:f5868037d81d4c0c7161",
+        "node:f5f44074f6be6ce903c0",
+        "node:f61f68bc0718a9411a74",
+        "node:f64d7a809a4c98997bed",
+        "node:f6f4b6c9932becf2aeb3",
+        "node:f70f1dc0eb788659f20e",
+        "node:f764e06855103f434e46",
+        "node:f882e961d739eed335b1",
+        "node:f8a0925019e7a4ebaba4",
+        "node:f8f1121003a9685f0c9a",
+        "node:fa6387a3fa318d3ae29e",
+        "node:faa67ca3f6005e03a5f2",
+        "node:fba69bfe17dfd1385821",
+        "node:fdb7f22ba08563ddb33b",
+        "node:fe27804b1e50097c76d7",
+        "node:fe6e18f33702bb8f732c",
+        "node:feef02834c22efde497d",
+        "node:ff37ac7931098d7930f4",
+        "node:ff87f78549a53c75629d"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:0d8b63ff513019a1",
+        "prov:bababdb3964ac559",
+        "prov:753fd56898d88fb3",
+        "prov:719fe678eb646360"
+      ],
+      "responsibility": "Support the verification responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [],
+      "id": "component.app-frontend-env-production-example",
+      "name": "Frontend Env Production Example support",
+      "owned_node_ids": [
+        "node:4917359f9cccd8ef50dc"
+      ],
+      "provenance_refs": [
+        "prov:cb656ca8838f2ee8"
+      ],
+      "responsibility": "Support the env-production-example responsibility for the node project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [],
+      "id": "component.app-frontend-index-html",
+      "name": "Frontend Index Html support",
+      "owned_node_ids": [
+        "node:9c159149079f29a40ebe"
+      ],
+      "provenance_refs": [
+        "prov:a7780d16c548ae2b"
+      ],
+      "responsibility": "Support the index-html responsibility for the node project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-2f25d0bb",
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-a094ca0c",
+        "contract.component-app-frontend-source-components-imports-component-app-37cbf33d",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-256d9c87",
+        "contract.component-app-frontend-source-vite-config-imports-component-app-5a38229b",
+        "contract.component-app-frontend-verification-imports-component-app-front-430b7360"
+      ],
+      "id": "component.app-frontend-source-api",
+      "name": "Frontend Api behavior",
+      "owned_node_ids": [
+        "node:0e42c530c4f843268ed9",
+        "node:2e03886a93df4fcb34e5",
+        "node:2fa5e0d9a63166cc2e16",
+        "node:376f96275026eda001ad",
+        "node:3ab9f7ba57bbededc8e2",
+        "node:42cfd28c6d90d62c02a6",
+        "node:42deec511a906e42136b",
+        "node:5aec8a8ed3a86e57106b",
+        "node:5e5841cfc1dbd1aa8d32",
+        "node:625c436634ce74e8638c",
+        "node:6722fc1ada1cbde53d82",
+        "node:68fc0edcfbb004380bca",
+        "node:76286ae55c537e08af33",
+        "node:7699e77b388ed748bf41",
+        "node:818353014f1faf9c1732",
+        "node:824ef7228c4923cf96c7",
+        "node:8b5cc75e8160235963f6",
+        "node:8d66e8f7f429d181122e",
+        "node:8e8ec393e6daa35e3ce0",
+        "node:98cfd893db4b82be3e9b",
+        "node:a0be60b46c6710978653",
+        "node:a1e98c1ad4ea247e74f2",
+        "node:a9c8182960ef9260ad4d",
+        "node:ade6d5a3cdb6892f144d",
+        "node:be925e4a588ce9bcc7ab",
+        "node:cc38fcb21ca5c41121fe",
+        "node:ce1a7b22ef98c8b25f22",
+        "node:dee34c46c689361bbec6",
+        "node:e1a59a5fb1cfdd377a61",
+        "node:e3f3800643ed33dafd4e",
+        "node:e5a5d1708d9788d922b2",
+        "node:ee5318f833e71b1de796",
+        "node:fdce5b765627da323fd9",
+        "node:ff77d2a16abe84696db8"
+      ],
+      "provenance_refs": [
+        "prov:bc9a9c52f62e90db",
+        "prov:fc4495ee3e48b4f3",
+        "prov:416e496c7529b49d",
+        "prov:1b16eaae9e5b038f",
+        "prov:f412f98d630ad5a2"
+      ],
+      "responsibility": "Provide the api responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-components-imports-component-app-37cbf33d",
+        "contract.component-app-frontend-source-components-imports-component-app-a214ce92",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-3f63a4b1",
+        "contract.component-app-frontend-verification-imports-component-app-front-60eab1ae"
+      ],
+      "id": "component.app-frontend-source-components",
+      "name": "Frontend Components behavior",
+      "owned_node_ids": [
+        "node:05252a49894b18643b6a",
+        "node:08c47f4cdc9ac75746dd",
+        "node:0af0a9013842e099f275",
+        "node:0b1a7822817dec3e9153",
+        "node:0e4528236531fe12b1ad",
+        "node:0f081f5e0e4f782b9ecf",
+        "node:175fee8a67ef7d419a4c",
+        "node:281f82cbcad6a652856c",
+        "node:3a19ac8db1cc938160a3",
+        "node:3adb1c6004ec5ea86309",
+        "node:47f68edc0b093aa46b83",
+        "node:4b417cc2d8b6a2622625",
+        "node:525a1605451c7d6a09b3",
+        "node:605dec0ee0cde91fecb7",
+        "node:720c9b58d315253c31c4",
+        "node:87ce33977cc117f65db6",
+        "node:8bdc8a50b81108ab26c4",
+        "node:8d35dd784830f5c3c0c8",
+        "node:960ad5a0c489da096423",
+        "node:9781cd36511d1639d37a",
+        "node:98118af599c06e7a72ef",
+        "node:9edef0161fa8ee141e51",
+        "node:a5533adc1940c58b27a6",
+        "node:b7fec3ff180c99eeb3ae",
+        "node:ba364c09594c1cd6ec3f",
+        "node:be954906c062e3afeaaa",
+        "node:d9e9e4c010eb92268d60",
+        "node:dc57a4c539f0826c92be",
+        "node:e1f27699d8d20e787322",
+        "node:e4f3f0c5acfbc9a14b63",
+        "node:e52d4e85c7bdba08dbfe",
+        "node:ebebae891ed74a106758",
+        "node:ed164bf57ff382cb6722",
+        "node:f36ac3c12eed6673d250",
+        "node:faad99e49a1650b8b4a1",
+        "node:fb9f411bc6a06d49cf89",
+        "node:fd8ab72193210d1daad5",
+        "node:ff47b7094eaadd404863"
+      ],
+      "provenance_refs": [
+        "prov:4cec088386c59776",
+        "prov:0195def73f2fffac",
+        "prov:505c2fd074631f63",
+        "prov:37b1ef35d225d945",
+        "prov:c279795d441e3ed4"
+      ],
+      "responsibility": "Provide the components responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-main-imports-component-app-fronte-e3e9517a",
+        "contract.component-app-frontend-source-main-imports-component-app-frontend-src"
+      ],
+      "id": "component.app-frontend-source-main",
+      "name": "Frontend Main behavior",
+      "owned_node_ids": [
+        "node:2c3f71eab395c112f57d",
+        "node:436f412888358849dc3d"
+      ],
+      "provenance_refs": [
+        "prov:c11d731ce192f355",
+        "prov:3d188723af895997"
+      ],
+      "responsibility": "Provide the main responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-main-imports-component-app-fronte-e3e9517a",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-256d9c87",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-3f63a4b1",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-6e4bc324",
+        "contract.component-app-frontend-verification-imports-component-app-front-6ae8fe65"
+      ],
+      "id": "component.app-frontend-source-pages",
+      "name": "Frontend Pages behavior",
+      "owned_node_ids": [
+        "node:0edf6b0c3c279653f625",
+        "node:131f30119e2e515912a2",
+        "node:33b95f7664859294de43",
+        "node:3bc7ac5838d54800b3de",
+        "node:5832dd3b305a2f3bef9d",
+        "node:60f71e77500d43156d85",
+        "node:6f1494db79f6027451cb",
+        "node:70a2e905059ccc4a3405",
+        "node:97ec9d4fcc653b242717",
+        "node:b82e6c23439e1e99481e",
+        "node:d03405d335688b2325f1"
+      ],
+      "provenance_refs": [
+        "prov:33fe3900a676f6c9",
+        "prov:a0aba8ca4a3d090b",
+        "prov:82651a96ecdaf386",
+        "prov:4f9ec750e3b087e9",
+        "prov:4ac72f15acf2712b"
+      ],
+      "responsibility": "Provide the pages responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-verification-imports-component-app-front-12fb7f33"
+      ],
+      "id": "component.app-frontend-source-scripts",
+      "name": "Frontend Scripts behavior",
+      "owned_node_ids": [
+        "node:0afd6366c98176b7c2e6",
+        "node:0e24678224baea16fc5d",
+        "node:13adfd4aa877fc8404b2",
+        "node:156171dcbedf761d41ac",
+        "node:336b31a3182aa7d4784a",
+        "node:3f91e3ca3199cb82d70a",
+        "node:45fec118510dec5f106b",
+        "node:48afd29a0ab8598f6ad9",
+        "node:52de72d0041003acd98c",
+        "node:5b79b5741b2bb7de6ae0",
+        "node:643fb2c801f6351810f9",
+        "node:bdc9066c73ec4215eb89",
+        "node:ed43302f5a17d45da8fd",
+        "node:f98dc2e0b68364a01d10"
+      ],
+      "provenance_refs": [
+        "prov:7816661085a81509",
+        "prov:c4140267f90de731",
+        "prov:81e9559dc7eb64e7",
+        "prov:93411422685a0302",
+        "prov:457c3c5a0f80f8f9"
+      ],
+      "responsibility": "Provide the scripts responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-2f25d0bb",
+        "contract.component-app-frontend-source-components-imports-component-app-a214ce92",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-6e4bc324"
+      ],
+      "id": "component.app-frontend-source-types",
+      "name": "Frontend Types behavior",
+      "owned_node_ids": [
+        "node:5e44c4a720443f802b5c",
+        "node:d0ddc7bc539845cdefec"
+      ],
+      "provenance_refs": [
+        "prov:334ff6a24dab372c",
+        "prov:841e3074f768b812"
+      ],
+      "responsibility": "Provide the types responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-vite-config-imports-component-app-5a38229b"
+      ],
+      "id": "component.app-frontend-source-vite-config",
+      "name": "Frontend Vite Config behavior",
+      "owned_node_ids": [
+        "node:48941130bbe052d0a36f",
+        "node:e74e882ab25d489b9f19"
+      ],
+      "provenance_refs": [
+        "prov:759c0b61f383e8d9",
+        "prov:aa361a5b01204cf8"
+      ],
+      "responsibility": "Provide the vite-config responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [],
+      "id": "component.app-frontend-source-vite-env-d",
+      "name": "Frontend Vite Env D behavior",
+      "owned_node_ids": [
+        "node:6780bb72fdddf980ba8e",
+        "node:d7540bab3eadf2515aea",
+        "node:f38c175c661ac7b6997c"
+      ],
+      "provenance_refs": [
+        "prov:7e7d31dbfeeb12e0",
+        "prov:b8bd01d3f1d61cb8",
+        "prov:3bc2b27580e16996"
+      ],
+      "responsibility": "Provide the vite-env-d responsibility within the node project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-main-imports-component-app-frontend-src"
+      ],
+      "id": "component.app-frontend-src",
+      "name": "Frontend Src support",
+      "owned_node_ids": [
+        "node:8de080817b65ea2d781b"
+      ],
+      "provenance_refs": [
+        "prov:1d97ecc8f36970aa"
+      ],
+      "responsibility": "Support the src responsibility for the node project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [],
+      "id": "component.app-frontend-tooling",
+      "name": "Frontend Tooling support",
+      "owned_node_ids": [
+        "node:09f0dbcfa25a46fa89bd",
+        "node:1dcc6fa5d26f5426da93",
+        "node:3a51e1343d1dee984544",
+        "node:57bf23edc7953f2c84e5",
+        "node:ea91f14336b2a1474520"
+      ],
+      "provenance_refs": [
+        "prov:1f0eee3db2c6a848",
+        "prov:458126f5dce04700",
+        "prov:a7422b4e47542bbd",
+        "prov:84bed5620537e3f1",
+        "prov:0daaa22742716415"
+      ],
+      "responsibility": "Support the tooling responsibility for the node project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-app-frontend-tooling-verification"
+      ]
+    },
+    {
+      "check_ids": [
+        "check.app-frontend-node-test"
+      ],
+      "contract_ids": [
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-a094ca0c",
+        "contract.component-app-frontend-verification-imports-component-app-front-12fb7f33",
+        "contract.component-app-frontend-verification-imports-component-app-front-430b7360",
+        "contract.component-app-frontend-verification-imports-component-app-front-60eab1ae",
+        "contract.component-app-frontend-verification-imports-component-app-front-6ae8fe65"
+      ],
+      "id": "component.app-frontend-verification",
+      "name": "Frontend Verification support",
+      "owned_node_ids": [
+        "node:00732efc9b5cafbbc53e",
+        "node:022f192a000908b12345",
+        "node:063e993cf4c3c59bcc0a",
+        "node:1748135461a501596c94",
+        "node:343e27124bc0f3fc3a82",
+        "node:3507a841f67b02a57f3f",
+        "node:3ac5d075b5734945217f",
+        "node:48d06dfb1d56210fbb84",
+        "node:5c6e0808e41f512cacf4",
+        "node:708edd010ef790b1a677",
+        "node:76e5d78174232983ff2f",
+        "node:7d448b4ca74d8a508fac",
+        "node:7dd34f570b8ea7b5922d",
+        "node:99cc1b5bbf8bf11b2c1a",
+        "node:a81c4bdd81f6b5e2f205",
+        "node:a86dac9011ae03ee72f5",
+        "node:a89bc4042446bb2f97c7",
+        "node:b7d236ea5e55e161731f",
+        "node:be16d9e34435a3a5ea20",
+        "node:c0b8f7cf01bfee66830d",
+        "node:d4a9cb1f58503a97d173",
+        "node:f2d9603c046e9a12fb6f",
+        "node:fbf0b9436e19ef8ab500"
+      ],
+      "provenance_refs": [
+        "prov:f5abd7dcd5d7c19f",
+        "prov:8743d5594c7041f5",
+        "prov:83ca419bade2ead0",
+        "prov:05b3a24239a07534",
+        "prov:052a59f19eec75e7"
+      ],
+      "responsibility": "Support the verification responsibility for the node project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.workspace-app",
+      "name": "Workspace App support",
+      "owned_node_ids": [
+        "node:2775264f53e85b0d2a06",
+        "node:6f88821ac0066c843ab4",
+        "node:8761917734815a47768d",
+        "node:913834cd57eb3f8a473f",
+        "node:c1bfd3f85ca1e6ef8557",
+        "node:d4ed2abfadddcc1fa5ac"
+      ],
+      "provenance_refs": [
+        "prov:31f593555a8c9e61",
+        "prov:c50cefab05a87d7f",
+        "prov:bd9e5c41456922a2",
+        "prov:a2e8f4683d538d84",
+        "prov:64503739ab5ea696"
+      ],
+      "responsibility": "Support the app responsibility for the synthetic project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-workspace-app-verification"
+      ]
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.workspace-gitignore",
+      "name": "Workspace Gitignore support",
+      "owned_node_ids": [
+        "node:8d663344167934366564"
+      ],
+      "provenance_refs": [
+        "prov:43db4ebdccf08212"
+      ],
+      "responsibility": "Support the gitignore responsibility for the synthetic project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-workspace-gitignore-verification"
+      ]
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.workspace-guidance",
+      "name": "Workspace Guidance support",
+      "owned_node_ids": [
+        "node:016f9b04cdbbbe3c53bd",
+        "node:01a5c742b13df5b65803",
+        "node:01fe4bfb386a3966f1cc",
+        "node:021257d19997dc98c169",
+        "node:02286a882b5261b42a7e",
+        "node:02937075dc84e2210dd3",
+        "node:03eb4bf2a9b21903c73e",
+        "node:0414b0b4b51a0ee49602",
+        "node:041c4831c956771af95c",
+        "node:04acb066b8461a295053",
+        "node:04c769775456b1c7870b",
+        "node:04f78630fb6abae32380",
+        "node:0516f5f27956e8a7f9c7",
+        "node:052ab240599b51a65789",
+        "node:0531febf42278e53db9e",
+        "node:061917132508d7323bf9",
+        "node:06561c51afe94d1e3119",
+        "node:070b66a54202e07aec58",
+        "node:07b99ac87fe219ef150c",
+        "node:085b920a7e0eb957fd9d",
+        "node:08a12a322230fe77231c",
+        "node:09675c8933bfa63d7cd1",
+        "node:0a465d2e17df00369569",
+        "node:0a8393e872bb5a1bfc1d",
+        "node:0acd95ae940b37093151",
+        "node:0b422227de9683ab1f57",
+        "node:0bd9cdec012f6269b36a",
+        "node:0c4dc63133ade5ef19a8",
+        "node:0cfd6deca31161c9fa88",
+        "node:0d612afd8526b2f18dfd",
+        "node:0d79ba9ecce0949e96d5",
+        "node:0ea49144b7538f0dbdd5",
+        "node:0ed1a79d59f228031516",
+        "node:0edf62f1caa4c0c062ae",
+        "node:10a9364c654dacb03cdc",
+        "node:11195496ccf689929598",
+        "node:11d2fa98b48b56cb84e6",
+        "node:14d4a82cc064fe12f633",
+        "node:14e84e20c5960ec1df5f",
+        "node:17120be5619b9ee56b07",
+        "node:17b56f812075b594ba85",
+        "node:185273f9cccb850d6275",
+        "node:188d196a7bc3d9976857",
+        "node:18d44cba46814dfa1cd5",
+        "node:18f7743cb4e83c12336a",
+        "node:19038216d4a91e477e2a",
+        "node:1945b2ad5ae75a08adfc",
+        "node:197e923fea16182bf4fa",
+        "node:19953b0937fdc47608ee",
+        "node:1a830f052657f5555f6e",
+        "node:1ad3b8c4523e909c8356",
+        "node:1ada56d2fcc8c07ef926",
+        "node:1c168bbffc59e91c6619",
+        "node:1c4e01fbe9e379744c41",
+        "node:1c9f8a91366f5976307e",
+        "node:1cd7fb8a0815eef567d6",
+        "node:1e3d606538f3e0a9ed67",
+        "node:1e71c1a858fe5a5c8054",
+        "node:1e878637629cd08c3421",
+        "node:1ebfe32e7e952a6e642a",
+        "node:1ef7132c8c9faa3e62e6",
+        "node:20788c22180440d8ee70",
+        "node:20d8f6e04887409778f0",
+        "node:20e8c0fbaa17bdb0333c",
+        "node:20eaa0f5e022640b977b",
+        "node:2230962f43670e80f64f",
+        "node:232ff309253c438d35aa",
+        "node:23c3e77baf6039da7b09",
+        "node:243d8429a88b2cbdbf3e",
+        "node:24ec03e4f2a3da36fb14",
+        "node:262ef22383cb6396ebdd",
+        "node:272be84b7bc429218c52",
+        "node:275ee8677749ce2fd144",
+        "node:27b6999b4c433b4f1a2b",
+        "node:27f9a4f37bca119b1dfc",
+        "node:28598d2709f8a2bc06fb",
+        "node:287994c0bedbd7c43b54",
+        "node:2936a5fa570641ccc903",
+        "node:29548fc6db837d7af51b",
+        "node:297f0f58a69c8835b389",
+        "node:2a1dad060b566067f81b",
+        "node:2a9ee6277fb5eba7de65",
+        "node:2acc7cf3a7efc87da1c3",
+        "node:2bdc62267d14c5695f2d",
+        "node:2c6227b3c94751e45c06",
+        "node:2c6b1c727931454b8b8e",
+        "node:2d74220ac4b50a3dda32",
+        "node:2e6119d4bda7a5b30b4e",
+        "node:2e8a8d822d1568b9d740",
+        "node:2f1e11447df781913254",
+        "node:2ff98619b888a94c825d",
+        "node:300222f67ff85ce8715f",
+        "node:3036a1629900702e95b8",
+        "node:30513a37bdbb94d8079b",
+        "node:30af92c7b206e1d335f6",
+        "node:3123215973513246ae0f",
+        "node:313b8aa67600720bcd7d",
+        "node:3173b08b669aaf74d0a3",
+        "node:317fabc02b608a96a53b",
+        "node:31a3024da32def8c23d1",
+        "node:327e85d1549359af24a9",
+        "node:32d0bd1fdc2e74c7f5d6",
+        "node:32dfbdfa8a0a942d5ba8",
+        "node:335682fb604dcca06a2b",
+        "node:337020541d691397a0ba",
+        "node:33d2763fe04975401835",
+        "node:33f466e1bb42e2b87759",
+        "node:34071967d29c885e8e0e",
+        "node:345391f7e23b924b6205",
+        "node:3510914b66749dfa94c4",
+        "node:351e554863a528675a28",
+        "node:3541d77fb5ab10900c10",
+        "node:35fac90fdd2a78d99eb4",
+        "node:37c74cf539939ec27591",
+        "node:38242c00054772433139",
+        "node:383d442eeb74800fb46d",
+        "node:388a15b0090278c8f6bc",
+        "node:398421be26b31573566e",
+        "node:39eee905f62a7060a663",
+        "node:3b6661a7893a8a6520c9",
+        "node:3ba541b0e97e1515b28d",
+        "node:3c13011b5043bb130ac4",
+        "node:3c8dbf120a2587d7cf22",
+        "node:3cb2777acaa90a54f4f9",
+        "node:3d7ca1553a385f0f2498",
+        "node:3dae04ea815417ba05e9",
+        "node:3ee9b068eff4bfb7db71",
+        "node:3f571e8018dc2079b119",
+        "node:40d5f3a17652a8c17a00",
+        "node:410c75f2a866596b35d3",
+        "node:4116a8e9e12f77cdb9af",
+        "node:4200d507ac5ae6d6d4e0",
+        "node:4219093fb7a4e2ae944c",
+        "node:42409a89a8f441706045",
+        "node:426f641cf831b0838f60",
+        "node:43168879af486959cd3a",
+        "node:445cc1eb931ef23aefe6",
+        "node:485e3fa72b3c05782cc7",
+        "node:48c55221daf102f27db8",
+        "node:48d1b232dbd719eb7bdd",
+        "node:492b3b4e1418f4d4375c",
+        "node:49375155aebc3d67ed8c",
+        "node:49739abe55742851e1c7",
+        "node:499963e382ad86790b6d",
+        "node:49b536650e77c1d19829",
+        "node:4a7027c177b9a934ea2e",
+        "node:4ace8512902f85d1ec01",
+        "node:4b203f3cf2c4a06782a3",
+        "node:4b25ce73540492109028",
+        "node:4c2ea73150d323110c7d",
+        "node:4c39cc5ddd2fd15fe213",
+        "node:4c6c3152760a87b56b96",
+        "node:4ca5c207eb360eaa64cf",
+        "node:4cfbe03071504c8a9160",
+        "node:4d3082bed35a8da33c45",
+        "node:4d361a89f3eb3103b278",
+        "node:4e136d50698d813ea3a7",
+        "node:4e3085ef538dac231b17",
+        "node:4ed82a4d5c0c02e2c3d2",
+        "node:4f19d3d371842a8a0544",
+        "node:4f7c99b55285e13d72c7",
+        "node:501106fb10197c9ba953",
+        "node:50540b9b7b66984ac60f",
+        "node:511012f99767da94bd6e",
+        "node:52325ddad53ddc498f18",
+        "node:5233f032b0c3dcf1b849",
+        "node:532febe8774cbcc5387a",
+        "node:53334f8d4adde31ce009",
+        "node:533c358ecba23a95745b",
+        "node:53f8fd7309ddbcd5308d",
+        "node:54ee60a4de41c0acce5d",
+        "node:555ccc7caf92e19b466a",
+        "node:55c0c93e9b342ff2a131",
+        "node:55d9f970ab094bb60d84",
+        "node:575237fde98edeb43b26",
+        "node:57ed23b2b5a8c5a2b571",
+        "node:57fd0b15275cd204ab38",
+        "node:585db15260f608ff622f",
+        "node:5a5ce74b4c92b7e6c7d1",
+        "node:5a9f9bc5a879a5156841",
+        "node:5ae1a92465544bfe3897",
+        "node:5b6b2d644ff9c5c548dd",
+        "node:5be1aa7820be62d4b53f",
+        "node:5bfa9b77859f4246109b",
+        "node:5c4187d087ecb28e523a",
+        "node:5c54d510a566859e6638",
+        "node:5c5ccdd8759653a560b7",
+        "node:5c704c51d7dfa9f4e78d",
+        "node:5d5efed18af0c915547c",
+        "node:5e61c23452c1f0ca3acf",
+        "node:5e90d97bc53c417713ac",
+        "node:5e93ce368fada50f2caf",
+        "node:5ed99ec7eea0737a467a",
+        "node:5f168f9306af8a11503f",
+        "node:5f3ed3d9fc384d214286",
+        "node:5fab064ee4f89a39b809",
+        "node:60b6552cee625ad045ad",
+        "node:6164dc485139ef963d3d",
+        "node:6177ea74f15d1f32f3db",
+        "node:617a2c881f167756d4f3",
+        "node:62226a715b075b6abe84",
+        "node:6237b36be9e1080c270f",
+        "node:62c1717d3dce9e8d730a",
+        "node:63bf464326c6b16d3f14",
+        "node:65183da4d2b7463fd14f",
+        "node:6640f8186a036b9cdad9",
+        "node:67c1f442bf55284cea5c",
+        "node:68c5be95a12a7e4265f3",
+        "node:68f2a6501ebf0ffebe99",
+        "node:69678a9a09b653332873",
+        "node:69d6bc2e023965d76a75",
+        "node:6a1cafc9eedaa8436d37",
+        "node:6a2cd08f096dedac359c",
+        "node:6a33be60a61710c09e51",
+        "node:6a358b2f22c508c0431b",
+        "node:6af621eb787f4a91e6b9",
+        "node:6c2a2fd1a57da0feaea7",
+        "node:6c61c12fb8f5a9499f53",
+        "node:6ce1823249e27fb2a2c2",
+        "node:6de799c0074a6e5421fc",
+        "node:6e66b0fb00e4ebcd6525",
+        "node:6e9a85fb7e1ea6de327a",
+        "node:6ecc2e344fd96990b053",
+        "node:6edb1e632bff216de44a",
+        "node:6fcb068c0d7871f754bc",
+        "node:719581121c8714152d63",
+        "node:719693fd5edb40df0186",
+        "node:71df40e58c067bfd15cc",
+        "node:728deac13115be217c05",
+        "node:73a2f6557209653a8f42",
+        "node:73c5f1750af932fd6a4e",
+        "node:74a0211bdbb57de86413",
+        "node:74b0002110187ed8dcc7",
+        "node:74e4ab4040fe1d984413",
+        "node:75c7965feb57630ab032",
+        "node:76c7329bbbc0b962defc",
+        "node:78348153b9e5a312758f",
+        "node:78365ae40c462a02b4f0",
+        "node:786ce568b3b77796f6f4",
+        "node:7893c66e6a20dedffd6d",
+        "node:79460563ff6440929eaa",
+        "node:795f4544dc7d3ef41e4d",
+        "node:79b4c4ae4efdfe8de786",
+        "node:79ff7bb93541c687e3c1",
+        "node:7a9cb27a2fe4b659ab7c",
+        "node:7ae65f23846bc6f5c8d7",
+        "node:7c52c20b5520b7565896",
+        "node:7c5442921a0fe7e1d03c",
+        "node:7c800de1fb14234e6b78",
+        "node:7d1a901c6a781ddbd361",
+        "node:7d8a8d5130fcfd934d3d",
+        "node:7e3280def54f9e3cd498",
+        "node:7e32bc83dbf3245de15a",
+        "node:7f08c58f53206b5b7220",
+        "node:7f511f7aef49cbe4650b",
+        "node:7f92b75a57a058bed776",
+        "node:7fc2736575a4653eb02a",
+        "node:7fd85a115807db15f42f",
+        "node:802bb10fd4c1848e5c80",
+        "node:80cd23fe86f1a44eed40",
+        "node:80dc1c9903b3f6e07f29",
+        "node:818a2c17f7f05854eb9c",
+        "node:8236baf4660080e00b79",
+        "node:828a13cd8916ba01eccf",
+        "node:82c8adf663c4c9789058",
+        "node:84a9e3d4af0e128c908a",
+        "node:85c4856547571d3af681",
+        "node:86a7ecfe12ee4abdcb38",
+        "node:8834004ed12af8f77b40",
+        "node:8850ba335660e3a79485",
+        "node:8877250dec2179530d51",
+        "node:88b338343e4ee2356133",
+        "node:89534df34218f26d73f3",
+        "node:898b54f9ac44807ca38f",
+        "node:8a811485cb4dda2c4356",
+        "node:8b0be9a36b8c2bf8995f",
+        "node:8b7fae1a19c4050d4a38",
+        "node:8b8b6a8391246221ef74",
+        "node:8d74af32aabe2f670edd",
+        "node:8d7e03eb1edecddd17d4",
+        "node:8de678b02fbd76e8fac1",
+        "node:8ed7940b54b3699477a5",
+        "node:8f6057f807ef4bec9894",
+        "node:913a09f78c695be49318",
+        "node:91460437ad5a375ae41f",
+        "node:921a852f75c99ea20be2",
+        "node:92a0a164b6c1a14a6665",
+        "node:92a360999966353af8d1",
+        "node:92d930926cfffb2e914f",
+        "node:92dbdf0f61324108d446",
+        "node:92e98d1c501b9e1758fc",
+        "node:9380a5db9a610a04541e",
+        "node:9391f92dfd5e6e48a216",
+        "node:93c4f88efc650ca1e635",
+        "node:94e7fcbf120ea09d3e85",
+        "node:9564470d9867685cef36",
+        "node:96e9f326ad8cf7310a0d",
+        "node:973653871933f6101d00",
+        "node:974979a3a84079c1c56c",
+        "node:97563f558bf0ef81e8a6",
+        "node:97650bda7906b950d8dd",
+        "node:97d9117b75fd696eb0f5",
+        "node:98294ab701d3676f2320",
+        "node:98a27e363b8c540c9348",
+        "node:98c70fc4808ea2ab20e9",
+        "node:99afdee84ab4dfa1afd4",
+        "node:99e217679391334c2a86",
+        "node:99e3229657012c0a4f6f",
+        "node:9acf616e7561e088adda",
+        "node:9b77b778a8794e0b2c03",
+        "node:9bc191f4036ae08b286d",
+        "node:9c554ea1dc499ddb3c36",
+        "node:9c70cdf57dbe80f5b5c9",
+        "node:9ce4144c916b7dac6dc6",
+        "node:9d54a9fa9b09ae53c36e",
+        "node:9df21fb8bad882166956",
+        "node:9e3863ada1da67e35fea",
+        "node:9e49dc0d28e5197db541",
+        "node:9f6742d6fc78a3a77fd1",
+        "node:9f86361576d559e61a83",
+        "node:9fb8a04a6d1e623914a2",
+        "node:9fbe8ab9291c9f0ca800",
+        "node:9fcd8d59fa1f09410c85",
+        "node:a01eaada714d0719ad8a",
+        "node:a07649dded3d9197dbad",
+        "node:a07de18cdc88a85f003e",
+        "node:a08a3e6a647d7ccc9688",
+        "node:a0f194711b7fbe0eea58",
+        "node:a19eccede6581777f1fc",
+        "node:a238f8bd7edb795fcc1f",
+        "node:a49523d561473ff4a62a",
+        "node:a5682abae6768ab896d3",
+        "node:a5f84f63a910d737daff",
+        "node:a6976b759dbe01f878ac",
+        "node:a6c8c762443b8d48dae6",
+        "node:a6dfc4c2c87e8d29eaa6",
+        "node:a769bd0b56a712fbb605",
+        "node:a777c8cc9827ecab67ad",
+        "node:a7a4c6ea17bf14c278aa",
+        "node:a7a7b536a7cb5e4c5f3a",
+        "node:a7ef89fb01e677d97494",
+        "node:a8c631fb6c0bc2c18f9d",
+        "node:a9c3bc8efff9bfa3a5f3",
+        "node:a9e16739af80465f91ad",
+        "node:aaa4864dac9370c3e0d8",
+        "node:aabd1f265d34cbc679c1",
+        "node:aaf758d082b10721baff",
+        "node:ab303d9f6ececa637d8b",
+        "node:ac0a38ff0cb6c2c23738",
+        "node:ac50c2e44a15cc83507c",
+        "node:ac8bdbd205e95897a64b",
+        "node:adab68e9b854d3892e12",
+        "node:ade29fb191f3b4fe6bf9",
+        "node:ae7e14bc7f8777536569",
+        "node:ae8dfa4d929a9b89f00a",
+        "node:ae9588c43cdbb2dd4319",
+        "node:ae95b5c9e71e547903f4",
+        "node:aeae63c98710baf8206d",
+        "node:af674b96bb5a26217b34",
+        "node:b029a26ea2bfac79b4cf",
+        "node:b1e140b3202b425d221a",
+        "node:b2530c97865ef7832f5f",
+        "node:b27e546381f146fecb8c",
+        "node:b2a6a0131ce7e9cd3b92",
+        "node:b33795c490221f8e5d7e",
+        "node:b5c48509a1c88e8e09d9",
+        "node:b7306393b566f5ee98b5",
+        "node:b78dfd575f387fe241b5",
+        "node:b7b1f7d56a052931473e",
+        "node:b86c257c98f94edfe24b",
+        "node:b86d96008ddfefece251",
+        "node:b8f54fa65912fd0400c8",
+        "node:b98d5755d99ba53deadd",
+        "node:b99a3e344ae1e6fd2a4f",
+        "node:b9c0bf01930b044de2d7",
+        "node:b9d108d3b09b3d9429b4",
+        "node:ba26fa3c95dacd2c4a09",
+        "node:bb04d2608cc95d34c49d",
+        "node:bb26358e151f32e7b646",
+        "node:bb8bd2fd217007543057",
+        "node:bb9b2650d9f0c3b2db4c",
+        "node:bdd96633c2704b414902",
+        "node:be0564e40c1ff09ac9bf",
+        "node:beac909b939c86740153",
+        "node:bebf28e2d5e1ea568c79",
+        "node:bf6a38b4ea62097264d1",
+        "node:bfafa6e5fee42ac83889",
+        "node:bfe3b89a7984c0e23006",
+        "node:c12d402ea738fde61901",
+        "node:c29fd6fa92a2eb483d46",
+        "node:c2ac52c33d9f29a1d9ab",
+        "node:c4069c81f8054d1c0e6f",
+        "node:c40865214f96fadb5572",
+        "node:c460b2e36d99d82915e3",
+        "node:c4bdbab8e1b0bd748463",
+        "node:c4dd1e091d920e6cb43c",
+        "node:c4f30d295f0833b98e16",
+        "node:c5875c18dc3dd028ab55",
+        "node:c5a43de7501ea5c18c1f",
+        "node:c6231a0a262aea3f1686",
+        "node:c65bd941b28a6d700e77",
+        "node:c67134efa777d69a852b",
+        "node:c717def8f4fb0116371d",
+        "node:c8e97aa708fc9ae1954a",
+        "node:c9348f7ac6ba32d3124e",
+        "node:c965c92cf5abc689b121",
+        "node:c9c5b007ccb7af4aa173",
+        "node:cab3e206196db7106c40",
+        "node:cadcff059d7e08b92fe4",
+        "node:cb5e9b3b46235cd6fcd6",
+        "node:cd2d95bf28d2f4640f5c",
+        "node:cd75a211954c9270ee0b",
+        "node:cdf4c69b8519b73b5abf",
+        "node:cdfc92ad2e22de037fbd",
+        "node:ce35fe6fd003228ed491",
+        "node:ce5923ab089a9edf4e5c",
+        "node:cf688d111c29369298a8",
+        "node:cf71133c6bf42476bfd1",
+        "node:cfde73b8fcff9583b11c",
+        "node:d0a8a382258a3f985b5d",
+        "node:d14f4d9fc40f4c3e36e2",
+        "node:d1cc3c6d580cc83c48a6",
+        "node:d21cb490b008e27171e6",
+        "node:d21dd0c67071c91283bf",
+        "node:d2595fc7b639f31fff41",
+        "node:d2c78394ec4984faed62",
+        "node:d32b5798ebb499817e0f",
+        "node:d619102b5878a0d9e3d1",
+        "node:d6570e59cd42c31eced2",
+        "node:d6ab68da7a26803f8920",
+        "node:d6dfa39ac89ef7e158ab",
+        "node:d6e83969a93d9c9388c6",
+        "node:d729ac26bdc14192d0b6",
+        "node:d77234beacd853e0089e",
+        "node:d7a47b758057779f0953",
+        "node:d8a9d29525d725d0a20e",
+        "node:d9819f27f2034da4f59e",
+        "node:d9dcf8cb4923e1d45a7b",
+        "node:dab85311417d213ab3a1",
+        "node:db66d52b62c71a011c57",
+        "node:dc530ebbb56168fcf611",
+        "node:dcabc20ae38c1c55e4e7",
+        "node:dd0dab69557c1f10ac8a",
+        "node:ddfee90f07ce115e733a",
+        "node:de8edfc71c2f71326d4e",
+        "node:defb93f0549ba868d516",
+        "node:dfdb4abff15529ddff19",
+        "node:dfec765dc9383f653940",
+        "node:e00b7b0100724c19c718",
+        "node:e022eef972929ed7a3d0",
+        "node:e09863f6359a1f6e8971",
+        "node:e0de89fab09f4dfb77f9",
+        "node:e1642d5bac1e428f1b74",
+        "node:e1d6ab151bb2115dfbca",
+        "node:e2d97977a4c9f64dfce5",
+        "node:e360daf31c7d359da32e",
+        "node:e6f34260b5621086b404",
+        "node:e78e8a34bb2c6c89e7df",
+        "node:e7c772b1c7fff53a75b6",
+        "node:e81ac98dc8a9537e83c2",
+        "node:e81fd8a6e905ec3b3de0",
+        "node:e87623a810d5b1397066",
+        "node:e936125d188bfda52aa3",
+        "node:e940be19d290f0ae77e3",
+        "node:e95dbe8dc7cfb0daf918",
+        "node:e9d325eda122f333001d",
+        "node:e9e7e7f21efd9c64b05d",
+        "node:ea84770eb5820a92d00a",
+        "node:eb0f1a5b50fe2a6b4076",
+        "node:eb228a2b8a14aec1f4e2",
+        "node:ebe5e60f3edd0be0e0e2",
+        "node:ecbacf7c6f125749a593",
+        "node:ecdb5e0c1a859b1f5a15",
+        "node:ed66621ff69394a18ec9",
+        "node:eda576d94aeed2fa4e3d",
+        "node:ee32249bfd03b875374b",
+        "node:ef001c0029efe6bfd0f5",
+        "node:ef0b5f5932ebc0d9c1b2",
+        "node:ef5ba6a11869de287487",
+        "node:ef90caebcf0d2d00c048",
+        "node:f05d0845cc825c146af8",
+        "node:f0d318b0463c7e96720b",
+        "node:f115c3aceb51768989c1",
+        "node:f164981256e27078953a",
+        "node:f4ea3229b0c8053ff8b3",
+        "node:f53c9ca2df208209837d",
+        "node:f5982eb341e02a9b3086",
+        "node:f5f684f7020aef306abb",
+        "node:f6550e3710436fb42452",
+        "node:f6d2fc1ee7d2fc9fe4d9",
+        "node:f761819a434440149f43",
+        "node:f76a33afa4afb248388a",
+        "node:f90ab8ccd3fd7a1127f7",
+        "node:fa4450a268af6432088a",
+        "node:faa6cd09e135c62b5fd4",
+        "node:fad62eaaef1871cfc026",
+        "node:fb262285d37706188b4a",
+        "node:fb63ade51e643c11dcf4",
+        "node:fb6796fa199ecbefde3f",
+        "node:fde29d1b0dab6a669746",
+        "node:fdeedb00099f7fe66cad",
+        "node:fe16b5b3e89d7fa6d095",
+        "node:fea1d12513a656f7d5ef"
+      ],
+      "provenance_refs": [
+        "prov:6d84fccfbe3e8053",
+        "prov:e9fdccc922577abb",
+        "prov:c68833dc77005312",
+        "prov:89e60ba0223db3b0",
+        "prov:ebfdf9285fc4f2ed"
+      ],
+      "responsibility": "Support the guidance responsibility for the synthetic project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-workspace-guidance-verification"
+      ]
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [],
+      "id": "component.workspace-tooling",
+      "name": "Workspace Tooling support",
+      "owned_node_ids": [
+        "node:3ca94c5c8b05046e128c",
+        "node:514bcd0adec111eb0559",
+        "node:89d7d1f009258a056f3f",
+        "node:9d4644de1cf0b9fccd8c"
+      ],
+      "provenance_refs": [
+        "prov:36f704e3958f671e",
+        "prov:77411b12becccc72",
+        "prov:a73fbccca0591d63",
+        "prov:c84f229fb5b8026d"
+      ],
+      "responsibility": "Support the tooling responsibility for the synthetic project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-workspace-tooling-verification"
+      ]
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "component.app-backend-source-alembic",
+      "id": "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+      "name": "Backend Alembic behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:dc3cd91b08e6bedb",
+        "prov:4a214e54ce20930b",
+        "prov:70d5fc0f4dc0571c"
+      ],
+      "supporting_edge_ids": [
+        "edge:845cbdee4ba8de6d5253"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-alembic",
+      "id": "contract.component-app-backend-source-alembic-imports-component-app-back-b4f5407e",
+      "name": "Backend Alembic behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:dc3cd91b08e6bedb",
+        "prov:3f7ff035549a670f",
+        "prov:b30204405b6481cf"
+      ],
+      "supporting_edge_ids": [
+        "edge:7aaa2244f7123895e4d7"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-34940020",
+      "name": "Backend Assessment behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:3f7ff035549a670f",
+        "prov:1bd4bb030e812e19"
+      ],
+      "supporting_edge_ids": [
+        "edge:6e7d7054de98a8552036",
+        "edge:7ec4d9f41ef9d72cd893"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-533d1504",
+      "name": "Backend Assessment behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:4a214e54ce20930b",
+        "prov:8edec4f286a6a694"
+      ],
+      "supporting_edge_ids": [
+        "edge:c3f8c22632efdc6eaf4c"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-c878fe71",
+      "name": "Backend Assessment behavior imports Backend Controls behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:b9055d33abc8c621",
+        "prov:383da6e24ab1c78c"
+      ],
+      "supporting_edge_ids": [
+        "edge:e51dd59d470ef5f2aaa2",
+        "edge:e8977a2afb12c2d0df85"
+      ],
+      "to_component_id": "component.app-backend-source-controls"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-c8dc9598",
+      "name": "Backend Assessment behavior imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:14d39377c3a519dd",
+        "prov:005ddbf528da2e39"
+      ],
+      "supporting_edge_ids": [
+        "edge:4f05e459bb2e9ebab8f0",
+        "edge:c07da19549f9fc02f5fb"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-d01b72ba",
+      "name": "Backend Assessment behavior imports Backend Reports behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:92d607b784f53207",
+        "prov:a9c071c20cead8af"
+      ],
+      "supporting_edge_ids": [
+        "edge:6dbca3ee8d4746c9f082",
+        "edge:c3ec08295ef211b15b52"
+      ],
+      "to_component_id": "component.app-backend-source-reports"
+    },
+    {
+      "from_component_id": "component.app-backend-source-assessment",
+      "id": "contract.component-app-backend-source-assessment-imports-component-app-b-fcfd681e",
+      "name": "Backend Assessment behavior imports Backend Llm behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3b45c63fcebb3826",
+        "prov:4d8952ad533a85b0",
+        "prov:2ac4b3b88737be42"
+      ],
+      "supporting_edge_ids": [
+        "edge:5a3399b814d1198ebc7e",
+        "edge:9fdee4d714e53390a174",
+        "edge:b0c94e62d05a17826174"
+      ],
+      "to_component_id": "component.app-backend-source-llm"
+    },
+    {
+      "from_component_id": "component.app-backend-source-audit",
+      "id": "contract.component-app-backend-source-audit-imports-component-app-backen-07d9571e",
+      "name": "Backend Audit behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:8ffd7b6050ea39b7",
+        "prov:3f7ff035549a670f",
+        "prov:72afc0c3c429e16f"
+      ],
+      "supporting_edge_ids": [
+        "edge:b248f2c9799016c3eeb4"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-audit",
+      "id": "contract.component-app-backend-source-audit-imports-component-app-backen-a94edf25",
+      "name": "Backend Audit behavior imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:8ffd7b6050ea39b7",
+        "prov:14d39377c3a519dd",
+        "prov:d98cfd612afa2a12"
+      ],
+      "supporting_edge_ids": [
+        "edge:417c31d9372041244ccc"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-source-auth",
+      "id": "contract.component-app-backend-source-auth-imports-component-app-backend-2adff5ba",
+      "name": "Backend Auth behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3646836f8a5b1552",
+        "prov:4a214e54ce20930b",
+        "prov:dfc90fcf943fb7ae"
+      ],
+      "supporting_edge_ids": [
+        "edge:cac39513de1384955016"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-auth",
+      "id": "contract.component-app-backend-source-auth-imports-component-app-backend-465fa083",
+      "name": "Backend Auth behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3646836f8a5b1552",
+        "prov:3f7ff035549a670f",
+        "prov:2c8e0d8a5210124f"
+      ],
+      "supporting_edge_ids": [
+        "edge:63aeda475ffb43e7ee86",
+        "edge:c1e9138ad3be9a6f77f8"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-auth",
+      "id": "contract.component-app-backend-source-auth-imports-component-app-backend-9c8016be",
+      "name": "Backend Auth behavior imports Backend Audit behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3646836f8a5b1552",
+        "prov:8ffd7b6050ea39b7",
+        "prov:9e21aeb6418cf973"
+      ],
+      "supporting_edge_ids": [
+        "edge:693b164d6bcaa2a9beab"
+      ],
+      "to_component_id": "component.app-backend-source-audit"
+    },
+    {
+      "from_component_id": "component.app-backend-source-controls",
+      "id": "contract.component-app-backend-source-controls-imports-component-app-bac-0943c2bd",
+      "name": "Backend Controls behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:b9055d33abc8c621",
+        "prov:4a214e54ce20930b",
+        "prov:0bf2c7df4f447b62"
+      ],
+      "supporting_edge_ids": [
+        "edge:afbe7aa734d6d246e5c5"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-database",
+      "id": "contract.component-app-backend-source-database-imports-component-app-bac-94f16575",
+      "name": "Backend Database behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:3f7ff035549a670f",
+        "prov:4a214e54ce20930b",
+        "prov:3998d756c7c23b6a"
+      ],
+      "supporting_edge_ids": [
+        "edge:b9e68c4ad9377a77dd26"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-llm",
+      "id": "contract.component-app-backend-source-llm-imports-component-app-backend-401778c1",
+      "name": "Backend Llm behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:3f7ff035549a670f",
+        "prov:e5fa9b5dd8f8ad07"
+      ],
+      "supporting_edge_ids": [
+        "edge:97c33aeef494190a8abb"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-llm",
+      "id": "contract.component-app-backend-source-llm-imports-component-app-backend-4c1a971d",
+      "name": "Backend Llm behavior imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:14d39377c3a519dd",
+        "prov:d4bdbeb166ab3a35"
+      ],
+      "supporting_edge_ids": [
+        "edge:a475cd61d403e81cadef",
+        "edge:d7dd6e0b18d7f2d42b67"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-source-llm",
+      "id": "contract.component-app-backend-source-llm-imports-component-app-backend-889bd777",
+      "name": "Backend Llm behavior imports Backend Assessment behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:3b45c63fcebb3826",
+        "prov:14668cbae08b4bf6"
+      ],
+      "supporting_edge_ids": [
+        "edge:5ccf02b19d7d15738d9e",
+        "edge:a6a772f8e2a72a343ef0",
+        "edge:c0a5f2be9fad41f183a2",
+        "edge:d28ed29949c666e98df6"
+      ],
+      "to_component_id": "component.app-backend-source-assessment"
+    },
+    {
+      "from_component_id": "component.app-backend-source-llm",
+      "id": "contract.component-app-backend-source-llm-imports-component-app-backend-ceace79e",
+      "name": "Backend Llm behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:4a214e54ce20930b",
+        "prov:238a98d60aa8fd5a"
+      ],
+      "supporting_edge_ids": [
+        "edge:fabe2984a092aaa0ef83"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-llm",
+      "id": "contract.component-app-backend-source-llm-imports-component-app-backend-d3a1d238",
+      "name": "Backend Llm behavior imports Backend Controls behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4d8952ad533a85b0",
+        "prov:b9055d33abc8c621",
+        "prov:4990c5fdb9690b22"
+      ],
+      "supporting_edge_ids": [
+        "edge:f20fbe596ab6421da3db"
+      ],
+      "to_component_id": "component.app-backend-source-controls"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-1190c75e",
+      "name": "Backend Main behavior imports Backend Assessment behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:3b45c63fcebb3826",
+        "prov:f497b6e731326905"
+      ],
+      "supporting_edge_ids": [
+        "edge:0206059d5ae12d6fae9d",
+        "edge:20bd8adc3f5b57fb2693",
+        "edge:25d26d456d8754b5a7f5",
+        "edge:5e830d4a480ad339e8f0",
+        "edge:af00cd059b9793047d63"
+      ],
+      "to_component_id": "component.app-backend-source-assessment"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-13edf898",
+      "name": "Backend Main behavior imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:4a214e54ce20930b",
+        "prov:813aa1f13ba2995f"
+      ],
+      "supporting_edge_ids": [
+        "edge:a8c75afd83f9127dc9ef"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-79aaa598",
+      "name": "Backend Main behavior imports Backend Audit behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:8ffd7b6050ea39b7",
+        "prov:34ea4be8ce415d9a"
+      ],
+      "supporting_edge_ids": [
+        "edge:52f8d823c0ec669f0fb6"
+      ],
+      "to_component_id": "component.app-backend-source-audit"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-7f0ee012",
+      "name": "Backend Main behavior imports Backend Reports behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:92d607b784f53207",
+        "prov:3d42d5468389a97b"
+      ],
+      "supporting_edge_ids": [
+        "edge:1f07fd0cd23caa068d10",
+        "edge:9f7093eb3c1666590b0a"
+      ],
+      "to_component_id": "component.app-backend-source-reports"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-a6296c41",
+      "name": "Backend Main behavior imports Backend Auth behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:3646836f8a5b1552",
+        "prov:b5dc0a0fed4f6da1"
+      ],
+      "supporting_edge_ids": [
+        "edge:a96e8499870e472edfcd",
+        "edge:b660871bdfa1a2cc1388"
+      ],
+      "to_component_id": "component.app-backend-source-auth"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-b8ea409a",
+      "name": "Backend Main behavior imports Backend Controls behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:b9055d33abc8c621",
+        "prov:9f24b4bf6e560883"
+      ],
+      "supporting_edge_ids": [
+        "edge:378eff5de3b1dd0dbf8d"
+      ],
+      "to_component_id": "component.app-backend-source-controls"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-bff76356",
+      "name": "Backend Main behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:3f7ff035549a670f",
+        "prov:5441d73b2650699c"
+      ],
+      "supporting_edge_ids": [
+        "edge:13b7ce151c47420c42c2",
+        "edge:610ac64c2b2b2c1d93d5"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-caec6438",
+      "name": "Backend Main behavior imports Backend Llm behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:4d8952ad533a85b0",
+        "prov:dbae364ab9fe5f61"
+      ],
+      "supporting_edge_ids": [
+        "edge:9156bfe2facc9cbb79f4",
+        "edge:bcdaaf3cfe92ad469c4b"
+      ],
+      "to_component_id": "component.app-backend-source-llm"
+    },
+    {
+      "from_component_id": "component.app-backend-source-main",
+      "id": "contract.component-app-backend-source-main-imports-component-app-backend-e8433387",
+      "name": "Backend Main behavior imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:7e09975083c7abc4",
+        "prov:14d39377c3a519dd",
+        "prov:feedc47cf388260c"
+      ],
+      "supporting_edge_ids": [
+        "edge:c5d9675bc66892725d16"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-source-reports",
+      "id": "contract.component-app-backend-source-reports-imports-component-app-back-057517be",
+      "name": "Backend Reports behavior imports Backend Assessment behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:92d607b784f53207",
+        "prov:3b45c63fcebb3826",
+        "prov:491595ac677bf775"
+      ],
+      "supporting_edge_ids": [
+        "edge:864bed9c67916bb1f857",
+        "edge:a386bd1165e8a4e1e4db",
+        "edge:b4f4d535da3417873267"
+      ],
+      "to_component_id": "component.app-backend-source-assessment"
+    },
+    {
+      "from_component_id": "component.app-backend-source-reports",
+      "id": "contract.component-app-backend-source-reports-imports-component-app-back-2d44b67c",
+      "name": "Backend Reports behavior imports Backend Controls behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:92d607b784f53207",
+        "prov:b9055d33abc8c621",
+        "prov:d716490cb315c5b4"
+      ],
+      "supporting_edge_ids": [
+        "edge:8e81661d099bce1188f3",
+        "edge:ff9cbfc65aca0e490f49"
+      ],
+      "to_component_id": "component.app-backend-source-controls"
+    },
+    {
+      "from_component_id": "component.app-backend-source-reports",
+      "id": "contract.component-app-backend-source-reports-imports-component-app-back-30e035d8",
+      "name": "Backend Reports behavior imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:92d607b784f53207",
+        "prov:14d39377c3a519dd",
+        "prov:a2c83e1c808cdd10"
+      ],
+      "supporting_edge_ids": [
+        "edge:2297cd73dc85db1abf85"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-source-reports",
+      "id": "contract.component-app-backend-source-reports-imports-component-app-back-70d0abcc",
+      "name": "Backend Reports behavior imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:92d607b784f53207",
+        "prov:3f7ff035549a670f",
+        "prov:95beb76f0404ff5c"
+      ],
+      "supporting_edge_ids": [
+        "edge:4a9a9b1c7d83d87936d2",
+        "edge:d7061096b122df4739a6"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-4c4edad0",
+      "name": "Backend Verification support imports Backend Reports behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:92d607b784f53207",
+        "prov:c16ace118d5cca6e"
+      ],
+      "supporting_edge_ids": [
+        "edge:2b5031db2ebc4e30c5a2",
+        "edge:2d863679a34f2cb3eb6b"
+      ],
+      "to_component_id": "component.app-backend-source-reports"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-538ae493",
+      "name": "Backend Verification support imports Backend Database behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:3f7ff035549a670f",
+        "prov:25b209d16653d264"
+      ],
+      "supporting_edge_ids": [
+        "edge:0b694260aeb38c21b470",
+        "edge:0e6532b88db2f5cc47a8",
+        "edge:11b35ce5b48301d2826f",
+        "edge:1da6849298b8e7a80f6b",
+        "edge:28128c21dbc696eaafa6",
+        "edge:2ce1e1bc4b83a883f10f",
+        "edge:358b67f178c3c72d1864",
+        "edge:38f1f95f9fd76b28dbdb",
+        "edge:3ce1272705917e22aa8a",
+        "edge:3d6134f520ec25127aff",
+        "edge:3da4d80de8efad3faa8f",
+        "edge:4727e59af6c31ce13793",
+        "edge:4dd66ba2c1196d8ed08f",
+        "edge:4fa5b49af689408b05b6",
+        "edge:5b18f8c17bf592f0baeb",
+        "edge:67a921259a760863ae10",
+        "edge:67c51f81075c4a2aa918",
+        "edge:6a94750e5258217073de",
+        "edge:6af099ebb345adca54bd",
+        "edge:73f1595ff14a1c1fcf5f",
+        "edge:7e8a75a889fa1eafd881",
+        "edge:805c7a60b8d3bd335f3f",
+        "edge:805f77fee628bfe1fa5d",
+        "edge:8e769643cad6e86692c8",
+        "edge:92fae5569e37e85ae148",
+        "edge:9a5045ef3f51da060859",
+        "edge:a2318b53e84e347198e9",
+        "edge:a5fdc397fe6e2e019311",
+        "edge:a86cedd6fd0f5198b3b2",
+        "edge:ab376dfa31a5ee7dc7a7",
+        "edge:b128262cbe65c4233d4a",
+        "edge:b273bfaf1b70b337db98",
+        "edge:b9a7b6aeadafc4b273f8",
+        "edge:ba7981fc93826b2d0f1a",
+        "edge:bdd4bf18eb663c3e3593",
+        "edge:c086795767529eb6fc4b",
+        "edge:c85e9172e06efe3f66b6",
+        "edge:d3cb6c1c12439ba392ec",
+        "edge:dff766faa1ec2768d79d",
+        "edge:e5347058830ea7098fb1",
+        "edge:e77cc67c9d2d8a529b3a",
+        "edge:e8a5e2e23e48439ae27d",
+        "edge:ee7b44b6c7417689e91c",
+        "edge:ef0a818a89b38f1b1d94",
+        "edge:efd5cebc97c3d2e50f4d",
+        "edge:f7c72088bdfd4efb9577",
+        "edge:f8ef24ef90f8e673137d",
+        "edge:f91659a08d99e6d26fb6"
+      ],
+      "to_component_id": "component.app-backend-source-database"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-5db50c1e",
+      "name": "Backend Verification support imports Backend Security behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:14d39377c3a519dd",
+        "prov:e2295d96055b5018"
+      ],
+      "supporting_edge_ids": [
+        "edge:04c54e493b961873f947",
+        "edge:0b49fd391bf2b9af8291",
+        "edge:1e43c26418067c4206fc",
+        "edge:cb0f63d3037c7512e32e",
+        "edge:cdd1048578bed24e96e7",
+        "edge:f195f87b8483de16b801"
+      ],
+      "to_component_id": "component.app-backend-source-security"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-826d86f2",
+      "name": "Backend Verification support imports Backend Auth behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:3646836f8a5b1552",
+        "prov:dbbdca5c94c31e54"
+      ],
+      "supporting_edge_ids": [
+        "edge:003ff98446e9c6474a3c",
+        "edge:780bdcaa5f98adb03e51",
+        "edge:781fbdc69752a5f88047",
+        "edge:7a4ed561d088b93fad1f",
+        "edge:9a33d5db6ee5557dbde0",
+        "edge:fc28c75fd8e6eb035be1"
+      ],
+      "to_component_id": "component.app-backend-source-auth"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-834e3968",
+      "name": "Backend Verification support imports Backend Testing behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:53d98160ac529e58",
+        "prov:1588dad97d409ffc"
+      ],
+      "supporting_edge_ids": [
+        "edge:7ebd70a48e3ed62e9360",
+        "edge:858e2f3d0a66d808a693"
+      ],
+      "to_component_id": "component.app-backend-source-testing"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-83ee7505",
+      "name": "Backend Verification support imports Backend Config behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:4a214e54ce20930b",
+        "prov:8a135053331f0695"
+      ],
+      "supporting_edge_ids": [
+        "edge:2ad720f4ead0c4cbad19",
+        "edge:3a4b6cd3774066bc4216",
+        "edge:8381f61e17df9f3972ec",
+        "edge:f7e681adc3c71addc412"
+      ],
+      "to_component_id": "component.app-backend-source-config"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-a044c6e4",
+      "name": "Backend Verification support imports Backend Assessment behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:3b45c63fcebb3826",
+        "prov:64a8183af32fb6c5"
+      ],
+      "supporting_edge_ids": [
+        "edge:05f06f26828fe335a964",
+        "edge:13e42185489ebd4cf76c",
+        "edge:2bf05f5e391b4e5241ee",
+        "edge:4aa7bf46305e27bfd413",
+        "edge:541de375b501f1b40711",
+        "edge:59366b4c2cdeb2d21ec2",
+        "edge:5ca32c0ce0f3347adf6d",
+        "edge:63576a565eda7854f3e3",
+        "edge:79c4a2e6f76b0d65ca03",
+        "edge:7d0fcd8554c491f6dedb",
+        "edge:7de5f8cf3d216b6e0990",
+        "edge:811855b58e0221189535",
+        "edge:a7b39899f4d88bbd6c0c",
+        "edge:a907a0bcae6e37481d76",
+        "edge:ade4f7daac6924bcc107",
+        "edge:ba93f9080448ca8c14bf",
+        "edge:c50e87c79c8222c26730",
+        "edge:ca85d7572d9b5f745075",
+        "edge:db52c80d28ca8dc5e5f5",
+        "edge:eefb8ec2d87e1a8ef850"
+      ],
+      "to_component_id": "component.app-backend-source-assessment"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-bf48f60b",
+      "name": "Backend Verification support imports Backend Llm behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:4d8952ad533a85b0",
+        "prov:e404e864204b594b"
+      ],
+      "supporting_edge_ids": [
+        "edge:159a5dbd98ea18321e29",
+        "edge:1f21bdca129252761a34",
+        "edge:3766bb9fa74e4f190cfe",
+        "edge:585d523da2b3d72987d3",
+        "edge:70b33625443d902cc7f4",
+        "edge:71c868b9900a1ea1c7d2",
+        "edge:9b1ad6fe14940197422b",
+        "edge:d27669753b4b29262b7b"
+      ],
+      "to_component_id": "component.app-backend-source-llm"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-d7f3a5ff",
+      "name": "Backend Verification support imports Backend Audit behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:8ffd7b6050ea39b7",
+        "prov:7ac0460f4f564dcc"
+      ],
+      "supporting_edge_ids": [
+        "edge:a833f87bd3711fe8cca9",
+        "edge:f5a683a66f5d2de0c995"
+      ],
+      "to_component_id": "component.app-backend-source-audit"
+    },
+    {
+      "from_component_id": "component.app-backend-verification",
+      "id": "contract.component-app-backend-verification-imports-component-app-backen-dd0fc40e",
+      "name": "Backend Verification support imports Backend Controls behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:2a225b2a6b2e1ce0",
+        "prov:b9055d33abc8c621",
+        "prov:5dee60e868d796c8"
+      ],
+      "supporting_edge_ids": [
+        "edge:35d77f682f75a3ac1533",
+        "edge:59586733cb13d5f3e832",
+        "edge:5c45be0975f3eb2bf34f",
+        "edge:72cbbb4e6088753e0989",
+        "edge:7591ea4054d3119fc7eb",
+        "edge:847f86e1bf06deb6212d",
+        "edge:8b7b38caa8795d8453ec",
+        "edge:8dba3c0051df840747ef",
+        "edge:a12c14d94c0bd62b2478",
+        "edge:a59aa1cb9b9ae9086379",
+        "edge:a7dc100ba4e7df168cac"
+      ],
+      "to_component_id": "component.app-backend-source-controls"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-api",
+      "id": "contract.component-app-frontend-source-api-imports-component-app-fronten-2f25d0bb",
+      "name": "Frontend Api behavior imports Frontend Types behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:bc9a9c52f62e90db",
+        "prov:334ff6a24dab372c",
+        "prov:4506a11650cff47e"
+      ],
+      "supporting_edge_ids": [
+        "edge:4515bd143a0ec8445ff2"
+      ],
+      "to_component_id": "component.app-frontend-source-types"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-api",
+      "id": "contract.component-app-frontend-source-api-imports-component-app-fronten-a094ca0c",
+      "name": "Frontend Api behavior imports Frontend Verification support",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:bc9a9c52f62e90db",
+        "prov:f5abd7dcd5d7c19f",
+        "prov:4d5f5f61d589e765"
+      ],
+      "supporting_edge_ids": [
+        "edge:0441dd9567ed4bbad4f2",
+        "edge:3cc133c2c07efa9c12d6",
+        "edge:609b280ed8fac54e76e7",
+        "edge:9f390f8dfc4a820b1067"
+      ],
+      "to_component_id": "component.app-frontend-verification"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-components",
+      "id": "contract.component-app-frontend-source-components-imports-component-app-37cbf33d",
+      "name": "Frontend Components behavior imports Frontend Api behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4cec088386c59776",
+        "prov:bc9a9c52f62e90db",
+        "prov:c386c68eafbe02f4"
+      ],
+      "supporting_edge_ids": [
+        "edge:066bcb8f2ceb8ec24a72",
+        "edge:22be737f1ea4b7048603",
+        "edge:720bb7247f9b4e453722",
+        "edge:935a5c9d5d822bd4a476",
+        "edge:a7add12cce139216f641",
+        "edge:be15720a27faba491835",
+        "edge:c3d1a44f91733ee0a643"
+      ],
+      "to_component_id": "component.app-frontend-source-api"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-components",
+      "id": "contract.component-app-frontend-source-components-imports-component-app-a214ce92",
+      "name": "Frontend Components behavior imports Frontend Types behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:4cec088386c59776",
+        "prov:334ff6a24dab372c",
+        "prov:b489ca6596458853"
+      ],
+      "supporting_edge_ids": [
+        "edge:6459a41f004e5b33f6dd",
+        "edge:acd70ba0043632ce1775",
+        "edge:ada5fa7a440a97132ccb",
+        "edge:c6a06e54b676ba9e444c",
+        "edge:fbdfc57168bafae2a585"
+      ],
+      "to_component_id": "component.app-frontend-source-types"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-main",
+      "id": "contract.component-app-frontend-source-main-imports-component-app-fronte-e3e9517a",
+      "name": "Frontend Main behavior imports Frontend Pages behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:c11d731ce192f355",
+        "prov:33fe3900a676f6c9",
+        "prov:176899853bc48986"
+      ],
+      "supporting_edge_ids": [
+        "edge:e0f0b8cab2bafae9c45f"
+      ],
+      "to_component_id": "component.app-frontend-source-pages"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-main",
+      "id": "contract.component-app-frontend-source-main-imports-component-app-frontend-src",
+      "name": "Frontend Main behavior imports Frontend Src support",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:c11d731ce192f355",
+        "prov:1d97ecc8f36970aa",
+        "prov:676382a76ae2af10"
+      ],
+      "supporting_edge_ids": [
+        "edge:94abe693da6fe5acbcf0"
+      ],
+      "to_component_id": "component.app-frontend-src"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-pages",
+      "id": "contract.component-app-frontend-source-pages-imports-component-app-front-256d9c87",
+      "name": "Frontend Pages behavior imports Frontend Api behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:33fe3900a676f6c9",
+        "prov:bc9a9c52f62e90db",
+        "prov:8788082489403a45"
+      ],
+      "supporting_edge_ids": [
+        "edge:72b0a23cff0a9df8afae",
+        "edge:845deb2e2f6580f46baa",
+        "edge:b798a20c907155a73d1b"
+      ],
+      "to_component_id": "component.app-frontend-source-api"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-pages",
+      "id": "contract.component-app-frontend-source-pages-imports-component-app-front-3f63a4b1",
+      "name": "Frontend Pages behavior imports Frontend Components behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:33fe3900a676f6c9",
+        "prov:4cec088386c59776",
+        "prov:8fb12235a4658245"
+      ],
+      "supporting_edge_ids": [
+        "edge:41f9564e69471873e5fc",
+        "edge:5c568a5dd92c96cc2059",
+        "edge:67c9bf7d73835ee78251",
+        "edge:6ae9b89909cd5c959d8e",
+        "edge:776b8b2525584bce5587",
+        "edge:b00a812a283714b19474",
+        "edge:c354aa247eb0df233330",
+        "edge:f7aaabb65b6cc8700161"
+      ],
+      "to_component_id": "component.app-frontend-source-components"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-pages",
+      "id": "contract.component-app-frontend-source-pages-imports-component-app-front-6e4bc324",
+      "name": "Frontend Pages behavior imports Frontend Types behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:33fe3900a676f6c9",
+        "prov:334ff6a24dab372c",
+        "prov:9940d49bc71d408d"
+      ],
+      "supporting_edge_ids": [
+        "edge:b7b976cda9f41d2b1052"
+      ],
+      "to_component_id": "component.app-frontend-source-types"
+    },
+    {
+      "from_component_id": "component.app-frontend-source-vite-config",
+      "id": "contract.component-app-frontend-source-vite-config-imports-component-app-5a38229b",
+      "name": "Frontend Vite Config behavior imports Frontend Api behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:759c0b61f383e8d9",
+        "prov:bc9a9c52f62e90db",
+        "prov:1d1e7d6f48755fa7"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbb69e0887f6090ded73"
+      ],
+      "to_component_id": "component.app-frontend-source-api"
+    },
+    {
+      "from_component_id": "component.app-frontend-verification",
+      "id": "contract.component-app-frontend-verification-imports-component-app-front-12fb7f33",
+      "name": "Frontend Verification support imports Frontend Scripts behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:f5abd7dcd5d7c19f",
+        "prov:7816661085a81509",
+        "prov:2163e10fa87ed1f7"
+      ],
+      "supporting_edge_ids": [
+        "edge:65247e88ad120da6d87d",
+        "edge:6b0f332e217ad3e92707"
+      ],
+      "to_component_id": "component.app-frontend-source-scripts"
+    },
+    {
+      "from_component_id": "component.app-frontend-verification",
+      "id": "contract.component-app-frontend-verification-imports-component-app-front-430b7360",
+      "name": "Frontend Verification support imports Frontend Api behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:f5abd7dcd5d7c19f",
+        "prov:bc9a9c52f62e90db",
+        "prov:3338d9369994f66b"
+      ],
+      "supporting_edge_ids": [
+        "edge:2f643e9ba36862bc29ca",
+        "edge:6cad664a9ececfab117c",
+        "edge:79af53ff07bf3166d598",
+        "edge:c7a91a6c10a7d3a75347",
+        "edge:d1e12456f9a940e0a0ef",
+        "edge:ef1ea55f8937a57257d0"
+      ],
+      "to_component_id": "component.app-frontend-source-api"
+    },
+    {
+      "from_component_id": "component.app-frontend-verification",
+      "id": "contract.component-app-frontend-verification-imports-component-app-front-60eab1ae",
+      "name": "Frontend Verification support imports Frontend Components behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:f5abd7dcd5d7c19f",
+        "prov:4cec088386c59776",
+        "prov:6e0db3f19ffa6d20"
+      ],
+      "supporting_edge_ids": [
+        "edge:1529891bad36381d6d96",
+        "edge:1887b2e634078c14ce60",
+        "edge:382cde4afcc5816fd99c",
+        "edge:57097eb65d923cb336ce",
+        "edge:614e3de8153a7e1a7480",
+        "edge:63e3f2f014ff145cf900",
+        "edge:df37d9581f31519bf93d",
+        "edge:ed0bab81dcb3c15c3178",
+        "edge:f99d507d1daed29295cf"
+      ],
+      "to_component_id": "component.app-frontend-source-components"
+    },
+    {
+      "from_component_id": "component.app-frontend-verification",
+      "id": "contract.component-app-frontend-verification-imports-component-app-front-6ae8fe65",
+      "name": "Frontend Verification support imports Frontend Pages behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:f5abd7dcd5d7c19f",
+        "prov:33fe3900a676f6c9",
+        "prov:5afbe6ac07da25c4"
+      ],
+      "supporting_edge_ids": [
+        "edge:499beebf5b3a8bee0e4a",
+        "edge:a560c8c62e84aa2bea0e"
+      ],
+      "to_component_id": "component.app-frontend-source-pages"
+    }
+  ],
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "component.app-backend-source-alembic",
+        "component.app-backend-source-alembic-versions",
+        "component.app-backend-source-api",
+        "component.app-backend-source-assessment",
+        "component.app-backend-source-audit",
+        "component.app-backend-source-auth",
+        "component.app-backend-source-config",
+        "component.app-backend-source-controls",
+        "component.app-backend-source-database",
+        "component.app-backend-source-evidence",
+        "component.app-backend-source-init",
+        "component.app-backend-source-llm",
+        "component.app-backend-source-main",
+        "component.app-backend-source-reports",
+        "component.app-backend-source-security",
+        "component.app-backend-source-testing",
+        "component.app-backend-tooling",
+        "component.app-backend-verification",
+        "component.app-frontend-env-production-example",
+        "component.app-frontend-index-html",
+        "component.app-frontend-source-api",
+        "component.app-frontend-source-components",
+        "component.app-frontend-source-main",
+        "component.app-frontend-source-pages",
+        "component.app-frontend-source-scripts",
+        "component.app-frontend-source-types",
+        "component.app-frontend-source-vite-config",
+        "component.app-frontend-source-vite-env-d",
+        "component.app-frontend-src",
+        "component.app-frontend-tooling",
+        "component.app-frontend-verification",
+        "component.workspace-app",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+        "contract.component-app-backend-source-alembic-imports-component-app-back-b4f5407e",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-34940020",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-533d1504",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c878fe71",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c8dc9598",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-d01b72ba",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-fcfd681e",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-07d9571e",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-a94edf25",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-2adff5ba",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-465fa083",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-9c8016be",
+        "contract.component-app-backend-source-controls-imports-component-app-bac-0943c2bd",
+        "contract.component-app-backend-source-database-imports-component-app-bac-94f16575",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-401778c1",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-4c1a971d",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-889bd777",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-ceace79e",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-d3a1d238",
+        "contract.component-app-backend-source-main-imports-component-app-backend-1190c75e",
+        "contract.component-app-backend-source-main-imports-component-app-backend-13edf898",
+        "contract.component-app-backend-source-main-imports-component-app-backend-79aaa598",
+        "contract.component-app-backend-source-main-imports-component-app-backend-7f0ee012",
+        "contract.component-app-backend-source-main-imports-component-app-backend-a6296c41",
+        "contract.component-app-backend-source-main-imports-component-app-backend-b8ea409a",
+        "contract.component-app-backend-source-main-imports-component-app-backend-bff76356",
+        "contract.component-app-backend-source-main-imports-component-app-backend-caec6438",
+        "contract.component-app-backend-source-main-imports-component-app-backend-e8433387",
+        "contract.component-app-backend-source-reports-imports-component-app-back-057517be",
+        "contract.component-app-backend-source-reports-imports-component-app-back-2d44b67c",
+        "contract.component-app-backend-source-reports-imports-component-app-back-30e035d8",
+        "contract.component-app-backend-source-reports-imports-component-app-back-70d0abcc",
+        "contract.component-app-backend-verification-imports-component-app-backen-4c4edad0",
+        "contract.component-app-backend-verification-imports-component-app-backen-538ae493",
+        "contract.component-app-backend-verification-imports-component-app-backen-5db50c1e",
+        "contract.component-app-backend-verification-imports-component-app-backen-826d86f2",
+        "contract.component-app-backend-verification-imports-component-app-backen-834e3968",
+        "contract.component-app-backend-verification-imports-component-app-backen-83ee7505",
+        "contract.component-app-backend-verification-imports-component-app-backen-a044c6e4",
+        "contract.component-app-backend-verification-imports-component-app-backen-bf48f60b",
+        "contract.component-app-backend-verification-imports-component-app-backen-d7f3a5ff",
+        "contract.component-app-backend-verification-imports-component-app-backen-dd0fc40e",
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-2f25d0bb",
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-a094ca0c",
+        "contract.component-app-frontend-source-components-imports-component-app-37cbf33d",
+        "contract.component-app-frontend-source-components-imports-component-app-a214ce92",
+        "contract.component-app-frontend-source-main-imports-component-app-fronte-e3e9517a",
+        "contract.component-app-frontend-source-main-imports-component-app-frontend-src",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-256d9c87",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-3f63a4b1",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-6e4bc324",
+        "contract.component-app-frontend-source-vite-config-imports-component-app-5a38229b",
+        "contract.component-app-frontend-verification-imports-component-app-front-12fb7f33",
+        "contract.component-app-frontend-verification-imports-component-app-front-430b7360",
+        "contract.component-app-frontend-verification-imports-component-app-front-60eab1ae",
+        "contract.component-app-frontend-verification-imports-component-app-front-6ae8fe65"
+      ],
+      "description": "Accepted decomposition claims must trace to deterministic graph provenance.",
+      "id": "concern.anti-fabrication",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "component.app-backend-source-alembic",
+        "component.app-backend-source-alembic-versions",
+        "component.app-backend-source-api",
+        "component.app-backend-source-assessment",
+        "component.app-backend-source-audit",
+        "component.app-backend-source-auth",
+        "component.app-backend-source-config",
+        "component.app-backend-source-controls",
+        "component.app-backend-source-database",
+        "component.app-backend-source-evidence",
+        "component.app-backend-source-init",
+        "component.app-backend-source-llm",
+        "component.app-backend-source-main",
+        "component.app-backend-source-reports",
+        "component.app-backend-source-security",
+        "component.app-backend-source-testing",
+        "component.app-backend-tooling",
+        "component.app-backend-verification",
+        "component.app-frontend-env-production-example",
+        "component.app-frontend-index-html",
+        "component.app-frontend-source-api",
+        "component.app-frontend-source-components",
+        "component.app-frontend-source-main",
+        "component.app-frontend-source-pages",
+        "component.app-frontend-source-scripts",
+        "component.app-frontend-source-types",
+        "component.app-frontend-source-vite-config",
+        "component.app-frontend-source-vite-env-d",
+        "component.app-frontend-src",
+        "component.app-frontend-tooling",
+        "component.app-frontend-verification",
+        "component.workspace-app",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Root discovery, component grouping, contracts, and checks are sorted and reproducible.",
+      "id": "concern.determinism",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "component.app-backend-source-alembic",
+        "component.app-backend-source-alembic-versions",
+        "component.app-backend-source-api",
+        "component.app-backend-source-assessment",
+        "component.app-backend-source-audit",
+        "component.app-backend-source-auth",
+        "component.app-backend-source-config",
+        "component.app-backend-source-controls",
+        "component.app-backend-source-database",
+        "component.app-backend-source-evidence",
+        "component.app-backend-source-init",
+        "component.app-backend-source-llm",
+        "component.app-backend-source-main",
+        "component.app-backend-source-reports",
+        "component.app-backend-source-security",
+        "component.app-backend-source-testing",
+        "component.app-backend-tooling",
+        "component.app-backend-verification",
+        "component.app-frontend-env-production-example",
+        "component.app-frontend-index-html",
+        "component.app-frontend-source-api",
+        "component.app-frontend-source-components",
+        "component.app-frontend-source-main",
+        "component.app-frontend-source-pages",
+        "component.app-frontend-source-scripts",
+        "component.app-frontend-source-types",
+        "component.app-frontend-source-vite-config",
+        "component.app-frontend-source-vite-env-d",
+        "component.app-frontend-src",
+        "component.app-frontend-tooling",
+        "component.app-frontend-verification",
+        "component.workspace-app",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+        "contract.component-app-backend-source-alembic-imports-component-app-back-b4f5407e",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-34940020",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-533d1504",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c878fe71",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-c8dc9598",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-d01b72ba",
+        "contract.component-app-backend-source-assessment-imports-component-app-b-fcfd681e",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-07d9571e",
+        "contract.component-app-backend-source-audit-imports-component-app-backen-a94edf25",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-2adff5ba",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-465fa083",
+        "contract.component-app-backend-source-auth-imports-component-app-backend-9c8016be",
+        "contract.component-app-backend-source-controls-imports-component-app-bac-0943c2bd",
+        "contract.component-app-backend-source-database-imports-component-app-bac-94f16575",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-401778c1",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-4c1a971d",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-889bd777",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-ceace79e",
+        "contract.component-app-backend-source-llm-imports-component-app-backend-d3a1d238",
+        "contract.component-app-backend-source-main-imports-component-app-backend-1190c75e",
+        "contract.component-app-backend-source-main-imports-component-app-backend-13edf898",
+        "contract.component-app-backend-source-main-imports-component-app-backend-79aaa598",
+        "contract.component-app-backend-source-main-imports-component-app-backend-7f0ee012",
+        "contract.component-app-backend-source-main-imports-component-app-backend-a6296c41",
+        "contract.component-app-backend-source-main-imports-component-app-backend-b8ea409a",
+        "contract.component-app-backend-source-main-imports-component-app-backend-bff76356",
+        "contract.component-app-backend-source-main-imports-component-app-backend-caec6438",
+        "contract.component-app-backend-source-main-imports-component-app-backend-e8433387",
+        "contract.component-app-backend-source-reports-imports-component-app-back-057517be",
+        "contract.component-app-backend-source-reports-imports-component-app-back-2d44b67c",
+        "contract.component-app-backend-source-reports-imports-component-app-back-30e035d8",
+        "contract.component-app-backend-source-reports-imports-component-app-back-70d0abcc",
+        "contract.component-app-backend-verification-imports-component-app-backen-4c4edad0",
+        "contract.component-app-backend-verification-imports-component-app-backen-538ae493",
+        "contract.component-app-backend-verification-imports-component-app-backen-5db50c1e",
+        "contract.component-app-backend-verification-imports-component-app-backen-826d86f2",
+        "contract.component-app-backend-verification-imports-component-app-backen-834e3968",
+        "contract.component-app-backend-verification-imports-component-app-backen-83ee7505",
+        "contract.component-app-backend-verification-imports-component-app-backen-a044c6e4",
+        "contract.component-app-backend-verification-imports-component-app-backen-bf48f60b",
+        "contract.component-app-backend-verification-imports-component-app-backen-d7f3a5ff",
+        "contract.component-app-backend-verification-imports-component-app-backen-dd0fc40e",
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-2f25d0bb",
+        "contract.component-app-frontend-source-api-imports-component-app-fronten-a094ca0c",
+        "contract.component-app-frontend-source-components-imports-component-app-37cbf33d",
+        "contract.component-app-frontend-source-components-imports-component-app-a214ce92",
+        "contract.component-app-frontend-source-main-imports-component-app-fronte-e3e9517a",
+        "contract.component-app-frontend-source-main-imports-component-app-frontend-src",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-256d9c87",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-3f63a4b1",
+        "contract.component-app-frontend-source-pages-imports-component-app-front-6e4bc324",
+        "contract.component-app-frontend-source-vite-config-imports-component-app-5a38229b",
+        "contract.component-app-frontend-verification-imports-component-app-front-12fb7f33",
+        "contract.component-app-frontend-verification-imports-component-app-front-430b7360",
+        "contract.component-app-frontend-verification-imports-component-app-front-60eab1ae",
+        "contract.component-app-frontend-verification-imports-component-app-front-6ae8fe65"
+      ],
+      "description": "Every component, contract, check, and gap is backed by graph/file provenance.",
+      "id": "concern.provenance",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "component.app-backend-source-alembic",
+        "component.app-backend-source-alembic-versions",
+        "component.app-backend-source-api",
+        "component.app-backend-source-assessment",
+        "component.app-backend-source-audit",
+        "component.app-backend-source-auth",
+        "component.app-backend-source-config",
+        "component.app-backend-source-controls",
+        "component.app-backend-source-database",
+        "component.app-backend-source-evidence",
+        "component.app-backend-source-init",
+        "component.app-backend-source-llm",
+        "component.app-backend-source-main",
+        "component.app-backend-source-reports",
+        "component.app-backend-source-security",
+        "component.app-backend-source-testing",
+        "component.app-backend-tooling",
+        "component.app-backend-verification",
+        "component.app-frontend-env-production-example",
+        "component.app-frontend-index-html",
+        "component.app-frontend-source-api",
+        "component.app-frontend-source-components",
+        "component.app-frontend-source-main",
+        "component.app-frontend-source-pages",
+        "component.app-frontend-source-scripts",
+        "component.app-frontend-source-types",
+        "component.app-frontend-source-vite-config",
+        "component.app-frontend-source-vite-env-d",
+        "component.app-frontend-src",
+        "component.app-frontend-tooling",
+        "component.app-frontend-verification",
+        "component.workspace-app",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Generated checks are local candidates and are not acceptance-allowlisted without proof.",
+      "id": "concern.no-live-paid-api",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "triggered_by": []
+    }
+  ],
+  "goal": "decompose the CMMC Level 1 readiness assistant into responsibility-bearing components for safe autonomous iteration planning",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "fixture-independent-probe-builder",
+      "builder_prompt_hash": "8a38e79d5f4d5ed89a1dc06fdf601d5c9a83cd4d4a4f4bb63c0a0d4a4f3c7781",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe.responsibility-boundary-negative",
+      "planted_negative_id": "negative.file-bucket-boundary",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "target_component_ids": [
+        "component.app-backend-source-alembic"
+      ],
+      "target_contract_ids": [
+        "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f"
+      ]
+    }
+  ],
+  "model_id": "fixture-meta-decomposer",
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Treat adjacent files as a polished bucket without responsibility evidence.",
+      "id": "near.file-bucket-boundary",
+      "provenance_refs": [
+        "prov:714c0f8b1d97b853"
+      ],
+      "target_id": "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+      "why_not_primary": "Rejected for this project goal: decompose the CMMC Level 1 readiness assistant into responsibility-bearing components for safe autonomous iteration planning. It also violates the stated non-goal: do not build a CMMC-specific decomposer or hardcode repository-specific component names. A file bucket is not responsibility-bearing evidence."
+    }
+  ],
+  "non_goals": [
+    "do not build a CMMC-specific decomposer or hardcode repository-specific component names",
+    "do not treat adjacent files as final components without behavioral responsibility evidence"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": null,
+      "command": "uv run pytest -q",
+      "component_ids": [
+        "component.app-backend-source-alembic",
+        "component.app-backend-source-alembic-versions",
+        "component.app-backend-source-api",
+        "component.app-backend-source-assessment",
+        "component.app-backend-source-audit",
+        "component.app-backend-source-auth",
+        "component.app-backend-source-config",
+        "component.app-backend-source-controls",
+        "component.app-backend-source-database",
+        "component.app-backend-source-evidence",
+        "component.app-backend-source-init",
+        "component.app-backend-source-llm",
+        "component.app-backend-source-main",
+        "component.app-backend-source-reports",
+        "component.app-backend-source-security",
+        "component.app-backend-source-testing",
+        "component.app-backend-tooling",
+        "component.app-backend-verification"
+      ],
+      "contract_ids": [],
+      "description": "Run root-local Python tests discovered from generic project metadata.",
+      "execution_dir": "app/backend",
+      "execution_status": "statically_validated",
+      "id": "check.app-backend-python-tests",
+      "proof_artifact": null,
+      "provenance_refs": [
+        "prov:7ca29d04c604aa4b"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true,
+      "safety_status": "safe_by_default",
+      "verification_gap_ids": []
+    },
+    {
+      "acceptance_command_id": null,
+      "command": "npm test -- --run",
+      "component_ids": [
+        "component.app-frontend-env-production-example",
+        "component.app-frontend-index-html",
+        "component.app-frontend-source-api",
+        "component.app-frontend-source-components",
+        "component.app-frontend-source-main",
+        "component.app-frontend-source-pages",
+        "component.app-frontend-source-scripts",
+        "component.app-frontend-source-types",
+        "component.app-frontend-source-vite-config",
+        "component.app-frontend-source-vite-env-d",
+        "component.app-frontend-src",
+        "component.app-frontend-tooling",
+        "component.app-frontend-verification"
+      ],
+      "contract_ids": [],
+      "description": "Run root-local Node test task discovered from package metadata.",
+      "execution_dir": "app/frontend",
+      "execution_status": "statically_validated",
+      "id": "check.app-frontend-node-test",
+      "proof_artifact": null,
+      "provenance_refs": [
+        "prov:a7422b4e47542bbd"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": false,
+      "safety_status": "unknown",
+      "verification_gap_ids": []
+    }
+  ],
+  "project_id": "cmmc-level1-readiness-assistant",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "component.app-backend-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Component Backend Tooling support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-app-backend-tooling-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:944fc72201ac9628",
+        "prov:630701ac2ce98b36",
+        "prov:7ca29d04c604aa4b"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "component.app-frontend-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Component Frontend Tooling support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-app-frontend-tooling-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:1f0eee3db2c6a848",
+        "prov:458126f5dce04700",
+        "prov:a7422b4e47542bbd"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "component.workspace-app"
+      ],
+      "contract_ids": [],
+      "description": "Component Workspace App support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-workspace-app-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:31f593555a8c9e61",
+        "prov:c50cefab05a87d7f",
+        "prov:bd9e5c41456922a2"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "component.workspace-gitignore"
+      ],
+      "contract_ids": [],
+      "description": "Component Workspace Gitignore support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-workspace-gitignore-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:43db4ebdccf08212"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "component.workspace-guidance"
+      ],
+      "contract_ids": [],
+      "description": "Component Workspace Guidance support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-workspace-guidance-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:6d84fccfbe3e8053",
+        "prov:e9fdccc922577abb",
+        "prov:c68833dc77005312"
+      ],
+      "severity": "medium"
+    },
+    {
+      "component_ids": [
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Component Workspace Tooling support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-workspace-tooling-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:36f704e3958f671e",
+        "prov:77411b12becccc72",
+        "prov:a73fbccca0591d63"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "passed": false,
+  "violations": [
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:066bcb8f2ceb8ec24a72]",
+      "message": "Owned import edge edge:066bcb8f2ceb8ec24a72 from component.app-frontend-src-components-reportpreview to component.app-frontend-src-api-client is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:1529891bad36381d6d96]",
+      "message": "Owned import edge edge:1529891bad36381d6d96 from component.app-frontend-src-pages-app-test to component.app-frontend-src-components-reportpreview is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:1887b2e634078c14ce60]",
+      "message": "Owned import edge edge:1887b2e634078c14ce60 from component.app-frontend-src-components-accessible-form-cont to component.app-frontend-src-components-chatpanel is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:22be737f1ea4b7048603]",
+      "message": "Owned import edge edge:22be737f1ea4b7048603 from component.app-frontend-src-components-remediationdashboard to component.app-frontend-src-api-client is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:382cde4afcc5816fd99c]",
+      "message": "Owned import edge edge:382cde4afcc5816fd99c from component.app-frontend-src-pages-app-test to component.app-frontend-src-components-chatpanel is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:63e3f2f014ff145cf900]",
+      "message": "Owned import edge edge:63e3f2f014ff145cf900 from component.app-frontend-src-pages-app-test to component.app-frontend-src-components-remediationdashboard is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "edge_coverage",
+      "location": "edges[edge:ef1ea55f8937a57257d0]",
+      "message": "Owned import edge edge:ef1ea55f8937a57257d0 from component.app-frontend-src-pages-app-test to component.app-frontend-src-api-client is not covered by any contract between those components.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:022f192a000908b12345]",
+      "message": "Primary source node app.frontend.src.api.auth.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:0519800720847c71dc45]",
+      "message": "Primary source node app.backend.src.api is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:0cc8690cfdb158d5aaf3]",
+      "message": "Primary source node app.backend.src.assessment.confirmation is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:12151d1844ec8e30c243]",
+      "message": "Primary source node app.backend.src.security.language is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:131f30119e2e515912a2]",
+      "message": "Primary source node app.frontend.src.pages.AssessmentApp is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:13fc8519f3f9cd564939]",
+      "message": "Primary source node app.backend.src.reports.generator is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:17d81cf28aff20ced73a]",
+      "message": "Primary source node app.backend.src.auth is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:1ed13df6fb685e411102]",
+      "message": "Primary source node app.backend.src.controls.seed is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:20f6f5f49dcb8d5b43a0]",
+      "message": "Primary source node app.backend.src.assessment.state_machine is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:2cd4bd69526950faaa3a]",
+      "message": "Primary source node app.backend.src.controls.library is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:3291478dc2decc3247e9]",
+      "message": "Primary source node app.backend.src.security.information_boundary is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:3b9eb117acdf40b0e298]",
+      "message": "Primary source node app.backend.src.main is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:3ef5d05760966329574c]",
+      "message": "Primary source node app.backend.src.assessment.text_analysis is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:417730c652a28d9dac72]",
+      "message": "Primary source node app.backend.src.config is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:426ef841eaadf0f7b09f]",
+      "message": "Primary source node app.backend.src.database is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:436f412888358849dc3d]",
+      "message": "Primary source node app.frontend.src.main is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:4698da300ef88dde6498]",
+      "message": "Primary source node app.backend.src.audit.events is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:48afd29a0ab8598f6ad9]",
+      "message": "Primary source node app.frontend.scripts.deploy-production is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:5c6e0808e41f512cacf4]",
+      "message": "Primary source node app.frontend.src.components.ScopePanel.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:63b4198b4de11e416e6f]",
+      "message": "Primary source node app.backend.src.llm.client is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:6ce83534ca178546568b]",
+      "message": "Primary source node app.backend.src.auth.supabase is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:6db3f3ca35567fd884ee]",
+      "message": "Primary source node app.backend.alembic.versions.0003_lock_down_supabase_public_table_grants is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:6f5b94c695b5b7ae98ad]",
+      "message": "Primary source node app.backend.src.testing.db_safety is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:7a393973385a27284914]",
+      "message": "Primary source node app.backend.src.auth.dependencies is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:81cb49eb0e7100e27dab]",
+      "message": "Primary source node app.backend.src.security.prompt_injection is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:8bdc8a50b81108ab26c4]",
+      "message": "Primary source node app.frontend.src.components.ProgressSidebar is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:8d35dd784830f5c3c0c8]",
+      "message": "Primary source node app.frontend.src.components.ScopePanel is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:8e8ec393e6daa35e3ce0]",
+      "message": "Primary source node app.frontend.src.api.betaRequest is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:966aed307e466efa3941]",
+      "message": "Primary source node app.backend.src.assessment is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:99672fe7a4541b2a3000]",
+      "message": "Primary source node app.backend.src.config.settings is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:9c52960a496b9c8fb389]",
+      "message": "Primary source node app.backend.src.reports.readiness is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a396c380d4feec916a8f]",
+      "message": "Primary source node app.backend.src.security is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a41d2fdb7bd44120335f]",
+      "message": "Primary source node app.backend.src.assessment.scope_parser is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a59a19c37ffdffc002b4]",
+      "message": "Primary source node app.backend.src.auth.public_beta is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a5d34acda9c010791654]",
+      "message": "Primary source node app.backend.src.database.models is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a81c4bdd81f6b5e2f205]",
+      "message": "Primary source node app.frontend.src.api.betaRequest.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:a86dac9011ae03ee72f5]",
+      "message": "Primary source node app.frontend.src.api.config.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:b0022842c8d45bb80b33]",
+      "message": "Primary source node app.backend.alembic.versions.0006_auth_access_grants is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:b405a9bf19cb323dfb37]",
+      "message": "Primary source node app.backend.src.llm.schemas is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:b477bf9fabf414f3d4ff]",
+      "message": "Primary source node app.backend.src.controls is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:b7d236ea5e55e161731f]",
+      "message": "Primary source node app.frontend.scripts.verify-production-deploy.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:ba364c09594c1cd6ec3f]",
+      "message": "Primary source node app.frontend.src.components.AuthGate is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:bdc9066c73ec4215eb89]",
+      "message": "Primary source node app.frontend.scripts.verify-production-deploy is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:c0b8f7cf01bfee66830d]",
+      "message": "Primary source node app.frontend.scripts.deploy-production.test is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:c290653fde61b8462d79]",
+      "message": "Primary source node app.backend.src.reports is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:c966921d65374eff8b51]",
+      "message": "Primary source node app.backend.src.llm.policy is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:cb585419d82e88338267]",
+      "message": "Primary source node app.backend.src.llm is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:ce1a7b22ef98c8b25f22]",
+      "message": "Primary source node app.frontend.src.api.config is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d0ddc7bc539845cdefec]",
+      "message": "Primary source node app.frontend.src.types is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d14b259a5365675da7d8]",
+      "message": "Primary source node app.backend.src is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d4480f2c9b3e0ab1aa99]",
+      "message": "Primary source node app.backend.alembic.versions.0002_audit_event_organization_id is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d665f905b3436d25aa91]",
+      "message": "Primary source node app.backend.src.audit is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d91f8544db86047d7064]",
+      "message": "Primary source node app.backend.alembic.versions.0001_initial is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:d9e9e4c010eb92268d60]",
+      "message": "Primary source node app.frontend.src.components.EvidenceDrawer is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:ddddcbeefc8bc02bf69a]",
+      "message": "Primary source node app.backend.src.database.base is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:dfce82a23addee9c1199]",
+      "message": "Primary source node app.backend.src.llm.data_boundary is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:e74e882ab25d489b9f19]",
+      "message": "Primary source node app.frontend.vite.config is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:eb66d8be9801895f8e37]",
+      "message": "Primary source node app.backend.alembic.versions.0004_cmmc_app_rls_policies is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:ee3ee15c0f6545d68239]",
+      "message": "Primary source node app.backend.alembic.env is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:efaa8d57ba401f7950d0]",
+      "message": "Primary source node app.backend.src.assessment.schemas is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:f1727a41dbfbfd221819]",
+      "message": "Primary source node app.backend.src.evidence is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:f312326ef24f72c41d5a]",
+      "message": "Primary source node app.backend.alembic.versions.0005_audit_events_append_only is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    },
+    {
+      "gate": "inventory_coverage",
+      "location": "graph.nodes[node:f36ac3c12eed6673d250]",
+      "message": "Primary source node app.frontend.src.components.FindingReviewPanel is neither component-owned nor covered by a verification gap.",
+      "severity": "error"
+    }
+  ]
+}

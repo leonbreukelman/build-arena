@@ -1,0 +1,52 @@
+{
+  "artifact_hashes": {
+    "gate_report": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+    "graph_file": "a663fafbca6fd8520cdced61b40b1e4ae7aebf6b77ed49bdb331e1ab2bb94a25",
+    "project_model_v0": "8baca1ba79b705112c4b13be2a0e0370b536d62177f0ef071f5186d7ae46dbf4",
+    "project_model_v1": "0f5a7ce3d3d00a9f9f58f1b468e3ab65080bebcf7484032ed824fb97920e77b3",
+    "snapshot": "489c87133ad8d2ec0ce60c586dcbd24e1521fb032cb3933d72e974e899d4fe01"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "00a632ac950a8c411f8d8ac90197e28191f58619"
+  },
+  "encyclopedia_manifest_hash": "01f3060f688369be9f3220d3488c91f094f012afadb3d54c0b21feb39356d8b1",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+  "gate_report_path": "gate-report.json",
+  "goal": "First real Project Model v1 decomposition of the read-only Cisco FMC MCP server from git and filesystem truth",
+  "graph_file_hash": "a663fafbca6fd8520cdced61b40b1e4ae7aebf6b77ed49bdb331e1ab2bb94a25",
+  "graph_hash": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3"
+  },
+  "model_ids": {
+    "decomposer": "fixture-good-model",
+    "probe_builder": "fixture-independent-probe-builder",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat directories or adjacent files as final semantic components",
+    "do not require live FMC credentials, network calls, or paid LLM/API calls for acceptance"
+  ],
+  "output_hashes": {
+    "decomposer": "ba945428218da854167f78b2a4f4ae31d47a2003868a1f4a7dec6e106bd86f0c"
+  },
+  "project_id": "fmc-mcp",
+  "project_model_primary_path": "project-model-v1.json",
+  "project_model_v0_hash": "8baca1ba79b705112c4b13be2a0e0370b536d62177f0ef071f5186d7ae46dbf4",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_model_v1_hash": "0f5a7ce3d3d00a9f9f58f1b468e3ab65080bebcf7484032ed824fb97920e77b3",
+  "project_model_v1_path": "project-model-v1.json",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "9cdd483f5974fa4c3b5c51d16ff452d113bf44c8780f35d96575de09679827d3"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "489c87133ad8d2ec0ce60c586dcbd24e1521fb032cb3933d72e974e899d4fe01",
+  "snapshot_id": "snapshot-e75be06540a3883d",
+  "snapshot_path": "snapshot.json"
+}

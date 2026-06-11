@@ -1,0 +1,489 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.workspace-env-example",
+      "name": "Workspace Env Example support",
+      "owned_node_ids": [
+        "node:4834991b8862c6c2d20a"
+      ],
+      "provenance_refs": [
+        "prov:aff5f019c243b68d"
+      ],
+      "responsibility": "Support the env-example responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.workspace-gitignore",
+      "name": "Workspace Gitignore support",
+      "owned_node_ids": [
+        "node:8d663344167934366564"
+      ],
+      "provenance_refs": [
+        "prov:eafa121ef423efa4"
+      ],
+      "responsibility": "Support the gitignore responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.workspace-guidance",
+      "name": "Workspace Guidance support",
+      "owned_node_ids": [
+        "node:01f5c4df18efbbb6417b",
+        "node:02f899db0d1a6bb9fa2c",
+        "node:0840c3bf276363316198",
+        "node:0c48dfa57bc1210b32fd",
+        "node:0d6e31dc2581134dffcd",
+        "node:1a5ef0e0e3112f273bf9",
+        "node:1d2a834c8820935eace9",
+        "node:1d75af7c314b243d00a0",
+        "node:1efcc1df855ff3e35524",
+        "node:21d196f71ac6bb3d518a",
+        "node:242462366792e6c85ea0",
+        "node:2ffe6fb38362fc3ee5eb",
+        "node:30368f4164d9b4a028c7",
+        "node:3b289bb584905edebd3e",
+        "node:3dd387548f7015b816bf",
+        "node:4defe567a0835633f20c",
+        "node:4f5c7413f0f0b22471bc",
+        "node:50d19371496e63c8844d",
+        "node:57a0b1b370ef96e4339b",
+        "node:5e699ad4b44617a608b8",
+        "node:6636513b476f00718891",
+        "node:69d6bc2e023965d76a75",
+        "node:74cf5fbdeaba6a905cec",
+        "node:7a8857cf1ce87f5cdba8",
+        "node:7fd07dea94b8343c7c30",
+        "node:8344969f1838be706504",
+        "node:9448b6df47d9e8482d69",
+        "node:98a88e4c5ff9b4935777",
+        "node:a7fb85717fe19a103582",
+        "node:a91e1b3b603a86e9879d",
+        "node:b800930b11d4e02b504e",
+        "node:badc697ec0452fda1bba",
+        "node:bde1062a8f9a7397c606",
+        "node:bf07c7b3ce149c1886c7",
+        "node:cf8bad79cf3dcfe5daa4",
+        "node:cfafc0bdc3902dd8bc5b",
+        "node:d29c4780ae315b7ef48a",
+        "node:d4f039b691c392ed08c7",
+        "node:d52ba18f0c68e7a968f8",
+        "node:d701b635b99442ff8d5a",
+        "node:e8ad09c24920e1fcb341",
+        "node:f359bd22a4bbe6196760",
+        "node:f9554680b2e876e053a2",
+        "node:f97dc9c29bcfb9c47891",
+        "node:fb80084b3785e545fda0",
+        "node:fbf0f154b18f5df92a31",
+        "node:ff26f351f85f3c1b0aeb"
+      ],
+      "provenance_refs": [
+        "prov:d209dcd4ea586e51",
+        "prov:a2f9a17e49e49eac",
+        "prov:b55c3d7c7e2ffa4e",
+        "prov:299ba3c925929370",
+        "prov:43249604ac7cf524"
+      ],
+      "responsibility": "Support the guidance responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.workspace-license",
+      "name": "Workspace License support",
+      "owned_node_ids": [
+        "node:9c2a174159775f2f6f2b"
+      ],
+      "provenance_refs": [
+        "prov:9cda615525fc7237"
+      ],
+      "responsibility": "Support the license responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d"
+      ],
+      "id": "component.workspace-source-fmc-mcp",
+      "name": "Workspace Fmc Mcp behavior",
+      "owned_node_ids": [
+        "node:0e8ad26f3fa7f9f70124",
+        "node:0f2924d0972b4ea19f44",
+        "node:127af2b0f9d32f8164c6",
+        "node:129f8a03fb8f09f4c107",
+        "node:136a3d4798dcdcba19ed",
+        "node:18cb6e0edd2c101a1f7d",
+        "node:1f10c097e41d6872b3bb",
+        "node:24b7fac72b5fafcca05d",
+        "node:257d836fb3f003e3e2c2",
+        "node:2dfb6c0f7f92da0973b4",
+        "node:34accacaac61ef57e600",
+        "node:35502b4b0a3419c5e6c2",
+        "node:39969e6e4501f125fc41",
+        "node:4042451215c279f0dca7",
+        "node:45e6bbf2da2e9192f7de",
+        "node:47d3c4730e119fa97525",
+        "node:4aca351dec5346ca420b",
+        "node:4ce07f1cf13158676b4b",
+        "node:52bc5943688cf09a17e6",
+        "node:531e8e03393414aec6cf",
+        "node:613b26deabd092943c56",
+        "node:65a1dc1e8805d5f44a70",
+        "node:6872a67935e83f43a93a",
+        "node:70d989b28f98f5b15895",
+        "node:84a7c7e4c189e28cb1bb",
+        "node:8ace3f8b214115f0e1aa",
+        "node:8b78e495ac66ff242a2f",
+        "node:8eb0135d460674f3bd02",
+        "node:90f4cd6193c2420d3a73",
+        "node:93d901aae17ef2918806",
+        "node:95e13f464c6439696de9",
+        "node:9810fbe9bc4ff06aee73",
+        "node:998da832dbd6dad49961",
+        "node:9cc261dc16025460761f",
+        "node:9e357f7cc209ca8ba2ca",
+        "node:9e6f4be5a0a17edb1a5d",
+        "node:a217f0c5fc08981d87f2",
+        "node:a2e531a5ab606f41d9bc",
+        "node:a32d71cbbae4bcadc234",
+        "node:a35043109973f2a21639",
+        "node:aef65ffb7e6fade21725",
+        "node:b3d9c9b0b868f763b2b8",
+        "node:b94240282f08b87349d2",
+        "node:bd98487d5865d99b4393",
+        "node:c204a8afcaec78c9d6e0",
+        "node:cb973cc1f27e59c0c208",
+        "node:cd9074a3fc12c17f4842",
+        "node:d0893ef81233885128b1",
+        "node:d100cc89f61477235e08",
+        "node:d561ab3d7d70e246d07e",
+        "node:d89de7fef0f8e4e66bb0",
+        "node:dd4d4b26a2c7396b7533",
+        "node:ea9dac13eecb61f72c33",
+        "node:ec03a4ae8776bb4a28da",
+        "node:edd9776f7cc3385335db",
+        "node:f5858de4be98b7930ef2",
+        "node:f677dc50306a6ad64dea"
+      ],
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e",
+        "prov:da6e96a18d26d1cf",
+        "prov:bcfd8e782d7fe500",
+        "prov:18b0c8871bdafce4",
+        "prov:6922c4cbc76c847b"
+      ],
+      "responsibility": "Provide the fmc-mcp responsibility within the python project root using graph-resolved source evidence.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [],
+      "id": "component.workspace-tooling",
+      "name": "Workspace Tooling support",
+      "owned_node_ids": [
+        "node:343eba6ed1dd9bc75183",
+        "node:c760b9cf2bf750fdcf05",
+        "node:f297e5cb198d1f626af5"
+      ],
+      "provenance_refs": [
+        "prov:3e753b536bef97f1",
+        "prov:e3613801121c5bb2",
+        "prov:d194260c714e1db7"
+      ],
+      "responsibility": "Support the tooling responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": [
+        "gap.component-workspace-tooling-verification"
+      ]
+    },
+    {
+      "check_ids": [
+        "check.workspace-python-tests"
+      ],
+      "contract_ids": [
+        "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d"
+      ],
+      "id": "component.workspace-verification",
+      "name": "Workspace Verification support",
+      "owned_node_ids": [
+        "node:09fa114aae85cc01a973",
+        "node:1498bdfe6a32f0ebb94a",
+        "node:2931ded44efc706fee80",
+        "node:2de54a4e65b20280ce26",
+        "node:32d74ba3048c219b4163",
+        "node:3e7a8dfb7a06f8c9b2e3",
+        "node:434ee10dea72f8ad3749",
+        "node:57a3ee9a39c89be240b9",
+        "node:61c74dac5be72d9e88dd",
+        "node:61e803c05fe5265559f0",
+        "node:65741e2dd1a2ef275a44",
+        "node:65d308e43bf21c6af38e",
+        "node:663ef6b7a92a5221f7a7",
+        "node:67292e641e7d5bfb38dd",
+        "node:6827423cb5b2e7e8a417",
+        "node:69c4263d96d5a82e1220",
+        "node:7016dc7cbefc37d26f49",
+        "node:73768c54c3cf6f371cfe",
+        "node:7548f8dc68792603d8be",
+        "node:7b22938d89aade938666",
+        "node:7f7e30eced9337b46e54",
+        "node:80751a890deaf14d110e",
+        "node:84c170abfc9e65eddf63",
+        "node:8cb879f11a7d8c065b0a",
+        "node:8e6b62038b56f6d5e8c0",
+        "node:8ef91f22504e7c5a9a2e",
+        "node:8ff2e095ade3b2a987b8",
+        "node:95369d0862dbe7fff032",
+        "node:98dc68c534a0acf6545d",
+        "node:a09c072ec43192acb1e3",
+        "node:a3ea09c9a38816923b96",
+        "node:a55ddd453b2c383a7c94",
+        "node:aa34a15837a9e9acb195",
+        "node:aeb3e06acca87605afc7",
+        "node:b74698bb7eda4aa768bd",
+        "node:b77720dc4f38e785e29a",
+        "node:c6405ff28ca10fee3a33",
+        "node:cdb54772758be2dc463d",
+        "node:d0f542d08179725d9549",
+        "node:e56033259801308832a6",
+        "node:f0d8fc51741705d8d8ef"
+      ],
+      "provenance_refs": [
+        "prov:6766d512b10bb683",
+        "prov:4f319b2cfae58f1b",
+        "prov:ddd6f48cdc67467b",
+        "prov:46fe9767c5347ca4",
+        "prov:f0de02958bc24ecb"
+      ],
+      "responsibility": "Support the verification responsibility for the python project root with manifest, test, or documentation evidence.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "component.workspace-verification",
+      "id": "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d",
+      "name": "Workspace Verification support imports Workspace Fmc Mcp behavior",
+      "near_neighbor_alternative_ids": [
+        "near.file-bucket-boundary"
+      ],
+      "provenance_refs": [
+        "prov:6766d512b10bb683",
+        "prov:aeec7a1dae758e4e",
+        "prov:83bfaa715796cf55"
+      ],
+      "supporting_edge_ids": [
+        "edge:2266d2f3d2a25f20b86b",
+        "edge:358deff7a11b59cd8af1",
+        "edge:66f7fa1f81266d13d1cf",
+        "edge:78c845c345be8ceb186b",
+        "edge:85cca138963a3384ad7d",
+        "edge:949a3b0102d9ea17bd4b",
+        "edge:aeac71aa3f93133e7c14",
+        "edge:b8a91b6c54c2c206345b",
+        "edge:be098ea973e49def1f00"
+      ],
+      "to_component_id": "component.workspace-source-fmc-mcp"
+    }
+  ],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "component.workspace-env-example",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-license",
+        "component.workspace-source-fmc-mcp",
+        "component.workspace-tooling",
+        "component.workspace-verification"
+      ],
+      "contract_ids": [
+        "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d"
+      ],
+      "description": "Accepted decomposition claims must trace to deterministic graph provenance.",
+      "id": "concern.anti-fabrication",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "component.workspace-env-example",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-license",
+        "component.workspace-source-fmc-mcp",
+        "component.workspace-tooling",
+        "component.workspace-verification"
+      ],
+      "contract_ids": [],
+      "description": "Root discovery, component grouping, contracts, and checks are sorted and reproducible.",
+      "id": "concern.determinism",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "component.workspace-env-example",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-license",
+        "component.workspace-source-fmc-mcp",
+        "component.workspace-tooling",
+        "component.workspace-verification"
+      ],
+      "contract_ids": [
+        "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d"
+      ],
+      "description": "Every component, contract, check, and gap is backed by graph/file provenance.",
+      "id": "concern.provenance",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "component.workspace-env-example",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-license",
+        "component.workspace-source-fmc-mcp",
+        "component.workspace-tooling",
+        "component.workspace-verification"
+      ],
+      "contract_ids": [],
+      "description": "Generated checks are local candidates and are not acceptance-allowlisted without proof.",
+      "id": "concern.no-live-paid-api",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "triggered_by": []
+    }
+  ],
+  "goal": "decompose the FMC MCP server into responsibility-bearing components for safe autonomous iteration planning",
+  "graph_hash": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "fixture-independent-probe-builder",
+      "builder_prompt_hash": "8a38e79d5f4d5ed89a1dc06fdf601d5c9a83cd4d4a4f4bb63c0a0d4a4f3c7781",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe.responsibility-boundary-negative",
+      "planted_negative_id": "negative.file-bucket-boundary",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "target_component_ids": [
+        "component.workspace-env-example"
+      ],
+      "target_contract_ids": [
+        "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d"
+      ]
+    }
+  ],
+  "input_hashes": {
+    "graph": "d7dce5e7a40e7ac3fd2b905e509c0e5b6473c39a94c9326b9c12e1ae71f190b3"
+  },
+  "model_output_hashes": {
+    "decomposer": "6591c63366549bde71be53f5c3c5c52f96ca54a7962a24f83c955b2bbe234fc5"
+  },
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Treat adjacent files as a polished bucket without responsibility evidence.",
+      "id": "near.file-bucket-boundary",
+      "provenance_refs": [
+        "prov:a2f9a17e49e49eac"
+      ],
+      "target_id": "contract.component-workspace-verification-imports-component-workspace-so-4a73ed6d",
+      "why_not_primary": "Rejected for this project goal: decompose the FMC MCP server into responsibility-bearing components for safe autonomous iteration planning. It also violates the stated non-goal: do not hardcode FMC-specific component names. A file bucket is not responsibility-bearing evidence."
+    }
+  ],
+  "non_goals": [
+    "do not hardcode FMC-specific component names",
+    "do not treat adjacent files as final components without behavioral responsibility evidence"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": null,
+      "command": "uv run pytest -q",
+      "component_ids": [
+        "component.workspace-env-example",
+        "component.workspace-gitignore",
+        "component.workspace-guidance",
+        "component.workspace-license",
+        "component.workspace-source-fmc-mcp",
+        "component.workspace-tooling",
+        "component.workspace-verification"
+      ],
+      "contract_ids": [],
+      "description": "Run root-local Python tests discovered from generic project metadata.",
+      "execution_dir": ".",
+      "execution_status": "statically_validated",
+      "id": "check.workspace-python-tests",
+      "proof_artifact": null,
+      "provenance_refs": [
+        "prov:e3613801121c5bb2"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true,
+      "safety_status": "safe_by_default",
+      "verification_gap_ids": []
+    }
+  ],
+  "primary_model_id": "fixture-meta-decomposer",
+  "project_id": "fmc-mcp",
+  "project_root": "/home/leonb/projects/fmc-mcp",
+  "prompt_hashes": {
+    "decomposer": "1dc5b693f2d03eb84348767d67002ed7136ca298f7c8813c21a6b67d3d276738"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-4b632e983ebc77a0",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "component.workspace-tooling"
+      ],
+      "contract_ids": [],
+      "description": "Component Workspace Tooling support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap.component-workspace-tooling-verification",
+      "proposed_closure_check": "Add or identify a root-local deterministic test/build command covering this component.",
+      "provenance_refs": [
+        "prov:3e753b536bef97f1",
+        "prov:e3613801121c5bb2",
+        "prov:d194260c714e1db7"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

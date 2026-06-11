@@ -1,0 +1,642 @@
+{
+  "acceptance_command_allowlist": [
+    "local-pytest",
+    "local-ruff",
+    "uv run python -m pytest -q",
+    "uv run ruff check ."
+  ],
+  "components": [
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "id": "component.fmc-mcp-server",
+      "name": "Fmc Mcp Server responsibility",
+      "owned_node_ids": [
+        "node:9810fbe9bc4ff06aee73"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "responsibility": "Coordinate concurrency back-pressure, runtime entrypoint, client injection, MCP server registration, read-only external operations, resource handlers via deployment_status_resource, devices_list_resource, get_deployment_status, lifespan, main with source-backed behavior in `fmc_mcp.server`.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi"
+      ],
+      "id": "component.fmc-mcp-config",
+      "name": "Fmc Mcp Config responsibility",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Coordinate concurrency back-pressure, configuration/secrets, pagination, rate limiting via FMCSettings, get_settings, log_config with source-backed behavior in `fmc_mcp.config`.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "id": "component.fmc-mcp-resources",
+      "name": "Fmc Mcp Resources responsibility",
+      "owned_node_ids": [
+        "node:84a7c7e4c189e28cb1bb"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "responsibility": "Coordinate client injection, read-only external operations, resource handlers, tool handlers via get_client, get_deployment_status, get_system_info, list_devices, list_network_objects with source-backed behavior in `fmc_mcp.resources`.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien"
+      ],
+      "id": "component.fmc-mcp-client",
+      "name": "Fmc Mcp Client responsibility",
+      "owned_node_ids": [
+        "node:4042451215c279f0dca7"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "responsibility": "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour"
+      ],
+      "id": "component.fmc-mcp-tools",
+      "name": "Fmc Mcp Tools responsibility",
+      "owned_node_ids": [
+        "node:a32d71cbbae4bcadc234"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c"
+      ],
+      "responsibility": "Coordinate concurrency back-pressure, client injection, read-only external operations, tool handlers via check_deployment_status, search_object_by_ip with source-backed behavior in `fmc_mcp.tools`.",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check.pytest",
+        "check.ruff"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server"
+      ],
+      "id": "component.fmc-mcp-main",
+      "name": "Fmc Mcp Main responsibility",
+      "owned_node_ids": [
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf"
+      ],
+      "responsibility": "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp.__main__`.",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-config",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:b380701c2879efce"
+      ],
+      "supporting_edge_ids": [
+        "edge:1dbd45e8683cedc3c87a",
+        "edge:70b02da26b7d5371300e"
+      ],
+      "to_component_id": "component.fmc-mcp-config"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-resources",
+      "id": "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+      "name": "component.fmc-mcp-resources imports component.fmc-mcp-client",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "supporting_edge_ids": [
+        "edge:25c3c6d20a305beeeca9"
+      ],
+      "to_component_id": "component.fmc-mcp-client"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-tools",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:750d7fda533e438c"
+      ],
+      "supporting_edge_ids": [
+        "edge:36e31fda6d2df7b6c8ff"
+      ],
+      "to_component_id": "component.fmc-mcp-tools"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-client",
+      "id": "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+      "name": "component.fmc-mcp-client imports component.fmc-mcp-config",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500",
+        "prov:b380701c2879efce"
+      ],
+      "supporting_edge_ids": [
+        "edge:4db395dbd95108d60b32",
+        "edge:5962c73618f92db925d1"
+      ],
+      "to_component_id": "component.fmc-mcp-config"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-tools",
+      "id": "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+      "name": "component.fmc-mcp-tools imports component.fmc-mcp-resources",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c",
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "supporting_edge_ids": [
+        "edge:68860f44ca677cc65828",
+        "edge:85277c562519c8594ad7"
+      ],
+      "to_component_id": "component.fmc-mcp-resources"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-main",
+      "id": "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+      "name": "component.fmc-mcp-main imports component.fmc-mcp-server",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:da6e96a18d26d1cf",
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:b2b2314baf57aa2e487d",
+        "edge:ca5e1295204bdf16bacf"
+      ],
+      "to_component_id": "component.fmc-mcp-server"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-client",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbfc0096826b93771472"
+      ],
+      "to_component_id": "component.fmc-mcp-client"
+    },
+    {
+      "from_component_id": "component.fmc-mcp-server",
+      "id": "contract.component-fmc-mcp-server-component-fmc-mcp-resou",
+      "name": "component.fmc-mcp-server imports component.fmc-mcp-resources",
+      "near_neighbor_alternative_ids": [
+        "near.primary-path-bucket"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524",
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "supporting_edge_ids": [
+        "edge:e7d89d2157e18cc96de3",
+        "edge:f5439cc4db4e0ea6bf94"
+      ],
+      "to_component_id": "component.fmc-mcp-resources"
+    }
+  ],
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Accepted decomposition claims must trace to graph provenance.",
+      "id": "concern.anti-fabrication",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [],
+      "description": "Snapshot artifacts are canonical and gateable without live APIs.",
+      "id": "concern.determinism",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Graph-derived evidence backs each accepted component and contract.",
+      "id": "concern.provenance",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [],
+      "description": "Acceptance checks are local and allowlisted.",
+      "id": "concern.no-live-paid-api",
+      "provenance_refs": [
+        "prov:de169aac696fc2e0"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "concurrency_limit",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-tools"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Concurrent external FMC requests are bounded by source-modeled back-pressure. Source settings define 10 concurrent connections.",
+      "id": "concern.concurrency-limit",
+      "provenance_refs": [
+        "prov:750d7fda533e438c",
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": [
+        "concurrency_limit"
+      ]
+    },
+    {
+      "category": "live_test_boundary",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-main",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-tools"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Credentialed live tests are present or implied and must remain outside default local acceptance unless explicitly enabled.",
+      "id": "concern.live-test-boundary",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf"
+      ],
+      "triggered_by": [
+        "live_test_boundary"
+      ]
+    },
+    {
+      "category": "public_mcp_contract",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-main",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-tools"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Public MCP resources and tools are externally meaningful contract surfaces.",
+      "id": "concern.public-mcp-contract",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524",
+        "prov:da6e96a18d26d1cf"
+      ],
+      "triggered_by": [
+        "public_mcp_contract"
+      ]
+    },
+    {
+      "category": "rate_limit",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-config"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Rate limiting behavior is a product invariant for external FMC API access. Source settings define 120 requests per minute.",
+      "id": "concern.rate-limit",
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "triggered_by": [
+        "rate_limit"
+      ]
+    },
+    {
+      "category": "read_only_external_operations",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-tools"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "FMC domain operations are modeled as read-oriented external calls; auth-token POSTs are separate from domain mutation behavior.",
+      "id": "concern.read-only-external-operations",
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c",
+        "prov:750d7fda533e438c",
+        "prov:bcfd8e782d7fe500",
+        "prov:d10dbb159e6fb524"
+      ],
+      "triggered_by": [
+        "read_only_external_operations"
+      ]
+    },
+    {
+      "category": "secret_safety",
+      "component_ids": [
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-config"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Secret-bearing settings and credentials must remain redacted and must not be logged or exposed in model artifacts.",
+      "id": "concern.secret-safety",
+      "provenance_refs": [
+        "prov:b380701c2879efce",
+        "prov:bcfd8e782d7fe500"
+      ],
+      "triggered_by": [
+        "secret_safety"
+      ]
+    }
+  ],
+  "goal": "produce an iteration-ready project model for FMC-MCP that exposes behavioral responsibilities, runtime/data-flow contracts, external surfaces, product invariants, quality gates, backlog priorities, and open questions",
+  "held_out_probes": [
+    {
+      "builder_independent_from_decomposer": true,
+      "builder_model_id": "fixture-independent-probe-builder",
+      "builder_prompt_hash": "ff4b7bd60a806e2a6d0686976353f4be6e992956765d849e386d97f6ec88c947",
+      "discrimination_passed": true,
+      "golden_control_passed": true,
+      "hidden_from_primary_decomposer": true,
+      "id": "probe.primary-file-bucket-negative",
+      "planted_negative_id": "negative.fluent-file-bucket",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "target_component_ids": [
+        "component.fmc-mcp-server"
+      ],
+      "target_contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi"
+      ]
+    }
+  ],
+  "model_id": "fixture-good-model",
+  "near_neighbor_alternatives": [
+    {
+      "alternative": "Treat adjacent files as one polished bucket.",
+      "id": "near.primary-path-bucket",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "target_id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+      "why_not_primary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not treat file buckets as final components."
+    }
+  ],
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": "local-pytest",
+      "command": "uv run python -m pytest -q",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Run the local deterministic pytest suite.",
+      "id": "check.pytest",
+      "provenance_refs": [
+        "prov:de169aac696fc2e0"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    },
+    {
+      "acceptance_command_id": "local-ruff",
+      "command": "uv run ruff check .",
+      "component_ids": [
+        "component.fmc-mcp-server",
+        "component.fmc-mcp-config",
+        "component.fmc-mcp-resources",
+        "component.fmc-mcp-client",
+        "component.fmc-mcp-tools",
+        "component.fmc-mcp-main"
+      ],
+      "contract_ids": [
+        "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-resources-component-fmc-mcp-cl",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-tools",
+        "contract.component-fmc-mcp-client-component-fmc-mcp-confi",
+        "contract.component-fmc-mcp-tools-component-fmc-mcp-resour",
+        "contract.component-fmc-mcp-main-component-fmc-mcp-server",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-clien",
+        "contract.component-fmc-mcp-server-component-fmc-mcp-resou"
+      ],
+      "description": "Run configured Ruff lint checks.",
+      "id": "check.ruff",
+      "provenance_refs": [
+        "prov:e3613801121c5bb2"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true
+    }
+  ],
+  "project_id": "fmc-mcp",
+  "verification_gaps": []
+}

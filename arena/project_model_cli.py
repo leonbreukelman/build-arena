@@ -30,6 +30,11 @@ def main(argv: list[str] | None = None) -> int:
     snapshot.add_argument("--llm-mode", choices=["fixture", "recorded", "live", "off"], default="fixture")
     snapshot.add_argument("--model-output")
     snapshot.add_argument("--allow-live", action="store_true")
+    snapshot.add_argument("--live-provider", default="xai")
+    snapshot.add_argument("--live-base-url")
+    snapshot.add_argument("--live-model")
+    snapshot.add_argument("--live-api-key-env")
+    snapshot.add_argument("--run-adversarial-probes", action="store_true")
     snapshot.add_argument("--overwrite", action="store_true")
 
     gate = sub.add_parser("gate")
@@ -54,6 +59,9 @@ def _snapshot(args: argparse.Namespace) -> int:
     if args.llm_mode == "live" and not args.allow_live:
         print("live mode requires --allow-live and configured auth; refusing routine live spend", file=sys.stderr)
         return 2
+    if args.llm_mode == "live" and not args.live_model:
+        print("live mode requires --live-model so real attempts do not rely on an unverified fallback model", file=sys.stderr)
+        return 2
     try:
         result = build_project_model_snapshot(
             args.project,
@@ -65,7 +73,12 @@ def _snapshot(args: argparse.Namespace) -> int:
             primary_backlog_item=args.primary_backlog_item,
             llm_mode=args.llm_mode,
             model_output_path=args.model_output,
+            live_provider=args.live_provider,
+            live_model=args.live_model,
+            live_base_url=args.live_base_url,
+            live_api_key_env=args.live_api_key_env,
             overwrite=args.overwrite,
+            run_adversarial_probes=args.run_adversarial_probes,
         )
     except Exception as exc:  # noqa: BLE001 - CLI must print concise diagnostics.
         print(str(exc), file=sys.stderr)

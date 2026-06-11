@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: First real Project Model v1 decomposition of the read-only Cisco FMC MCP server from git and filesystem truth
+Non-goals: ["do not treat directories or adjacent files as final semantic components", "do not require live FMC credentials, network calls, or paid LLM/API calls for acceptance"]

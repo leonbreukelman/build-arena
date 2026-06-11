@@ -22,6 +22,7 @@ from arena.generated.models import (
     VerdictOutcome,
     Worktree,
 )
+from scorer.goal_config import DEFAULT_GOAL_CONFIG, load_goal_config
 
 
 @dataclass
@@ -41,6 +42,7 @@ class LoopContext:
     stop_after_promotions: int | None = None
     structural_validator: Any | None = None
     ledger: Any | None = None
+    evidence_writer: Any | None = None
 
 
 @dataclass(frozen=True)
@@ -56,6 +58,7 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
     worktree: Worktree | None = None
     hypothesis = None
     verdict: Verdict | None = None
+    verified_score_after: Any | None = None
     patch_path: Path | None = None
     project: Any | None = None
     promotions_total = 0
@@ -67,6 +70,7 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
             ctx.divergence.check_and_raise(run.id)
             match state:
                 case LoopState.SCAN:
+                    verified_score_after = None
                     cycles_total += 1
                     ctx.budget.record_cycle_started()
                     cycle = Cycle(
@@ -103,7 +107,13 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
                             "bandit_arm": getattr(proposal.arm, "key", None),
                         },
                     )
-                    if is_boundary_violation(hypothesis.target_files):
+                    assert worktree is not None
+                    if _boundary_violation_for_worktree(
+                        hypothesis.target_files,
+                        Path(worktree.path),
+                        event_log=ctx.event_log,
+                        cycle_id=cycle.id,
+                    ):
                         verdict = _discard_verdict(hypothesis.id, ctx.active_score.id, RejectReason.BOUNDARY_VIOLATION)
                         ctx.event_log.emit("BOUNDARY_VIOLATION", cycle_id=cycle.id, payload={"hypothesis_id": hypothesis.id})
                         state = LoopState.DISCARD
@@ -134,33 +144,73 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
                             state = LoopState.VERIFY
                 case LoopState.VERIFY:
                     assert cycle is not None and worktree is not None and hypothesis is not None and patch_path is not None
+                    score_capture = _ScoreCapture(ctx.scorer)
                     verification = ctx.verifier.verify_worktree(
                         hypothesis_id=hypothesis.id,
                         reasoning=hypothesis.intent,
                         score_before=ctx.active_score,
                         worktree=Path(worktree.path),
-                        scorer=ctx.scorer,
+                        scorer=score_capture,
                     )
+                    verified_score_after = score_capture.last_score
                     verified_verdict: Verdict = verification.verdict
                     verdict = verified_verdict
                     ctx.event_log.emit("ABLATION_RESULT", cycle_id=cycle.id, payload=verification.ablation_result.model_dump(mode="json"))
                     state = LoopState.PROMOTE if verified_verdict.outcome == VerdictOutcome.PROMOTED else LoopState.DISCARD
                 case LoopState.PROMOTE:
-                    assert cycle is not None and worktree is not None and verdict is not None
+                    assert cycle is not None and worktree is not None and verdict is not None and hypothesis is not None
+                    if verified_score_after is None:
+                        raise RuntimeError("verifier did not return a score_after record through scorer.score_repo")
+                    score_before = ctx.active_score
+                    score_after = verified_score_after
                     ctx.event_log.emit("VERDICT_DECIDED", cycle_id=cycle.id, payload=_verdict_payload(verdict, hypothesis.fingerprint_id))
                     _emit_disagreement_if_needed(ctx, cycle.id, verdict)
-                    ctx.active_baseline = await _call(
+                    packaged = await _call(
                         ctx.promoter.promote,
                         verdict,
                         worktree,
                         run_id=run.id,
                         score_record_id=verdict.score_after_id or verdict.score_before_id,
                     )
-                    ctx.active_score = ctx.scorer.score_repo(Path(worktree.path))
                     promotions_total += 1
                     ctx.budget.record_promotion()
-                    ctx.event_log.emit("PROMOTED", cycle_id=cycle.id, payload={"verdict_id": verdict.id})
-                    ctx.event_log.emit("BASELINE_ADVANCED", cycle_id=cycle.id, payload=ctx.active_baseline.model_dump(mode="json"))
+                    candidate_only = bool(getattr(ctx.promoter, "candidate_only", False))
+                    candidate_branch = _candidate_branch(ctx.promoter, cycle.id) if candidate_only else None
+                    if candidate_only:
+                        ctx.event_log.emit(
+                            "CANDIDATE_PACKAGED",
+                            cycle_id=cycle.id,
+                            payload={
+                                "verdict_id": verdict.id,
+                                "candidate_branch": candidate_branch,
+                                "candidate": packaged.model_dump(mode="json"),
+                            },
+                        )
+                    else:
+                        ctx.active_baseline = packaged
+                        ctx.active_score = score_after
+                        ctx.event_log.emit("PROMOTED", cycle_id=cycle.id, payload={"verdict_id": verdict.id})
+                        ctx.event_log.emit("BASELINE_ADVANCED", cycle_id=cycle.id, payload=ctx.active_baseline.model_dump(mode="json"))
+                    if ctx.ledger is not None:
+                        _record_ledger_success(
+                            ctx.ledger,
+                            fingerprint_id=hypothesis.fingerprint_id,
+                            hypothesis_id=hypothesis.id,
+                            cycle_id=cycle.id,
+                        )
+                    if ctx.evidence_writer is not None:
+                        ctx.evidence_writer.write_cycle_evidence(
+                            cycle_id=cycle.id,
+                            event_log=ctx.event_log,
+                            budget=ctx.budget,
+                            worktree=worktree,
+                            score_before=score_before,
+                            score_after=score_after,
+                            verdict=verdict,
+                            patch_path=patch_path,
+                            candidate=packaged if candidate_only else None,
+                            candidate_branch=candidate_branch,
+                        )
                     await _cleanup(ctx, worktree, cycle.id)
                     if ctx.stop_after_promotions is not None and promotions_total >= ctx.stop_after_promotions:
                         ctx.event_log.emit("RUN_COMPLETED", payload={"promotions_total": promotions_total, "cycles_total": cycles_total})
@@ -169,23 +219,47 @@ async def run_loop(run: Run, ctx: LoopContext) -> LoopResult:
                 case LoopState.DISCARD:
                     assert cycle is not None and worktree is not None and verdict is not None and hypothesis is not None
                     if ctx.ledger is not None:
-                        ctx.ledger.record(
+                        _record_ledger_failure(
+                            ctx.ledger,
                             fingerprint_id=hypothesis.fingerprint_id,
                             hypothesis_id=hypothesis.id,
-                            outcome=_enum_value(verdict.outcome),
-                            reject_reason=_enum_value(verdict.reject_reason) if verdict.reject_reason else None,
+                            cycle_id=cycle.id,
+                            reject_reason=_enum_value(verdict.reject_reason) if verdict.reject_reason else "UNKNOWN",
                         )
                     ctx.event_log.emit("VERDICT_DECIDED", cycle_id=cycle.id, payload=_verdict_payload(verdict, hypothesis.fingerprint_id))
                     _emit_disagreement_if_needed(ctx, cycle.id, verdict)
+                    if ctx.evidence_writer is not None:
+                        ctx.evidence_writer.write_cycle_evidence(
+                            cycle_id=cycle.id,
+                            event_log=ctx.event_log,
+                            budget=ctx.budget,
+                            worktree=worktree,
+                            score_before=ctx.active_score,
+                            score_after=None,
+                            verdict=verdict,
+                            patch_path=patch_path,
+                        )
                     await _cleanup(ctx, worktree, cycle.id)
                     state = LoopState.SCAN
                 case LoopState.HALT:
                     return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total)
         except BudgetBreach as breach:
             halt_record = _halt(ctx, run.id, breach.reason, breach.detail)
+            _write_halt_evidence(ctx, run.id, halt_record)
             return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total, halt_record=halt_record)
         except Diverged as diverged:
             halt_record = _halt(ctx, run.id, diverged.reason, diverged.detail)
+            _write_halt_evidence(ctx, run.id, halt_record)
+            return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total, halt_record=halt_record)
+        except Exception as exc:  # noqa: BLE001 - convert unexpected loop crashes into canonical halt evidence.
+            if cycle is not None and worktree is not None:
+                await _cleanup_after_unexpected_exception(ctx, worktree, cycle.id)
+            detail = f"unexpected_exception:{type(exc).__name__}: {exc}"
+            # Schema/generated files are protected in this maintenance slice, so
+            # unexpected loop faults reuse RUNNER_UNAVAILABLE with a structured
+            # detail prefix until a future schema migration can add INTERNAL_ERROR.
+            halt_record = _halt(ctx, run.id, HaltReason.RUNNER_UNAVAILABLE, detail)
+            _write_halt_evidence(ctx, run.id, halt_record)
             return LoopResult(promotions_total=promotions_total, cycles_total=cycles_total, halt_record=halt_record)
 
 
@@ -194,6 +268,28 @@ async def _call(func, *args, **kwargs):
     if inspect.isawaitable(result):
         return await result
     return result
+
+
+class _ScoreCapture:
+    def __init__(self, scorer: Any) -> None:
+        self.scorer = scorer
+        self.last_score: Any | None = None
+
+    def score_repo(self, repo: Path) -> Any:
+        self.last_score = self.scorer.score_repo(repo)
+        return self.last_score
+
+
+async def _cleanup_after_unexpected_exception(ctx: LoopContext, worktree: Worktree, cycle_id: str) -> None:
+    try:
+        await _cleanup(ctx, worktree, cycle_id)
+    except Exception as exc:  # noqa: BLE001 - cleanup failure must not hide the primary halt.
+        ctx.event_log.emit(
+            "WORKTREE_CLEANUP_FAILED",
+            cycle_id=cycle_id,
+            payload={"worktree_id": worktree.id, "error_type": type(exc).__name__, "detail": str(exc)},
+            level="error",
+        )
 
 
 def _emit_run_started(run: Run, ctx: LoopContext) -> None:
@@ -205,6 +301,26 @@ def _ast_diff_pattern(project: Any) -> str:
     if isinstance(project, dict):
         return str(project.get("ast_diff_pattern", ""))
     return str(getattr(project, "ast_diff_pattern", ""))
+
+
+def _boundary_violation_for_worktree(
+    target_files,
+    worktree: Path,
+    *,
+    event_log: EventLog | None = None,
+    cycle_id: str | None = None,
+) -> bool:
+    goal_path = worktree / DEFAULT_GOAL_CONFIG
+    if not goal_path.exists():
+        if event_log is not None:
+            event_log.emit(
+                "GOAL_CONFIG_FALLBACK",
+                cycle_id=cycle_id,
+                payload={"reason": "missing_goal_config", "path": str(goal_path)},
+            )
+        return is_boundary_violation(target_files)
+    goal_config = load_goal_config(worktree)
+    return is_boundary_violation(target_files, goal_config=goal_config)
 
 
 async def _structural_ok(ctx: LoopContext, hypothesis, patch_path: Path | None, worktree: Worktree) -> bool:
@@ -268,6 +384,64 @@ def _verdict_payload(verdict: Verdict, fingerprint_id: str) -> dict[str, Any]:
 
 def _enum_value(value: Any) -> str:
     return str(getattr(value, "value", value))
+
+
+def _candidate_branch(promoter: Any, cycle_id: str) -> str | None:
+    branch_name = getattr(promoter, "branch_name", None)
+    if callable(branch_name):
+        return str(branch_name(cycle_id))
+    return None
+
+
+def _record_ledger_failure(
+    ledger: Any,
+    *,
+    fingerprint_id: str,
+    hypothesis_id: str,
+    cycle_id: str,
+    reject_reason: str,
+) -> None:
+    record_failure = getattr(ledger, "record_failure", None)
+    if callable(record_failure):
+        record_failure(
+            fingerprint_id=fingerprint_id,
+            hypothesis_id=hypothesis_id,
+            cycle_id=cycle_id,
+            reject_reason=reject_reason,
+        )
+        return
+    ledger.record(
+        fingerprint_id=fingerprint_id,
+        hypothesis_id=hypothesis_id,
+        cycle_id=cycle_id,
+        outcome="DISCARDED",
+        reject_reason=reject_reason,
+    )
+
+
+def _record_ledger_success(ledger: Any, *, fingerprint_id: str, hypothesis_id: str, cycle_id: str) -> None:
+    record_success = getattr(ledger, "record_success", None)
+    if callable(record_success):
+        record_success(fingerprint_id=fingerprint_id, hypothesis_id=hypothesis_id, cycle_id=cycle_id)
+        return
+    ledger.record(
+        fingerprint_id=fingerprint_id,
+        hypothesis_id=hypothesis_id,
+        cycle_id=cycle_id,
+        outcome="PROMOTED",
+        reject_reason=None,
+    )
+
+
+def _write_halt_evidence(ctx: LoopContext, run_id: str, halt_record: HaltRecord) -> None:
+    if ctx.evidence_writer is None:
+        return
+    ctx.evidence_writer.write_halt_evidence(
+        run_id=run_id,
+        event_log=ctx.event_log,
+        budget=ctx.budget,
+        halt_record=halt_record,
+    )
 
 
 def _halt(ctx: LoopContext, run_id: str, reason: HaltReason, detail: str) -> HaltRecord:

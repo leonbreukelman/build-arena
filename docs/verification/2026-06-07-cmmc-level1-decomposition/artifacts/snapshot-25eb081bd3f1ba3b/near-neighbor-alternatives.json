@@ -1,0 +1,11 @@
+[
+  {
+    "alternative": "Treat adjacent files as one polished bucket.",
+    "id": "near.primary-path-bucket",
+    "provenance_refs": [
+      "prov:b6300a099cdd9dd5"
+    ],
+    "target_id": "contract.component-app-frontend-src-api-client-component-",
+    "why_not_primary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not use dirty local WIP from the canonical checkout."
+  }
+]

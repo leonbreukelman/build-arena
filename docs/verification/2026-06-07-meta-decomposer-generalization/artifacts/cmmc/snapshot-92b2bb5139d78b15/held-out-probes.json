@@ -1,0 +1,21 @@
+[
+  {
+    "builder_independent_from_decomposer": true,
+    "builder_model_id": "fixture-independent-probe-builder",
+    "builder_prompt_hash": "8a38e79d5f4d5ed89a1dc06fdf601d5c9a83cd4d4a4f4bb63c0a0d4a4f3c7781",
+    "discrimination_passed": true,
+    "golden_control_passed": true,
+    "hidden_from_primary_decomposer": true,
+    "id": "probe.responsibility-boundary-negative",
+    "planted_negative_id": "negative.file-bucket-boundary",
+    "provenance_refs": [
+      "prov:714c0f8b1d97b853"
+    ],
+    "target_component_ids": [
+      "component.app-backend-source-alembic"
+    ],
+    "target_contract_ids": [
+      "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f"
+    ]
+  }
+]

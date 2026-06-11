@@ -1,0 +1,65 @@
+{
+  "new": {
+    "backend_contract_count": 43,
+    "checks": [
+      {
+        "command": "uv run pytest -q",
+        "execution_dir": "app/backend",
+        "id": "check.app-backend-python-tests",
+        "safety_status": "safe_by_default"
+      },
+      {
+        "command": "npm test -- --run",
+        "execution_dir": "app/frontend",
+        "id": "check.app-frontend-node-test",
+        "safety_status": "unknown"
+      }
+    ],
+    "component_count": 35,
+    "components_by_area": {
+      "backend": 18,
+      "frontend": 13,
+      "other": 4
+    },
+    "components_by_root": {
+      ".": 35
+    },
+    "contract_count": 57,
+    "frontend_contract_count": 14,
+    "gap_count": 0,
+    "gate_passed": true,
+    "gate_violation_count": 0,
+    "observable_check_count": 2,
+    "snapshot_id": "snapshot-92b2bb5139d78b15",
+    "violations_by_gate": {}
+  },
+  "old": {
+    "backend_contract_count": 0,
+    "checks": [
+      {
+        "command": "uv run pytest -q",
+        "execution_dir": null,
+        "id": "check.local-tests",
+        "safety_status": null
+      }
+    ],
+    "component_count": 8,
+    "components_by_area": {
+      "frontend": 8
+    },
+    "components_by_root": {
+      ".": 8
+    },
+    "contract_count": 1,
+    "frontend_contract_count": 1,
+    "gap_count": 0,
+    "gate_passed": false,
+    "gate_violation_count": 70,
+    "observable_check_count": 1,
+    "snapshot_id": "snapshot-25eb081bd3f1ba3b",
+    "violations_by_gate": {
+      "edge_coverage": 7,
+      "inventory_coverage": 63
+    }
+  }
+}

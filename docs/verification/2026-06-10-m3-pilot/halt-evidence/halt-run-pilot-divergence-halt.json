@@ -1,0 +1,96 @@
+{
+  "budget": {
+    "claude_code_credits_cap": null,
+    "claude_code_credits_used": 0,
+    "codex_credits_cap": null,
+    "codex_credits_used": 0,
+    "copilot_premium_cap": null,
+    "copilot_premium_used": 0,
+    "cycle_count_cap": 60,
+    "cycle_count_used": 0,
+    "promotions_total": 0,
+    "start_ts": 1781108011.4578714,
+    "wall_clock_seconds_cap": 999,
+    "wall_clock_seconds_used": 0
+  },
+  "events": [
+    {
+      "cycle_id": "injected-0",
+      "id": "evt-run-pilot-divergence-halt-1",
+      "level": "info",
+      "payload": {
+        "hypothesis_id": "hyp-0"
+      },
+      "payload_json_sha": "97d9536b62915484d9f13bfac1cd26ad59e613a4f298d8709c6afaee74b84b0d",
+      "run_id": "run-pilot-divergence-halt",
+      "seq": 1,
+      "ts": 1781108011.4559343,
+      "type": "BOUNDARY_VIOLATION"
+    },
+    {
+      "cycle_id": "injected-1",
+      "id": "evt-run-pilot-divergence-halt-2",
+      "level": "info",
+      "payload": {
+        "hypothesis_id": "hyp-1"
+      },
+      "payload_json_sha": "3f5e88d6b26efbeedbc56fe292770cb2ae5655e47fa885aa0fda5c4e3337211f",
+      "run_id": "run-pilot-divergence-halt",
+      "seq": 2,
+      "ts": 1781108011.4564333,
+      "type": "BOUNDARY_VIOLATION"
+    },
+    {
+      "cycle_id": "injected-2",
+      "id": "evt-run-pilot-divergence-halt-3",
+      "level": "info",
+      "payload": {
+        "hypothesis_id": "hyp-2"
+      },
+      "payload_json_sha": "dfa88cf7c763012eb02dec45c2ac46867f6bc9bb45f4934714aff72928a6fa33",
+      "run_id": "run-pilot-divergence-halt",
+      "seq": 3,
+      "ts": 1781108011.4568663,
+      "type": "BOUNDARY_VIOLATION"
+    },
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-divergence-halt-4",
+      "level": "info",
+      "payload": {
+        "git_head_at_start": "dcefc9888603623fbae6291aa7f88bd0a44c9203",
+        "run_id": "run-pilot-divergence-halt"
+      },
+      "payload_json_sha": "25c8c65d728df4cccacebb1243dffc9b5b8ce718525dd3a7a9c77e8be98371c6",
+      "run_id": "run-pilot-divergence-halt",
+      "seq": 4,
+      "ts": 1781108011.4574356,
+      "type": "RUN_STARTED"
+    },
+    {
+      "cycle_id": null,
+      "id": "evt-run-pilot-divergence-halt-5",
+      "level": "error",
+      "payload": {
+        "detail": "divergence detector tripped: BOUNDARY_VIOLATION_ATTEMPT",
+        "reason": "BOUNDARY_VIOLATION_ATTEMPT"
+      },
+      "payload_json_sha": "e34388b921bdcf745c157b28e7efbe4e42188e426ac7c8847ebde2887b1d2a99",
+      "run_id": "run-pilot-divergence-halt",
+      "seq": 5,
+      "ts": 1781108011.4579146,
+      "type": "HALTED"
+    }
+  ],
+  "halt": {
+    "detail": "divergence detector tripped: BOUNDARY_VIOLATION_ATTEMPT",
+    "id": "halt-run-pilot-divergence-halt-5",
+    "last_event_seq": 5,
+    "operator_ack_ts": null,
+    "reason": "BOUNDARY_VIOLATION_ATTEMPT",
+    "run_id": "run-pilot-divergence-halt",
+    "ts": 1781108011.4579146
+  },
+  "run_id": "run-pilot-divergence-halt",
+  "schema_version": "halt-evidence/v1"
+}

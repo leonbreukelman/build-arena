@@ -54,6 +54,39 @@ def test_project_model_v1_schema_validates_ai_decomposer_primary_artifact(tmp_pa
     assert v1["models"]["primary"] == result.snapshot.primary_model_id
     assert {artifact["artifactType"] for artifact in v1["derivedArtifacts"]} >= {"jsonl-events", "sqlite-projection", "markdown-summary"}
 
+    iteration = v1["iterationReadiness"]
+    assert {"componentProfiles", "runtimeContracts", "externalSurfaces", "productInvariants", "qualityGates", "priorityBacklog", "openQuestions"} <= set(iteration)
+    assert iteration["componentProfiles"]
+    assert all("own the responsibility represented by" not in profile["responsibilitySummary"].lower() for profile in iteration["componentProfiles"])
+
+    legacy_without_iteration = dict(v1)
+    legacy_without_iteration.pop("iterationReadiness")
+    legacy_errors = sorted(Draft202012Validator(schema).iter_errors(legacy_without_iteration), key=lambda error: list(error.path))
+    assert legacy_errors == []
+
+
+def test_project_model_v1_schema_validates_probe_backed_snapshot(tmp_path: Path) -> None:
+    project = tmp_path / "repo"
+    _write_tiny_repo(project)
+    result = build_project_model_snapshot(
+        project,
+        tmp_path / "artifacts",
+        project_id="tiny-v1-probed",
+        goal="decompose tiny repo",
+        non_goals=["no buckets"],
+        llm_mode="fixture",
+        run_adversarial_probes=True,
+    )
+
+    schema = _load_json(SCHEMA_PATH)
+    v1 = _load_json(result.snapshot_dir / "project-model-v1.json")
+    errors = sorted(Draft202012Validator(schema).iter_errors(v1), key=lambda error: list(error.path))
+
+    assert errors == []
+    assert result.gate_report.passed is True
+    assert v1["snapshot"]["held_out_probes"][0]["proof_artifact"] == "proofs/probe.path-bucket-contract-discrimination.json"
+    assert (result.snapshot_dir / v1["snapshot"]["held_out_probes"][0]["proof_artifact"]).exists()
+
 
 def test_project_model_v1_schema_rejects_legacy_v0_shape() -> None:
     schema = _load_json(SCHEMA_PATH)
@@ -100,7 +133,8 @@ def test_project_model_v1_from_snapshot_requires_gate_report_and_graph_context(t
 def _write_tiny_repo(project: Path) -> None:
     (project / "pkg").mkdir(parents=True)
     (project / "tests").mkdir()
-    (project / "pkg/core.py").write_text("def add_one(value: int) -> int:\n    return value + 1\n", encoding="utf-8")
+    (project / "pkg/worker.py").write_text("def one() -> int:\n    return 1\n", encoding="utf-8")
+    (project / "pkg/core.py").write_text("from pkg.worker import one\n\ndef add_one(value: int) -> int:\n    return value + one()\n", encoding="utf-8")
     (project / "tests/test_core.py").write_text(
         "from pkg.core import add_one\n\ndef test_add_one():\n    assert add_one(1) == 2\n",
         encoding="utf-8",

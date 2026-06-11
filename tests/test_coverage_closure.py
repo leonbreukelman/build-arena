@@ -177,6 +177,16 @@ class StaticVerifier:
         self.verdict = verdict
 
     def verify_worktree(self, **kwargs: Any) -> Any:
+        kwargs["scorer"].score_repo(kwargs["worktree"])
+        return type(
+            "Verification",
+            (),
+            {"verdict": self.verdict, "ablation_result": type("Ablation", (), {"model_dump": lambda self, mode: {"ok": True}})()},
+        )()
+
+
+class NoScoreVerifier(StaticVerifier):
+    def verify_worktree(self, **kwargs: Any) -> Any:
         return type(
             "Verification",
             (),
@@ -242,6 +252,7 @@ def _loop_context(
     hypothesis: Hypothesis,
     router_result: ApplyResult | None = None,
     verifier_verdict: Verdict | None = None,
+    verifier: Any | None = None,
     ledger: RecordingLedger | None = None,
     structural_validator: Any | None = None,
     stop_after_promotions: int | None = None,
@@ -273,7 +284,7 @@ def _loop_context(
         scorer=NoopScorer(),
         hypothesizer=StaticHypothesizer(hypothesis),
         router=StaticRouter(router_result),
-        verifier=StaticVerifier(verifier_verdict),
+        verifier=verifier or StaticVerifier(verifier_verdict),
         promoter=RecordingPromoter(),
         active_baseline=_baseline(),
         active_score=_score_record("score-before"),
@@ -486,6 +497,35 @@ def test_loop_discards_boundary_failed_ledger_apply_and_structural_cases(tmp_pat
     assert verdict_payload["reject_reason"] == RejectReason.STRUCTURAL_VALIDATION_FAIL.value
 
 
+def test_loop_halts_before_promotion_when_verifier_does_not_score_worktree(tmp_path: Path) -> None:
+    verifier_verdict = Verdict(
+        id="verdict-promote-without-score",
+        hypothesis_id="hyp-1",
+        outcome=VerdictOutcome.PROMOTED,
+        score_delta=1.0,
+        score_before_id="score-before",
+        score_after_id="score-after",
+        tests_passed=True,
+        decided_ts=1.0,
+    )
+    ctx = _loop_context(
+        tmp_path / "promote-without-score",
+        hypothesis=_hypothesis(),
+        verifier_verdict=verifier_verdict,
+        verifier=NoScoreVerifier(verifier_verdict),
+    )
+
+    result = asyncio.run(run_loop(_run_model(), ctx))
+
+    event_types = [event.type for event in ctx.event_log.read_events()]
+    assert result.halt_record is not None
+    assert result.halt_record.reason == HaltReason.RUNNER_UNAVAILABLE
+    assert result.halt_record.detail is not None
+    assert "did not return a score_after record" in result.halt_record.detail
+    assert "VERDICT_DECIDED" not in event_types
+    assert "PROMOTED" not in event_types
+
+
 def test_loop_promotes_then_continues_until_budget_and_helper_edges(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -612,31 +652,58 @@ def test_scorer_error_and_fallback_paths(tmp_path: Path, monkeypatch: pytest.Mon
     record = _score_record()
     assert record.to_jsonable()["vector"]["coverage_pct"] == 90.0
 
-    def failing_git(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    from scorer.goal_config import load_goal_config
+
+    def write_goal_config(*, runtime_proxy: bool = False) -> Any:
+        runtime_line = '\nruntime_proxy = ["python3", "benchmarks/runtime_proxy.py"]' if runtime_proxy else ""
+        (tmp_path / ".arena").mkdir(exist_ok=True)
+        (tmp_path / ".arena" / "goal.toml").write_text(
+            f'''
+schema_version = "goal-config/v1"
+project_id = "fallbacks"
+
+[commands]
+test = ["python3", "-c", "pass"]
+lint = ["python3", "-c", "pass"]
+typecheck = ["python3", "-c", "pass"]
+coverage = ["python3", "-c", "pass"]{runtime_line}
+
+[coverage]
+source = "coverage.json"
+floor = 0.0
+'''.strip()
+            + "\n",
+            encoding="utf-8",
+        )
+        return load_goal_config(tmp_path)
+
+    def failing_git(*args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(args, 1, stdout="", stderr="fatal")
 
     monkeypatch.setattr(scorer_engine, "_run", failing_git)
     with pytest.raises(RuntimeError, match="git rev-parse failed"):
         scorer_engine._git_oid(tmp_path)
 
-    def invalid_coverage(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    goal_config = write_goal_config()
+
+    def invalid_coverage(args: Any, repo: Path, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         (repo / "coverage.json").write_text("not json", encoding="utf-8")
         return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
 
     monkeypatch.setattr(scorer_engine, "_run", invalid_coverage)
-    assert scorer_engine._pytest_coverage(tmp_path) == (True, 0.0)
+    assert scorer_engine._test_and_coverage(tmp_path, goal_config) == (True, 0.0)
 
-    def invalid_stdout(args: list[str], repo: Path, *, timeout: int = 120) -> subprocess.CompletedProcess[str]:
+    def invalid_stdout(args: Any, repo: Path, **kwargs: Any) -> subprocess.CompletedProcess[str]:
         return subprocess.CompletedProcess(args, 0, stdout="not json", stderr="")
 
     monkeypatch.setattr(scorer_engine, "_run", invalid_stdout)
-    assert scorer_engine._ruff_violations(tmp_path) == 999
-    assert scorer_engine._pyright_errors(tmp_path) == 999
-    assert scorer_engine._runtime_proxy(tmp_path) == 0.0
+    assert scorer_engine._ruff_violations(tmp_path, goal_config) == 999
+    assert scorer_engine._pyright_errors(tmp_path, goal_config) == 999
+    assert scorer_engine._runtime_proxy(tmp_path, goal_config) == 0.0
     (tmp_path / "benchmarks").mkdir()
     (tmp_path / "benchmarks" / "runtime_proxy.py").write_text("raise SystemExit(1)\n", encoding="utf-8")
     monkeypatch.setattr(scorer_engine, "_run", failing_git)
-    assert scorer_engine._runtime_proxy(tmp_path) == 9999.0
+    assert scorer_engine._runtime_proxy(tmp_path, write_goal_config(runtime_proxy=True)) == 9999.0
 
     tree = ast.parse(
         "def f(x, y):\n"
@@ -652,7 +719,7 @@ def test_scorer_error_and_fallback_paths(tmp_path: Path, monkeypatch: pytest.Mon
     empty_src = tmp_path / "empty-src"
     empty_src.mkdir()
     (empty_src / "module.py").write_text("VALUE = 1\n", encoding="utf-8")
-    assert scorer_engine._cyclomatic_average(empty_src) == 0.0
+    assert scorer_engine._cyclomatic_average([empty_src]) == 0.0
     with pytest.raises(AssertionError, match="axis composite differs"):
         scorer_engine.assert_vectors_close(_score_record(composite=1.0).vector, _score_record(composite=2.0).vector)
     assert scorer_engine.score_axes_delta(_score_record(composite=1.0).vector, _score_record(composite=2.0).vector)["composite"] == 1.0

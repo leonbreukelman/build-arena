@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: decompose the FMC MCP server into responsibility-bearing components for safe autonomous iteration planning
+Non-goals: ["do not hardcode FMC-specific component names", "do not treat adjacent files as final components without behavioral responsibility evidence"]

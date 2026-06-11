@@ -1,0 +1,11 @@
+[
+  {
+    "alternative": "Treat adjacent files as one polished bucket.",
+    "id": "near.primary-path-bucket",
+    "provenance_refs": [
+      "prov:d10dbb159e6fb524"
+    ],
+    "target_id": "contract.component-fmc-mcp-server-component-fmc-mcp-confi",
+    "why_not_primary": "The goal requires responsibility-bearing components, and the non-goal forbids file buckets: do not treat file buckets as final components."
+  }
+]

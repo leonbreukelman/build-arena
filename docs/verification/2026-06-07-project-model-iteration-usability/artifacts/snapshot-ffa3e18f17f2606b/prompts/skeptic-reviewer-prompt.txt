@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, and held-out-probe leakage.
+Goal: produce an iteration-ready project model for FMC-MCP that exposes behavioral responsibilities, runtime/data-flow contracts, external surfaces, product invariants, quality gates, backlog priorities, and open questions
+Non-goals: ["do not treat file buckets as final components"]

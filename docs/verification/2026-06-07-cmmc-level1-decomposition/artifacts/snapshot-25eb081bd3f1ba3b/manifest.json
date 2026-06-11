@@ -1,0 +1,52 @@
+{
+  "artifact_hashes": {
+    "gate_report": "701713cefb3a3868953aafa32623938e64dcf478713cfba67ffb5b4ebd210617",
+    "graph_file": "90bfd5f19398787f1f3755e62accace9f14899130aa4cd821e0f9d1b937b9bc5",
+    "project_model_v0": "e01ee2d5adf1287f5f7cd7f667c59c15d803afa0c50f92783b4bbc77dfb066be",
+    "project_model_v1": "a30fdcd443d03036d1cdc628305fbac71e90002c0588aa65e7252f4655430030",
+    "snapshot": "489739e18d6e775403fd7b2c3f173b7202ccf16b5eb7786885a1c32e3e2447a5"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "b39562c3af0d8c3ed595088f9306a37945bb0eb2"
+  },
+  "encyclopedia_manifest_hash": "0d845884eae081fc67f98793b5e936fab3f6ac36026f78a7c4b367ff61a43f50",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "701713cefb3a3868953aafa32623938e64dcf478713cfba67ffb5b4ebd210617",
+  "gate_report_path": "gate-report.json",
+  "goal": "Project Model v1 decomposition of the CMMC Level 1 readiness assistant from clean remote-synced git and filesystem truth; expose backend/frontend/security/compliance/reporting/runtime boundaries for review and future iteration planning",
+  "graph_file_hash": "90bfd5f19398787f1f3755e62accace9f14899130aa4cd821e0f9d1b937b9bc5",
+  "graph_hash": "03c6f503c8778b0bc9b9caa9914591d8f9121ff11e0896b2f5645acabcb4142b",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "03c6f503c8778b0bc9b9caa9914591d8f9121ff11e0896b2f5645acabcb4142b"
+  },
+  "model_ids": {
+    "decomposer": "fixture-good-model",
+    "probe_builder": "fixture-independent-probe-builder",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not use dirty local WIP from the canonical checkout",
+    "do not require live production credentials, browser login, deployment, or paid LLM/API calls for acceptance"
+  ],
+  "output_hashes": {
+    "decomposer": "e167721864d1a4f70afb28b25a7d722b348297ae57a86f9d445b9fc9399cd815"
+  },
+  "project_id": "cmmc-level1-readiness-assistant",
+  "project_model_primary_path": "project-model-v1.json",
+  "project_model_v0_hash": "e01ee2d5adf1287f5f7cd7f667c59c15d803afa0c50f92783b4bbc77dfb066be",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_model_v1_hash": "a30fdcd443d03036d1cdc628305fbac71e90002c0588aa65e7252f4655430030",
+  "project_model_v1_path": "project-model-v1.json",
+  "project_root": "/home/leonb/projects/.decomposition-targets/cmmc-level1-readiness-assistant",
+  "prompt_hashes": {
+    "decomposer": "d983b6057c412fe679736b4f13f11f6c760bf5de3bc4657b95b144527fc7fcbc"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "489739e18d6e775403fd7b2c3f173b7202ccf16b5eb7786885a1c32e3e2447a5",
+  "snapshot_id": "snapshot-25eb081bd3f1ba3b",
+  "snapshot_path": "snapshot.json"
+}

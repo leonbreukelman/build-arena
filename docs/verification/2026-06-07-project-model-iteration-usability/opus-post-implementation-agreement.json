@@ -1,0 +1,25 @@
+{
+  "reviewer": "opus",
+  "addressed": true,
+  "confidence": "high",
+  "blockers": [],
+  "non_blocking_followups": [
+    "live_test_boundary invariant is enforcement=gap (question.live-test-boundary open); converting test_live.py into a credential-gated smoke profile or documenting it as manual-only would close the gap.",
+    "mypy could not spawn in this environment; if a runnable typecheck is later desired, fix the environment so quality.mypy can graduate from advisory to an acceptance command.",
+    "Component responsibility/tag propagation is slightly noisy (e.g. component.fmc-mcp-config carries concurrency/pagination tags); tightening tag attribution to the owning source symbols would sharpen profiles.",
+    "read_only_external_operations lists auth generatetoken/refreshtoken POST endpoint families among its surfaces; the description distinguishes them, but a dedicated auth_token surface tag would make the read-vs-write distinction more explicit.",
+    "Consider promoting pytest+ruff (and eventually mypy) to default acceptance per question.quality-default once advisory checks are stable."
+  ],
+  "evidence": [
+    "Gap 1 (semantic responsibilities): componentProfiles[].responsibilitySummary are symbol/tag-grounded, e.g. component.fmc-mcp-client 'Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__' — satisfies the >=2 source-derived symbol/tag anti-tautology rule.",
+    "Gap 2 (product invariants): productInvariants cover read_only_external_operations (auth POST distinguished from domain reads), secret_safety, rate_limit (120 req/min), concurrency_limit (10 connections), live_test_boundary (enforcement=gap), public_mcp_contract; quick_checks confirm concrete configured defaults.",
+    "Gap 3 (runtime/data-flow contracts): runtimeContracts include constructs (server->client), injects (server->resources via set_client), registers_resource, registers_tool, delegates_to (server->tools, tools->resources), exposes_runtime_mode (stdio/http-sse), plus import contracts with source-span provenanceRefs and empty supportingEdgeIds for inferred kinds — matching the spec's source-span evidence model.",
+    "Gap 4 (external surfaces): externalSurfaces include mcp_resource URIs fmc://system/info, fmc://devices/list, fmc://objects/network, fmc://deployment/status; mcp_tool search_object_by_ip and check_deployment_status; console_script mcp-server-fmc; FMC REST endpoint families; FastMCP and httpx dependencies; runtime_mode stdio/http-sse.",
+    "Gap 5 (risk/priority): componentProfiles assign client priorityRank=1 riskLevel=high (risk score 42) and component.fmc-mcp-main priorityRank=6 riskLevel=low (score 0) — client explicitly ranks ahead of the tiny entrypoint as required.",
+    "Gap 6 (quality checks): qualityGates expose pytest (acceptance), ruff (acceptance), and mypy as advisory; priorityBacklog item backlog.run-configured-lint-and-type-checks present.",
+    "Gap 7 (combined import resolution): implementation_summary lists arena/project_graph.py resolving 'from pkg import resources, tools'; contracts show distinct server->tools and server->resources import edges with supporting_edge_ids.",
+    "mypy deviation acceptability proven: qualityGates quality.mypy has includedInAcceptance=false and safeToRunByDefault=false (source=detected_pyproject_advisory); observable_checks contains only check.pytest and check.ruff; quick_checks.quality_gates corroborates [quality.mypy, false, false]; verification_results note mypy 'failed to spawn ... intentionally advisory not acceptance'. mypy is visible as advisory and excluded from runnable acceptance.",
+    "Acceptance verification: gateReport.passed=true with violations=[]; FMC-MCP pytest 19 passed; ruff All checks passed; Build Arena make verify passed; post-review refinements resolved noisy env names (real FMC_* settings), concrete rate/concurrency defaults, scoped backlog provenance, and category-scoped invariant surfaces (quick_checks.invariant_surface_types confirms secret_safety->environment_variable only, public_mcp_contract->mcp_resource/mcp_tool only)."
+  ],
+  "questions": []
+}

@@ -1,0 +1,25 @@
+You are Claude Opus acting as independent reviewer for Build Arena.
+
+Context: In your prior review at docs/verification/2026-06-07-meta-decomposer-generalization/opus/opus-cmmc-model-review-final.md, you signed off on snapshot-5f0cccffcd05c7d6 but flagged R1: edge_coverage was blind to Python src-root-relative imports because it lacked the guarded suffix matching used by contract validation.
+
+Since then, the implementation was changed again and rerun. Please inspect the current files and final artifacts and answer only:
+1. SIGN_OFF yes/no for adopting snapshot-92b2bb5139d78b15 as the current CMMC baseline.
+2. R1 resolved yes/no with concrete evidence from code/tests/artifacts.
+3. Any new blocker introduced by the R1 closure.
+4. Remaining non-blocking risks.
+
+Files/artifacts to inspect:
+- arena/project_model_gate.py
+- arena/project_meta_decomposer.py
+- tests/test_project_meta_decomposer.py
+- docs/verification/2026-06-07-meta-decomposer-generalization/artifacts/cmmc/snapshot-92b2bb5139d78b15/gate-report.json
+- docs/verification/2026-06-07-meta-decomposer-generalization/artifacts/cmmc/snapshot-92b2bb5139d78b15/snapshot.json
+- docs/verification/2026-06-07-meta-decomposer-generalization/cmmc-final-comparison-summary.json
+
+Known local verification already run by Hermes:
+- uv run pytest tests -q && uv run ruff check . && uv run pyright && make verify: exit 0
+- CMMC snapshot snapshot-92b2bb5139d78b15: gate passed true, violation_count 0
+- CMMC app/backend: uv run pytest -q: exit 0
+- CMMC app/frontend: npm test -- --run: exit 0
+
+Please do not modify files or run tests. Read-only review only.

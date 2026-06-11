@@ -145,6 +145,30 @@ def test_graph_resolves_python_relative_imports_to_project_modules(tmp_path: Pat
     )
 
 
+def test_graph_resolves_python_package_import_aliases_to_owned_modules(tmp_path: Path) -> None:
+    (tmp_path / "src" / "pkg").mkdir(parents=True)
+    (tmp_path / "src" / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (tmp_path / "src" / "pkg" / "resources.py").write_text("def get_client() -> object:\n    return object()\n", encoding="utf-8")
+    (tmp_path / "src" / "pkg" / "tools.py").write_text("def search() -> str:\n    return 'ok'\n", encoding="utf-8")
+    (tmp_path / "src" / "pkg" / "server.py").write_text(
+        "from pkg import resources, tools\n\ndef run() -> tuple[object, str]:\n    return resources.get_client(), tools.search()\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='package-import-project'\nversion='0.0.0'\n", encoding="utf-8")
+    _init_git_repo(tmp_path)
+
+    graph = build_project_graph(tmp_path)
+    node_by_id = {node.id: node for node in graph.nodes}
+    import_targets = {
+        edge.to_node_id
+        for edge in graph.edges
+        if edge.kind == "imports" and node_by_id[edge.from_node_id].symbol == "pkg.server"
+    }
+
+    assert "node:python_import:pkg.resources" in import_targets
+    assert "node:python_import:pkg.tools" in import_targets
+
+
 def test_graph_records_symlink_identity_without_following_targets(tmp_path: Path) -> None:
     outside = tmp_path.parent / f"outside-{tmp_path.name}.py"
     outside.write_text("def leaked() -> int:\n    return 1\n", encoding="utf-8")

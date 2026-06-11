@@ -1,0 +1,537 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "component-workspace-env-example",
+      "kind": "source",
+      "name": "Workspace Env Example support",
+      "observableCheckIds": [
+        "check-component-workspace-env-example"
+      ],
+      "ownedSurfaces": [
+        ".env.example"
+      ],
+      "responsibilities": [
+        "Support the env-example responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-gitignore",
+      "kind": "source",
+      "name": "Workspace Gitignore support",
+      "observableCheckIds": [
+        "check-component-workspace-gitignore"
+      ],
+      "ownedSurfaces": [
+        ".gitignore"
+      ],
+      "responsibilities": [
+        "Support the gitignore responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-guidance",
+      "kind": "source",
+      "name": "Workspace Guidance support",
+      "observableCheckIds": [
+        "check-component-workspace-guidance"
+      ],
+      "ownedSurfaces": [
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "fmc-mcp-spec.md",
+        "fmc-mcp-spec.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "responsibilities": [
+        "Support the guidance responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-license",
+      "kind": "source",
+      "name": "Workspace License support",
+      "observableCheckIds": [
+        "check-component-workspace-license"
+      ],
+      "ownedSurfaces": [
+        "LICENSE"
+      ],
+      "responsibilities": [
+        "Support the license responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-source-fmc-mcp",
+      "kind": "source",
+      "name": "Workspace Fmc Mcp behavior",
+      "observableCheckIds": [
+        "check-component-workspace-source-fmc-mcp"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/__init__.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/__init__.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/config.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/__main__.py",
+        "src/fmc_mcp/tools.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/config.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/config.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/config.py",
+        "src/fmc_mcp/tools.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/tools.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/tools.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/__main__.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/config.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/server.py",
+        "src/fmc_mcp/resources.py",
+        "src/fmc_mcp/client.py",
+        "src/fmc_mcp/server.py"
+      ],
+      "responsibilities": [
+        "Provide the fmc-mcp responsibility within the python project root using graph-resolved source evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-tooling",
+      "kind": "source",
+      "name": "Workspace Tooling support",
+      "observableCheckIds": [
+        "check-component-workspace-tooling"
+      ],
+      "ownedSurfaces": [
+        ".pre-commit-config.yaml",
+        "uv.lock",
+        "pyproject.toml"
+      ],
+      "responsibilities": [
+        "Support the tooling responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "component-workspace-verification",
+      "kind": "source",
+      "name": "Workspace Verification support",
+      "observableCheckIds": [
+        "check-component-workspace-verification"
+      ],
+      "ownedSurfaces": [
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_resources.py",
+        "tests/conftest.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/conftest.py",
+        "tests/conftest.py",
+        "tests/test_resources.py",
+        "tests/conftest.py",
+        "tests/test_client.py",
+        "tests/test_live.py",
+        "tests/test_client.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/conftest.py",
+        "tests/test_client.py",
+        "tests/conftest.py",
+        "tests/test_resources.py",
+        "tests/conftest.py",
+        "tests/conftest.py",
+        "tests/conftest.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/test_live.py",
+        "tests/conftest.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_live.py",
+        "tests/test_client.py",
+        "tests/test_resources.py",
+        "tests/test_client.py",
+        "tests/test_client.py",
+        "tests/test_client.py",
+        "tests/test_resources.py"
+      ],
+      "responsibilities": [
+        "Support the verification responsibility for the python project root with manifest, test, or documentation evidence."
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Workspace Verification support imports Workspace Fmc Mcp behavior",
+      "fromComponent": "component-workspace-verification",
+      "id": "contract-component-workspace-verification-imports-component-work",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-component-workspace-verification"
+      ],
+      "toComponent": "component-workspace-source-fmc-mcp"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "component-workspace-env-example",
+        "component-workspace-gitignore",
+        "component-workspace-guidance",
+        "component-workspace-license",
+        "component-workspace-source-fmc-mcp",
+        "component-workspace-tooling",
+        "component-workspace-verification"
+      ]
+    }
+  ],
+  "goal": "decompose the FMC MCP server into responsibility-bearing components for safe autonomous iteration planning",
+  "heldOutProbes": [
+    {
+      "componentId": "component-workspace-env-example",
+      "evidenceRequired": [
+        "held-out-probes.json",
+        "planted-negatives.json",
+        "gate-report.json"
+      ],
+      "expectedBehavior": "Gate/probe rejects wrong-target or file-bucket decomposition and accepts golden control.",
+      "id": "probe-responsibility-boundary-negative",
+      "probeType": "negative-control",
+      "scenario": "Reject planted negative negative.file-bucket-boundary."
+    }
+  ],
+  "id": "fmc-mcp",
+  "invariants": [
+    {
+      "componentIds": [
+        "component-workspace-env-example",
+        "component-workspace-gitignore",
+        "component-workspace-guidance",
+        "component-workspace-license",
+        "component-workspace-source-fmc-mcp",
+        "component-workspace-tooling",
+        "component-workspace-verification"
+      ],
+      "description": "Accepted decomposition claims must trace to deterministic graph provenance.",
+      "id": "concern-anti-fabrication",
+      "observableCheckIds": [
+        "check-component-workspace-env-example",
+        "check-component-workspace-gitignore",
+        "check-component-workspace-guidance",
+        "check-component-workspace-license",
+        "check-component-workspace-source-fmc-mcp",
+        "check-component-workspace-tooling",
+        "check-component-workspace-verification"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-workspace-env-example",
+        "component-workspace-gitignore",
+        "component-workspace-guidance",
+        "component-workspace-license",
+        "component-workspace-source-fmc-mcp",
+        "component-workspace-tooling",
+        "component-workspace-verification"
+      ],
+      "description": "Root discovery, component grouping, contracts, and checks are sorted and reproducible.",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-component-workspace-env-example",
+        "check-component-workspace-gitignore",
+        "check-component-workspace-guidance",
+        "check-component-workspace-license",
+        "check-component-workspace-source-fmc-mcp",
+        "check-component-workspace-tooling",
+        "check-component-workspace-verification"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-workspace-env-example",
+        "component-workspace-gitignore",
+        "component-workspace-guidance",
+        "component-workspace-license",
+        "component-workspace-source-fmc-mcp",
+        "component-workspace-tooling",
+        "component-workspace-verification"
+      ],
+      "description": "Every component, contract, check, and gap is backed by graph/file provenance.",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-component-workspace-env-example",
+        "check-component-workspace-gitignore",
+        "check-component-workspace-guidance",
+        "check-component-workspace-license",
+        "check-component-workspace-source-fmc-mcp",
+        "check-component-workspace-tooling",
+        "check-component-workspace-verification"
+      ]
+    },
+    {
+      "componentIds": [
+        "component-workspace-env-example",
+        "component-workspace-gitignore",
+        "component-workspace-guidance",
+        "component-workspace-license",
+        "component-workspace-source-fmc-mcp",
+        "component-workspace-tooling",
+        "component-workspace-verification"
+      ],
+      "description": "Generated checks are local candidates and are not acceptance-allowlisted without proof.",
+      "id": "concern-no-live-paid-api",
+      "observableCheckIds": [
+        "check-component-workspace-env-example",
+        "check-component-workspace-gitignore",
+        "check-component-workspace-guidance",
+        "check-component-workspace-license",
+        "check-component-workspace-source-fmc-mcp",
+        "check-component-workspace-tooling",
+        "check-component-workspace-verification"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [
+    {
+      "description": "Treat adjacent files as a polished bucket without responsibility evidence.",
+      "distinguishingEvidence": [
+        "graph provenance",
+        "held-out probe discrimination"
+      ],
+      "id": "near-file-bucket-boundary",
+      "whyNotPrimary": "Rejected for this project goal: decompose the FMC MCP server into responsibility-bearing components for safe autonomous iteration planning. It also violates the stated non-goal: do not hardcode FMC-specific component names. A file bucket is not responsibility-bearing evidence."
+    }
+  ],
+  "nonGoals": [
+    "do not hardcode FMC-specific component names",
+    "do not treat adjacent files as final components without behavioral responsibility evidence"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "component-workspace-env-example",
+      "description": "Observable local check for Workspace Env Example support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-env-example",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-gitignore",
+      "description": "Observable local check for Workspace Gitignore support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-gitignore",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-guidance",
+      "description": "Observable local check for Workspace Guidance support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-guidance",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-license",
+      "description": "Observable local check for Workspace License support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-license",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-source-fmc-mcp",
+      "description": "Observable local check for Workspace Fmc Mcp behavior.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-source-fmc-mcp",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-tooling",
+      "description": "Observable local check for Workspace Tooling support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-tooling",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    },
+    {
+      "componentId": "component-workspace-verification",
+      "description": "Observable local check for Workspace Verification support.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-component-workspace-verification",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "uv run pytest -q"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; near-neighbors and probes mitigate this.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates, held-out probes, and independent review."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/home/leonb/projects/fmc-mcp",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "component-workspace-tooling"
+      ],
+      "description": "Component Workspace Tooling support needs more specific behavioral verification than generic manifest discovery could prove.",
+      "id": "gap-component-workspace-tooling-verification",
+      "proposedClosureCheck": "Add or identify a root-local deterministic test/build command covering this component.",
+      "severity": "medium"
+    }
+  ]
+}

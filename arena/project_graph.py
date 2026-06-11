@@ -280,12 +280,23 @@ def _javascript_module_name(rel_path: str) -> str:
 
 
 def _resolve_python_import(current_module: str, rel_path: str, node: ast.ImportFrom) -> list[str]:
+    def _module_alias_targets(module_name: str) -> list[str]:
+        targets = [module_name]
+        for alias in node.names:
+            if alias.name == "*":
+                continue
+            if alias.name and alias.name[0].islower():
+                targets.append(f"{module_name}.{alias.name}")
+        return list(dict.fromkeys(targets))
+
     if node.level == 0:
         if node.module:
-            return [node.module]
+            return _module_alias_targets(node.module)
         return [alias.name for alias in node.names if alias.name != "*"]
     if not current_module:
-        return [node.module] if node.module else [alias.name for alias in node.names if alias.name != "*"]
+        if node.module:
+            return _module_alias_targets(node.module)
+        return [alias.name for alias in node.names if alias.name != "*"]
     current_parts = current_module.split(".")
     if Path(rel_path).name != "__init__.py":
         current_parts = current_parts[:-1]
@@ -293,7 +304,7 @@ def _resolve_python_import(current_module: str, rel_path: str, node: ast.ImportF
     base = current_parts[:keep]
     if node.module:
         suffix = node.module.split(".")
-        return [".".join([*base, *suffix])]
+        return _module_alias_targets(".".join([*base, *suffix]))
     return [".".join([*base, alias.name]) for alias in node.names if alias.name != "*"]
 
 

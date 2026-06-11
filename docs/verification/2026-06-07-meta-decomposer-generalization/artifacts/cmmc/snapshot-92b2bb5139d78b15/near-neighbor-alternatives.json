@@ -1,0 +1,11 @@
+[
+  {
+    "alternative": "Treat adjacent files as a polished bucket without responsibility evidence.",
+    "id": "near.file-bucket-boundary",
+    "provenance_refs": [
+      "prov:714c0f8b1d97b853"
+    ],
+    "target_id": "contract.component-app-backend-source-alembic-imports-component-app-back-54622a2f",
+    "why_not_primary": "Rejected for this project goal: decompose the CMMC Level 1 readiness assistant into responsibility-bearing components for safe autonomous iteration planning. It also violates the stated non-goal: do not build a CMMC-specific decomposer or hardcode repository-specific component names. A file bucket is not responsibility-bearing evidence."
+  }
+]

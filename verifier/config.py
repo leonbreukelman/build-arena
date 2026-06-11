@@ -18,6 +18,7 @@ class VerifierConfig:
     probe_set: tuple[AblationProbe, ...] = DEFAULT_PROBE_SET
     quorum_threshold: int = 2
     ablation_runner: RunnerName = RunnerName.ollama
+    ablation_advisory: bool = False
     require_tests_pass: bool = True
     require_score_delta_gt0: bool = True
     fp_target: float = 0.0
@@ -30,7 +31,7 @@ class VerifierConfig:
             raise ValueError("verifier probe_set must not contain duplicate probes")
         if not 1 <= self.quorum_threshold <= len(self.probe_set):
             raise ValueError(f"verifier quorum_threshold must be between 1 and {len(self.probe_set)}")
-        if self.ablation_runner is not RunnerName.ollama:
+        if not self.ablation_advisory and self.ablation_runner is not RunnerName.ollama:
             raise ValueError("Phase 2 verifier ablation runner must be ollama")
 
     @classmethod
@@ -43,6 +44,7 @@ class VerifierConfig:
             probe_set=probe_set,
             quorum_threshold=int(verifier.get("ablation_quorum", 2)),
             ablation_runner=RunnerName(runners.get("ablation", RunnerName.ollama.value)),
+            ablation_advisory=bool(verifier.get("ablation_advisory", False)),
             require_tests_pass=bool(verifier.get("require_tests_pass", True)),
             require_score_delta_gt0=bool(verifier.get("require_score_delta_gt0", True)),
             fp_target=float(verifier.get("fp_target", 0.0)),
