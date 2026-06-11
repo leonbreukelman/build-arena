@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://build-arena.local/schemas/project-model-freshness-v0.schema.json",
+  "title": "Project Model Freshness v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "projectRoot",
+    "snapshotPath",
+    "snapshotId",
+    "snapshotHeadOid",
+    "currentHeadOid",
+    "snapshotDirty",
+    "currentDirty",
+    "currentDirtyPaths",
+    "currentBranch",
+    "defaultBranch",
+    "remoteName",
+    "aheadBehind",
+    "activeBranches",
+    "openPullRequests",
+    "status",
+    "safeForReadOnlyReview",
+    "safeForMutation",
+    "exitCode",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "project-model-freshness/v0"},
+    "projectRoot": {"type": "string"},
+    "snapshotPath": {"type": "string"},
+    "snapshotId": {"type": "string"},
+    "snapshotHeadOid": {"type": ["string", "null"]},
+    "currentHeadOid": {"type": ["string", "null"]},
+    "snapshotDirty": {"type": ["boolean", "null"]},
+    "currentDirty": {"type": "boolean"},
+    "currentDirtyPaths": {"type": "array", "items": {"type": "string"}},
+    "currentBranch": {"type": ["string", "null"]},
+    "defaultBranch": {"type": ["string", "null"]},
+    "remoteName": {"type": ["string", "null"]},
+    "aheadBehind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ahead", "behind", "available"],
+      "properties": {
+        "ahead": {"type": ["integer", "null"]},
+        "behind": {"type": ["integer", "null"]},
+        "available": {"type": "boolean"}
+      }
+    },
+    "activeBranches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "headOid", "upstream"],
+        "properties": {
+          "name": {"type": "string"},
+          "headOid": {"type": ["string", "null"]},
+          "upstream": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "openPullRequests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available", "items"],
+      "properties": {
+        "available": {"type": "boolean"},
+        "items": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "status": {"enum": ["fresh", "dirty-worktree", "base-advanced", "branch-diverged", "snapshot-mismatch", "unknown"]},
+    "safeForReadOnlyReview": {"type": "boolean"},
+    "safeForMutation": {"type": "boolean"},
+    "exitCode": {"enum": [0, 2]},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  }
+}
