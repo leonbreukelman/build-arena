@@ -106,3 +106,74 @@ Live snapshot dir: `/tmp/build-arena-live-grok43/1781135270-v3/snapshot-a2525baf
 
 (Artifacts live under /tmp for this smoke; the durable record is this doc plus
 the committed code + regression tests.)
+
+
+## Update: iterating the prompt toward the gate spec (v3 -> v4)
+
+After Fable's first re-review, I stated more of the gate's rules in the prompt
+and reran twice more. Each iteration revealed the next unstated gate rule. This
+progression is itself the most important finding.
+
+### v3 (prompt states: schema, ids, primary-module coverage, probe hatch, universal concerns)
+- Violations: 4 (by gate: {"contract_references": 2, "cross_cutting_concerns": 2})
+- grok produced 1 component -> self-referential contract + 2 missing conditional concerns.
+
+### v4 (prompt additionally states: decompose into MULTIPLE components; contracts must connect two distinct components with a supporting edge)
+- Violations: 88 (by gate: {"component_measurability": 5, "edge_coverage": 82, "inventory_coverage": 1})
+- grok now produced 7 coherent components covering the repo:
+  - comp:decomposer: owns 6 nodes | Manages AI-driven project decomposition and iteration readiness
+  - comp:model: owns 5 nodes | Enforces model versioning gates and snapshot integrity
+  - comp:graph: owns 4 nodes | Builds and maintains project graph with provenance tracking
+  - comp:runners: owns 5 nodes | Executes model runners and diff proposal logic
+  - comp:scripts: owns 3 nodes | Performs calibration rebuilds and artifact normalization
+  - comp:gates: owns 9 nodes | Validates patches and boundary conditions for safety
+  - comp:probe: owns 7 nodes | Runs project probes and meta decompositions
+- contracts declared: 0
+
+### Why v4 violations went UP (4 -> 88) — and what it means
+The jump is NOT a regression in model quality; grok's decomposition got
+materially BETTER (7 sensible components vs 1 file-bucket). The violations rose
+because a real multi-component decomposition activates a gate rule the prompt
+never stated: `edge_coverage` requires that EVERY import edge between two owned
+components be covered by a declared contract. With 7 components and real import
+relationships, the gate demanded ~82 contracts; grok declared 0 (the prompt had
+implied contracts were optional via "declare >=1 of contract/check/gap").
+
+So 82 of the 88 are an uncommunicated-spec gap (harness), not model
+incapability — the same class of bug found and fixed earlier, now one layer
+deeper.
+
+## The definitive honest conclusion
+
+The AI-first decomposition gate encodes a large, interlocking specification.
+Each prompt iteration surfaces the next unstated rule:
+crash -> key-name mismatch -> missing id vocabulary -> inventory sampling cap ->
+probe hatch -> single-component file-bucket -> contract edge-coverage.
+
+This is the real, valuable result of the live run — worth more than a green
+gate:
+
+1. The code path is now robust and fail-closed (no crash on any real model
+   output; verified by tests).
+2. grok-4.3 CAN produce a coherent multi-component decomposition with real
+   graph-grounded identifiers when the prompt states the rules.
+3. Driving the gate to GREEN is not a prompt-tuning task and must not be chased
+   by ever-more-specific coaxing (that drifts into overfitting one model to one
+   gate). It requires either (a) completing the prompt as a faithful, generated-
+   from-the-gate specification of ALL rules, or (b) a multi-pass decomposition
+   architecture where the model proposes, sees gate feedback, and revises. Both
+   are NEW scope beyond "exercise the live path," and (b) is the more honest
+   long-term answer.
+
+The gate was never forced green. A gate that honestly refuses incomplete model
+output is the system working as designed.
+
+## Recommended next work (not done here)
+
+- Generate the decomposer prompt's rule list directly from the gate's checks
+  (single source of truth) so prompt and gate cannot drift — the recurring bug
+  class. A drift test should assert gate-enforced rule coverage, not just key
+  names.
+- Then decide explicitly: faithful one-shot spec prompt vs. iterative
+  gate-feedback decomposition loop. That is a design decision for Leon, not a
+  bug fix.

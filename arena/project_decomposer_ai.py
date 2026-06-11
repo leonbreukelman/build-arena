@@ -259,13 +259,16 @@ def _resolve_list(raw: dict[str, Any], canonical: str) -> list[Any]:
 
 
 def _is_list_type(type_repr: str) -> bool:
+    # Only treat a field as list-typed when one of its union members is itself a
+    # list[...] at the top level. Checking each "|" member's prefix (rather than a
+    # substring search) avoids false positives like dict[str, list[str]].
     normalized = type_repr.replace(" ", "")
-    return normalized.startswith(("list[", "List[")) or "list[" in normalized.split("|")[0]
+    return any(member.startswith(("list[", "List[")) for member in normalized.split("|"))
 
 
 def _is_dict_type(type_repr: str) -> bool:
     normalized = type_repr.replace(" ", "")
-    return normalized.startswith(("dict[", "Dict["))
+    return any(member.startswith(("dict[", "Dict[")) for member in normalized.split("|"))
 
 
 def _coerce_dataclass(cls: type, item: Any, *, collection: str, index: int) -> Any:
@@ -357,32 +360,34 @@ def _snapshot_from_model_output(
     )
 
 
-# Shell metacharacters that must never appear in a model-controlled command string.
+# Shell metacharacters that must never appear in an acceptance command string.
 _UNSAFE_COMMAND_CHARS = frozenset(";|&`$><\n\\\"'(){}")
-# Symbolic allowlist labels that are not raw shell commands (resolved elsewhere).
-_SAFE_ALLOWLIST_LABELS = frozenset({"local-pytest"})
+# The ONLY acceptance-allowlist entries trusted from model output: a fixed,
+# harness-defined set of symbolic labels and known-safe literal commands. This set
+# is a constant in the codebase, NOT derived from model output, so it cannot be
+# widened by the model. Anything the model proposes that is not in this exact set
+# is dropped (raw command strings are never trusted, even if the model also
+# "declares" them as a check command, since that source is model-controlled too).
+_SAFE_ACCEPTANCE_ENTRIES = frozenset({"local-pytest", "uv run python -m pytest -q"})
 
 
 def _safe_acceptance_commands(raw_allowlist: Any, observable_checks: list[Any]) -> list[str]:
     """Fail-closed filter for the model-controlled acceptance command allowlist.
 
-    The allowlist is model-produced and is a latent command-execution surface, so
-    we never trust it verbatim. An entry is admitted only if it is a known symbolic
-    label (not a raw shell command) OR it exactly matches the command string of a
-    model-declared observable_check (its legitimate source); in either case it must
-    contain no shell metacharacters. Anything else is dropped, not run.
+    The allowlist is model-produced and is a latent command-execution surface.
+    An entry is admitted only if it is in the fixed, harness-defined
+    ``_SAFE_ACCEPTANCE_ENTRIES`` set (constant in code, outside model control) and
+    contains no shell metacharacters. Model-declared observable_check command
+    strings are intentionally NOT a trust source, because the model controls those
+    too. ``observable_checks`` is accepted for signature stability but unused.
+    Anything else is dropped, not run.
     """
     if not isinstance(raw_allowlist, list):
         return []
-    declared = {str(getattr(check, "command", "")).strip() for check in observable_checks}
-    declared.discard("")
     safe: list[str] = []
     for entry in raw_allowlist:
         command = str(entry).strip()
-        if not command:
-            continue
-        is_known = command in _SAFE_ALLOWLIST_LABELS or command in declared
-        if not is_known:
+        if not command or command not in _SAFE_ACCEPTANCE_ENTRIES:
             continue
         if any(char in _UNSAFE_COMMAND_CHARS for char in command):
             continue
@@ -576,6 +581,11 @@ def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], grap
         "(or, if you cannot responsibly place it, covered by a verification_gap whose provenance_refs "
         "includes that node's prov id). Uncovered primary modules fail the inventory gate.\n"
         "- Every component must own >=1 node, cite a provenance id from a node it owns, and declare >=1 of contract/check/gap.\n"
+        "- Decompose into MULTIPLE components (one per distinct responsibility); a single component covering the whole "
+        "repo is a file-bucket and fails the gate. Each listed primary module must be owned by some component.\n"
+        "- Every contract must connect TWO DISTINCT components (from_component_id != to_component_id) and cite at least "
+        "one supporting_edge_id from the edges below whose endpoints map to those two components. A self-referential "
+        "contract or one with no supporting edge fails the gate.\n"
         "- Include the universal cross_cutting_concerns: anti_fabrication, determinism, provenance, "
         "no_live_paid_api_acceptance (each covering all components), plus protected_surface_integrity and "
         "generated_artifact_integrity if such surfaces exist.\n"
