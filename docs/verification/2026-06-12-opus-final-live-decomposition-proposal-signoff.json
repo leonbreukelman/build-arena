@@ -1,0 +1,25 @@
+{
+  "accepted_evidence": [
+    "Closure is constrained correctly: close_import_contracts_for_gate preserves valid model contracts, removes invalid supporting-edge claims, drops empty invalid contracts, strips dangling references, and only adds graph-derived contract.auto.<edge> contracts with provenance \u2014 without inventing components, reassigning ownership, relaxing the gate, or mutating raw model-output artifacts.",
+    "Gate authority is preserved end-to-end: closure runs after ingestion and before snapshot identity/gate; the no-edge unmeasurable-component case still fails; the empty-provenance path emits no auto contract and the gate stays non-passing \u2014 so closure cannot manufacture a green gate.",
+    "Raw artifact integrity verified by test: recorded live-shaped output with missing/reversed contracts gates green via closure while the raw sidecar is unchanged and the bad contract is removed from components; closure idempotence/stability is covered.",
+    "New-file proposal path is bounded: file_exists flag plus _single_target_path() boundary checks gate the single missing-target case; protected/read-only missing targets are rejected before transport (test-covered); the patch gate and git apply --check remain authoritative.",
+    "Grok normalization is narrowly scoped: _normalize_single_new_file_hunk_count only repairs one-file/one-hunk/additions-only /dev/null new-file diffs with a wrong added-line count, records diff_normalization provenance, and leaves all other malformed diffs to the patch gate (test-covered).",
+    "Full verification gates passed: uv run pytest, ruff check, and pyright all green.",
+    "End-to-end live proof on fmc-mcp: deterministic replay of saved second-live Grok 4.3 raw output gated passed=true with 0 violations, autoContractCount 15, freshness fresh, snapshotHeadOid == currentHeadOid == 00a632ac950a8c411f8d8ac90197e28191f58619, dirty false, scorecard rank 1 docs/index.md, and proposer handoff fresh targeting docs/index.md.",
+    "Proposal-in-hand proof: live xai grok-4.3 call (served_model_matches_requested true, status 200, patch_gate accepted true) produced a patch touching docs/index.md (+13 lines) in an isolated worktree, handoff verification test -e docs/index.md passed, and the original /home/leonb/projects/fmc-mcp stayed clean.",
+    "Fable returned SIGN_OFF with no blockers and no requested changes; its two medium-risk notes (surface auto-contract count, record normalization provenance) were both implemented and retested after review \u2014 evidenced by the import-contract-closure.json autoContractCount/autoContractIds sidecar and the diff_normalization provenance flag."
+  ],
+  "assurance_statement": "Build Arena can now run the full path from decomposition through proposal-in-hand. The deterministic import-contract closure lets a faithfully-ingested live model decomposition reach a green, measurable gate without anyone touching the raw model output or weakening the gate's authority \u2014 proven by a recorded replay of the real second-live Grok 4.3 output against fmc-mcp that gated clean (0 violations, fresh, head-matched, not dirty) and produced a ranked, fresh proposer handoff for docs/index.md. From that handoff, a live Grok 4.3 call produced a real, patch-gate-accepted unified diff in an isolated worktree that actually created docs/index.md, while the source repo stayed clean. The new-file proposal support and the narrowly-scoped Grok new-file diff normalization are both fenced behind the existing patch gate and git apply --check, so they widen what can be proposed without widening what can pass. With pytest, ruff, and pyright all green, Fable signed off, and Fable's two risk notes implemented and retested, the decomposition-to-proposal pipeline is ready to run.",
+  "blockers": [],
+  "confidence": "high",
+  "if_not_signed_off_ask_fable_first": true,
+  "required_changes": [],
+  "residual_risks": [
+    "Grok new-file normalization is intentionally limited to single-file/single-hunk/additions-only diffs; multi-hunk or multi-file new-file outputs are not repaired and will hit the patch gate \u2014 acceptable as designed, but worth monitoring if live providers emit multi-hunk new-file diffs frequently.",
+    "Auto-contract closure infers cross-component import edges from the graph; if upstream decomposition mis-attributes an edge, closure will faithfully encode that mis-attribution as a contract.auto.<edge>. Closure does not relax the gate, but it also cannot detect an upstream ownership error \u2014 provenance visibility is the mitigation.",
+    "Confidence rests on a single live provider (xai grok-4.3) against a single target repo (fmc-mcp/docs/index.md); broader model/target coverage would further harden the proposal-in-hand path but is not required for sign-off.",
+    "Fable's own confidence on the underlying review was medium; the high confidence here derives from the additional deterministic replay, live proposal proof, and the green pytest/ruff/pyright gates layered on top."
+  ],
+  "verdict": "SIGN_OFF"
+}

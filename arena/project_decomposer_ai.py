@@ -15,7 +15,11 @@ from arena.project_graph import (
     canonical_graph_json,
     graph_to_dict,
 )
-from arena.project_model_gate import run_project_model_gate, write_gate_report
+from arena.project_model_gate import (
+    close_import_contracts_for_gate,
+    run_project_model_gate,
+    write_gate_report,
+)
 from arena.project_model_llm import (
     LiveProjectModelLLM,
     build_fixture_model_output,
@@ -111,6 +115,7 @@ def build_project_model_snapshot(
     )
     snapshot.input_hashes = {"graph": graph_hash}
     snapshot.model_output_hashes["decomposer"] = stable_hash_json(raw_output)
+    snapshot = close_import_contracts_for_gate(snapshot, graph)
     snapshot = finalize_snapshot_identity(snapshot)
     probe_result: PathBucketProbeRun | None = None
     if run_adversarial_probes:
@@ -127,6 +132,7 @@ def build_project_model_snapshot(
     snapshot_dir.mkdir(parents=True, exist_ok=True)
     if probe_result is not None:
         write_probe_proof_artifacts(snapshot_dir, probe_result)
+    closure_hash = write_json(snapshot_dir / "import-contract-closure.json", _import_contract_closure_report(snapshot))
     gate_report = run_project_model_gate(snapshot, graph, proof_artifact_base=snapshot_dir)
 
     graph_file_hash = write_json(snapshot_dir / "graph.json", graph_to_dict(graph))
@@ -141,6 +147,7 @@ def build_project_model_snapshot(
         "graph_file": graph_file_hash,
         "gate_report": gate_hash,
         "project_model_v0": v0_hash,
+        "import_contract_closure": closure_hash,
     }
     v1 = project_model_v1_from_snapshot(
         snapshot,
@@ -618,6 +625,17 @@ def _skeptic_prompt(*, goal: str, non_goals: list[str]) -> str:
         "weak contracts, fake probe-proof claims, and unclosed semantic-validation gaps.\n"
         f"Goal: {goal}\nNon-goals: {json.dumps(non_goals, sort_keys=True)}\n"
     )
+
+
+def _import_contract_closure_report(snapshot: ProjectModelSnapshot) -> dict[str, Any]:
+    auto_contract_ids = sorted(contract.id for contract in snapshot.contracts if contract.id.startswith("contract.auto."))
+    return {
+        "schemaVersion": "import-contract-closure/v0",
+        "snapshotId": snapshot.snapshot_id,
+        "autoContractCount": len(auto_contract_ids),
+        "autoContractIds": auto_contract_ids,
+        "note": "Auto contracts are deterministic import-edge closure derived from graph evidence and model component ownership.",
+    }
 
 
 def _identifier(raw: str) -> str:

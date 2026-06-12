@@ -8,6 +8,7 @@ from typing import Any
 
 from arena.project_graph import ProjectGraph, graph_to_dict
 from arena.project_snapshot import (
+    Contract,
     GateReport,
     GateViolation,
     ProjectModelSnapshot,
@@ -330,6 +331,158 @@ def _primary_inventory_nodes(nodes: dict[str, dict[str, Any]]) -> list[dict[str,
 # what the gate actually checks.
 def primary_inventory_nodes(nodes: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     return _primary_inventory_nodes(nodes)
+
+
+def close_import_contracts_for_gate(
+    snapshot: ProjectModelSnapshot,
+    graph: ProjectGraph | dict[str, Any],
+) -> ProjectModelSnapshot:
+    """Deterministically close mechanical import contracts for gate evaluation.
+
+    The LLM remains responsible for component ownership and semantic
+    responsibilities. Given that ownership, import-edge direction and
+    cross-component contract coverage are mechanical facts already computed by
+    this gate module. This helper preserves valid model contracts, removes
+    invalid supporting-edge claims, and adds stable ``contract.auto.<edge>``
+    contracts only for import edges whose endpoints map to existing components
+    and whose contract can carry provenance. It never invents components,
+    reassigns ownership, relaxes the gate, or mutates raw model output.
+    """
+
+    graph_data = graph_to_dict(graph) if isinstance(graph, ProjectGraph) else graph
+    nodes = {node["id"]: node for node in graph_data.get("nodes", [])}
+    edges = {edge["id"]: edge for edge in graph_data.get("edges", [])}
+    components = {component.id: component for component in snapshot.components}
+
+    kept_contracts: list[Contract] = []
+    removed_contract_ids: set[str] = set()
+    used_contract_ids: set[str] = set()
+    for contract in snapshot.contracts:
+        from_component = components.get(contract.from_component_id)
+        to_component = components.get(contract.to_component_id)
+        valid_edge_ids: list[str] = []
+        if from_component is not None and to_component is not None and from_component.id != to_component.id:
+            for edge_id in sorted(dict.fromkeys(contract.supporting_edge_ids)):
+                edge = edges.get(edge_id)
+                if edge is not None and _edge_supports_contract(edge, nodes, from_component, to_component):
+                    valid_edge_ids.append(edge_id)
+        if valid_edge_ids:
+            contract.supporting_edge_ids = valid_edge_ids
+            contract.near_neighbor_alternative_ids = sorted(dict.fromkeys(contract.near_neighbor_alternative_ids))
+            contract.provenance_refs = sorted(dict.fromkeys(contract.provenance_refs))
+            kept_contracts.append(contract)
+            used_contract_ids.add(contract.id)
+        else:
+            removed_contract_ids.add(contract.id)
+
+    snapshot.contracts = kept_contracts
+    _remove_contract_references(snapshot, removed_contract_ids)
+
+    for edge in sorted(edges.values(), key=lambda item: str(item.get("id") or "")):
+        if edge.get("kind") != "imports":
+            continue
+        edge_id = str(edge.get("id") or "")
+        if not edge_id:
+            continue
+        for from_id, to_id in sorted(set(_component_pairs_for_import_edge(edge, nodes, components))):
+            if from_id == to_id:
+                continue
+            if any(
+                edge_id in contract.supporting_edge_ids
+                and contract.from_component_id == from_id
+                and contract.to_component_id == to_id
+                for contract in snapshot.contracts
+            ):
+                continue
+            provenance_refs = _auto_contract_provenance(edge, components.get(from_id), components.get(to_id))
+            if not provenance_refs:
+                continue
+            contract_id = _unique_auto_contract_id(edge_id, used_contract_ids)
+            contract = Contract(
+                id=contract_id,
+                name=f"Auto import contract {from_id} to {to_id}",
+                from_component_id=from_id,
+                to_component_id=to_id,
+                supporting_edge_ids=[edge_id],
+                near_neighbor_alternative_ids=[],
+                provenance_refs=provenance_refs,
+            )
+            snapshot.contracts.append(contract)
+            used_contract_ids.add(contract_id)
+            for component_id in (from_id, to_id):
+                component = components.get(component_id)
+                if component is not None and contract_id not in component.contract_ids:
+                    component.contract_ids.append(contract_id)
+
+    snapshot.contracts = sorted(snapshot.contracts, key=lambda contract: contract.id)
+    _retain_existing_contract_references(snapshot)
+    for component in snapshot.components:
+        component.contract_ids = sorted(dict.fromkeys(component.contract_ids))
+    return snapshot
+
+
+def _auto_contract_provenance(edge: dict[str, Any], from_component: Any, to_component: Any) -> list[str]:
+    refs = [str(ref.get("id")) for ref in edge.get("provenance_refs", []) if isinstance(ref, dict) and ref.get("id")]
+    if refs:
+        return sorted(dict.fromkeys(refs))
+    for component in (from_component, to_component):
+        refs = [str(ref) for ref in getattr(component, "provenance_refs", []) if str(ref)]
+        if refs:
+            return sorted(dict.fromkeys(refs))
+    return []
+
+
+def _remove_contract_references(snapshot: ProjectModelSnapshot, removed_contract_ids: set[str]) -> None:
+    if not removed_contract_ids:
+        return
+    for item in [
+        *snapshot.components,
+        *snapshot.cross_cutting_concerns,
+        *snapshot.observable_checks,
+        *snapshot.verification_gaps,
+    ]:
+        contract_ids = getattr(item, "contract_ids", None)
+        if contract_ids is not None:
+            item.contract_ids = sorted(
+                contract_id for contract_id in dict.fromkeys(contract_ids) if contract_id not in removed_contract_ids
+            )
+    for contract in snapshot.contracts:
+        contract.near_neighbor_alternative_ids = sorted(
+            alternative_id
+            for alternative_id in dict.fromkeys(contract.near_neighbor_alternative_ids)
+            if alternative_id not in removed_contract_ids
+        )
+
+
+def _retain_existing_contract_references(snapshot: ProjectModelSnapshot) -> None:
+    existing_contract_ids = {contract.id for contract in snapshot.contracts}
+    for item in [
+        *snapshot.components,
+        *snapshot.cross_cutting_concerns,
+        *snapshot.observable_checks,
+        *snapshot.verification_gaps,
+    ]:
+        contract_ids = getattr(item, "contract_ids", None)
+        if contract_ids is not None:
+            item.contract_ids = sorted(
+                contract_id for contract_id in dict.fromkeys(contract_ids) if contract_id in existing_contract_ids
+            )
+    for contract in snapshot.contracts:
+        contract.near_neighbor_alternative_ids = sorted(
+            alternative_id
+            for alternative_id in dict.fromkeys(contract.near_neighbor_alternative_ids)
+            if alternative_id in existing_contract_ids
+        )
+
+
+def _unique_auto_contract_id(edge_id: str, used_ids: set[str]) -> str:
+    base = "contract.auto." + edge_id.removeprefix("edge:")
+    candidate = base
+    suffix = 2
+    while candidate in used_ids:
+        candidate = f"{base}.{suffix}"
+        suffix += 1
+    return candidate
 
 
 def _module_has_owned_descendant(node: dict[str, Any], owned_symbols: set[str]) -> bool:

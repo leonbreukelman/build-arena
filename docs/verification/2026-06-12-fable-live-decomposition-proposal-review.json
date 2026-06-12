@@ -1,0 +1,23 @@
+{
+  "blockers": [],
+  "confidence": "medium",
+  "evidence_you_accept": [
+    "uv run pytest tests -q passing at 334 tests, ruff clean, pyright clean.",
+    "Negative-path tests: no-edge unmeasurable component still fails the gate; empty provenance path emits no auto contract and the gate remains non-passing; protected missing target rejected before any transport call.",
+    "Idempotence and stability tests for the closure, plus the test asserting the raw model-output sidecar is unmodified.",
+    "Recorded replay of the exact saved second-live Grok 4.3 decomposer output against fmc-mcp gating green with 0 violations, with a persisted snapshot artifact at .arena/artifacts/fmc-mcp-replay-grok-4.3-contract-closure-20260612T025041Z/snapshot-4a92371fb904678e/.",
+    "Freshness chain intact: currentHeadOid == snapshotHeadOid == 00a632ac950a8c411f8d8ac90197e28191f58619, dirty false, safeForMutation true, proposer handoff freshnessStatus fresh.",
+    "Live Grok 4.3 proposal run in an isolated worktree with provenance showing provider xai, served_model_matches_requested true, patch_gate accepted true, touched_paths limited to docs/index.md, and the persisted patch artifact path.",
+    "Post-run hygiene: handoff verification (test -e docs/index.md) passed in the worktree and the original fmc-mcp working tree remained clean."
+  ],
+  "plain_english_summary": "The change delivers what was asked: the Grok/OpenAI-compatible adapter is wired into the diff proposer, the two blockers (missing/invalid import contracts from the live decomposer, and Grok's malformed new-file hunk headers) are resolved with tightly scoped fixes, and there is concrete end-to-end evidence from decomposition replay through a live, gate-accepted proposal patch in an isolated worktree. The contract closure is the riskiest piece because it can make the gate pass where the raw model output alone would not, but it only synthesizes contracts from real graph-derived import edges with provenance, never invents components, and has negative tests proving genuinely unmeasurable components still fail. The diff normalizer is conservatively scoped to one well-understood Grok failure shape and everything else still hits the patch gate. Verification is thorough (full test suite, lint, types, recorded replay, live run, freshness and cleanliness checks). I am signing off; confidence is medium only because this review is based on the reported summary and artifacts rather than direct code inspection. The risk notes are follow-ups, not conditions: surface auto-contract counts and record normalization in patch provenance if not already done.",
+  "requested_changes": [],
+  "risk_notes": [
+    "The deterministic contract closure shifts gate semantics: components can now pass via graph-derived contract.auto.<edge> contracts even when the model omitted or botched contracts. The negative tests (no-edge component still fails; empty provenance emits no auto contract) bound this, but consider emitting a metric or log line counting how many auto contracts were synthesized per run so a regression in decomposer model quality does not silently hide behind closure.",
+    "_normalize_single_new_file_hunk_count rewrites provider output before the patch gate. The scope is appropriately narrow (single file, single hunk, additions-only, /dev/null source), but if the normalization event is not already recorded in patch provenance (e.g. a normalized: true flag alongside patch_gate.accepted), add it so accepted patches remain fully attributable to either the model or the repair step.",
+    "Closure mutates the snapshot's view of model contracts (removing invalid supporting-edge claims, dropping empty invalid contracts). The raw model-output sidecar being unchanged is the key auditability guarantee and is tested; any future refactor must preserve that invariant.",
+    "Live evidence is a single replay of one recorded Grok 4.3 decomposer output plus one live proposal run. That demonstrates the path works end to end but does not establish robustness across providers or across the variety of malformed diffs Grok may emit; the narrow normalizer plus gate rejection is the right containment, but expect future one-off repair requests.",
+    "Allowing exactly one missing target path in DiffProposerRunner is checked after boundary/protected-path checks, which is the right ordering; ensure multi-file proposals with a missing target remain rejected rather than partially allowed (the single-missing-target constraint implies this, and tests cover the protected case)."
+  ],
+  "verdict": "SIGN_OFF"
+}

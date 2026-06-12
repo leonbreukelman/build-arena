@@ -1,0 +1,37 @@
+{
+  "ask_fable_first_if_low_confidence": false,
+  "confidence": "high",
+  "confirmed_root_causes": [
+    "Primary root cause is confirmed: Build Arena requires the live LLM to manually emit a gate-perfect contract graph (every directed cross-component import edge, in the correct direction), but those contracts are mechanically derivable from the import graph plus component ownership. The gate's own helpers (_component_pairs_for_import_edge, _edge_supports_contract, _check_owned_import_edge_coverage) already compute the required pairs, so demanding the model reproduce them is redundant deterministic bookkeeping pushed onto a probabilistic generator.",
+    "The evidence cleanly supports this: across both attempts edge_coverage stayed flat at 13 while contract_references (5->1) and component_measurability (6->2) fell under a better prompt. An invariant-to-prompting failure class is the signature of mechanical bookkeeping, not semantic interpretation. The gate is therefore correct to block, and the seam to fix is ingestion-side contract closure, not the gate.",
+    "Secondary root cause is confirmed and directly reproduced by code inspection: DiffProposerRunner.apply() rejects a non-existent target before transport (the explicit exists()/is_file() guard), while project_intake_scorecard + proposer_handoff can legitimately select an absence finding (docs/index.md). Capability mismatch, not a transport or auth issue.",
+    "The non-root-cause eliminations (xAI auth/model availability, target staleness, local fmc-mcp test/lint/typecheck health, secret leakage / sk- false positive) are each backed by concrete evidence and are correctly excluded."
+  ],
+  "corrections": [
+    "Reframe 'derive all mechanically knowable cross-component import contracts from the graph and component ownership' precisely: contract DIRECTION is mechanical (import edges are directed), but contract EXISTENCE/correctness is only as trustworthy as the component-ownership assignment, which is at least partly LLM-supplied (that is what component_measurability is policing). Closure is deterministic given ownership; it does not make ownership itself trustworthy. State this explicitly so the fix is not oversold as making the result fully deterministic.",
+    "After closure, the gate's edge_coverage check becomes a check on Build Arena's own generated output rather than an independent check on the model. That is acceptable IF and ONLY IF edge_coverage was always purely mechanical. Document this so a future reader does not assume edge_coverage still constrains the LLM. The remaining real LLM-constraining signal lives in component_measurability/responsibilities and any non-import (semantic/data/runtime) contracts.",
+    "Confirm whether the 2 residual component_measurability failures in attempt 2 are caused by absent contracts (closure will fix) or by absent/weak responsibility text (closure will NOT fix). The note assumes closure resolves measurability via contract attachment; that holds only for the contract-dependent sub-check, not for responsibility-text sub-checks."
+  ],
+  "implementation_warnings": [
+    "Ordering hazard in the proposer: protected-path, read-only-path, and multi-target rejection MUST run before the relaxed existence check, or new-file support becomes a hole that lets writes into protected paths that happen not to exist yet.",
+    "Closure must be idempotent and deterministic across runs (stable contract IDs and ordering keyed on edge IDs), or the final identity/hash of the Project Model will be unstable and break freshness/reproducibility guarantees.",
+    "Watch for double-counting / conflicts when the model DID emit a correct contract for an edge: closure must normalize (dedupe, fix direction) rather than append a second contract.auto.* alongside the model's, which could trip contract_references or measurability in a new way.",
+    "git apply --check for a new file requires a well-formed diff (/dev/null -> b/path, 'new file mode 100644', correct hunk header). A model returning an a/path with content for a non-existent file will fail; the prompt/transport must instruct empty source explicitly and validate_unified_diff must accept the new-file shape.",
+    "Path normalization on a non-existent target: realpath/abspath behavior differs for missing files; ensure boundary containment is computed against the resolved parent directory, not the (unresolvable) missing leaf, to avoid both false rejects and escapes.",
+    "Add the tests BEFORE the closure/proposer changes (the note's step 3) and include a negative test proving an unowned-endpoint or reversed-but-unownable edge still fails the gate, so closure cannot be shown to have silently weakened coverage."
+  ],
+  "missing_evidence": [
+    "The actual textual content of a representative sample of the 13 edge_coverage and the contract_references violations is not quoted, only the counts and classes. Quote 2-3 raw violations to prove every one reduces to (edge_id, required_from_component, required_to_component) closure rather than a contract the model must still author semantically.",
+    "No confirmation that the gate requires ONLY import-edge-derived contracts. If the gate (or component_measurability) also requires non-import contracts (data/runtime/API contracts) that are not mechanically derivable from import edges, closure will not fully unblock and the LLM must still supply those.",
+    "No confirmation of the provenance/trustworthiness of the component-ownership mapping that closure will consume. If ownership is LLM-emitted, show that a wrong ownership assignment is independently caught (e.g., by measurability) before closure runs, otherwise closure can manufacture a gate-passing-but-wrong Project Model.",
+    "For the proposer fix, no evidence yet that validate_unified_diff and the boundary/path-normalization logic behave correctly for a path that does not exist on disk (realpath/symlink resolution on missing files, /dev/null source + 'new file mode' header handling)."
+  ],
+  "simplicity_guidance": [
+    "Keep contract closure as a single pure transform between ingestion and gate: input (raw model output + import graph + ownership) -> output (model with auto-contracts added). No new gate flags, no gate relaxation, no special-casing inside the gate. The gate stays byte-for-byte unchanged.",
+    "Mark generated contracts distinctly (contract.auto.<edge-id>) and never mutate the on-disk raw model artifact; closure operates on the in-memory/derived model used for the gate so the audit trail stays intact. This is already in the note \u2014 hold the line on it.",
+    "Do not let closure invent components, rename components, or reassign ownership. It only adds/normalizes contracts for edges whose BOTH endpoints already map to existing components. If an edge's endpoints are unowned, leave the failure to the gate \u2014 that is genuine semantic signal.",
+    "For the proposer, scope the change to the narrowest case: single target, missing file, in-scope + boundary-safe, empty file_contents, exactly-one-new-file diff. Do not generalize to multi-file or directory creation in this slice.",
+    "Reuse existing primitives (validate_unified_diff, git apply --check, existing boundary/protected-path checks) rather than adding a parallel new-file code path. The only delta should be relaxing the pre-transport existence guard under guarded conditions."
+  ],
+  "verdict": "CONFIRMED"
+}

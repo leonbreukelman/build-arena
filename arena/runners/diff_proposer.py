@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -25,6 +26,7 @@ class DiffProposalRequest:
     success_criterion: str
     goal_config_sha: str
     intent: str
+    file_exists: bool = True
 
 
 @dataclass(frozen=True)
@@ -97,7 +99,9 @@ class OpenAICompatibleDiffTransport:
             raise RunnerError(f"diff proposal provider failed: {exc}") from exc
         if str(result.finish_reason).lower() == "length":
             raise RunnerError("diff proposal truncated")
-        diff_text = _ensure_trailing_newline(_strip_single_markdown_fence(result.text))
+        raw_diff_text = _ensure_trailing_newline(_strip_single_markdown_fence(result.text))
+        diff_text = _normalize_single_new_file_hunk_count(raw_diff_text)
+        diff_was_normalized = diff_text != raw_diff_text
         if not diff_text.strip():
             raise RunnerError("diff proposal empty")
         if not _looks_like_unified_diff(diff_text):
@@ -107,6 +111,8 @@ class OpenAICompatibleDiffTransport:
         provenance.setdefault("model", result.model)
         provenance.setdefault("requested_model", result.requested_model)
         provenance["transport"] = "openai_compatible_diff"
+        if diff_was_normalized:
+            provenance["diff_normalization"] = {"single_new_file_hunk_count_repaired": True}
         return DiffProposalResponse(
             diff_text=diff_text,
             intent=request.intent,
@@ -128,16 +134,15 @@ class DiffProposerRunner:
         target = worktree.resolve()
         config = load_goal_config(target)
         target_path = _single_target_path(hypothesis, config)
-        file_path = target / target_path
-        if not file_path.exists() or not file_path.is_file():
-            raise RunnerError(f"target file does not exist: {target_path}")
+        file_contents, file_exists = _target_file_contents_or_empty(target, target_path)
         request = DiffProposalRequest(
             hypothesis_id=hypothesis.id,
             target_path=target_path,
-            file_contents=file_path.read_text(encoding="utf-8"),
+            file_contents=file_contents,
             success_criterion=self.success_criterion,
             goal_config_sha=config.content_hash,
             intent=hypothesis.intent,
+            file_exists=file_exists,
         )
         response = self.transport.propose(request)
         _raise_for_response_status(response)
@@ -161,9 +166,15 @@ class DiffProposerRunner:
 
 
 def _diff_prompt(request: DiffProposalRequest) -> str:
+    file_state = (
+        "The target file already exists; return a normal single-file edit diff."
+        if request.file_exists
+        else "The target file does not exist; return a single-file new-file unified diff using /dev/null as the old path."
+    )
     return (
         "Return only a unified diff for exactly the target file below.\n"
-        "Do not include markdown fences, explanations, or changes to any other file.\n\n"
+        "Do not include markdown fences, explanations, or changes to any other file.\n"
+        f"{file_state}\n\n"
         f"Hypothesis ID: {request.hypothesis_id}\n"
         f"Target path: {request.target_path}\n"
         f"Success criterion: {request.success_criterion}\n"
@@ -193,9 +204,63 @@ def _ensure_trailing_newline(text: str) -> str:
     return text
 
 
+def _normalize_single_new_file_hunk_count(text: str) -> str:
+    """Repair a common LLM error in otherwise valid single new-file diffs.
+
+    Grok sometimes emits a correct ``/dev/null`` new-file diff with the hunk
+    header line count copied from an estimate rather than the actual number of
+    added lines. This deterministic adapter fix only applies to one-file,
+    one-hunk, additions-only new-file diffs; all other shapes are left for the
+    patch gate to accept or reject unchanged.
+    """
+
+    lines = text.splitlines()
+    if len([line for line in lines if line.startswith("diff --git ")]) != 1:
+        return text
+    if "--- /dev/null" not in lines:
+        return text
+    hunk_indices = [index for index, line in enumerate(lines) if line.startswith("@@ ")]
+    if len(hunk_indices) != 1:
+        return text
+    hunk_index = hunk_indices[0]
+    header = lines[hunk_index]
+    match = re.fullmatch(r"@@ -0,0 \+1(?:,\d+)? @@(.*)", header)
+    if match is None:
+        return text
+    body = lines[hunk_index + 1 :]
+    if any(line.startswith("-") or line.startswith(" ") for line in body):
+        return text
+    if not all(line.startswith("+") or line == r"\ No newline at end of file" for line in body):
+        return text
+    added_lines = sum(1 for line in body if line.startswith("+"))
+    lines[hunk_index] = f"@@ -0,0 +1,{added_lines} @@{match.group(1)}"
+    normalized = "\n".join(lines)
+    return normalized + ("\n" if text.endswith("\n") else "")
+
+
 def _looks_like_unified_diff(text: str) -> bool:
     stripped = text.lstrip()
     return stripped.startswith("diff --git ") or stripped.startswith("--- ")
+
+
+def _target_file_contents_or_empty(target: Path, target_path: str) -> tuple[str, bool]:
+    file_path = target / target_path
+    if file_path.exists():
+        if not file_path.is_file():
+            raise RunnerError(f"target path is not a file: {target_path}")
+        return file_path.read_text(encoding="utf-8"), True
+
+    existing_parent = file_path.parent
+    while not existing_parent.exists() and existing_parent != target:
+        existing_parent = existing_parent.parent
+    if not existing_parent.exists():
+        raise RunnerError(f"target parent is outside repository: {target_path}")
+    if not existing_parent.is_dir():
+        raise RunnerError(f"target parent is not a directory: {target_path}")
+    resolved_parent = existing_parent.resolve()
+    if resolved_parent != target and target not in resolved_parent.parents:
+        raise RunnerError(f"target parent escapes repository: {target_path}")
+    return "", False
 
 
 def _single_target_path(hypothesis: Hypothesis, goal_config: GoalConfig) -> str:
