@@ -13,6 +13,7 @@ htmlcov/
 .arena/arena.lock
 .arena/runs/
 .arena/worktrees/
+.arena/artifacts/
 .arena/blobs/
 .arena/git/
 .arena/dashboard/state.json
