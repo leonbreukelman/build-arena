@@ -5,6 +5,9 @@ import subprocess
 from pathlib import Path
 
 from arena.project_decomposer_ai import build_project_model_snapshot
+from arena.project_graph import build_project_graph, graph_to_dict
+from arena.project_model_gate import close_import_contracts_for_gate, run_project_model_gate
+from arena.project_snapshot import Component, ProjectModelSnapshot, snapshot_to_dict
 
 
 def _run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
@@ -355,3 +358,226 @@ def test_fixture_decomposer_emits_iteration_ready_model_for_fmc_like_project(tmp
     assert quality["quality.mypy"]["includedInAcceptance"] is False
     assert quality["quality.mypy"]["safeToRunByDefault"] is False
     assert any("test_connection" in question["question"] for question in iteration["openQuestions"])
+
+
+def test_quality_gates_use_dev_extra_when_tooling_is_optional_dependency(tmp_path: Path) -> None:
+    repo = tmp_path / "optional-dev-tools"
+    repo.mkdir()
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "tests").mkdir()
+    (repo / "src" / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "src" / "pkg" / "core.py").write_text("def value() -> int:\n    return 1\n", encoding="utf-8")
+    (repo / "tests" / "test_core.py").write_text("from pkg.core import value\n\ndef test_value():\n    assert value() == 1\n", encoding="utf-8")
+    (repo / "pyproject.toml").write_text(
+        """[project]
+name = "optional-dev-tools"
+version = "0.0.0"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.8", "mypy>=1.13"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+""",
+        encoding="utf-8",
+    )
+    _init_repo(repo)
+
+    result = build_project_model_snapshot(
+        repo,
+        tmp_path / "artifacts",
+        project_id="optional-dev-tools",
+        llm_mode="fixture",
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is True
+    v1 = json.loads((result.snapshot_dir / "project-model-v1.json").read_text(encoding="utf-8"))
+    commands = {gate["command"] for gate in v1["iterationReadiness"]["qualityGates"]}
+    assert "uv run --extra dev python -m pytest -q" in commands
+    assert "uv run --extra dev ruff check ." in commands
+    assert "uv run --extra dev mypy src/pkg" in commands
+    assert "uv run python -m pytest -q" not in commands
+    assert "uv run ruff check ." not in commands
+
+
+def test_recorded_live_shaped_output_gets_deterministic_import_contract_closure(tmp_path: Path) -> None:
+    repo = tmp_path / "closure-repo"
+    repo.mkdir()
+    _write_contract_closure_repo(repo)
+    artifacts = tmp_path / "artifacts"
+    fixture = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="closure-repo",
+        goal="decompose all runtime import contracts",
+        non_goals=["do not force the model to enumerate mechanical imports"],
+        llm_mode="fixture",
+        overwrite=True,
+    )
+    raw = json.loads((fixture.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(encoding="utf-8"))
+    raw["model_id"] = "recorded-live-shaped-missing-contracts"
+    raw["contracts"] = [
+        {
+            "id": "contract:model-reversed-server-client",
+            "name": "Wrong-way server client import",
+            "from_component_id": "component.pkg-client",
+            "to_component_id": "component.pkg-server",
+            "supporting_edge_ids": [
+                next(
+                    edge.id
+                    for edge in fixture.graph.edges
+                    if edge.kind == "imports" and edge.to_node_id == "node:python_import:pkg.client"
+                )
+            ],
+            "near_neighbor_alternative_ids": [],
+            "provenance_refs": [fixture.graph.nodes[0].provenance_refs[0].id],
+        }
+    ]
+    for component in raw["components"]:
+        component["contract_ids"] = ["contract:model-reversed-server-client"] if component["id"] in {"component.pkg-client", "component.pkg-server"} else []
+    recorded_path = tmp_path / "recorded-live-shaped.json"
+    recorded_path.write_text(json.dumps(raw, indent=2), encoding="utf-8")
+
+    result = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="closure-repo",
+        goal="decompose all runtime import contracts",
+        non_goals=["do not force the model to enumerate mechanical imports"],
+        llm_mode="recorded",
+        model_output_path=recorded_path,
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is True
+    auto_contracts = [contract for contract in result.snapshot.contracts if contract.id.startswith("contract.auto.")]
+    closure_report = json.loads((result.snapshot_dir / "import-contract-closure.json").read_text(encoding="utf-8"))
+    assert closure_report["autoContractCount"] == len(auto_contracts)
+    assert closure_report["autoContractIds"] == [contract.id for contract in auto_contracts]
+    assert auto_contracts
+    assert {
+        (contract.from_component_id, contract.to_component_id)
+        for contract in auto_contracts
+    } >= {
+        ("component.pkg-server", "component.pkg-client"),
+        ("component.pkg-server", "component.pkg-config"),
+        ("component.pkg-client", "component.pkg-config"),
+    }
+    assert all(contract.provenance_refs for contract in auto_contracts)
+    assert all(contract.near_neighbor_alternative_ids == [] for contract in auto_contracts)
+    assert not any(contract.id == "contract:model-reversed-server-client" for contract in result.snapshot.contracts)
+    for component in result.snapshot.components:
+        assert "contract:model-reversed-server-client" not in component.contract_ids
+    persisted_raw = json.loads((result.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(encoding="utf-8"))
+    assert persisted_raw["contracts"] == raw["contracts"]
+    assert persisted_raw["components"] == raw["components"]
+
+
+def test_contract_closure_is_idempotent_and_stable(tmp_path: Path) -> None:
+    repo = tmp_path / "stable-closure"
+    repo.mkdir()
+    _write_contract_closure_repo(repo)
+    artifacts = tmp_path / "artifacts"
+    fixture = build_project_model_snapshot(repo, artifacts, project_id="stable-closure", llm_mode="fixture", overwrite=True)
+    raw = json.loads((fixture.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(encoding="utf-8"))
+    raw["contracts"] = []
+    for component in raw["components"]:
+        component["contract_ids"] = []
+    recorded_path = tmp_path / "recorded-no-contracts.json"
+    recorded_path.write_text(json.dumps(raw, indent=2), encoding="utf-8")
+
+    first = build_project_model_snapshot(repo, artifacts, project_id="stable-closure", llm_mode="recorded", model_output_path=recorded_path, overwrite=True)
+    second = build_project_model_snapshot(repo, artifacts, project_id="stable-closure", llm_mode="recorded", model_output_path=recorded_path, overwrite=True)
+    before = snapshot_to_dict(first.snapshot)
+    closed_again = close_import_contracts_for_gate(first.snapshot, first.graph)
+
+    assert snapshot_to_dict(closed_again) == before
+    assert first.manifest["snapshot_hash"] == second.manifest["snapshot_hash"]
+    auto_ids = [contract.id for contract in first.snapshot.contracts if contract.id.startswith("contract.auto.")]
+    assert len(auto_ids) == len(set(auto_ids))
+    assert not set(auto_ids) & {contract["id"] for contract in raw["contracts"]}
+
+
+def test_contract_closure_does_not_mask_unmeasurable_no_edge_component(tmp_path: Path) -> None:
+    repo = tmp_path / "lonely-repo"
+    repo.mkdir()
+    (repo / "pkg").mkdir()
+    (repo / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "pkg" / "lonely.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (repo / "pyproject.toml").write_text("[project]\nname='lonely-repo'\nversion='0.0.0'\n", encoding="utf-8")
+    _init_repo(repo)
+    graph = build_project_graph(repo)
+    graph_data = graph_to_dict(graph)
+    module = next(node for node in graph_data["nodes"] if node.get("path") == "pkg/lonely.py" and node.get("kind") == "python_module")
+    prov = module["provenance_refs"][0]["id"]
+    snapshot = ProjectModelSnapshot(
+        project_id="lonely-repo",
+        project_root=str(repo),
+        components=[
+            Component(
+                id="component.pkg-lonely",
+                name="Lonely Runtime Value",
+                responsibility="Provide a standalone runtime value for local imports",
+                owned_node_ids=[module["id"]],
+                provenance_refs=[prov],
+                contract_ids=[],
+                check_ids=[],
+                verification_gap_ids=[],
+            )
+        ],
+        observable_checks=[],
+        verification_gaps=[],
+    )
+
+    closed = close_import_contracts_for_gate(snapshot, graph_data)
+    report = run_project_model_gate(closed, graph_data)
+
+    assert closed.contracts == []
+    assert report.passed is False
+    assert any("no contracts, checks, or gaps" in violation.message for violation in report.violations)
+
+
+def test_contract_closure_requires_provenance_for_auto_contracts(tmp_path: Path) -> None:
+    repo = tmp_path / "no-provenance"
+    repo.mkdir()
+    _write_contract_closure_repo(repo)
+    fixture = build_project_model_snapshot(repo, tmp_path / "artifacts", project_id="no-provenance", llm_mode="fixture", overwrite=True)
+    snapshot = fixture.snapshot
+    graph_data = graph_to_dict(fixture.graph)
+    snapshot.contracts = []
+    for component in snapshot.components:
+        component.contract_ids = []
+        component.provenance_refs = []
+    for edge in graph_data["edges"]:
+        edge["provenance_refs"] = []
+
+    closed = close_import_contracts_for_gate(snapshot, graph_data)
+    report = run_project_model_gate(closed, graph_data)
+
+    assert not any(contract.id.startswith("contract.auto.") for contract in closed.contracts)
+    assert report.passed is False
+
+
+def _write_contract_closure_repo(repo: Path) -> None:
+    (repo / "pkg").mkdir()
+    (repo / "tests").mkdir()
+    (repo / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "pkg" / "config.py").write_text("VALUE = 1\n", encoding="utf-8")
+    (repo / "pkg" / "client.py").write_text(
+        "from pkg.config import VALUE\n\ndef fetch() -> int:\n    return VALUE\n",
+        encoding="utf-8",
+    )
+    (repo / "pkg" / "server.py").write_text(
+        "from pkg.client import fetch\nfrom pkg.config import VALUE\n\ndef run() -> int:\n    return fetch() + VALUE\n",
+        encoding="utf-8",
+    )
+    (repo / "tests" / "test_server.py").write_text(
+        "from pkg.server import run\n\ndef test_run():\n    assert run() == 2\n",
+        encoding="utf-8",
+    )
+    (repo / "pyproject.toml").write_text("[project]\nname='closure-repo'\nversion='0.0.0'\n", encoding="utf-8")
+    _init_repo(repo)

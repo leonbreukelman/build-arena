@@ -156,6 +156,30 @@ def _diff_request() -> DiffProposalRequest:
     )
 
 
+def test_openai_compatible_diff_transport_prompt_includes_grounding_facts_and_constraints() -> None:
+    chat = FakeChatClient(_chat_result(_valid_diff()))
+    transport = OpenAICompatibleDiffTransport(chat_client=chat)
+    request = DiffProposalRequest(
+        hypothesis_id="hyp-docs-index",
+        target_path="docs/index.md",
+        file_contents="",
+        success_criterion="docs index exists and all local Markdown links resolve",
+        goal_config_sha="g" * 64,
+        intent="Create grounded docs index",
+        file_exists=False,
+        repo_facts="README.md exists; docs has no Markdown pages",
+        grounding_constraints=("Do not invent Markdown links to files absent from repo facts.",),
+    )
+
+    transport.propose(request)
+
+    prompt = chat.calls[0]["messages"][-1]["content"]
+    assert "Repository facts:" in prompt
+    assert "README.md exists; docs has no Markdown pages" in prompt
+    assert "Grounding constraints:" in prompt
+    assert "Do not invent Markdown links" in prompt
+
+
 def test_openai_compatible_diff_transport_requests_unified_diff_and_records_provenance() -> None:
     chat = FakeChatClient(_chat_result(_valid_diff()))
     transport = OpenAICompatibleDiffTransport(chat_client=chat)
@@ -256,6 +280,33 @@ def test_openai_compatible_diff_transport_adds_missing_final_newline() -> None:
     response = transport.propose(_diff_request())
 
     assert response.diff_text == _valid_diff()
+
+
+def test_openai_compatible_diff_transport_repairs_single_new_file_hunk_count() -> None:
+    malformed = """diff --git a/docs/index.md b/docs/index.md
+new file mode 100644
+--- /dev/null
++++ b/docs/index.md
+@@ -0,0 +1,12 @@
++# FMC-MCP Documentation
++
++Canonical navigation index for fmc-mcp.
++
++- [README](../README.md)
++- [Setup](setup.md)
++- [Verification](verification.md)
++- [Architecture](architecture.md)
++
++Future documentation locations will be added here as they are created.
+"""
+    transport = OpenAICompatibleDiffTransport(chat_client=FakeChatClient(_chat_result(malformed)))
+
+    response = transport.propose(_diff_request())
+
+    assert "@@ -0,0 +1,10 @@" in response.diff_text
+    assert "@@ -0,0 +1,12 @@" not in response.diff_text
+    assert response.provenance is not None
+    assert response.provenance["diff_normalization"] == {"single_new_file_hunk_count_repaired": True}
 
 
 def test_diff_proposer_applies_live_transport_valid_diff_after_patch_gate(tmp_path: Path) -> None:
@@ -407,3 +458,89 @@ def test_diff_proposer_rejects_multi_target_hypotheses(tmp_path: Path) -> None:
         asyncio.run(runner.apply(_hypothesis(target_files=["src/app.py", "src/other.py"]), repo))
 
     assert subprocess.check_output(["git", "status", "--short"], cwd=repo, text=True) == ""
+
+
+def _new_file_diff(path: str, content: str = "# Docs\n\n") -> str:
+    lines = content.splitlines()
+    added = "\n".join(f"+{line}" for line in lines) + "\n"
+    return f"""diff --git a/{path} b/{path}
+new file mode 100644
+index 0000000..3b18e51
+--- /dev/null
++++ b/{path}
+@@ -0,0 +1,{len(lines)} @@
+{added}"""
+
+
+def test_diff_proposer_applies_single_new_file_diff_after_patch_gate(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("docs/index.md"),
+            intent="Create docs index",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="docs index exists")
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(target_files=["docs/index.md"]), repo))
+
+    assert (repo / "docs" / "index.md").read_text(encoding="utf-8") == "# Docs\n\n"
+    assert patch_path.exists()
+    assert transport.requests[0].target_path == "docs/index.md"
+    assert transport.requests[0].file_contents == ""
+    provenance = json.loads(patch_path.with_suffix(".patch.provenance.json").read_text(encoding="utf-8"))
+    assert provenance["target_path"] == "docs/index.md"
+
+
+def test_diff_proposer_rejects_markdown_with_missing_relative_links(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("docs/index.md", "# Docs\n\n- [Overview](overview.md)\n"),
+            intent="Create docs index",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="docs index links resolve")
+
+    with pytest.raises(RunnerError, match="missing Markdown link target"):
+        asyncio.run(runner.apply(_hypothesis(target_files=["docs/index.md"]), repo))
+
+    assert not (repo / ".arena" / "patches").exists()
+
+
+def test_diff_proposer_applies_nested_new_file_diff_when_parent_is_missing(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("docs/sub/index.md", "# Nested\n\n"),
+            intent="Create nested docs index",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="nested docs index exists")
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(target_files=["docs/sub/index.md"]), repo))
+
+    assert (repo / "docs" / "sub" / "index.md").read_text(encoding="utf-8") == "# Nested\n\n"
+    assert patch_path.exists()
+    assert transport.requests[0].file_contents == ""
+
+
+def test_diff_proposer_rejects_protected_missing_target_without_transport_call(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("private/new.py", "SECRET = 'no'\n"),
+            intent="Create protected file",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="protected file exists")
+
+    with pytest.raises(RunnerError, match="boundary"):
+        asyncio.run(runner.apply(_hypothesis(target_files=["private/new.py"]), repo))
+
+    assert transport.requests == []
+    assert not (repo / "private" / "new.py").exists()

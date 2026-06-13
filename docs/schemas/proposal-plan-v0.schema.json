@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://build-arena.local/schemas/proposal-plan-v0.schema.json",
+  "title": "Proposal Plan v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "sourceScorecardId",
+    "snapshotId",
+    "projectRoot",
+    "repoFactsHash",
+    "candidateCount",
+    "omittedCount",
+    "skippedCount",
+    "skippedFindings",
+    "candidates"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "proposal-plan/v0"},
+    "id": {"type": "string"},
+    "sourceScorecardId": {"type": "string"},
+    "snapshotId": {"type": "string"},
+    "projectRoot": {"type": "string"},
+    "repoFactsHash": {"type": "string"},
+    "candidateCount": {"type": "integer", "minimum": 0},
+    "omittedCount": {"type": "integer", "minimum": 0},
+    "skippedCount": {"type": "integer", "minimum": 0},
+    "skippedFindings": {"type": "array", "items": {"$ref": "#/$defs/skippedFinding"}},
+    "candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}}
+  },
+  "$defs": {
+    "skippedFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "rank", "title", "reason", "evidence_paths"],
+      "properties": {
+        "finding_id": {"type": "string"},
+        "rank": {"type": "integer"},
+        "title": {"type": "string"},
+        "reason": {"type": "string"},
+        "evidence_paths": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "finding_id",
+        "title",
+        "target_path",
+        "intent",
+        "success_criterion",
+        "repo_facts_hash",
+        "repo_facts_block",
+        "grounding_constraints",
+        "verification_commands",
+        "priority_score",
+        "evidence_refs",
+        "source_recommended_action"
+      ],
+      "properties": {
+        "rank": {"type": "integer", "minimum": 1},
+        "finding_id": {"type": "string"},
+        "title": {"type": "string"},
+        "target_path": {"type": "string"},
+        "intent": {"type": "string"},
+        "success_criterion": {"type": "string"},
+        "repo_facts_hash": {"type": "string"},
+        "repo_facts_block": {"type": "string"},
+        "grounding_constraints": {"type": "array", "items": {"type": "string"}},
+        "verification_commands": {"type": "array", "items": {"type": "string"}},
+        "priority_score": {"type": "number"},
+        "evidence_refs": {"type": "array", "items": {"type": "object"}},
+        "source_recommended_action": {"type": "string"}
+      }
+    }
+  }
+}

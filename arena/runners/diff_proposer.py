@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -12,6 +13,7 @@ from arena.llm_adapter import (
     OpenAIProviderConfig,
     resolve_provider_config,
 )
+from arena.markdown_links import check_markdown_links
 from arena.patch_gate import validate_unified_diff
 from arena.runners.base import RunnerError
 from scorer.goal_config import GoalConfig, load_goal_config
@@ -25,6 +27,9 @@ class DiffProposalRequest:
     success_criterion: str
     goal_config_sha: str
     intent: str
+    file_exists: bool = True
+    repo_facts: str = ""
+    grounding_constraints: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -97,7 +102,9 @@ class OpenAICompatibleDiffTransport:
             raise RunnerError(f"diff proposal provider failed: {exc}") from exc
         if str(result.finish_reason).lower() == "length":
             raise RunnerError("diff proposal truncated")
-        diff_text = _ensure_trailing_newline(_strip_single_markdown_fence(result.text))
+        raw_diff_text = _ensure_trailing_newline(_strip_single_markdown_fence(result.text))
+        diff_text = _normalize_single_new_file_hunk_count(raw_diff_text)
+        diff_was_normalized = diff_text != raw_diff_text
         if not diff_text.strip():
             raise RunnerError("diff proposal empty")
         if not _looks_like_unified_diff(diff_text):
@@ -107,6 +114,8 @@ class OpenAICompatibleDiffTransport:
         provenance.setdefault("model", result.model)
         provenance.setdefault("requested_model", result.requested_model)
         provenance["transport"] = "openai_compatible_diff"
+        if diff_was_normalized:
+            provenance["diff_normalization"] = {"single_new_file_hunk_count_repaired": True}
         return DiffProposalResponse(
             diff_text=diff_text,
             intent=request.intent,
@@ -118,9 +127,18 @@ class OpenAICompatibleDiffTransport:
 class DiffProposerRunner:
     name = RunnerName.codex
 
-    def __init__(self, *, transport: DiffTransport, success_criterion: str) -> None:
+    def __init__(
+        self,
+        *,
+        transport: DiffTransport,
+        success_criterion: str,
+        repo_facts: str = "",
+        grounding_constraints: tuple[str, ...] = (),
+    ) -> None:
         self.transport = transport
         self.success_criterion = success_criterion
+        self.repo_facts = repo_facts
+        self.grounding_constraints = grounding_constraints
         self.applied_hypotheses: list[Hypothesis] = []
 
     async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Path:
@@ -128,16 +146,17 @@ class DiffProposerRunner:
         target = worktree.resolve()
         config = load_goal_config(target)
         target_path = _single_target_path(hypothesis, config)
-        file_path = target / target_path
-        if not file_path.exists() or not file_path.is_file():
-            raise RunnerError(f"target file does not exist: {target_path}")
+        file_contents, file_exists = _target_file_contents_or_empty(target, target_path)
         request = DiffProposalRequest(
             hypothesis_id=hypothesis.id,
             target_path=target_path,
-            file_contents=file_path.read_text(encoding="utf-8"),
+            file_contents=file_contents,
             success_criterion=self.success_criterion,
             goal_config_sha=config.content_hash,
             intent=hypothesis.intent,
+            file_exists=file_exists,
+            repo_facts=self.repo_facts,
+            grounding_constraints=self.grounding_constraints,
         )
         response = self.transport.propose(request)
         _raise_for_response_status(response)
@@ -145,6 +164,11 @@ class DiffProposerRunner:
         if not gate.accepted:
             raise RunnerError(f"patch gate rejected: {gate.reason}")
         _apply_diff(target, response.diff_text)
+        try:
+            _validate_changed_markdown(target, gate.touched_paths)
+        except RunnerError:
+            _reverse_diff(target, response.diff_text)
+            raise
         patch_path = target / ".arena" / "patches" / f"{hypothesis.id}.patch"
         patch_path.parent.mkdir(parents=True, exist_ok=True)
         patch_path.write_text(response.diff_text, encoding="utf-8")
@@ -161,14 +185,26 @@ class DiffProposerRunner:
 
 
 def _diff_prompt(request: DiffProposalRequest) -> str:
+    file_state = (
+        "The target file already exists; return a normal single-file edit diff."
+        if request.file_exists
+        else "The target file does not exist; return a single-file new-file unified diff using /dev/null as the old path."
+    )
+    facts = request.repo_facts.strip() or "No additional repository facts supplied."
+    constraints = "\n".join(f"- {item}" for item in request.grounding_constraints) or "- Use only the provided target file and repository facts; do not invent files, links, or commands."
     return (
         "Return only a unified diff for exactly the target file below.\n"
-        "Do not include markdown fences, explanations, or changes to any other file.\n\n"
+        "Do not include markdown fences, explanations, or changes to any other file.\n"
+        f"{file_state}\n\n"
         f"Hypothesis ID: {request.hypothesis_id}\n"
         f"Target path: {request.target_path}\n"
         f"Success criterion: {request.success_criterion}\n"
         f"Goal config SHA: {request.goal_config_sha}\n"
         f"Intent: {request.intent}\n\n"
+        "Repository facts:\n"
+        f"{facts}\n\n"
+        "Grounding constraints:\n"
+        f"{constraints}\n\n"
         "Current file contents:\n"
         "```text\n"
         f"{request.file_contents}"
@@ -193,9 +229,63 @@ def _ensure_trailing_newline(text: str) -> str:
     return text
 
 
+def _normalize_single_new_file_hunk_count(text: str) -> str:
+    """Repair a common LLM error in otherwise valid single new-file diffs.
+
+    Grok sometimes emits a correct ``/dev/null`` new-file diff with the hunk
+    header line count copied from an estimate rather than the actual number of
+    added lines. This deterministic adapter fix only applies to one-file,
+    one-hunk, additions-only new-file diffs; all other shapes are left for the
+    patch gate to accept or reject unchanged.
+    """
+
+    lines = text.splitlines()
+    if len([line for line in lines if line.startswith("diff --git ")]) != 1:
+        return text
+    if "--- /dev/null" not in lines:
+        return text
+    hunk_indices = [index for index, line in enumerate(lines) if line.startswith("@@ ")]
+    if len(hunk_indices) != 1:
+        return text
+    hunk_index = hunk_indices[0]
+    header = lines[hunk_index]
+    match = re.fullmatch(r"@@ -0,0 \+1(?:,\d+)? @@(.*)", header)
+    if match is None:
+        return text
+    body = lines[hunk_index + 1 :]
+    if any(line.startswith("-") or line.startswith(" ") for line in body):
+        return text
+    if not all(line.startswith("+") or line == r"\ No newline at end of file" for line in body):
+        return text
+    added_lines = sum(1 for line in body if line.startswith("+"))
+    lines[hunk_index] = f"@@ -0,0 +1,{added_lines} @@{match.group(1)}"
+    normalized = "\n".join(lines)
+    return normalized + ("\n" if text.endswith("\n") else "")
+
+
 def _looks_like_unified_diff(text: str) -> bool:
     stripped = text.lstrip()
     return stripped.startswith("diff --git ") or stripped.startswith("--- ")
+
+
+def _target_file_contents_or_empty(target: Path, target_path: str) -> tuple[str, bool]:
+    file_path = target / target_path
+    if file_path.exists():
+        if not file_path.is_file():
+            raise RunnerError(f"target path is not a file: {target_path}")
+        return file_path.read_text(encoding="utf-8"), True
+
+    existing_parent = file_path.parent
+    while not existing_parent.exists() and existing_parent != target:
+        existing_parent = existing_parent.parent
+    if not existing_parent.exists():
+        raise RunnerError(f"target parent is outside repository: {target_path}")
+    if not existing_parent.is_dir():
+        raise RunnerError(f"target parent is not a directory: {target_path}")
+    resolved_parent = existing_parent.resolve()
+    if resolved_parent != target and target not in resolved_parent.parents:
+        raise RunnerError(f"target parent escapes repository: {target_path}")
+    return "", False
 
 
 def _single_target_path(hypothesis: Hypothesis, goal_config: GoalConfig) -> str:
@@ -235,6 +325,33 @@ def _apply_diff(worktree: Path, diff_text: str) -> None:
     )
     if proc.returncode != 0:
         raise RunnerError(f"git apply failed after patch gate: {proc.stderr.strip()}")
+
+
+def _reverse_diff(worktree: Path, diff_text: str) -> None:
+    subprocess.run(
+        ["git", "apply", "-R", "-"],
+        cwd=worktree,
+        input=diff_text,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+    for raw_path in touched_paths:
+        if not raw_path.endswith(".md"):
+            continue
+        path = worktree / raw_path
+        if not path.exists() or not path.is_file():
+            continue
+        report = check_markdown_links(worktree, path)
+        if report.missing:
+            missing = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.missing)
+            raise RunnerError(f"missing Markdown link target: {missing}")
+        if report.escaped:
+            escaped = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.escaped)
+            raise RunnerError(f"Markdown link escapes repository: {escaped}")
 
 
 def _provenance(
