@@ -4,11 +4,17 @@ import argparse
 import hashlib
 import json
 from dataclasses import asdict, dataclass
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import Any
 
 from arena.fingerprints import compute_fingerprint
 from arena.generated.models import Hypothesis
+from arena.proposal_domains import (
+    DomainContext,
+    ProposalCandidateDraft,
+    ProposalDomainRegistry,
+    default_domain_registry,
+)
 from arena.repo_facts import RepoFacts, collect_repo_facts
 
 SCHEMA_VERSION = "proposal-plan/v0"
@@ -70,6 +76,22 @@ class ProposalPlan:
 
 
 def build_proposal_plan(project: str | Path, scorecard_path: str | Path, *, max_candidates: int = 10) -> ProposalPlan:
+    """Build the proposal plan using the default multi-domain registry.
+
+    Thin wrapper preserving the original public signature/behaviour; the actual
+    orchestration lives in ``build_proposal_plan_with_registry``."""
+    return build_proposal_plan_with_registry(
+        project, scorecard_path, default_domain_registry(), max_candidates=max_candidates
+    )
+
+
+def build_proposal_plan_with_registry(
+    project: str | Path,
+    scorecard_path: str | Path,
+    registry: ProposalDomainRegistry,
+    *,
+    max_candidates: int = 10,
+) -> ProposalPlan:
     if max_candidates <= 0:
         raise ValueError("max_candidates must be positive")
     project_path = Path(project).resolve()
@@ -77,24 +99,22 @@ def build_proposal_plan(project: str | Path, scorecard_path: str | Path, *, max_
     facts = collect_repo_facts(project_path)
     findings = _ranked_findings(scorecard)
     intake_context_block = _intake_context_block(findings)
-    require_source_references = _requires_source_references(project_path, facts)
+    context = DomainContext(
+        project_name=project_path.name,
+        facts=facts,
+        intake_context_block=intake_context_block,
+        require_source_references=_requires_source_references(project_path, facts),
+    )
+    facts_block = "\n".join(part for part in (facts.to_prompt_block(), intake_context_block) if part)
     planned: list[ProposalCandidate] = []
     skipped: list[dict[str, Any]] = []
     for finding in findings:
-        target_path = _single_target_path(finding)
-        if target_path is None:
+        result = registry.first_candidate(finding, context)
+        if result is None:
             skipped.append(_skipped_finding(finding, "no_single_file_target"))
             continue
-        planned.append(
-            _candidate_from_finding(
-                finding,
-                target_path,
-                facts,
-                intake_context_block,
-                len(planned) + 1,
-                require_source_references=require_source_references,
-            )
-        )
+        _domain_name, draft = result
+        planned.append(_candidate_from_draft(finding, draft, facts, facts_block, len(planned) + 1))
     limited = tuple(planned[:max_candidates])
     base = {
         "schemaVersion": SCHEMA_VERSION,
@@ -164,28 +184,6 @@ def _ranked_findings(scorecard: dict[str, Any]) -> list[dict[str, Any]]:
     )
 
 
-def _single_target_path(finding: dict[str, Any]) -> str | None:
-    paths: list[str] = []
-    for evidence in finding.get("evidence", []):
-        if not isinstance(evidence, dict):
-            continue
-        raw = evidence.get("path")
-        if not isinstance(raw, str) or not raw.strip() or raw.startswith("iterationReadiness"):
-            continue
-        path = PurePosixPath(raw.replace("\\", "/"))
-        if path.is_absolute() or ".." in path.parts:
-            continue
-        paths.append(_proposal_target_for_evidence_path(path))
-    unique = tuple(dict.fromkeys(paths))
-    return unique[0] if len(unique) == 1 else None
-
-
-def _proposal_target_for_evidence_path(path: PurePosixPath) -> str:
-    if path.suffix:
-        return path.as_posix()
-    return (path / "index.md").as_posix()
-
-
 def _skipped_finding(finding: dict[str, Any], reason: str) -> dict[str, Any]:
     return {
         "finding_id": str(finding.get("id", "")),
@@ -196,64 +194,30 @@ def _skipped_finding(finding: dict[str, Any], reason: str) -> dict[str, Any]:
     }
 
 
-def _candidate_from_finding(
+def _candidate_from_draft(
     finding: dict[str, Any],
-    target_path: str,
+    draft: ProposalCandidateDraft,
     facts: RepoFacts,
-    intake_context_block: str,
+    facts_block: str,
     rank: int,
-    *,
-    require_source_references: bool,
 ) -> ProposalCandidate:
-    finding_id = str(finding.get("id", ""))
-    source_action = str(finding.get("recommendedAction", ""))
-    facts_block = "\n".join(part for part in (facts.to_prompt_block(), intake_context_block) if part)
-    if finding_id == "doc.index.missing" or target_path == "docs/index.md":
-        intent = "Create a grounded docs/index.md that links only to existing repository files and names missing future documentation topics by title only, with no filename or extension."
-        success, constraints, verification = _markdown_success_contract(target_path, require_source_references=require_source_references)
-    elif target_path == "AGENTS.md":
-        intent = "Create a grounded AGENTS.md for future agents using existing repository facts, commands, and boundaries."
-        success, constraints, verification = _markdown_success_contract(target_path, require_source_references=require_source_references)
-    elif target_path.endswith(".md"):
-        title = str(finding.get("title") or finding_id or target_path)
-        intent = f"Create a grounded Markdown file at {target_path} that addresses finding {finding_id}: {title}."
-        success, constraints, verification = _markdown_success_contract(target_path, require_source_references=require_source_references)
-    else:
-        title = str(finding.get("title") or finding_id or target_path)
-        intent = f"Prepare a grounded one-file improvement for {target_path} based on finding {finding_id}: {title}."
-        success = f"{target_path} is changed in a bounded, repository-grounded way and project verification remains green."
-        constraints = ("Use only repository facts and current file contents; do not invent project structure, files, or commands.",)
-        verification = tuple(str(command) for command in finding.get("verification", []) if str(command).strip())
+    """Attach finding-level metadata (rank, score, evidence, provenance) to a
+    domain-produced draft to form the final ranked candidate."""
     return ProposalCandidate(
         rank=rank,
-        finding_id=finding_id,
+        finding_id=str(finding.get("id", "")),
         title=str(finding.get("title", "")),
-        target_path=target_path,
-        intent=intent,
-        success_criterion=success,
+        target_path=draft.target_path,
+        intent=draft.intent,
+        success_criterion=draft.success_criterion,
         repo_facts_hash=facts.content_hash,
         repo_facts_block=facts_block,
-        grounding_constraints=constraints,
-        verification_commands=verification,
+        grounding_constraints=tuple(draft.grounding_constraints),
+        verification_commands=tuple(draft.verification_commands),
         priority_score=float(finding.get("priorityScore", 0.0)),
         evidence_refs=tuple(evidence for evidence in finding.get("evidence", []) if isinstance(evidence, dict)),
-        source_recommended_action=source_action,
+        source_recommended_action=str(finding.get("recommendedAction", "")),
     )
-
-
-def _markdown_success_contract(target_path: str, *, require_source_references: bool = False) -> tuple[str, tuple[str, ...], tuple[str, ...]]:
-    success = f"{target_path} exists, is non-empty, and all local Markdown links resolve to existing repository files."
-    constraints = [
-        "Do not invent Markdown links to files absent from the repository facts.",
-        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
-        "Local Markdown links must resolve after the patch is applied.",
-    ]
-    verification = [f"test -s {target_path}", f"python3 -m arena.markdown_links --repo . --path {target_path}"]
-    if require_source_references:
-        success += " It includes a Source references section citing at least one existing repository file."
-        constraints.append("Include a `## Source references` section that cites existing repository files for factual or compliance claims.")
-        verification[-1] = f"python3 -m arena.markdown_links --repo . --path {target_path} --require-source-references"
-    return (success, tuple(constraints), tuple(verification))
 
 
 def _requires_source_references(project_path: Path, facts: RepoFacts) -> bool:
