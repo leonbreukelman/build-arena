@@ -1,0 +1,112 @@
+{
+  "findings": [
+    {
+      "autonomyBoundary": "safe_to_patch_docs_only",
+      "evidence": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "docs/index.md"
+        }
+      ],
+      "id": "doc.index.missing",
+      "priorityScore": 728.0,
+      "rank": 1,
+      "recommendedAction": "Create docs/index.md as canonical docs navigation.",
+      "title": "Docs index is missing",
+      "verification": [
+        "test -e docs/index.md"
+      ]
+    },
+    {
+      "autonomyBoundary": "safe_to_patch_docs_only",
+      "evidence": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "AGENTS.md"
+        }
+      ],
+      "id": "agent.agents-md.missing",
+      "priorityScore": 672.0,
+      "rank": 2,
+      "recommendedAction": "Create AGENTS.md with commands, boundaries, and definition of done.",
+      "title": "AGENTS.md is missing",
+      "verification": [
+        "test -e AGENTS.md"
+      ]
+    },
+    {
+      "autonomyBoundary": "safe_to_patch_docs_only",
+      "evidence": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "docs/decisions"
+        }
+      ],
+      "id": "decision.history.missing",
+      "priorityScore": 300.0,
+      "rank": 3,
+      "recommendedAction": "Create decision records.",
+      "title": "Decision records are missing",
+      "verification": [
+        "test -e docs/decisions"
+      ]
+    },
+    {
+      "autonomyBoundary": "needs_code_change",
+      "evidence": [
+        {
+          "checked": true,
+          "componentId": "comp-auth",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/pkg/auth.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov.auth"
+        }
+      ],
+      "id": "code.component.untested.comp-auth",
+      "priorityScore": 250.0,
+      "rank": 4,
+      "recommendedAction": "Add an observable check covering Auth.",
+      "title": "Component Auth has no observable check",
+      "verification": []
+    },
+    {
+      "autonomyBoundary": "advisory_only",
+      "evidence": [
+        {
+          "checked": true,
+          "kind": "project_model",
+          "path": "iterationReadiness.qualityGates"
+        }
+      ],
+      "id": "verification.quality-gates.present",
+      "priorityScore": 196.0,
+      "rank": 5,
+      "recommendedAction": "Keep these commands linked.",
+      "title": "Project Model exposes local quality gates",
+      "verification": [
+        "uv run ruff check .",
+        "uv run python -m pytest -q"
+      ]
+    }
+  ],
+  "id": "scorecard-parity",
+  "projectRoot": "<REPO>",
+  "schemaVersion": "project-intake-scorecard/v0",
+  "snapshotId": "snapshot-parity"
+}
