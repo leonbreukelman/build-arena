@@ -360,6 +360,50 @@ def test_fixture_decomposer_emits_iteration_ready_model_for_fmc_like_project(tmp
     assert any("test_connection" in question["question"] for question in iteration["openQuestions"])
 
 
+def test_quality_gates_use_dev_extra_when_tooling_is_optional_dependency(tmp_path: Path) -> None:
+    repo = tmp_path / "optional-dev-tools"
+    repo.mkdir()
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "tests").mkdir()
+    (repo / "src" / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "src" / "pkg" / "core.py").write_text("def value() -> int:\n    return 1\n", encoding="utf-8")
+    (repo / "tests" / "test_core.py").write_text("from pkg.core import value\n\ndef test_value():\n    assert value() == 1\n", encoding="utf-8")
+    (repo / "pyproject.toml").write_text(
+        """[project]
+name = "optional-dev-tools"
+version = "0.0.0"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.8", "mypy>=1.13"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+""",
+        encoding="utf-8",
+    )
+    _init_repo(repo)
+
+    result = build_project_model_snapshot(
+        repo,
+        tmp_path / "artifacts",
+        project_id="optional-dev-tools",
+        llm_mode="fixture",
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is True
+    v1 = json.loads((result.snapshot_dir / "project-model-v1.json").read_text(encoding="utf-8"))
+    commands = {gate["command"] for gate in v1["iterationReadiness"]["qualityGates"]}
+    assert "uv run --extra dev python -m pytest -q" in commands
+    assert "uv run --extra dev ruff check ." in commands
+    assert "uv run --extra dev mypy src/pkg" in commands
+    assert "uv run python -m pytest -q" not in commands
+    assert "uv run ruff check ." not in commands
+
+
 def test_recorded_live_shaped_output_gets_deterministic_import_contract_closure(tmp_path: Path) -> None:
     repo = tmp_path / "closure-repo"
     repo.mkdir()

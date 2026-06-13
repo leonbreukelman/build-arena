@@ -13,6 +13,7 @@ from arena.llm_adapter import (
     OpenAIProviderConfig,
     resolve_provider_config,
 )
+from arena.markdown_links import check_markdown_links
 from arena.patch_gate import validate_unified_diff
 from arena.runners.base import RunnerError
 from scorer.goal_config import GoalConfig, load_goal_config
@@ -27,6 +28,8 @@ class DiffProposalRequest:
     goal_config_sha: str
     intent: str
     file_exists: bool = True
+    repo_facts: str = ""
+    grounding_constraints: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -124,9 +127,18 @@ class OpenAICompatibleDiffTransport:
 class DiffProposerRunner:
     name = RunnerName.codex
 
-    def __init__(self, *, transport: DiffTransport, success_criterion: str) -> None:
+    def __init__(
+        self,
+        *,
+        transport: DiffTransport,
+        success_criterion: str,
+        repo_facts: str = "",
+        grounding_constraints: tuple[str, ...] = (),
+    ) -> None:
         self.transport = transport
         self.success_criterion = success_criterion
+        self.repo_facts = repo_facts
+        self.grounding_constraints = grounding_constraints
         self.applied_hypotheses: list[Hypothesis] = []
 
     async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Path:
@@ -143,6 +155,8 @@ class DiffProposerRunner:
             goal_config_sha=config.content_hash,
             intent=hypothesis.intent,
             file_exists=file_exists,
+            repo_facts=self.repo_facts,
+            grounding_constraints=self.grounding_constraints,
         )
         response = self.transport.propose(request)
         _raise_for_response_status(response)
@@ -150,6 +164,11 @@ class DiffProposerRunner:
         if not gate.accepted:
             raise RunnerError(f"patch gate rejected: {gate.reason}")
         _apply_diff(target, response.diff_text)
+        try:
+            _validate_changed_markdown(target, gate.touched_paths)
+        except RunnerError:
+            _reverse_diff(target, response.diff_text)
+            raise
         patch_path = target / ".arena" / "patches" / f"{hypothesis.id}.patch"
         patch_path.parent.mkdir(parents=True, exist_ok=True)
         patch_path.write_text(response.diff_text, encoding="utf-8")
@@ -171,6 +190,8 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
         if request.file_exists
         else "The target file does not exist; return a single-file new-file unified diff using /dev/null as the old path."
     )
+    facts = request.repo_facts.strip() or "No additional repository facts supplied."
+    constraints = "\n".join(f"- {item}" for item in request.grounding_constraints) or "- Use only the provided target file and repository facts; do not invent files, links, or commands."
     return (
         "Return only a unified diff for exactly the target file below.\n"
         "Do not include markdown fences, explanations, or changes to any other file.\n"
@@ -180,6 +201,10 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
         f"Success criterion: {request.success_criterion}\n"
         f"Goal config SHA: {request.goal_config_sha}\n"
         f"Intent: {request.intent}\n\n"
+        "Repository facts:\n"
+        f"{facts}\n\n"
+        "Grounding constraints:\n"
+        f"{constraints}\n\n"
         "Current file contents:\n"
         "```text\n"
         f"{request.file_contents}"
@@ -300,6 +325,33 @@ def _apply_diff(worktree: Path, diff_text: str) -> None:
     )
     if proc.returncode != 0:
         raise RunnerError(f"git apply failed after patch gate: {proc.stderr.strip()}")
+
+
+def _reverse_diff(worktree: Path, diff_text: str) -> None:
+    subprocess.run(
+        ["git", "apply", "-R", "-"],
+        cwd=worktree,
+        input=diff_text,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+    for raw_path in touched_paths:
+        if not raw_path.endswith(".md"):
+            continue
+        path = worktree / raw_path
+        if not path.exists() or not path.is_file():
+            continue
+        report = check_markdown_links(worktree, path)
+        if report.missing:
+            missing = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.missing)
+            raise RunnerError(f"missing Markdown link target: {missing}")
+        if report.escaped:
+            escaped = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.escaped)
+            raise RunnerError(f"Markdown link escapes repository: {escaped}")
 
 
 def _provenance(

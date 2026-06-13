@@ -156,6 +156,30 @@ def _diff_request() -> DiffProposalRequest:
     )
 
 
+def test_openai_compatible_diff_transport_prompt_includes_grounding_facts_and_constraints() -> None:
+    chat = FakeChatClient(_chat_result(_valid_diff()))
+    transport = OpenAICompatibleDiffTransport(chat_client=chat)
+    request = DiffProposalRequest(
+        hypothesis_id="hyp-docs-index",
+        target_path="docs/index.md",
+        file_contents="",
+        success_criterion="docs index exists and all local Markdown links resolve",
+        goal_config_sha="g" * 64,
+        intent="Create grounded docs index",
+        file_exists=False,
+        repo_facts="README.md exists; docs has no Markdown pages",
+        grounding_constraints=("Do not invent Markdown links to files absent from repo facts.",),
+    )
+
+    transport.propose(request)
+
+    prompt = chat.calls[0]["messages"][-1]["content"]
+    assert "Repository facts:" in prompt
+    assert "README.md exists; docs has no Markdown pages" in prompt
+    assert "Grounding constraints:" in prompt
+    assert "Do not invent Markdown links" in prompt
+
+
 def test_openai_compatible_diff_transport_requests_unified_diff_and_records_provenance() -> None:
     chat = FakeChatClient(_chat_result(_valid_diff()))
     transport = OpenAICompatibleDiffTransport(chat_client=chat)
@@ -467,6 +491,23 @@ def test_diff_proposer_applies_single_new_file_diff_after_patch_gate(tmp_path: P
     assert transport.requests[0].file_contents == ""
     provenance = json.loads(patch_path.with_suffix(".patch.provenance.json").read_text(encoding="utf-8"))
     assert provenance["target_path"] == "docs/index.md"
+
+
+def test_diff_proposer_rejects_markdown_with_missing_relative_links(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("docs/index.md", "# Docs\n\n- [Overview](overview.md)\n"),
+            intent="Create docs index",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="docs index links resolve")
+
+    with pytest.raises(RunnerError, match="missing Markdown link target"):
+        asyncio.run(runner.apply(_hypothesis(target_files=["docs/index.md"]), repo))
+
+    assert not (repo / ".arena" / "patches").exists()
 
 
 def test_diff_proposer_applies_nested_new_file_diff_when_parent_is_missing(tmp_path: Path) -> None:

@@ -169,12 +169,15 @@ def detect_quality_gates(graph: Any) -> list[dict[str, Any]]:
         }
     ]
     parsed = _parse_pyproject(pyproject_text)
+    pytest_run = _uv_run_command(parsed, "pytest")
+    gates[0]["command"] = f"{pytest_run} python -m pytest -q"
     package_path = _primary_python_package_path(nodes)
     if _has_tool(parsed, pyproject_text, "ruff"):
+        ruff_run = _uv_run_command(parsed, "ruff")
         gates.append(
             {
                 "id": "quality.ruff",
-                "command": "uv run ruff check .",
+                "command": f"{ruff_run} ruff check .",
                 "source": "detected_pyproject",
                 "mode": "lint",
                 "description": "Run configured Ruff lint checks.",
@@ -184,10 +187,11 @@ def detect_quality_gates(graph: Any) -> list[dict[str, Any]]:
             }
         )
     if _has_tool(parsed, pyproject_text, "mypy"):
+        mypy_run = _uv_run_command(parsed, "mypy")
         gates.append(
             {
                 "id": "quality.mypy",
-                "command": f"uv run mypy {package_path}",
+                "command": f"{mypy_run} mypy {package_path}",
                 "source": "detected_pyproject_advisory",
                 "mode": "typecheck",
                 "description": "Mypy is configured, but this environment may not have the optional type-check dependency installed; keep it visible as an advisory quality gate unless the command is proven runnable.",
@@ -417,21 +421,58 @@ def _quality_gates(snapshot: Any, nodes: list[Any], root: Path) -> list[dict[str
                 "provenanceRefs": [str(item) for item in _get(check, "provenance_refs", [])],
             }
         )
-    known_commands = {gate["command"] for gate in gates}
-    for spec in detect_quality_gates(type("Graph", (), {"nodes": nodes, "project_root": str(root)})()):
-        if spec["command"] not in known_commands:
-            gates.append(
-                {
-                    "id": spec["id"],
-                    "command": spec["command"],
-                    "source": spec["source"],
-                    "mode": spec["mode"],
-                    "safeToRunByDefault": spec["safeToRunByDefault"],
-                    "includedInAcceptance": spec["includedInAcceptance"],
-                    "provenanceRefs": spec["provenanceRefs"],
-                }
-            )
-    return _dedupe_records(gates)
+    detected_specs = detect_quality_gates(type("Graph", (), {"nodes": nodes, "project_root": str(root)})())
+    for spec in detected_specs:
+        _upsert_detected_quality_gate(gates, spec)
+    return _dedupe_records(_drop_superseded_raw_quality_gates(gates, detected_specs))
+
+
+def _upsert_detected_quality_gate(gates: list[dict[str, Any]], spec: dict[str, Any]) -> None:
+    payload = {
+        "id": spec["id"],
+        "command": spec["command"],
+        "source": spec["source"],
+        "mode": spec["mode"],
+        "safeToRunByDefault": spec["safeToRunByDefault"],
+        "includedInAcceptance": spec["includedInAcceptance"],
+        "provenanceRefs": list(spec["provenanceRefs"]),
+    }
+    for index, existing in enumerate(gates):
+        if existing.get("id") != spec["id"]:
+            continue
+        payload["provenanceRefs"] = sorted(set([*existing.get("provenanceRefs", []), *payload["provenanceRefs"]]))
+        gates[index] = payload
+        return
+    if spec["command"] not in {gate["command"] for gate in gates}:
+        gates.append(payload)
+
+
+def _drop_superseded_raw_quality_gates(gates: list[dict[str, Any]], detected_specs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    extra_commands_by_tool = {
+        _quality_gate_tool(str(spec.get("command", ""))): str(spec.get("command", ""))
+        for spec in detected_specs
+        if " --extra " in str(spec.get("command", "")) and _quality_gate_tool(str(spec.get("command", "")))
+    }
+    if not extra_commands_by_tool:
+        return gates
+    filtered: list[dict[str, Any]] = []
+    for gate in gates:
+        command = str(gate.get("command", ""))
+        tool = _quality_gate_tool(command)
+        if tool in extra_commands_by_tool and command != extra_commands_by_tool[tool] and " --extra " not in command:
+            continue
+        filtered.append(gate)
+    return filtered
+
+
+def _quality_gate_tool(command: str) -> str:
+    parts = command.split()
+    for tool in ("pytest", "ruff", "mypy", "pyright"):
+        if tool in parts:
+            return tool
+    if "pytest" in command:
+        return "pytest"
+    return ""
 
 
 def _priority_backlog(profiles: list[dict[str, Any]], invariants: list[dict[str, Any]], surfaces: list[dict[str, Any]], runtime_contracts: list[dict[str, Any]], quality_gates: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -824,6 +865,36 @@ def _has_tool(parsed: dict[str, Any], text: str, tool: str) -> bool:
         return True
     lower = text.lower()
     return f"{tool}" in lower and ("dependency" in lower or "dev" in lower or f"tool.{tool}" in lower)
+
+
+def _uv_run_command(parsed: dict[str, Any], tool: str) -> str:
+    extra = _optional_dependency_extra_for_tool(parsed, tool)
+    return f"uv run --extra {extra}" if extra else "uv run"
+
+
+def _optional_dependency_extra_for_tool(parsed: dict[str, Any], tool: str) -> str:
+    project = parsed.get("project", {}) if isinstance(parsed.get("project", {}), dict) else {}
+    optional = project.get("optional-dependencies", {}) if isinstance(project.get("optional-dependencies", {}), dict) else {}
+    normalized_tool = _normalize_dependency_name(tool)
+    for extra, dependencies in sorted(optional.items(), key=lambda item: str(item[0])):
+        if not isinstance(extra, str) or not isinstance(dependencies, list):
+            continue
+        for dependency in dependencies:
+            if not isinstance(dependency, str):
+                continue
+            name = _dependency_name(dependency)
+            if name == normalized_tool or name.startswith(normalized_tool + "-"):
+                return extra
+    return ""
+
+
+def _dependency_name(spec: str) -> str:
+    base = re.split(r"[<>=!~;\[]", spec, maxsplit=1)[0]
+    return _normalize_dependency_name(base)
+
+
+def _normalize_dependency_name(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name.strip().lower())
 
 
 def _project_contains(root: Path, needle: str) -> bool:
