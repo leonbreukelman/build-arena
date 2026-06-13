@@ -73,6 +73,18 @@ The AI-first path starts with a mechanically built graph, asks an LLM path only 
 
 The snapshot bundle contains `graph.json`, `snapshot.json`, `gate-report.json`, `project-model-v1.json`, `project-model-v0.json`, prompts, model outputs, held-out probes, planted negatives, near-neighbor alternatives, and a manifest with paths and hashes.
 
+### Intake → proposal pipeline (implemented, advisory)
+
+Downstream of the Project Model, a deterministic intake → proposal slice is implemented. It is advisory: it ranks and proposes, but does not authorize autonomous mutation. The stage chain is `Project Model v1 → intake scorecard → proposal plan → candidate runner (worktree apply + verify)`.
+
+- `arena/project_intake_scorecard.py` reads a Project Model snapshot and emits ranked, evidence-backed findings using the explainable priority formula (dimension weight × severity × confidence × gains / effort) and profile weights (`new-project`, `active-development`, `production`, `documentation-first`). Output is advisory ranking only.
+- `arena/proposal_planner.py` converts the scorecard into a deterministic `proposal-plan/v0` artifact (`docs/schemas/proposal-plan-v0.schema.json`): ranked single-file candidates carrying grounded intent, a repo-facts block, success criterion, verification commands, and skipped-finding accounting.
+- `arena/repo_facts.py` collects deterministic repository facts (top-level files/dirs, docs and markdown inventory with truncation flags) to ground proposal prompts so a proposer cannot invent structure.
+- `arena/proposal_candidate_runner.py` selects a ranked candidate, drives `arena/runners/diff_proposer.py`, applies the unified diff inside a cycle worktree, and runs the candidate's verification gate. Live transport requires an explicit `--model` and otherwise fails closed; tests use `--fake-diff-file`.
+- `arena/markdown_links.py` is the deterministic documentation gate: it validates that local Markdown links resolve to real files and (with `--require-source-references`) that compliance-sensitive docs cite an existing source.
+
+Current limitation (tracked under epic #25, children #26–#31): the scorecard's absence findings emit only a hardcoded set of documentation targets, so this slice can presently produce **documentation** proposals only. It does not yet read the decomposer's `components`, `componentProfiles`, `contracts`, or `cross_cutting_concerns` as improvement targets. The epic generalizes intake to all improvement domains (documentation, tests, code quality, dependencies, security, architecture, process) and closes the propose→verify→promote loop. Until that lands, treat the proposal component as documentation-scope.
+
 ### Safety boundaries
 
 Autonomous runners must not write outside their cycle worktree. They must not modify `scorer/`, `verifier/`, `schema/`, `.arena/scorer.lock.toml`, or generated artifacts as part of a hypothesis. Promotion is a separate step and must be ff-only. These rules are encoded in AGENTS.md and partially enforced in `arena/boundary.py` and `arena/worktrees.py`.
@@ -172,4 +184,5 @@ Near-term useful work:
 - `docs/specs/2026-06-05-project-model-v1-shared-contract-spec.md` — Project Model v1 contract context.
 - `docs/project-model-v0.md` and `docs/schemas/project-model-v0.schema.json` — compatibility contract for existing v0 consumers.
 - `schema/arena.yaml` — source schema for generated models.
+- `arena/project_intake_scorecard.py`, `arena/proposal_planner.py`, `arena/proposal_candidate_runner.py`, `arena/repo_facts.py`, `arena/markdown_links.py` — the implemented advisory intake → proposal pipeline (`proposal-plan/v0`); see the architecture map's intake → proposal section and epic #25.
 - `tests/test_project_status_docs.py` — guardrails for active documentation/status alignment.

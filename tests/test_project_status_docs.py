@@ -1,9 +1,22 @@
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+# Core modules that make up the implemented intake -> proposal pipeline. These
+# exist on disk today and MUST be discoverable from the orientation docs so a
+# fresh agent is not told (as AGENTS.md previously claimed) that the scorecard is
+# unimplemented. Keep this list in sync with arena/ when the pipeline grows.
+INTAKE_PROPOSAL_MODULES = (
+    "project_intake_scorecard",
+    "proposal_planner",
+    "proposal_candidate_runner",
+    "repo_facts",
+    "markdown_links",
+)
 
 
 def _read(relative: str) -> str:
@@ -319,3 +332,83 @@ def test_documented_cli_surfaces_exist() -> None:
         help_text = result.stdout + result.stderr
         missing = [flag for flag in expected_flags if flag not in help_text]
         assert missing == []
+
+
+def test_agents_md_does_not_claim_scorecard_unimplemented() -> None:
+    """AGENTS.md previously told fresh agents the scorecard was not implemented.
+
+    The intake scorecard CLI (arena/project_intake_scorecard.py) is implemented
+    and tested. The stale false claim must be gone, and AGENTS.md must instead
+    describe the scorecard as implemented and advisory.
+    """
+    agents = _read("AGENTS.md")
+
+    stale_false_claims = [
+        "do not claim a scorecard CLI or gate exists",
+        "It is not implemented yet",
+        "Scorecard output is advisory until implemented and gated",
+    ]
+    present = [text for text in stale_false_claims if text in agents]
+    assert present == [], f"AGENTS.md still contains stale false claim(s): {present}"
+
+    # Positive: the implemented scorecard must be acknowledged.
+    assert "project_intake_scorecard" in agents
+    assert "advisory" in agents.lower()
+
+
+def test_agents_md_documents_intake_proposal_pipeline() -> None:
+    agents = _read("AGENTS.md")
+    missing = [module for module in INTAKE_PROPOSAL_MODULES if module not in agents]
+    assert missing == [], f"AGENTS.md does not document pipeline modules: {missing}"
+    assert "proposal-plan/v0" in agents
+
+
+def test_project_brief_documents_intake_proposal_pipeline() -> None:
+    brief = _read("docs/build-arena-project-brief.md")
+    missing = [module for module in INTAKE_PROPOSAL_MODULES if module not in brief]
+    assert missing == [], f"project-brief does not document pipeline modules: {missing}"
+    assert "proposal-plan/v0" in brief
+    # The architecture map must name the intake -> proposal stage explicitly.
+    assert "Intake" in brief and "proposal" in brief.lower()
+
+
+def test_orientation_docs_referenced_arena_modules_exist() -> None:
+    """Every arena/<module>.py path named in orientation docs must exist on disk.
+
+    Prevents documenting a module that was renamed or removed (doc drift in the
+    other direction).
+    """
+    pattern = re.compile(r"arena/([a-z0-9_]+)\.py")
+    for relative in ("AGENTS.md", "docs/build-arena-project-brief.md", "README.md"):
+        text = _read(relative)
+        referenced = sorted(set(pattern.findall(text)))
+        missing = [name for name in referenced if not (ROOT / "arena" / f"{name}.py").exists()]
+        assert missing == [], f"{relative} references non-existent arena modules: {missing}"
+
+
+def test_documented_intake_proposal_cli_surfaces_exist() -> None:
+    """Functional: the documented intake/proposal CLIs must run and expose the
+    flags the docs rely on. Proves doc claims match real CLI behaviour."""
+    checks = [
+        (
+            ["uv", "run", "python", "-m", "arena.project_intake_scorecard", "--help"],
+            ["--project", "--snapshot", "--profile", "--output"],
+        ),
+        (
+            ["uv", "run", "python", "-m", "arena.proposal_planner", "--help"],
+            ["--project", "--scorecard", "--output", "--max-candidates"],
+        ),
+        (
+            ["uv", "run", "python", "-m", "arena.proposal_candidate_runner", "--help"],
+            ["--worktree", "--proposal-plan", "--candidate-rank", "--model"],
+        ),
+        (
+            ["uv", "run", "python", "-m", "arena.markdown_links", "--help"],
+            ["--repo", "--path", "--require-source-references"],
+        ),
+    ]
+    for command, expected_flags in checks:
+        result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, check=True)
+        help_text = result.stdout + result.stderr
+        missing = [flag for flag in expected_flags if flag not in help_text]
+        assert missing == [], f"{command[4]} missing flags {missing}"
