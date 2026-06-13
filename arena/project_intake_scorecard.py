@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 SCHEMA_VERSION = "project-intake-scorecard/v0"
@@ -163,9 +163,118 @@ def _load_json(path: Path) -> dict[str, Any]:
 def _findings(project: Path, snapshot: dict[str, Any], weights: dict[str, int]) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     findings.extend(_absence_findings(project, weights))
+    findings.extend(_component_findings(snapshot, weights))
     findings.extend(_quality_gate_findings(snapshot, weights))
     findings.extend(_question_and_gap_findings(snapshot, weights))
     return findings
+
+
+_RISK_SEVERITY = {"low": "low", "medium": "medium", "high": "high"}
+
+
+def _risk_level_to_severity(risk_level: str) -> str:
+    """Map a component riskLevel to a finding severity. Unknown values fail safe
+    to ``medium`` so a malformed/extended riskLevel never silently downgrades a
+    finding to the lowest severity."""
+    return _RISK_SEVERITY.get(str(risk_level).strip().lower(), "medium")
+
+
+def _component_findings(snapshot: dict[str, Any], weights: dict[str, int]) -> list[dict[str, Any]]:
+    """Turn the decomposer's anchored interpretation into component-scoped,
+    non-documentation findings.
+
+    Today this surfaces high-leverage *untested components*: a component that has
+    no observable check is one a proposer cannot safely verify, so it is a
+    reproducible-verification gap whose target is the component's own owned source
+    surface(s). Severity follows the component's riskLevel.
+    """
+    profiles = list(_get(snapshot, "iterationReadiness", "componentProfiles") or [])
+    components = list(_get(snapshot, "snapshot", "components") or [])
+    if not profiles or not components:
+        return []
+
+    node_paths = _graph_node_paths(snapshot)
+    components_by_id = {str(component.get("id")): component for component in components if isinstance(component, dict)}
+    checked_component_ids = _components_with_checks(snapshot)
+
+    findings: list[dict[str, Any]] = []
+    for profile in profiles:
+        if not isinstance(profile, dict):
+            continue
+        component_id = str(profile.get("componentId", ""))
+        component = components_by_id.get(component_id)
+        if component is None:
+            continue
+        if component_id in checked_component_ids:
+            continue
+        owned_node_ids = [str(item) for item in component.get("owned_node_ids", [])]
+        owned_paths = [node_paths[node_id] for node_id in owned_node_ids if node_id in node_paths]
+        # Only target concrete files with a real extension. An extension-less
+        # surface (Dockerfile, Makefile, a directory/package node) would be
+        # rewritten by the planner to "<path>/index.md" and silently routed back
+        # into the documentation contract — fabricating a path and regressing to
+        # docs-only. Drop those here so the finding can only point at real files.
+        owned_paths = [path for path in owned_paths if PurePosixPath(path).suffix]
+        if not owned_paths:
+            # No resolvable, concretely-targetable source surface.
+            continue
+        severity = _risk_level_to_severity(str(profile.get("riskLevel", "")))
+        provenance_refs = [str(ref) for ref in profile.get("provenanceRefs", [])]
+        evidence: list[dict[str, Any]] = [
+            {"kind": "component", "componentId": component_id, "checked": True},
+            {"kind": "absence", "path": "iterationReadiness.componentProfiles", "checked": True},
+        ]
+        evidence.extend({"kind": "owned_surface", "path": path, "checked": True} for path in owned_paths)
+        for ref in provenance_refs:
+            evidence.append({"kind": "provenance", "ref": ref, "checked": True})
+        name = str(component.get("name", component_id))
+        findings.append(
+            _finding(
+                f"code.component.untested.{component_id}",
+                "reproducible_verification",
+                f"Component {name} has no observable check",
+                severity,
+                "high",
+                evidence,
+                f"Component {name} owns code with no observable check, so a proposer cannot verify changes to it.",
+                f"Add an observable check (e.g. a focused test) covering {name} before mutating it.",
+                [],
+                "needs_code_change",
+                "medium",
+                weights,
+                5,
+                4,
+                5,
+                1,
+            )
+        )
+    return findings
+
+
+def _graph_node_paths(snapshot: dict[str, Any]) -> dict[str, str]:
+    nodes = _get(snapshot, "projectGraph", "nodes") or []
+    paths: dict[str, str] = {}
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        node_id = node.get("id")
+        path = node.get("path")
+        if isinstance(node_id, str) and isinstance(path, str) and path:
+            paths[node_id] = path
+    return paths
+
+
+def _components_with_checks(snapshot: dict[str, Any]) -> set[str]:
+    checked: set[str] = set()
+    for component in _get(snapshot, "snapshot", "components") or []:
+        if isinstance(component, dict) and component.get("check_ids"):
+            checked.add(str(component.get("id")))
+    for check in _get(snapshot, "snapshot", "observable_checks") or []:
+        if not isinstance(check, dict):
+            continue
+        for component_id in check.get("component_ids", []):
+            checked.add(str(component_id))
+    return checked
 
 
 def _absence_findings(project: Path, weights: dict[str, int]) -> list[dict[str, Any]]:
