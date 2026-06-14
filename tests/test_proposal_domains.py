@@ -65,7 +65,7 @@ def test_proposal_domains_are_registered_in_fixed_order() -> None:
     from arena.proposal_domains import default_domain_registry
 
     names = [domain.name for domain in default_domain_registry()]
-    assert names == ["documentation", "generic_file"]
+    assert names == ["documentation", "code_quality", "generic_file"]
     assert len(set(names)) == len(names), "domain names must be unique"
 
 

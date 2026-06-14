@@ -164,9 +164,93 @@ def _findings(project: Path, snapshot: dict[str, Any], weights: dict[str, int]) 
     findings: list[dict[str, Any]] = []
     findings.extend(_absence_findings(project, weights))
     findings.extend(_component_findings(snapshot, weights))
+    findings.extend(_lint_findings(project, weights))
     findings.extend(_quality_gate_findings(snapshot, weights))
     findings.extend(_question_and_gap_findings(snapshot, weights))
     return findings
+
+
+def _lint_findings(project: Path, weights: dict[str, int], *, max_files: int = 25) -> list[dict[str, Any]]:
+    """Emit a ``code.quality.lint.<relpath>`` finding for each Python file with
+    ruff violations. Deterministic: files are sorted, violation counts come from
+    ruff JSON. Bounded by ``max_files`` so a very dirty repo cannot flood intake.
+    Targets the code-quality domain, whose load-bearing gate proves a real fix."""
+    counts = _ruff_violation_counts(project)
+    findings: list[dict[str, Any]] = []
+    for rel_path in sorted(counts)[:max_files]:
+        violation_count = counts[rel_path]
+        if violation_count <= 0:
+            continue
+        # Only emit findings the code-quality domain can act on (single .py file
+        # with the load-bearing gate). .pyi/.ipynb are linted by ruff but the
+        # gate/domain target plain .py, so skip them rather than emit a finding
+        # that would fall through to an empty-verification fallback.
+        if not rel_path.endswith(".py"):
+            continue
+        severity = "medium" if violation_count >= 5 else "low"
+        findings.append(
+            _finding(
+                f"code.quality.lint.{rel_path}",
+                "architecture_specs_contracts",
+                f"{rel_path} has {violation_count} ruff lint violation(s)",
+                severity,
+                "high",
+                [{"kind": "lint", "path": rel_path, "checked": True, "violations": violation_count}],
+                f"{rel_path} has ruff lint violations a proposer can mechanically reduce.",
+                f"Reduce ruff violations in {rel_path} without adding suppressions.",
+                [f"python3 -m arena.code_quality_gate --repo . --path {rel_path}"],
+                "needs_code_change",
+                "small",
+                weights,
+                2,
+                2,
+                3,
+                1,
+            )
+        )
+    return findings
+
+
+def _ruff_violation_counts(project: Path) -> dict[str, int]:
+    """Return {relative_path: violation_count} from a single ruff JSON run over
+    the repo. Returns {} if ruff is unavailable or produced no parseable output
+    (fail safe: no lint findings rather than fabricated ones)."""
+    import json as _json
+    import subprocess
+
+    try:
+        proc = subprocess.run(
+            ["ruff", "check", "--no-cache", "--output-format", "json", "."],
+            cwd=project,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+    except (OSError, ValueError):
+        return {}
+    stdout = proc.stdout.strip()
+    if not stdout:
+        return {}
+    try:
+        violations = _json.loads(stdout)
+    except _json.JSONDecodeError:
+        return {}
+    if not isinstance(violations, list):
+        return {}
+    counts: dict[str, int] = {}
+    project_resolved = project.resolve()
+    for violation in violations:
+        if not isinstance(violation, dict):
+            continue
+        filename = violation.get("filename")
+        if not isinstance(filename, str):
+            continue
+        try:
+            rel = Path(filename).resolve().relative_to(project_resolved).as_posix()
+        except ValueError:
+            continue
+        counts[rel] = counts.get(rel, 0) + 1
+    return counts
 
 
 _RISK_SEVERITY = {"low": "low", "medium": "medium", "high": "high"}

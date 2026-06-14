@@ -313,6 +313,55 @@ def test_component_findings_absent_when_snapshot_lacks_components(tmp_path: Path
     assert not any(f["id"].startswith("code.component.untested") for f in scorecard["findings"])
 
 
+# --- Phase 3 (#29): lint findings drive the code-quality domain ---
+
+
+def test_scorecard_emits_lint_finding_for_file_with_violations(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "pyproject.toml").write_text("[tool.ruff]\n", encoding="utf-8")
+    # A real violation ruff will flag: unused import (F401) + unsorted (I001).
+    (repo / "src" / "pkg" / "dirty.py").write_text("import os\nimport sys\n\n\ndef f():\n    return 1\n", encoding="utf-8")
+    (repo / "src" / "pkg" / "clean.py").write_text("def g():\n    return 2\n", encoding="utf-8")
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+
+    lint_ids = {f["id"] for f in scorecard["findings"] if f["id"].startswith("code.quality.lint.")}
+    assert "code.quality.lint.src/pkg/dirty.py" in lint_ids
+    # The clean file must not produce a lint finding.
+    assert "code.quality.lint.src/pkg/clean.py" not in lint_ids
+    finding = next(f for f in scorecard["findings"] if f["id"] == "code.quality.lint.src/pkg/dirty.py")
+    assert finding["autonomyBoundary"] != "safe_to_patch_docs_only"
+    assert any(ev.get("path") == "src/pkg/dirty.py" for ev in finding["evidence"])
+
+
+def test_scorecard_lint_findings_are_deterministic(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "src").mkdir(parents=True)
+    (repo / "pyproject.toml").write_text("[tool.ruff]\n", encoding="utf-8")
+    (repo / "src" / "a.py").write_text("import os\n\n\ndef f():\n    return 1\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text("import sys\n\n\ndef g():\n    return 2\n", encoding="utf-8")
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    first = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+    second = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+
+    assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
+
+
+def test_scorecard_lint_findings_absent_when_no_violations(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "src").mkdir(parents=True)
+    (repo / "pyproject.toml").write_text("[tool.ruff]\n", encoding="utf-8")
+    (repo / "src" / "clean.py").write_text("def g():\n    return 2\n", encoding="utf-8")
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+
+    assert not any(f["id"].startswith("code.quality.lint.") for f in scorecard["findings"])
+
+
 def _component_snapshot(path: Path, repo: Path, *, nodes: list[dict[str, Any]], components: list[dict[str, Any]], observable_checks: list[dict[str, Any]], profiles: list[dict[str, Any]]) -> Path:
     payload: dict[str, Any] = {
         "schemaVersion": "project-model/v1",

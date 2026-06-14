@@ -106,10 +106,12 @@ class ProposalDomainRegistry:
 
 
 def default_domain_registry() -> ProposalDomainRegistry:
-    """The built-in registry. Documentation is the only implemented domain today;
-    non-doc domains (tests, code-quality, dependencies, security, ...) are added in
-    later phases of epic #25."""
-    return ProposalDomainRegistry([DocumentationDomain(), GenericFileDomain()])
+    """The built-in registry. Documentation and code-quality are implemented;
+    other non-doc domains (tests, dependencies, security, ...) are added in
+    later phases of epic #25. ``code_quality`` precedes ``generic_file`` so a
+    lint finding routes to the domain carrying the load-bearing gate rather than
+    the bare single-file fallback."""
+    return ProposalDomainRegistry([DocumentationDomain(), CodeQualityDomain(), GenericFileDomain()])
 
 
 _DOC_INDEX_TARGET = "docs/index.md"
@@ -144,6 +146,48 @@ class DocumentationDomain:
         success, constraints, verification = _markdown_success_contract(
             target_path, require_source_references=context.require_source_references
         )
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=target_path,
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+        )]
+
+
+class CodeQualityDomain:
+    """Code-quality proposals: reduce ruff lint violations in a single Python
+    source file. Carries the *load-bearing* code-quality gate
+    (``arena.code_quality_gate``) as its verification, which rejects no-op diffs,
+    suppression gaming (``# noqa`` / ``# type: ignore``), and syntax destruction.
+
+    Only claims ``code.quality.lint.*`` findings whose target is a ``.py`` file.
+    """
+
+    name = "code_quality"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        finding_id = str(finding.get("id", ""))
+        if not finding_id.startswith("code.quality.lint."):
+            return []
+        target_path = _single_target_path(finding)
+        if target_path is None or not target_path.endswith(".py"):
+            return []
+        intent = (
+            f"Fix the ruff lint violations in {target_path} by correcting the underlying issue "
+            "(e.g. remove the unused import, sort imports, fix the style error). Do not silence "
+            "warnings with suppressions."
+        )
+        success = (
+            f"{target_path} still parses as Python, has strictly fewer ruff violations than before, "
+            "and adds no new lint-suppression markers."
+        )
+        constraints = (
+            "Reduce real ruff violations; do not add `# noqa` or `# type: ignore` to silence them.",
+            "Do not delete or stub code to zero out warnings; preserve behaviour.",
+            "Change only the target file; keep the edit minimal and grounded in the current file contents.",
+        )
+        verification = (f"python3 -m arena.code_quality_gate --repo . --path {target_path}",)
         return [ProposalCandidateDraft(
             intent=intent,
             target_path=target_path,
