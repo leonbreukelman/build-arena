@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://build-arena/schemas/ranked-proposals-v0.schema.json",
+  "title": "Ranked Proposals v0",
+  "description": "Cross-domain ranked top-N improvement proposals with auditable score breakdowns.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sourceScorecardId",
+    "projectRoot",
+    "profile",
+    "candidateCount",
+    "omittedCount",
+    "skippedCount",
+    "entries",
+    "omitted",
+    "skipped",
+    "planHash"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {"const": "ranked-proposals/v0"},
+    "sourceScorecardId": {"type": "string"},
+    "projectRoot": {"type": "string"},
+    "profile": {"type": "string"},
+    "candidateCount": {"type": "integer", "minimum": 0},
+    "omittedCount": {"type": "integer", "minimum": 0},
+    "skippedCount": {"type": "integer", "minimum": 0},
+    "planHash": {"type": "string", "minLength": 1},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/entry"}
+    },
+    "omitted": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/omittedEntry"}
+    },
+    "skipped": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/skippedEntry"}
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "rank",
+        "findingId",
+        "domain",
+        "targetPath",
+        "title",
+        "priorityScore",
+        "autonomyBoundary",
+        "scoreBreakdown"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rank": {"type": "integer", "minimum": 1},
+        "findingId": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "targetPath": {"type": "string", "minLength": 1},
+        "title": {"type": "string"},
+        "priorityScore": {"type": "number"},
+        "autonomyBoundary": {"type": "string"},
+        "scoreBreakdown": {"$ref": "#/$defs/scoreBreakdown"}
+      }
+    },
+    "scoreBreakdown": {
+      "type": "object",
+      "required": [
+        "dimension",
+        "dimensionWeight",
+        "severity",
+        "severityMultiplier",
+        "confidence",
+        "confidenceMultiplier",
+        "effort",
+        "effortDivisor",
+        "gains",
+        "totalGain",
+        "formula",
+        "computedScore"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dimension": {"type": "string"},
+        "dimensionWeight": {"type": "integer"},
+        "severity": {"type": "string"},
+        "severityMultiplier": {"type": "number"},
+        "confidence": {"type": "string"},
+        "confidenceMultiplier": {"type": "number"},
+        "effort": {"type": "string"},
+        "effortDivisor": {"type": "number"},
+        "gains": {
+          "type": "object",
+          "required": [
+            "impactOnFutureIteration",
+            "riskReduction",
+            "verificationGain",
+            "docKnowledgeGain"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "impactOnFutureIteration": {"type": "integer"},
+            "riskReduction": {"type": "integer"},
+            "verificationGain": {"type": "integer"},
+            "docKnowledgeGain": {"type": "integer"}
+          }
+        },
+        "totalGain": {"type": "integer"},
+        "formula": {"type": "string"},
+        "computedScore": {"type": "number"}
+      }
+    },
+    "omittedEntry": {
+      "type": "object",
+      "required": ["findingId", "domain", "targetPath", "rank", "priorityScore"],
+      "additionalProperties": false,
+      "properties": {
+        "findingId": {"type": "string"},
+        "domain": {"type": "string"},
+        "targetPath": {"type": "string"},
+        "rank": {"type": "integer"},
+        "priorityScore": {"type": "number"}
+      }
+    },
+    "skippedEntry": {
+      "type": "object",
+      "required": ["findingId", "title", "reason", "evidencePaths"],
+      "additionalProperties": false,
+      "properties": {
+        "findingId": {"type": "string"},
+        "title": {"type": "string"},
+        "reason": {"type": "string"},
+        "evidencePaths": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    }
+  }
+}
