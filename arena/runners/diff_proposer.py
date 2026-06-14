@@ -165,13 +165,20 @@ class DiffProposerRunner:
             raise RunnerError(f"patch gate rejected: {gate.reason}")
         _apply_diff(target, response.diff_text)
         try:
-            _validate_changed_markdown(target, gate.touched_paths)
+            repaired_markdown = _validate_changed_markdown(target, gate.touched_paths)
         except RunnerError:
             _reverse_diff(target, response.diff_text)
             raise
+        if repaired_markdown:
+            diff_to_record = _current_diff(target, gate.touched_paths)
+            if not diff_to_record:
+                _discard_touched_paths(target, gate.touched_paths)
+                raise RunnerError("Markdown repair produced no recordable diff")
+        else:
+            diff_to_record = response.diff_text
         patch_path = target / ".arena" / "patches" / f"{hypothesis.id}.patch"
         patch_path.parent.mkdir(parents=True, exist_ok=True)
-        patch_path.write_text(response.diff_text, encoding="utf-8")
+        patch_path.write_text(diff_to_record, encoding="utf-8")
         patch_path.with_suffix(".patch.provenance.json").write_text(
             json.dumps(
                 _provenance(hypothesis, target_path, response, gate.to_jsonable()),
@@ -203,6 +210,10 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
         f"Intent: {request.intent}\n\n"
         "Repository facts:\n"
         f"{facts}\n\n"
+        "Markdown link rules:\n"
+        "- When editing Markdown, create local Markdown links only to exact repository-relative paths shown in the Repository facts above.\n"
+        "- Do not shorten repository-relative paths in Markdown links or plain file mentions: use `docs/index.md` and `src/pkg/file.py`, not `index.md` or `file.py`.\n"
+        "- If a source file is relevant, mention the exact path from the Source files list. If no exact path is listed, avoid naming the file.\n\n"
         "Grounding constraints:\n"
         f"{constraints}\n\n"
         "Current file contents:\n"
@@ -338,7 +349,16 @@ def _reverse_diff(worktree: Path, diff_text: str) -> None:
     )
 
 
-def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+def _discard_touched_paths(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+    for path in touched_paths:
+        if _is_git_tracked(worktree, path):
+            subprocess.run(["git", "checkout", "--", path], cwd=worktree, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        else:
+            subprocess.run(["git", "clean", "-f", "--", path], cwd=worktree, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+
+
+def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> bool:
+    repaired_any = False
     for raw_path in touched_paths:
         if not raw_path.endswith(".md"):
             continue
@@ -346,12 +366,102 @@ def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -
         if not path.exists() or not path.is_file():
             continue
         report = check_markdown_links(worktree, path)
+        if report.ok:
+            continue
+        if report.missing or report.escaped:
+            before = path.read_text(encoding="utf-8")
+            _repair_markdown_references(worktree, path, report)
+            repaired_any = repaired_any or path.read_text(encoding="utf-8") != before
+            report = check_markdown_links(worktree, path)
         if report.missing:
             missing = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.missing)
             raise RunnerError(f"missing Markdown link target: {missing}")
         if report.escaped:
             escaped = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.escaped)
             raise RunnerError(f"Markdown link escapes repository: {escaped}")
+    return repaired_any
+
+
+def _repair_markdown_references(worktree: Path, path: Path, report: Any) -> None:
+    replacements: dict[str, str] = {}
+    existing_paths = _existing_repo_paths(worktree)
+    for item in (*report.missing, *report.escaped):
+        if item.link in replacements:
+            continue
+        match = _unique_suffix_match(item.link, existing_paths)
+        if match is not None:
+            replacements[item.link] = match
+    if not replacements:
+        return
+    text = path.read_text(encoding="utf-8")
+    for old, new in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
+        text = text.replace(old, new)
+    path.write_text(text, encoding="utf-8")
+
+
+def _existing_repo_paths(worktree: Path) -> tuple[str, ...]:
+    ignored = {".git", ".venv", ".pytest_cache", ".mypy_cache", ".ruff_cache", "__pycache__", "node_modules"}
+    paths: list[str] = []
+    for path in worktree.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(worktree)
+        if any(part in ignored or part.startswith(".") for part in rel.parts):
+            continue
+        paths.append(rel.as_posix())
+    return tuple(sorted(paths))
+
+
+def _unique_suffix_match(link: str, existing_paths: tuple[str, ...]) -> str | None:
+    normalized = link.lstrip("/").split("#", 1)[0]
+    if not normalized or ":" in normalized:
+        return None
+    matches = [path for path in existing_paths if path == normalized or path.endswith("/" + normalized)]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _current_diff(worktree: Path, touched_paths: tuple[str, ...]) -> str:
+    tracked: list[str] = []
+    untracked: list[str] = []
+    for path in touched_paths:
+        if _is_git_tracked(worktree, path):
+            tracked.append(path)
+        elif (worktree / path).is_file():
+            untracked.append(path)
+    chunks: list[str] = []
+    if tracked:
+        proc = subprocess.run(
+            ["git", "diff", "--", *tracked],
+            cwd=worktree,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if proc.returncode == 0 and proc.stdout:
+            chunks.append(proc.stdout)
+    for path in untracked:
+        proc = subprocess.run(
+            ["git", "diff", "--no-index", "--", "/dev/null", path],
+            cwd=worktree,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if proc.returncode in {0, 1} and proc.stdout:
+            chunks.append(proc.stdout)
+    return "".join(chunks)
+
+
+def _is_git_tracked(worktree: Path, path: str) -> bool:
+    proc = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", path],
+        cwd=worktree,
+        text=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return proc.returncode == 0
 
 
 def _provenance(

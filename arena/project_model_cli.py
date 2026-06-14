@@ -35,6 +35,7 @@ def main(argv: list[str] | None = None) -> int:
     snapshot.add_argument("--live-base-url")
     snapshot.add_argument("--live-model")
     snapshot.add_argument("--live-api-key-env")
+    snapshot.add_argument("--live-max-tokens", type=int, default=4096)
     snapshot.add_argument("--run-adversarial-probes", action="store_true")
     snapshot.add_argument("--overwrite", action="store_true")
 
@@ -84,6 +85,7 @@ def _snapshot(args: argparse.Namespace) -> int:
             live_model=args.live_model,
             live_base_url=args.live_base_url,
             live_api_key_env=args.live_api_key_env,
+            live_max_tokens=args.live_max_tokens,
             overwrite=args.overwrite,
             run_adversarial_probes=args.run_adversarial_probes,
         )

@@ -28,10 +28,14 @@ from pathlib import Path
 from typing import Any
 
 from arena.boundary import is_boundary_violation
+from arena.llm_adapter import redact_error
 from arena.project_decomposer_ai import build_project_model_snapshot
 from arena.project_intake_scorecard import build_project_intake_scorecard
-from arena.proposal_planner import build_proposal_plan
+from arena.proposal_planner import ProposalCandidate, build_proposal_plan, candidate_to_hypothesis
 from arena.proposal_ranker import build_ranked_proposals
+from arena.runners.base import RunnerError
+from arena.runners.diff_proposer import DiffProposerRunner, OpenAICompatibleDiffTransport
+from scorer.goal_config import DEFAULT_GOAL_CONFIG, GoalConfigError, load_goal_config
 
 
 @dataclass(frozen=True)
@@ -48,6 +52,20 @@ class RepoGoalLoopConfig:
     max_consecutive_failures: int = 3
     read_only_paths: tuple[str, ...] = ()
     test_command: str | None = None
+    decompose_mode: str = "fixture"
+    apply_mode: str = "deterministic"
+    allow_live: bool = False
+    live_provider: str = "xai"
+    live_model: str | None = None
+    live_base_url: str | None = None
+    live_api_key_env: str | None = None
+    live_max_tokens: int = 8192
+    decompose_model_output_path: str | Path | None = None
+    run_adversarial_probes: bool = False
+    # Test-only seams: inject fake live adapters without network or spend while
+    # still exercising the same live-mode control flow.
+    _decompose_llm: Any | None = None
+    _diff_transport: Any | None = None
     # Test-only hook: force every apply to be a no-op so the gate fails each cycle
     # (used to exercise the divergence halt without a live model).
     _force_noop_apply: bool = False
@@ -82,12 +100,25 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
     # tree and could interact with promotion staging. Fail closed.
     if artifacts_root == project or project in artifacts_root.parents:
         raise ValueError(f"artifacts_root must be outside the project repo: project={project} artifacts_root={artifacts_root}")
+    _validate_live_config(project, config)
     artifacts_root.mkdir(parents=True, exist_ok=True)
     events_path = artifacts_root / "loop-events.jsonl"
     events_path.write_text("", encoding="utf-8")
     log = _EventLog(events_path)
 
-    log.emit("RUN_STARTED", payload={"goal": config.goal, "profile": config.profile, "dryRun": config.dry_run})
+    log.emit(
+        "RUN_STARTED",
+        payload={
+            "goal": config.goal,
+            "profile": config.profile,
+            "dryRun": config.dry_run,
+            "decomposeMode": config.decompose_mode,
+            "applyMode": config.apply_mode,
+            "live": config.decompose_mode == "live" or config.apply_mode == "live_diff",
+            "liveProvider": config.live_provider if (config.decompose_mode == "live" or config.apply_mode == "live_diff") else None,
+            "liveModel": config.live_model if (config.decompose_mode == "live" or config.apply_mode == "live_diff") else None,
+        },
+    )
 
     selected: list[str] = []
     promotions = 0
@@ -100,7 +131,14 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
         cycles_run = cycle
         log.emit("CYCLE_STARTED", cycle=cycle, payload={"ordinal": cycle})
 
-        ranked = _decompose_and_rank(project, config, artifacts_root, cycle)
+        ranked = _decompose_and_rank(project, config, artifacts_root, cycle, log)
+        if not ranked.get("ok", True):
+            consecutive_failures += 1
+            if consecutive_failures >= config.max_consecutive_failures:
+                log.emit("DIVERGENCE_HALT", cycle=cycle, payload={"reason": f"{ranked.get('reason', 'cycle_failure')}_streak", "count": consecutive_failures})
+                halted_reason = "divergence"
+                break
+            continue
         candidate = _select_promotable(ranked, tried_finding_ids)
         if candidate is None:
             log.emit("NOTHING_TO_IMPROVE", cycle=cycle, payload={"reason": "no untried positive-leverage candidate"})
@@ -165,25 +203,126 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
     )
 
 
+def _validate_live_config(project: Path, config: RepoGoalLoopConfig) -> None:
+    valid_decompose_modes = {"fixture", "recorded", "off", "live"}
+    valid_apply_modes = {"deterministic", "live_diff"}
+    if config.decompose_mode not in valid_decompose_modes:
+        raise ValueError(f"unsupported decompose_mode {config.decompose_mode!r}")
+    if config.apply_mode not in valid_apply_modes:
+        raise ValueError(f"unsupported apply_mode {config.apply_mode!r}")
+    if config.decompose_mode == "recorded" and config.decompose_model_output_path is None:
+        raise ValueError("decompose_mode='recorded' requires decompose_model_output_path")
+    if config.live_max_tokens <= 0:
+        raise ValueError("live_max_tokens must be positive")
+    live_requested = config.decompose_mode == "live" or config.apply_mode == "live_diff"
+    if live_requested and not config.allow_live:
+        raise ValueError("live repo-goal modes require allow_live=True; refusing routine live spend")
+    if live_requested and not config.live_model:
+        raise ValueError("live repo-goal modes require an explicit live_model")
+    if config.apply_mode == "live_diff":
+        try:
+            load_goal_config(project)
+        except GoalConfigError as exc:
+            raise ValueError(f"live_diff apply requires a valid goal config: {redact_error(str(exc))}") from exc
+        goal_config_path = DEFAULT_GOAL_CONFIG.as_posix()
+        tracked = subprocess.run(
+            ["git", "cat-file", "-e", f"HEAD:{goal_config_path}"],
+            cwd=project,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if tracked.returncode != 0:
+            raise ValueError(
+                f"live_diff apply requires {goal_config_path} tracked in git HEAD; isolated cycle worktrees are created from HEAD"
+            )
+
+
+# A cycle can fail before ranking (e.g. live decomposition provider/gate failure).
+# Represent that explicitly instead of throwing through the whole run.
+def _failed_cycle(reason: str) -> dict[str, Any]:
+    return {"ok": False, "reason": reason}
+
+
 def _read_only_dirs(config: RepoGoalLoopConfig) -> tuple[str, ...]:
     from arena.boundary import DEFAULT_READ_ONLY_DIRS
 
     return tuple(DEFAULT_READ_ONLY_DIRS) + tuple(config.read_only_paths)
 
 
-def _decompose_and_rank(project: Path, config: RepoGoalLoopConfig, artifacts_root: Path, cycle: int) -> dict[str, Any]:
+def _load_json_if_present(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _decompose_and_rank(project: Path, config: RepoGoalLoopConfig, artifacts_root: Path, cycle: int, log: _EventLog) -> dict[str, Any]:
     """Decompose -> intake scorecard -> cross-domain rank, returning the ranked artifact."""
     cycle_dir = artifacts_root / f"cycle-{cycle}"
     cycle_dir.mkdir(parents=True, exist_ok=True)
     snapshot_artifacts = cycle_dir / "snapshot"
-    result = build_project_model_snapshot(
-        str(project),
-        str(snapshot_artifacts),
-        project_id=f"repo-goal-{project.name}",
-        goal=config.goal,
-        llm_mode="fixture",
-        overwrite=True,
+    try:
+        result = build_project_model_snapshot(
+            str(project),
+            str(snapshot_artifacts),
+            project_id=f"repo-goal-{project.name}",
+            goal=config.goal,
+            llm_mode=config.decompose_mode,
+            model_output_path=config.decompose_model_output_path,
+            live_llm=config._decompose_llm,
+            live_provider=config.live_provider,
+            live_model=config.live_model,
+            live_base_url=config.live_base_url,
+            live_api_key_env=config.live_api_key_env,
+            live_max_tokens=config.live_max_tokens,
+            overwrite=True,
+            run_adversarial_probes=config.run_adversarial_probes,
+        )
+    except Exception as exc:  # noqa: BLE001 - provider/schema failures are cycle failures, not loop crashes.
+        log.emit(
+            "DECOMPOSITION_FAILED",
+            cycle=cycle,
+            payload={"mode": config.decompose_mode, "error": f"{type(exc).__name__}: {redact_error(str(exc))}"},
+        )
+        return _failed_cycle("decomposition_failed")
+
+    raw_model = _load_json_if_present(result.snapshot_dir / "model-outputs" / "decomposer.raw.json")
+    provider_metadata = raw_model.get("_provider_metadata", {}) if isinstance(raw_model, dict) else {}
+    decomposer_hash = result.snapshot.model_output_hashes.get("decomposer", "")
+    log.emit(
+        "DECOMPOSITION_COMPLETED",
+        cycle=cycle,
+        payload={
+            "mode": config.decompose_mode,
+            "snapshot_id": result.snapshot.snapshot_id,
+            "model_id": result.snapshot.primary_model_id,
+            "decomposer_hash": decomposer_hash,
+            "gate_passed": result.gate_report.passed,
+            "violation_count": len(result.gate_report.violations),
+            "provider": provider_metadata.get("provider"),
+            "requested_model": provider_metadata.get("requested_model"),
+            "served_model": provider_metadata.get("model"),
+            "usage": provider_metadata.get("usage"),
+        },
     )
+    if not result.gate_report.passed:
+        log.emit(
+            "DECOMPOSITION_GATE_FAILED",
+            cycle=cycle,
+            payload={
+                "snapshot_id": result.snapshot.snapshot_id,
+                "violation_count": len(result.gate_report.violations),
+                "violations": [
+                    {"gate": item.gate, "severity": item.severity, "message": item.message, "location": item.location}
+                    for item in result.gate_report.violations[:20]
+                ],
+            },
+        )
+        return _failed_cycle("decomposition_gate_failed")
     snapshot_path = result.snapshot_dir / "project-model-v1.json"
     scorecard = build_project_intake_scorecard(project, snapshot_path, profile=config.profile)
     scorecard_path = cycle_dir / "scorecard.json"
@@ -193,7 +332,7 @@ def _decompose_and_rank(project: Path, config: RepoGoalLoopConfig, artifacts_roo
     # Also build the plan so we have the executable candidate (intent, verification).
     plan = build_proposal_plan(project, scorecard_path, max_candidates=config.max_candidates)
     (cycle_dir / "proposal-plan.json").write_text(json.dumps(plan.to_jsonable(), sort_keys=True), encoding="utf-8")
-    return {"ranked": ranked.to_jsonable(), "plan": plan.to_jsonable(), "scorecard_path": scorecard_path, "cycle_dir": cycle_dir}
+    return {"ok": True, "ranked": ranked.to_jsonable(), "plan": plan.to_jsonable(), "scorecard_path": scorecard_path, "cycle_dir": cycle_dir}
 
 
 def _select_promotable(ranked_bundle: dict[str, Any], tried: set[str]) -> dict[str, Any] | None:
@@ -210,6 +349,8 @@ def _select_promotable(ranked_bundle: dict[str, Any], tried: set[str]) -> dict[s
         plan_candidate = plan_by_finding.get(entry["findingId"])
         if plan_candidate is None:
             continue
+        if not tuple(plan_candidate.get("verification_commands", [])):
+            continue
         return {
             "findingId": entry["findingId"],
             "domain": entry["domain"],
@@ -218,6 +359,7 @@ def _select_promotable(ranked_bundle: dict[str, Any], tried: set[str]) -> dict[s
             # Threaded through so the code-vs-docs promotion guard (#29 behaviour
             # gate) can classify non-.py code targets too, not just .py.
             "autonomyBoundary": entry.get("autonomyBoundary", ""),
+            "planId": plan.get("id", ""),
             "plan_candidate": plan_candidate,
         }
     return None
@@ -247,13 +389,34 @@ def _apply_and_verify(
     caller_owns_worktree = False
     try:
         if config._force_noop_apply:
-            applied_ok = False
+            apply_result = {"ok": False, "error": "forced_noop_apply"}
         else:
-            applied_ok = _deterministic_apply(worktree_path, target_path, plan_candidate)
-        if not applied_ok:
-            log.emit("CANDIDATE_APPLY_FAILED", cycle=cycle, payload={"finding_id": candidate["findingId"], "target_path": target_path})
+            apply_result = _apply_candidate(worktree_path, target_path, plan_candidate, candidate, config, cycle_id)
+        if not apply_result.get("ok"):
+            log.emit(
+                "CANDIDATE_APPLY_FAILED",
+                cycle=cycle,
+                payload={
+                    "finding_id": candidate["findingId"],
+                    "target_path": target_path,
+                    "apply_mode": config.apply_mode,
+                    "error": apply_result.get("error", "apply returned no change"),
+                },
+            )
             return {"ok": False, "worktree": None, "target_path": target_path}
-        log.emit("CANDIDATE_APPLIED", cycle=cycle, payload={"finding_id": candidate["findingId"], "target_path": target_path})
+        if apply_result.get("patch_path"):
+            apply_result.update(_preserve_apply_artifacts(Path(str(apply_result["patch_path"])), artifacts_root / f"cycle-{cycle}" / "candidate-artifacts"))
+        log.emit(
+            "CANDIDATE_APPLIED",
+            cycle=cycle,
+            payload={
+                "finding_id": candidate["findingId"],
+                "target_path": target_path,
+                "apply_mode": config.apply_mode,
+                "patch_path": apply_result.get("patch_path", ""),
+                "provenance_path": apply_result.get("provenance_path", ""),
+            },
+        )
 
         verification = _run_gate(worktree_path, tuple(plan_candidate.get("verification_commands", [])))
         gate_ok = bool(verification) and all(item["exitCode"] == 0 for item in verification)
@@ -298,6 +461,87 @@ def _apply_and_verify(
     finally:
         if not caller_owns_worktree:
             manager.teardown(worktree)
+
+
+def _apply_candidate(
+    worktree: Path,
+    target_path: str,
+    plan_candidate: dict[str, Any],
+    selected_candidate: dict[str, Any],
+    config: RepoGoalLoopConfig,
+    cycle_id: str,
+) -> dict[str, Any]:
+    if config.apply_mode == "deterministic":
+        changed = _deterministic_apply(worktree, target_path, plan_candidate)
+        return {"ok": changed, "patch_path": ""}
+    if config.apply_mode == "live_diff":
+        return _live_diff_apply(worktree, plan_candidate, selected_candidate, config, cycle_id)
+    return {"ok": False, "error": f"unsupported apply_mode {config.apply_mode!r}"}
+
+
+def _live_diff_apply(
+    worktree: Path,
+    plan_candidate: dict[str, Any],
+    selected_candidate: dict[str, Any],
+    config: RepoGoalLoopConfig,
+    cycle_id: str,
+) -> dict[str, Any]:
+    import asyncio
+
+    try:
+        candidate = _proposal_candidate_from_plan(plan_candidate)
+        transport = config._diff_transport or OpenAICompatibleDiffTransport(
+            provider=config.live_provider,
+            base_url=config.live_base_url,
+            api_key_env=config.live_api_key_env,
+            model=config.live_model,
+            max_tokens=config.live_max_tokens,
+        )
+        runner = DiffProposerRunner(
+            transport=transport,
+            success_criterion=candidate.success_criterion,
+            repo_facts=candidate.repo_facts_block,
+            grounding_constraints=candidate.grounding_constraints,
+        )
+        hypothesis = candidate_to_hypothesis(candidate, cycle_id=cycle_id, plan_id=str(selected_candidate.get("planId", "")))
+        patch_path = asyncio.run(runner.apply(hypothesis, worktree))
+    except (RunnerError, ValueError, OSError) as exc:
+        return {"ok": False, "error": f"{type(exc).__name__}: {redact_error(str(exc))}"}
+    return {"ok": True, "patch_path": str(patch_path)}
+
+
+def _proposal_candidate_from_plan(raw: dict[str, Any]) -> ProposalCandidate:
+    return ProposalCandidate(
+        rank=int(raw["rank"]),
+        finding_id=str(raw["finding_id"]),
+        title=str(raw.get("title", "")),
+        target_path=str(raw["target_path"]),
+        intent=str(raw["intent"]),
+        success_criterion=str(raw["success_criterion"]),
+        repo_facts_hash=str(raw.get("repo_facts_hash", "")),
+        repo_facts_block=str(raw.get("repo_facts_block", "")),
+        grounding_constraints=tuple(str(item) for item in raw.get("grounding_constraints", [])),
+        verification_commands=tuple(str(item) for item in raw.get("verification_commands", [])),
+        priority_score=float(raw.get("priority_score", 0.0)),
+        evidence_refs=tuple(item for item in raw.get("evidence_refs", []) if isinstance(item, dict)),
+        source_recommended_action=str(raw.get("source_recommended_action", "")),
+    )
+
+
+def _preserve_apply_artifacts(patch_path: Path, package_dir: Path) -> dict[str, str]:
+    import shutil
+
+    package_dir.mkdir(parents=True, exist_ok=True)
+    preserved_patch = package_dir / patch_path.name
+    shutil.copy2(patch_path, preserved_patch)
+    provenance_path = patch_path.with_suffix(".patch.provenance.json")
+    preserved_provenance = package_dir / provenance_path.name
+    if provenance_path.is_file():
+        shutil.copy2(provenance_path, preserved_provenance)
+    return {
+        "patch_path": str(preserved_patch),
+        "provenance_path": str(preserved_provenance) if preserved_provenance.is_file() else "",
+    }
 
 
 def _deterministic_apply(worktree: Path, target_path: str, plan_candidate: dict[str, Any]) -> bool:
@@ -450,6 +694,16 @@ if __name__ == "__main__":
     parser.add_argument("--allow-promotion", action="store_true")
     parser.add_argument("--no-dry-run", action="store_true")
     parser.add_argument("--test-command")
+    parser.add_argument("--decompose-mode", choices=["fixture", "recorded", "off", "live"], default="fixture")
+    parser.add_argument("--decompose-model-output")
+    parser.add_argument("--apply-mode", choices=["deterministic", "live_diff"], default="deterministic")
+    parser.add_argument("--allow-live", action="store_true")
+    parser.add_argument("--live-provider", default="xai")
+    parser.add_argument("--live-model")
+    parser.add_argument("--live-base-url")
+    parser.add_argument("--live-api-key-env")
+    parser.add_argument("--live-max-tokens", type=int, default=8192)
+    parser.add_argument("--run-adversarial-probes", action="store_true")
     args = parser.parse_args()
     result = run_repo_goal_loop(
         RepoGoalLoopConfig(
@@ -461,6 +715,16 @@ if __name__ == "__main__":
             dry_run=not args.no_dry_run,
             allow_promotion=args.allow_promotion,
             test_command=args.test_command,
+            decompose_mode=args.decompose_mode,
+            apply_mode=args.apply_mode,
+            allow_live=args.allow_live,
+            live_provider=args.live_provider,
+            live_model=args.live_model,
+            live_base_url=args.live_base_url,
+            live_api_key_env=args.live_api_key_env,
+            live_max_tokens=args.live_max_tokens,
+            decompose_model_output_path=args.decompose_model_output,
+            run_adversarial_probes=args.run_adversarial_probes,
         )
     )
     print(json.dumps({"cyclesRun": result.cycles_run, "promotions": result.promotions, "halted": result.halted_reason, "events": str(result.events_jsonl)}, indent=2))

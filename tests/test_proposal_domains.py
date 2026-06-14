@@ -151,6 +151,7 @@ def _domain_context() -> Any:
         top_level_dirs=(),
         docs_markdown_files=(),
         markdown_files=(),
+        source_files=(),
         docs_markdown_files_truncated=False,
         markdown_files_truncated=False,
         content_hash="hash",
