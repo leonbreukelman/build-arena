@@ -14,6 +14,10 @@ INTAKE_PROPOSAL_MODULES = (
     "project_intake_scorecard",
     "proposal_planner",
     "proposal_candidate_runner",
+    "proposal_domains",
+    "proposal_ranker",
+    "code_quality_gate",
+    "repo_goal_loop",
     "repo_facts",
     "markdown_links",
 )
