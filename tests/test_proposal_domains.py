@@ -36,8 +36,14 @@ def _normalize(plan_json: dict[str, Any]) -> dict[str, Any]:
     plan_json["projectRoot"] = "<REPO>"
     plan_json["id"] = "<ID>"
     plan_json["repoFactsHash"] = "<FACTS_HASH>"
+    plan_json.pop("baseLineage", None)
     for candidate in plan_json.get("candidates", []):
         candidate["repo_facts_hash"] = "<FACTS_HASH>"
+        candidate.pop("target_paths", None)
+        candidate.pop("base_lineage", None)
+        candidate.pop("intent_hash", None)
+        candidate.pop("proposal_key", None)
+        candidate.pop("registry_status", None)
     return plan_json
 
 
@@ -65,7 +71,7 @@ def test_proposal_domains_are_registered_in_fixed_order() -> None:
     from arena.proposal_domains import default_domain_registry
 
     names = [domain.name for domain in default_domain_registry()]
-    assert names == ["documentation", "code_quality", "generic_file"]
+    assert names == ["documentation", "code_quality", "component_verification", "generic_file", "model_level"]
     assert len(set(names)) == len(names), "domain names must be unique"
 
 
@@ -151,6 +157,7 @@ def _domain_context() -> Any:
         top_level_dirs=(),
         docs_markdown_files=(),
         markdown_files=(),
+        source_files=(),
         docs_markdown_files_truncated=False,
         markdown_files_truncated=False,
         content_hash="hash",
@@ -200,7 +207,7 @@ def test_neither_domain_claims_multi_file_finding() -> None:
     assert GenericFileDomain().candidates_for_finding(finding, ctx) == []
 
 
-def test_multi_file_finding_is_skipped_by_planner(tmp_path: Path) -> None:
+def test_multi_file_finding_produces_component_candidate(tmp_path: Path) -> None:
     repo = _prepare_repo(tmp_path, "repo")
     scorecard_path = tmp_path / "scorecard.json"
     scorecard_path.write_text(
@@ -219,6 +226,7 @@ def test_multi_file_finding_is_skipped_by_planner(tmp_path: Path) -> None:
                             {"kind": "owned_surface", "path": "src/b.py", "checked": True},
                         ],
                         "verification": [],
+                        "autonomyBoundary": "needs_code_change",
                         "priorityScore": 100.0,
                         "rank": 1,
                     }
@@ -231,5 +239,131 @@ def test_multi_file_finding_is_skipped_by_planner(tmp_path: Path) -> None:
 
     plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
 
-    assert plan.candidate_count == 0
-    assert any(s["finding_id"] == "code.component.untested.multi" and s["reason"] == "no_single_file_target" for s in plan.skipped_findings)
+    assert plan.candidate_count == 1
+    assert plan.candidates[0].target_paths == ("src/a.py", "src/b.py")
+    assert not plan.skipped_findings
+
+
+def test_component_finding_gets_load_bearing_gate(tmp_path: Path) -> None:
+    repo = _prepare_repo(tmp_path, "repo")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [
+                    {
+                        "id": "code.component.untested.comp-auth",
+                        "title": "Auth component lacks observable checks",
+                        "evidence": [{"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True}],
+                        "verification": [],
+                        "autonomyBoundary": "needs_code_change",
+                        "priorityScore": 540.0,
+                        "rank": 1,
+                    },
+                    {
+                        "id": "verification.quality-gates.present",
+                        "title": "Quality gates exist",
+                        "evidence": [{"kind": "project_model", "path": "iterationReadiness.qualityGates", "checked": True}],
+                        "verification": ["uv run ruff check .", "uv run pyright", "uv run pytest tests -q"],
+                        "priorityScore": 1.0,
+                        "rank": 2,
+                    },
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
+
+    candidate = next(c for c in plan.candidates if c.finding_id == "code.component.untested.comp-auth")
+    assert candidate.target_path == "src/pkg/auth.py"
+    assert candidate.verification_commands == ("uv run ruff check .", "uv run pyright", "uv run pytest tests -q")
+
+
+def test_multi_file_component_produces_candidate(tmp_path: Path) -> None:
+    repo = _prepare_repo(tmp_path, "repo")
+    (repo / "src" / "pkg" / "entry.py").write_text("def main():\n    return True\n", encoding="utf-8")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [
+                    {
+                        "id": "code.component.untested.comp-entrypoints",
+                        "title": "Entrypoints component lacks checks",
+                        "evidence": [
+                            {"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True},
+                            {"kind": "owned_surface", "path": "src/pkg/entry.py", "checked": True},
+                        ],
+                        "verification": [],
+                        "autonomyBoundary": "needs_code_change",
+                        "priorityScore": 540.0,
+                        "rank": 1,
+                    },
+                    {
+                        "id": "verification.quality-gates.present",
+                        "title": "Quality gates exist",
+                        "evidence": [{"kind": "project_model", "path": "iterationReadiness.qualityGates", "checked": True}],
+                        "verification": ["uv run pytest tests -q"],
+                        "priorityScore": 1.0,
+                        "rank": 2,
+                    },
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
+
+    candidate = next(c for c in plan.candidates if c.finding_id == "code.component.untested.comp-entrypoints")
+    assert candidate.target_paths == ("src/pkg/auth.py", "src/pkg/entry.py")
+    assert candidate.target_path == "src/pkg/auth.py"
+    assert candidate.verification_commands == ("uv run pytest tests -q",)
+    assert not any(s["finding_id"] == "code.component.untested.comp-entrypoints" for s in plan.skipped_findings)
+
+
+def test_model_level_finding_becomes_backlog_task_candidate(tmp_path: Path) -> None:
+    repo = _prepare_repo(tmp_path, "repo")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [
+                    {
+                        "id": "architecture.open-questions-or-gaps",
+                        "title": "Open architecture questions remain",
+                        "evidence": [{"kind": "project_model", "path": "iterationReadiness.openQuestions", "checked": True}],
+                        "verification": [],
+                        "autonomyBoundary": "safe_to_patch_docs_only",
+                        "priorityScore": 100.0,
+                        "rank": 1,
+                    }
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
+
+    candidate = plan.candidates[0]
+    assert candidate.finding_id == "architecture.open-questions-or-gaps"
+    assert candidate.target_path == "docs/agent-backlog.md"
+    assert candidate.verification_commands

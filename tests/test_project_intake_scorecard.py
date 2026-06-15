@@ -425,9 +425,9 @@ def test_extensionless_single_owned_surface_does_not_become_doc_candidate(tmp_pa
     assert not any(f["id"] == "code.component.untested.comp-img" for f in scorecard["findings"])
 
 
-def test_multi_file_component_degrades_safely_to_skipped(tmp_path: Path) -> None:
-    """A component owning 2+ resolvable source files must be skipped by the
-    planner (no single file target), never mis-targeted to one of them."""
+def test_multi_file_component_becomes_multi_target_candidate(tmp_path: Path) -> None:
+    """A component owning 2+ resolvable source files becomes one multi-target
+    proposal candidate instead of being mis-targeted to only one file."""
     from arena.proposal_planner import build_proposal_plan
 
     repo = tmp_path / "repo"
@@ -451,9 +451,10 @@ def test_multi_file_component_degrades_safely_to_skipped(tmp_path: Path) -> None
 
     plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
 
-    # ...but the planner skips it (multi-target), never targeting a.py or b.py alone.
-    assert not any(c.target_path in {"src/a.py", "src/b.py"} for c in plan.candidates)
-    assert any(s["finding_id"] == "code.component.untested.comp-ab" and s["reason"] == "no_single_file_target" for s in plan.skipped_findings)
+    candidate = next(c for c in plan.candidates if c.finding_id == "code.component.untested.comp-ab")
+    assert candidate.target_path == "src/a.py"
+    assert candidate.target_paths == ("src/a.py", "src/b.py")
+    assert not any(s["finding_id"] == "code.component.untested.comp-ab" for s in plan.skipped_findings)
 
 
 def test_component_with_unresolvable_nodes_yields_no_finding(tmp_path: Path) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -217,20 +218,67 @@ def test_june5_final_report_records_committed_outcome_not_precommit_state() -> N
     assert "not pushed, merged, deployed" in report
 
 
-def test_docs_describe_bounded_real_run_attempt_not_unqualified_readiness() -> None:
+def test_docs_describe_bounded_real_run_attempt_as_safe_failed_not_unqualified_readiness() -> None:
     required_markers = [
         "operator-switchable",
         "OpenAI-compatible",
         "proposal",
-        "ready to attempt a bounded, operator-authorized real run",
-        "provider acceptance remains unverified until live smoke",
+        "2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing",
+        "safe gate failure",
+        "did not prove a production improvement or broad unattended autonomy",
+        "--live-max-calls",
+        "--live-api-key-env XAI_API_KEY",
     ]
     for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
         text = _read(relative)
         missing = [marker for marker in required_markers if marker not in text]
         assert missing == [], f"{relative} missing {missing}"
-        lowered = text.lower().replace("ready to attempt a bounded, operator-authorized real run", "")
+        assert "provider acceptance remains unverified until live smoke" not in text
+        assert "Build Arena is ready to perform one bounded local fmc-mcp production run" not in text
+        lowered = text.lower().replace(
+            "2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing",
+            "",
+        )
         assert "ready for a real run" not in lowered
+
+
+def test_failed_live_decomposition_report_does_not_use_unqualified_accept_verdict() -> None:
+    report = _read("reports/2026-06-15-grok43-verification-results.md")
+
+    assert "bounded live Grok 4.3 project-model attempt" in report
+    assert "smoke" not in report.lower()
+    assert "Exit code: 1" in report
+    assert '"passed": false' in report
+    assert "deterministic gate over the live model output: fail closed with 22 violations" in report
+    assert "Run verdict: `FAIL_CLOSED_DECOMPOSITION_GATE`" in report
+    assert "Review verdict: `ACCEPT`." not in report
+    assert "Report-faithfulness review verdict: `ACCEPT`" in report
+    assert "not a live decomposition acceptance" in report
+
+
+def test_pre_live_register_scopes_bounded_fmc_mcp_production_run_without_broad_overclaim() -> None:
+    register = json.loads(_read("docs/verification/2026-06-05-pre-live-readiness-register.json"))
+
+    assert register["overallStatus"] == "not_ready_blockers_remain"
+    bounded = register["boundedFmcMcpProductionRun"]
+    assert bounded["status"] == "ready_after_operator_authorization"
+    assert "one local CLI run" in bounded["scope"]
+    assert "--decompose-mode live" in bounded["requiredCommandFlags"]
+    assert "--apply-mode live_diff" in bounded["requiredCommandFlags"]
+    assert "--live-max-calls 2" in bounded["requiredCommandFlags"]
+    assert "--live-api-key-env XAI_API_KEY" in bounded["requiredCommandFlags"]
+    assert "operator live spend and local mutation authorization" in bounded["remainingOperatorGates"]
+    assert "broad unattended autonomy" in bounded["notProofOf"]
+    assert "live code-promotion was proven" in bounded["notProofOf"]
+
+    by_id = {issue["id"]: issue for issue in register["issues"]}
+    assert by_id["RCA-002"]["blocksBoundedFmcMcpProductionRun"] is False
+    assert "Grok Build wrapper" in by_id["RCA-002"]["boundedFmcMcpScope"]
+    assert by_id["M3-001"]["blocksBoundedFmcMcpProductionRun"] is False
+    assert by_id["M3-001"]["blocksWorktreeOnlyPatchCycle"] is False
+    assert by_id["GAP-001"]["blocksBoundedFmcMcpProductionRun"] is False
+    assert by_id["LIVE-002"]["blocksBoundedFmcMcpProductionRun"] is False
+    assert by_id["GRAPH-001"]["blocksBoundedFmcMcpProductionRun"] is False
 
 
 def test_live_provider_docs_disclose_credentials_and_model_enforcement() -> None:
@@ -409,6 +457,10 @@ def test_documented_intake_proposal_cli_surfaces_exist() -> None:
         (
             ["uv", "run", "python", "-m", "arena.markdown_links", "--help"],
             ["--repo", "--path", "--require-source-references"],
+        ),
+        (
+            ["uv", "run", "python", "-m", "arena.repo_goal_loop", "--help"],
+            ["--allow-live", "--live-model", "--live-api-key-env", "--live-max-tokens", "--live-max-calls"],
         ),
     ]
     for command, expected_flags in checks:

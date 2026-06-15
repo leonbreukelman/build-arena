@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -118,7 +119,7 @@ def test_proposal_plan_builds_grounded_top_n_without_copying_recommended_action(
     assert "all local Markdown links resolve" in plan.candidates[1].success_criterion
     assert plan.candidates[1].verification_commands == (
         "test -s AGENTS.md",
-        "python3 -m arena.markdown_links --repo . --path AGENTS.md",
+        "python3 -m arena.markdown_links --repo . --path AGENTS.md --require-source-references",
     )
 
 
@@ -156,7 +157,7 @@ def test_proposal_plan_maps_missing_docs_directories_to_index_markdown_targets(t
     assert plan.candidates[0].target_path == "docs/decisions/index.md"
     assert plan.candidates[0].verification_commands == (
         "test -s docs/decisions/index.md",
-        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md",
+        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md --require-source-references",
     )
 
 
@@ -202,3 +203,70 @@ def test_candidate_to_hypothesis_uses_one_target_and_success_criterion(tmp_path:
     assert hypothesis.target_files == ["docs/index.md"]
     assert hypothesis.intent == plan.candidates[0].intent
     assert hypothesis.reasoning_blob_sha == plan.id
+
+
+def test_quality_gate_commands_threaded_into_domain_context(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "src").mkdir()
+    (repo / "src" / "app.py").write_text("def app():\n    return True\n", encoding="utf-8")
+    scorecard = tmp_path / "scorecard.json"
+    scorecard.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "scorecard-test",
+                "snapshotId": "snapshot-test",
+                "findings": [
+                    {
+                        "id": "code.component.untested.comp-app",
+                        "title": "App lacks checks",
+                        "evidence": [{"kind": "owned_surface", "path": "src/app.py", "checked": True}],
+                        "verification": [],
+                        "autonomyBoundary": "needs_code_change",
+                        "priorityScore": 100.0,
+                        "rank": 1,
+                    },
+                    {
+                        "id": "verification.quality-gates.present",
+                        "title": "Quality gates exist",
+                        "evidence": [{"kind": "project_model", "path": "iterationReadiness.qualityGates", "checked": True}],
+                        "verification": ["uv run ruff check .", "uv run pyright", "uv run pytest tests -q"],
+                        "priorityScore": 1.0,
+                        "rank": 2,
+                    },
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard, max_candidates=10)
+
+    candidate = plan.candidates[0]
+    assert candidate.finding_id == "code.component.untested.comp-app"
+    assert candidate.verification_commands == ("uv run ruff check .", "uv run pyright", "uv run pytest tests -q")
+
+
+def test_plan_carries_base_lineage_fields(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    subprocess.run(["git", "init", "-b", "main"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "config", "user.email", "test@example.invalid"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "config", "user.name", "Test"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "add", "README.md"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(["git", "commit", "-m", "baseline"], cwd=repo, check=True, capture_output=True, text=True)
+    scorecard = _scorecard(tmp_path / "scorecard.json", repo)
+
+    plan = build_proposal_plan(repo, scorecard, max_candidates=1)
+    payload = plan.to_jsonable()
+
+    assert payload["baseLineage"]["baseBranch"] == "main"
+    assert payload["baseLineage"]["baseHeadOid"]
+    assert payload["baseLineage"]["snapshotId"] == "snapshot-test"
+    assert payload["baseLineage"]["scorecardId"] == "scorecard-test"
+    assert payload["candidates"][0]["base_lineage"]["baseHeadOid"] == payload["baseLineage"]["baseHeadOid"]
+    assert payload["candidates"][0]["target_paths"] == [payload["candidates"][0]["target_path"]]
+    assert payload["candidates"][0]["intent_hash"]

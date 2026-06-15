@@ -13,6 +13,7 @@ def test_collect_repo_facts_reports_docs_and_top_level_files_deterministically(t
     (repo / "docs" / "guide.md").write_text("# Guide\n", encoding="utf-8")
     (repo / "docs" / "nested" / "deep.md").write_text("# Deep\n", encoding="utf-8")
     (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "src" / "pkg" / "auth.py").write_text("def login():\n    return True\n", encoding="utf-8")
     (repo / "app").mkdir()
 
     first = collect_repo_facts(repo)
@@ -24,6 +25,7 @@ def test_collect_repo_facts_reports_docs_and_top_level_files_deterministically(t
     assert first.top_level_dirs == ("app", "docs", "src")
     assert first.docs_markdown_files == ("docs/guide.md", "docs/nested/deep.md")
     assert first.markdown_files == ("README.md", "docs/guide.md", "docs/nested/deep.md")
+    assert first.source_files == ("pyproject.toml", "src/pkg/auth.py")
     assert first.docs_markdown_files_truncated is False
     assert first.markdown_files_truncated is False
     assert "README.md" in first.top_level_files
@@ -31,8 +33,27 @@ def test_collect_repo_facts_reports_docs_and_top_level_files_deterministically(t
     assert "Existing docs markdown files:" in first.to_prompt_block()
     assert "Top-level directories: app, docs, src" in first.to_prompt_block()
     assert "Markdown files:" in first.to_prompt_block()
+    assert "Source files: pyproject.toml, src/pkg/auth.py" in first.to_prompt_block()
     assert "Markdown files truncated:" in first.to_prompt_block()
     assert "docs/guide.md" in first.to_prompt_block()
+
+
+def test_collect_repo_facts_ignores_hidden_cache_markdown(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    (repo / "docs").mkdir(parents=True)
+    (repo / ".pytest_cache").mkdir(parents=True)
+    (repo / ".ruff_cache" / "nested").mkdir(parents=True)
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    (repo / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (repo / ".pytest_cache" / "README.md").write_text("# Cache\n", encoding="utf-8")
+    (repo / ".ruff_cache" / "nested" / "cache.md").write_text("# Cache\n", encoding="utf-8")
+
+    facts = collect_repo_facts(repo)
+
+    assert facts.markdown_files == ("README.md", "docs/index.md")
+    assert facts.source_files == ()
+    assert ".pytest_cache/README.md" not in facts.to_prompt_block()
+    assert ".ruff_cache/nested/cache.md" not in facts.to_prompt_block()
 
 
 def test_collect_repo_facts_handles_repo_without_docs(tmp_path: Path) -> None:

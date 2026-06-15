@@ -118,6 +118,11 @@ def _candidate(raw: dict[str, Any]) -> ProposalCandidate:
         priority_score=float(raw.get("priority_score", 0.0)),
         evidence_refs=tuple(item for item in raw.get("evidence_refs", []) if isinstance(item, dict)),
         source_recommended_action=str(raw.get("source_recommended_action", "")),
+        target_paths=tuple(str(item) for item in raw.get("target_paths", [raw.get("target_path", "")]) if str(item).strip()),
+        base_lineage=raw.get("base_lineage", {}) if isinstance(raw.get("base_lineage", {}), dict) else {},
+        intent_hash=str(raw.get("intent_hash", "")),
+        proposal_key=str(raw.get("proposal_key", "")),
+        registry_status=str(raw.get("registry_status", "")),
     )
 
 

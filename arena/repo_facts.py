@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+_IGNORED_FACT_DIRS = {".git", ".venv", ".pytest_cache", ".mypy_cache", ".ruff_cache", "node_modules", "__pycache__"}
+
 
 @dataclass(frozen=True)
 class RepoFacts:
@@ -16,6 +18,7 @@ class RepoFacts:
     top_level_dirs: tuple[str, ...]
     docs_markdown_files: tuple[str, ...]
     markdown_files: tuple[str, ...]
+    source_files: tuple[str, ...]
     docs_markdown_files_truncated: bool
     markdown_files_truncated: bool
     content_hash: str
@@ -32,12 +35,13 @@ class RepoFacts:
             "- Top-level directories: " + (", ".join(self.top_level_dirs) if self.top_level_dirs else "none"),
             "- Existing docs markdown files: " + (", ".join(self.docs_markdown_files) if self.docs_markdown_files else "none"),
             "- Markdown files: " + (", ".join(self.markdown_files) if self.markdown_files else "none"),
+            "- Source files: " + (", ".join(self.source_files) if self.source_files else "none"),
             f"- Markdown files truncated: {'yes' if self.markdown_files_truncated else 'no'}",
         ]
         return "\n".join(lines)
 
 
-def collect_repo_facts(repo: Path, *, max_docs_files: int = 40, max_top_level_files: int = 40) -> RepoFacts:
+def collect_repo_facts(repo: Path, *, max_docs_files: int = 40, max_top_level_files: int = 40, max_source_files: int = 60) -> RepoFacts:
     root = repo.resolve()
     top_level_files = tuple(
         sorted(
@@ -50,7 +54,7 @@ def collect_repo_facts(repo: Path, *, max_docs_files: int = 40, max_top_level_fi
         sorted(
             path.name
             for path in root.iterdir()
-            if path.is_dir() and not path.name.startswith(".") and path.name not in {".venv", "__pycache__", "node_modules"}
+            if path.is_dir() and not path.name.startswith(".") and path.name not in _IGNORED_FACT_DIRS
         )[:max_top_level_files]
     )
     docs_root = root / "docs"
@@ -68,10 +72,19 @@ def collect_repo_facts(repo: Path, *, max_docs_files: int = 40, max_top_level_fi
         sorted(
             path.relative_to(root).as_posix()
             for path in root.rglob("*.md")
-            if path.is_file() and not any(part in {".git", ".venv", "node_modules", "__pycache__"} for part in path.parts)
+            if path.is_file() and not _has_ignored_part(path.relative_to(root))
         )
     )
     markdown_files = markdown_files_all[:max_docs_files]
+    source_files_all = tuple(
+        sorted(
+            path.relative_to(root).as_posix()
+            for pattern in ("*.py", "*.toml", "*.yaml", "*.yml", "*.json")
+            for path in root.rglob(pattern)
+            if path.is_file() and not _has_ignored_part(path.relative_to(root))
+        )
+    )
+    source_files = source_files_all[:max_source_files]
     base = {
         "project_root": str(root),
         "readme_exists": (root / "README.md").is_file(),
@@ -80,8 +93,13 @@ def collect_repo_facts(repo: Path, *, max_docs_files: int = 40, max_top_level_fi
         "top_level_dirs": top_level_dirs,
         "docs_markdown_files": docs_files,
         "markdown_files": markdown_files,
+        "source_files": source_files,
         "docs_markdown_files_truncated": len(docs_files_all) > len(docs_files),
         "markdown_files_truncated": len(markdown_files_all) > len(markdown_files),
     }
     content_hash = hashlib.sha256(json.dumps(base, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     return RepoFacts(content_hash=content_hash, **base)
+
+
+def _has_ignored_part(path: Path) -> bool:
+    return any(part in _IGNORED_FACT_DIRS or part.startswith(".") for part in path.parts)

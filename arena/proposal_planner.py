@@ -15,6 +15,12 @@ from arena.proposal_domains import (
     ProposalDomainRegistry,
     default_domain_registry,
 )
+from arena.proposal_registry import (
+    ProposalLineage,
+    ProposalRegistry,
+    capture_git_lineage,
+    proposal_key_for,
+)
 from arena.repo_facts import RepoFacts, collect_repo_facts
 
 SCHEMA_VERSION = "proposal-plan/v0"
@@ -36,12 +42,19 @@ class ProposalCandidate:
     priority_score: float
     evidence_refs: tuple[dict[str, Any], ...]
     source_recommended_action: str
+    target_paths: tuple[str, ...]
+    base_lineage: dict[str, Any]
+    intent_hash: str
+    proposal_key: str
+    registry_status: str
 
     def to_jsonable(self) -> dict[str, Any]:
         payload = asdict(self)
         payload["grounding_constraints"] = list(self.grounding_constraints)
         payload["verification_commands"] = list(self.verification_commands)
         payload["evidence_refs"] = list(self.evidence_refs)
+        payload["target_paths"] = list(self.target_paths)
+        payload["base_lineage"] = dict(self.base_lineage)
         return payload
 
 
@@ -58,6 +71,7 @@ class ProposalPlan:
     skipped_count: int
     skipped_findings: tuple[dict[str, Any], ...]
     candidates: tuple[ProposalCandidate, ...]
+    base_lineage: dict[str, Any]
 
     def to_jsonable(self) -> dict[str, Any]:
         return {
@@ -67,6 +81,7 @@ class ProposalPlan:
             "snapshotId": self.snapshot_id,
             "projectRoot": self.project_root,
             "repoFactsHash": self.repo_facts_hash,
+            "baseLineage": dict(self.base_lineage),
             "candidateCount": self.candidate_count,
             "omittedCount": self.omitted_count,
             "skippedCount": self.skipped_count,
@@ -75,13 +90,25 @@ class ProposalPlan:
         }
 
 
-def build_proposal_plan(project: str | Path, scorecard_path: str | Path, *, max_candidates: int = 10) -> ProposalPlan:
+def build_proposal_plan(
+    project: str | Path,
+    scorecard_path: str | Path,
+    *,
+    max_candidates: int = 10,
+    proposal_registry: ProposalRegistry | None = None,
+    run_id: str = "",
+) -> ProposalPlan:
     """Build the proposal plan using the default multi-domain registry.
 
     Thin wrapper preserving the original public signature/behaviour; the actual
     orchestration lives in ``build_proposal_plan_with_registry``."""
     return build_proposal_plan_with_registry(
-        project, scorecard_path, default_domain_registry(), max_candidates=max_candidates
+        project,
+        scorecard_path,
+        default_domain_registry(),
+        max_candidates=max_candidates,
+        proposal_registry=proposal_registry,
+        run_id=run_id,
     )
 
 
@@ -91,19 +118,34 @@ def build_proposal_plan_with_registry(
     registry: ProposalDomainRegistry,
     *,
     max_candidates: int = 10,
+    proposal_registry: ProposalRegistry | None = None,
+    run_id: str = "",
 ) -> ProposalPlan:
     if max_candidates <= 0:
         raise ValueError("max_candidates must be positive")
     project_path = Path(project).resolve()
-    scorecard = _load_json(Path(scorecard_path))
+    scorecard_file = Path(scorecard_path)
+    scorecard = _load_json(scorecard_file)
     facts = collect_repo_facts(project_path)
     findings = _ranked_findings(scorecard)
+    scorecard_hash = _file_sha(scorecard_file)
+    lineage = capture_git_lineage(
+        project_path,
+        project_id=project_path.name,
+        snapshot_id=str(scorecard.get("snapshotId", "")),
+        snapshot_hash=str(scorecard.get("snapshotHash", "")),
+        scorecard_id=str(scorecard.get("id", "")),
+        scorecard_hash=scorecard_hash,
+        run_id=run_id,
+    )
+    quality_gate_commands = _quality_gate_commands(findings)
     intake_context_block = _intake_context_block(findings)
     context = DomainContext(
         project_name=project_path.name,
         facts=facts,
         intake_context_block=intake_context_block,
         require_source_references=_requires_source_references(project_path, facts),
+        extras={"quality_gate_commands": quality_gate_commands},
     )
     facts_block = "\n".join(part for part in (facts.to_prompt_block(), intake_context_block) if part)
     planned: list[ProposalCandidate] = []
@@ -113,8 +155,22 @@ def build_proposal_plan_with_registry(
         if result is None:
             skipped.append(_skipped_finding(finding, "no_single_file_target"))
             continue
-        _domain_name, draft = result
-        planned.append(_candidate_from_draft(finding, draft, facts, facts_block, len(planned) + 1))
+        domain_name, draft = result
+        candidate = _candidate_from_draft(
+            finding,
+            draft,
+            facts,
+            facts_block,
+            len(planned) + 1,
+            domain_name=domain_name,
+            lineage=lineage,
+            proposal_registry=proposal_registry,
+            run_id=run_id,
+        )
+        if candidate.registry_status == "promoted":
+            skipped.append(_skipped_finding(finding, "promoted_in_registry"))
+            continue
+        planned.append(candidate)
     limited = tuple(planned[:max_candidates])
     base = {
         "schemaVersion": SCHEMA_VERSION,
@@ -122,6 +178,7 @@ def build_proposal_plan_with_registry(
         "snapshotId": str(scorecard.get("snapshotId", "")),
         "projectRoot": str(project_path),
         "repoFactsHash": facts.content_hash,
+        "baseLineage": lineage.to_jsonable(),
         "candidateCount": len(planned),
         "omittedCount": max(0, len(planned) - len(limited)),
         "skippedCount": len(skipped),
@@ -140,25 +197,26 @@ def build_proposal_plan_with_registry(
         skipped_count=len(skipped),
         skipped_findings=tuple(skipped),
         candidates=limited,
+        base_lineage=lineage.to_jsonable(),
     )
 
 
 def candidate_to_hypothesis(candidate: ProposalCandidate, *, cycle_id: str, plan_id: str | None = None) -> Hypothesis:
     fingerprint = compute_fingerprint(
         intent=candidate.intent,
-        target_files=(candidate.target_path,),
+        target_files=tuple(candidate.target_paths),
         technique_tag=TECHNIQUE_TAG,
         ast_diff_pattern="grounded_proposal_plan_v0",
         first_seen_cycle_id=cycle_id,
     )
-    digest = hashlib.sha256(f"{cycle_id}\0{candidate.finding_id}\0{candidate.target_path}".encode()).hexdigest()[:12]
+    digest = hashlib.sha256(f"{cycle_id}\0{candidate.finding_id}\0{','.join(candidate.target_paths)}".encode()).hexdigest()[:12]
     return Hypothesis(
         id=f"hyp-{cycle_id}-{digest}",
         cycle_id=cycle_id,
         intent=candidate.intent,
         technique_tag=TECHNIQUE_TAG,
         target_cluster=candidate.target_path,
-        target_files=[candidate.target_path],
+        target_files=list(candidate.target_paths),
         fingerprint_id=fingerprint.id,
         reasoning_blob_sha=plan_id or "",
         proposed_ts=0.0,
@@ -200,9 +258,44 @@ def _candidate_from_draft(
     facts: RepoFacts,
     facts_block: str,
     rank: int,
+    *,
+    domain_name: str = "",
+    lineage: ProposalLineage | None = None,
+    proposal_registry: ProposalRegistry | None = None,
+    run_id: str = "",
 ) -> ProposalCandidate:
     """Attach finding-level metadata (rank, score, evidence, provenance) to a
     domain-produced draft to form the final ranked candidate."""
+    target_paths = draft.target_paths or (draft.target_path,)
+    intent_hash = _sha(
+        {
+            "intent": draft.intent,
+            "successCriterion": draft.success_criterion,
+            "targetPaths": list(target_paths),
+            "verificationCommands": list(draft.verification_commands),
+        }
+    )
+    lineage_payload = lineage.to_jsonable() if lineage is not None else {}
+    proposal_key = proposal_key_for(
+        project_id=str(lineage.project_id if lineage else ""),
+        base_head_oid=str(lineage.base_head_oid if lineage else ""),
+        target_paths=target_paths,
+        finding_id=str(finding.get("id", "")),
+        domain=domain_name,
+        intent_hash=intent_hash,
+        content_hash=facts.content_hash,
+    )
+    registry_status = "untracked"
+    if proposal_registry is not None and lineage is not None:
+        record = proposal_registry.record_pending(
+            proposal_key=proposal_key,
+            finding_id=str(finding.get("id", "")),
+            target_paths=target_paths,
+            lineage=lineage,
+            payload={"domain": domain_name, "intentHash": intent_hash, "targetPath": draft.target_path},
+            run_id=run_id,
+        )
+        registry_status = record.status
     return ProposalCandidate(
         rank=rank,
         finding_id=str(finding.get("id", "")),
@@ -217,26 +310,33 @@ def _candidate_from_draft(
         priority_score=float(finding.get("priorityScore", 0.0)),
         evidence_refs=tuple(evidence for evidence in finding.get("evidence", []) if isinstance(evidence, dict)),
         source_recommended_action=str(finding.get("recommendedAction", "")),
+        target_paths=target_paths,
+        base_lineage=lineage_payload,
+        intent_hash=intent_hash,
+        proposal_key=proposal_key,
+        registry_status=registry_status,
     )
 
 
 def _requires_source_references(project_path: Path, facts: RepoFacts) -> bool:
-    signals = [project_path.name, *facts.top_level_files, *facts.top_level_dirs, *facts.markdown_files]
-    joined = "\n".join(signals).lower()
-    return any(term in joined for term in ("cmmc", "compliance", "control", "readiness", "readyness"))
+    """Documentation candidates always need source references.
+
+    This started as a compliance-sensitive-only policy, but production live runs
+    need a stronger default docs gate: generated Markdown must cite existing
+    repository files for factual grounding rather than merely being non-empty
+    with resolvable links.
+    """
+    _ = (project_path, facts)
+    return True
 
 
 def _intake_context_block(findings: list[dict[str, Any]]) -> str:
-    quality_gate_commands: list[str] = []
+    quality_gate_commands = list(_quality_gate_commands(findings))
     boundaries: list[str] = []
     for finding in findings:
         boundary = finding.get("autonomyBoundary")
         if isinstance(boundary, str) and boundary.strip():
             boundaries.append(boundary.strip())
-        if str(finding.get("id", "")) == "verification.quality-gates.present":
-            for command in finding.get("verification", []):
-                if isinstance(command, str) and command.strip():
-                    quality_gate_commands.append(command.strip())
     lines: list[str] = []
     if quality_gate_commands:
         lines.append("Quality gate commands:")
@@ -249,6 +349,21 @@ def _intake_context_block(findings: list[dict[str, Any]]) -> str:
 
 def _sha(payload: dict[str, Any]) -> str:
     return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def _file_sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _quality_gate_commands(findings: list[dict[str, Any]]) -> tuple[str, ...]:
+    commands: list[str] = []
+    for finding in findings:
+        if str(finding.get("id", "")) != "verification.quality-gates.present":
+            continue
+        for command in finding.get("verification", []):
+            if isinstance(command, str) and command.strip():
+                commands.append(command.strip())
+    return tuple(dict.fromkeys(commands))
 
 
 def main(argv: list[str] | None = None) -> int:

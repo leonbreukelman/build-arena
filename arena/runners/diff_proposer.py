@@ -30,6 +30,9 @@ class DiffProposalRequest:
     file_exists: bool = True
     repo_facts: str = ""
     grounding_constraints: tuple[str, ...] = ()
+    pending_proposals: tuple[str, ...] = ()
+    failure_notes: tuple[str, ...] = ()
+    repair_context: str = ""
 
 
 @dataclass(frozen=True)
@@ -134,11 +137,18 @@ class DiffProposerRunner:
         success_criterion: str,
         repo_facts: str = "",
         grounding_constraints: tuple[str, ...] = (),
+        pending_proposals: tuple[str, ...] = (),
+        failure_notes: tuple[str, ...] = (),
+        repair_budget: int = 0,
     ) -> None:
         self.transport = transport
         self.success_criterion = success_criterion
         self.repo_facts = repo_facts
         self.grounding_constraints = grounding_constraints
+        self.pending_proposals = pending_proposals
+        self.failure_notes = failure_notes
+        self.repair_budget = max(0, repair_budget)
+        self.repair_events: list[dict[str, Any]] = []
         self.applied_hypotheses: list[Hypothesis] = []
 
     async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Path:
@@ -147,17 +157,42 @@ class DiffProposerRunner:
         config = load_goal_config(target)
         target_path = _single_target_path(hypothesis, config)
         file_contents, file_exists = _target_file_contents_or_empty(target, target_path)
-        request = DiffProposalRequest(
-            hypothesis_id=hypothesis.id,
-            target_path=target_path,
-            file_contents=file_contents,
-            success_criterion=self.success_criterion,
-            goal_config_sha=config.content_hash,
-            intent=hypothesis.intent,
-            file_exists=file_exists,
-            repo_facts=self.repo_facts,
-            grounding_constraints=self.grounding_constraints,
-        )
+        repair_context = ""
+        last_error: RunnerError | None = None
+        for attempt in range(self.repair_budget + 1):
+            request = DiffProposalRequest(
+                hypothesis_id=hypothesis.id,
+                target_path=target_path,
+                file_contents=file_contents,
+                success_criterion=self.success_criterion,
+                goal_config_sha=config.content_hash,
+                intent=hypothesis.intent,
+                file_exists=file_exists,
+                repo_facts=self.repo_facts,
+                grounding_constraints=self.grounding_constraints,
+                pending_proposals=self.pending_proposals,
+                failure_notes=self.failure_notes,
+                repair_context=repair_context,
+            )
+            try:
+                return self._apply_request(hypothesis, target, target_path, config, request)
+            except RunnerError as exc:
+                last_error = exc
+                if attempt >= self.repair_budget:
+                    raise
+                repair_context = f"Previous diff failed on attempt {attempt + 1}: {exc}"
+                self.repair_events.append({"attempt": attempt + 1, "error": str(exc)})
+        assert last_error is not None
+        raise last_error
+
+    def _apply_request(
+        self,
+        hypothesis: Hypothesis,
+        target: Path,
+        target_path: str,
+        config: GoalConfig,
+        request: DiffProposalRequest,
+    ) -> Path:
         response = self.transport.propose(request)
         _raise_for_response_status(response)
         gate = validate_unified_diff(target, response.diff_text, goal_config=config)
@@ -165,13 +200,20 @@ class DiffProposerRunner:
             raise RunnerError(f"patch gate rejected: {gate.reason}")
         _apply_diff(target, response.diff_text)
         try:
-            _validate_changed_markdown(target, gate.touched_paths)
+            repaired_markdown = _validate_changed_markdown(target, gate.touched_paths)
         except RunnerError:
             _reverse_diff(target, response.diff_text)
             raise
+        if repaired_markdown:
+            diff_to_record = _current_diff(target, gate.touched_paths)
+            if not diff_to_record:
+                _discard_touched_paths(target, gate.touched_paths)
+                raise RunnerError("Markdown repair produced no recordable diff")
+        else:
+            diff_to_record = response.diff_text
         patch_path = target / ".arena" / "patches" / f"{hypothesis.id}.patch"
         patch_path.parent.mkdir(parents=True, exist_ok=True)
-        patch_path.write_text(response.diff_text, encoding="utf-8")
+        patch_path.write_text(diff_to_record, encoding="utf-8")
         patch_path.with_suffix(".patch.provenance.json").write_text(
             json.dumps(
                 _provenance(hypothesis, target_path, response, gate.to_jsonable()),
@@ -192,6 +234,9 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
     )
     facts = request.repo_facts.strip() or "No additional repository facts supplied."
     constraints = "\n".join(f"- {item}" for item in request.grounding_constraints) or "- Use only the provided target file and repository facts; do not invent files, links, or commands."
+    pending = "\n".join(f"- {item}" for item in request.pending_proposals) or "- None supplied."
+    failures = "\n".join(f"- {item}" for item in request.failure_notes) or "- None supplied."
+    repair = request.repair_context.strip() or "No prior failed attempt for this request."
     return (
         "Return only a unified diff for exactly the target file below.\n"
         "Do not include markdown fences, explanations, or changes to any other file.\n"
@@ -203,8 +248,18 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
         f"Intent: {request.intent}\n\n"
         "Repository facts:\n"
         f"{facts}\n\n"
+        "Markdown link rules:\n"
+        "- When editing Markdown, create local Markdown links only to exact repository-relative paths shown in the Repository facts above.\n"
+        "- Do not shorten repository-relative paths in Markdown links or plain file mentions: use `docs/index.md` and `src/pkg/file.py`, not `index.md` or `file.py`.\n"
+        "- If a source file is relevant, mention the exact path from the Source files list. If no exact path is listed, avoid naming the file.\n\n"
         "Grounding constraints:\n"
         f"{constraints}\n\n"
+        "Known pending proposals:\n"
+        f"{pending}\n\n"
+        "Known failure modes:\n"
+        f"{failures}\n\n"
+        "Repair feedback for this attempt:\n"
+        f"{repair}\n\n"
         "Current file contents:\n"
         "```text\n"
         f"{request.file_contents}"
@@ -338,7 +393,16 @@ def _reverse_diff(worktree: Path, diff_text: str) -> None:
     )
 
 
-def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+def _discard_touched_paths(worktree: Path, touched_paths: tuple[str, ...]) -> None:
+    for path in touched_paths:
+        if _is_git_tracked(worktree, path):
+            subprocess.run(["git", "checkout", "--", path], cwd=worktree, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        else:
+            subprocess.run(["git", "clean", "-f", "--", path], cwd=worktree, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+
+
+def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -> bool:
+    repaired_any = False
     for raw_path in touched_paths:
         if not raw_path.endswith(".md"):
             continue
@@ -346,12 +410,120 @@ def _validate_changed_markdown(worktree: Path, touched_paths: tuple[str, ...]) -
         if not path.exists() or not path.is_file():
             continue
         report = check_markdown_links(worktree, path)
+        if report.ok:
+            continue
+        if report.missing or report.escaped:
+            before = path.read_text(encoding="utf-8")
+            _repair_markdown_references(worktree, path, report)
+            repaired_any = repaired_any or path.read_text(encoding="utf-8") != before
+            report = check_markdown_links(worktree, path)
         if report.missing:
             missing = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.missing)
             raise RunnerError(f"missing Markdown link target: {missing}")
         if report.escaped:
             escaped = ", ".join(f"{item.link}->{item.resolved_path}" for item in report.escaped)
             raise RunnerError(f"Markdown link escapes repository: {escaped}")
+    return repaired_any
+
+
+def _repair_markdown_references(worktree: Path, path: Path, report: Any) -> None:
+    replacements: dict[str, str] = {}
+    existing_paths = _existing_repo_paths(worktree)
+    for item in (*report.missing, *report.escaped):
+        if item.link in replacements:
+            continue
+        match = _unique_suffix_match(item.link, existing_paths)
+        if match is not None:
+            replacements[item.link] = match
+    if not replacements:
+        return
+    text = path.read_text(encoding="utf-8")
+    for old, new in sorted(replacements.items(), key=lambda item: len(item[0]), reverse=True):
+        text = text.replace(old, new)
+    path.write_text(text, encoding="utf-8")
+
+
+def _existing_repo_paths(worktree: Path) -> tuple[str, ...]:
+    ignored = {".git", ".venv", ".pytest_cache", ".mypy_cache", ".ruff_cache", "__pycache__", "node_modules"}
+    paths: list[str] = []
+    for path in worktree.rglob("*"):
+        if not path.is_file():
+            continue
+        rel = path.relative_to(worktree)
+        if any(part in ignored or part.startswith(".") for part in rel.parts):
+            continue
+        paths.append(rel.as_posix())
+    return tuple(sorted(paths))
+
+
+def _unique_suffix_match(link: str, existing_paths: tuple[str, ...]) -> str | None:
+    normalized = link.lstrip("/").split("#", 1)[0]
+    if not normalized or ":" in normalized:
+        return None
+    if normalized in existing_paths:
+        return normalized
+    collapsed = _collapsed_repeated_prefix_match(normalized, existing_paths)
+    if collapsed is not None:
+        return collapsed
+    matches = [path for path in existing_paths if path.endswith("/" + normalized)]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _collapsed_repeated_prefix_match(path: str, existing_paths: tuple[str, ...]) -> str | None:
+    parts = path.split("/")
+    candidates: list[str] = []
+    for index in range(len(parts) - 1):
+        if parts[index] != parts[index + 1]:
+            continue
+        candidate = "/".join((*parts[:index], *parts[index + 1 :]))
+        if candidate:
+            candidates.append(candidate)
+    matches = [candidate for candidate in candidates if candidate in existing_paths]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _current_diff(worktree: Path, touched_paths: tuple[str, ...]) -> str:
+    tracked: list[str] = []
+    untracked: list[str] = []
+    for path in touched_paths:
+        if _is_git_tracked(worktree, path):
+            tracked.append(path)
+        elif (worktree / path).is_file():
+            untracked.append(path)
+    chunks: list[str] = []
+    if tracked:
+        proc = subprocess.run(
+            ["git", "diff", "--", *tracked],
+            cwd=worktree,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if proc.returncode == 0 and proc.stdout:
+            chunks.append(proc.stdout)
+    for path in untracked:
+        proc = subprocess.run(
+            ["git", "diff", "--no-index", "--", "/dev/null", path],
+            cwd=worktree,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if proc.returncode in {0, 1} and proc.stdout:
+            chunks.append(proc.stdout)
+    return "".join(chunks)
+
+
+def _is_git_tracked(worktree: Path, path: str) -> bool:
+    proc = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", path],
+        cwd=worktree,
+        text=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    return proc.returncode == 0
 
 
 def _provenance(

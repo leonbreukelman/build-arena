@@ -107,6 +107,16 @@ class FakeTransport:
         return self.response
 
 
+class SequenceTransport:
+    def __init__(self, responses: list[DiffProposalResponse]) -> None:
+        self.responses = responses
+        self.requests: list[Any] = []
+
+    def propose(self, request: Any) -> DiffProposalResponse:
+        self.requests.append(request)
+        return self.responses[len(self.requests) - 1]
+
+
 class FakeChatClient:
     def __init__(self, result: OpenAIChatResult) -> None:
         self.result = result
@@ -178,6 +188,30 @@ def test_openai_compatible_diff_transport_prompt_includes_grounding_facts_and_co
     assert "README.md exists; docs has no Markdown pages" in prompt
     assert "Grounding constraints:" in prompt
     assert "Do not invent Markdown links" in prompt
+    assert "Do not shorten repository-relative paths in Markdown links or plain file mentions" in prompt
+    assert "If a source file is relevant, mention the exact path from the Source files list" in prompt
+
+
+def test_prompt_includes_pending_proposals_and_failure_notes() -> None:
+    request = DiffProposalRequest(
+        hypothesis_id="hyp-docs-index",
+        target_path="docs/index.md",
+        file_contents="",
+        success_criterion="docs index links resolve",
+        goal_config_sha="g" * 64,
+        intent="Create grounded docs index",
+        pending_proposals=("pending proposal doc.index.missing on docs/index.md",),
+        failure_notes=("Prior AGENTS.md proposal doubled src/src paths",),
+    )
+
+    chat = FakeChatClient(_chat_result(_valid_diff()))
+    OpenAICompatibleDiffTransport(chat_client=chat).propose(request)
+    prompt = chat.calls[0]["messages"][-1]["content"]
+
+    assert "Known pending proposals:" in prompt
+    assert "pending proposal doc.index.missing" in prompt
+    assert "Known failure modes:" in prompt
+    assert "doubled src/src paths" in prompt
 
 
 def test_openai_compatible_diff_transport_requests_unified_diff_and_records_provenance() -> None:
@@ -508,6 +542,109 @@ def test_diff_proposer_rejects_markdown_with_missing_relative_links(tmp_path: Pa
         asyncio.run(runner.apply(_hypothesis(target_files=["docs/index.md"]), repo))
 
     assert not (repo / ".arena" / "patches").exists()
+
+
+def test_diff_proposer_repairs_markdown_file_mentions_to_exact_repo_paths(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    _write(repo / "src" / "fmc_mcp" / "config.py", "class Settings:\n    pass\n")
+    _write(repo / "docs" / "index.md", "# Docs\n")
+    _run(["git", "add", "src/fmc_mcp/config.py", "docs/index.md"], repo)
+    _run(["git", "commit", "-m", "add docs and config"], repo)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("AGENTS.md", "# Agents\n\nSee fmc_mcp/config.py and [Docs](index.md).\n"),
+            intent="Create AGENTS",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="agent docs links resolve")
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(target_files=["AGENTS.md"]), repo))
+
+    text = (repo / "AGENTS.md").read_text(encoding="utf-8")
+    assert "src/fmc_mcp/config.py" in text
+    assert "See fmc_mcp/config.py" not in text
+    assert "[Docs](index.md)" not in text
+    assert patch_path.is_file()
+    assert "src/fmc_mcp/config.py" in patch_path.read_text(encoding="utf-8")
+
+
+def test_repair_collapses_doubled_repo_root_prefix(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    _write(repo / "src" / "fmc_mcp" / "config.py", "class Settings:\n    pass\n")
+    _run(["git", "add", "src/fmc_mcp/config.py"], repo)
+    _run(["git", "commit", "-m", "add config"], repo)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("AGENTS.md", "# Agents\n\nSee [Config](src/src/fmc_mcp/config.py).\n"),
+            intent="Create AGENTS",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="agent docs links resolve")
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(target_files=["AGENTS.md"]), repo))
+
+    text = (repo / "AGENTS.md").read_text(encoding="utf-8")
+    assert "src/src/fmc_mcp/config.py" not in text
+    assert "src/fmc_mcp/config.py" in text
+    assert "src/fmc_mcp/config.py" in patch_path.read_text(encoding="utf-8")
+
+
+def test_prefix_collapse_does_not_touch_legitimate_paths(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    _write(repo / "src" / "src" / "real.py", "VALUE = 1\n")
+    _run(["git", "add", "src/src/real.py"], repo)
+    _run(["git", "commit", "-m", "add real repeated path"], repo)
+    transport = FakeTransport(
+        DiffProposalResponse(
+            diff_text=_new_file_diff("AGENTS.md", "# Agents\n\nSee [Real](src/src/real.py).\n"),
+            intent="Create AGENTS",
+            provenance={"transport": "fake"},
+        )
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="agent docs links resolve")
+
+    asyncio.run(runner.apply(_hypothesis(target_files=["AGENTS.md"]), repo))
+
+    assert "src/src/real.py" in (repo / "AGENTS.md").read_text(encoding="utf-8")
+
+
+def test_apply_retries_with_gate_error_feedback(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    transport = SequenceTransport(
+        [
+            DiffProposalResponse(diff_text=_valid_diff("private/secret.py"), intent="Bad boundary", provenance={"transport": "fake"}),
+            DiffProposalResponse(diff_text=_valid_diff(), intent="Good diff", provenance={"transport": "fake"}),
+        ]
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="value returns 2", repair_budget=1)
+
+    patch_path = asyncio.run(runner.apply(_hypothesis(), repo))
+
+    assert patch_path.exists()
+    assert len(transport.requests) == 2
+    assert "Previous diff failed" in transport.requests[1].repair_context
+    assert runner.repair_events[0]["attempt"] == 1
+
+
+def test_apply_repair_budget_exhausted_fails_cleanly(tmp_path: Path) -> None:
+    repo = _repo(tmp_path)
+    before = (repo / "src" / "app.py").read_text(encoding="utf-8")
+    transport = SequenceTransport(
+        [
+            DiffProposalResponse(diff_text=_valid_diff("private/secret.py"), intent="Bad boundary", provenance={"transport": "fake"}),
+            DiffProposalResponse(diff_text=_valid_diff("private/secret.py"), intent="Bad boundary again", provenance={"transport": "fake"}),
+        ]
+    )
+    runner = DiffProposerRunner(transport=transport, success_criterion="value returns 2", repair_budget=1)
+
+    with pytest.raises(RunnerError, match="patch gate rejected"):
+        asyncio.run(runner.apply(_hypothesis(), repo))
+
+    assert len(transport.requests) == 2
+    assert (repo / "src" / "app.py").read_text(encoding="utf-8") == before
+    assert subprocess.check_output(["git", "status", "--short"], cwd=repo, text=True) == ""
 
 
 def test_diff_proposer_applies_nested_new_file_diff_when_parent_is_missing(tmp_path: Path) -> None:

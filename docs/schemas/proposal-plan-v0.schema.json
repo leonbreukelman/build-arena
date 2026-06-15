@@ -11,6 +11,7 @@
     "snapshotId",
     "projectRoot",
     "repoFactsHash",
+    "baseLineage",
     "candidateCount",
     "omittedCount",
     "skippedCount",
@@ -24,6 +25,7 @@
     "snapshotId": {"type": "string"},
     "projectRoot": {"type": "string"},
     "repoFactsHash": {"type": "string"},
+    "baseLineage": {"type": "object"},
     "candidateCount": {"type": "integer", "minimum": 0},
     "omittedCount": {"type": "integer", "minimum": 0},
     "skippedCount": {"type": "integer", "minimum": 0},
@@ -59,7 +61,12 @@
         "verification_commands",
         "priority_score",
         "evidence_refs",
-        "source_recommended_action"
+        "source_recommended_action",
+        "target_paths",
+        "base_lineage",
+        "intent_hash",
+        "proposal_key",
+        "registry_status"
       ],
       "properties": {
         "rank": {"type": "integer", "minimum": 1},
@@ -74,7 +81,12 @@
         "verification_commands": {"type": "array", "items": {"type": "string"}},
         "priority_score": {"type": "number"},
         "evidence_refs": {"type": "array", "items": {"type": "object"}},
-        "source_recommended_action": {"type": "string"}
+        "source_recommended_action": {"type": "string"},
+        "target_paths": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "base_lineage": {"type": "object"},
+        "intent_hash": {"type": "string"},
+        "proposal_key": {"type": "string"},
+        "registry_status": {"type": "string"}
       }
     }
   }

@@ -75,6 +75,7 @@ def build_project_model_snapshot(
     live_model: str | None = None,
     live_base_url: str | None = None,
     live_api_key_env: str | None = None,
+    live_max_tokens: int = 4096,
     overwrite: bool = False,
     run_adversarial_probes: bool = False,
 ) -> BuildProjectModelResult:
@@ -99,6 +100,7 @@ def build_project_model_snapshot(
             model=live_model,
             base_url=live_base_url,
             api_key_env=live_api_key_env,
+            max_tokens=live_max_tokens,
         )
         raw_output = adapter.generate(prompt)
     else:
