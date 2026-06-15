@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://build-arena/schemas/project-model.frozen-v1.json",
+  "title": "Build Arena Project Model (frozen-v1)",
+  "description": "FROZEN CONTRACT. The minimal, deterministic, git+filesystem-grounded decomposition that the intake scorecard and repo-goal loop consume to rank repository requirements and improvements. Every field here is load-bearing: it is read by arena/project_intake_scorecard.py. additionalProperties is false everywhere on purpose — the deterministic core cannot grow silently, and any semantic/AI enrichment must live in a SEPARATE sidecar artifact, never inside this object. Introducing a new schemaVersion or a new REQUIRED field is a breaking change that requires an explicit operator action (see the AGENTS.md boundary rule), not an autonomous agent edit.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "provenance", "projectGraph", "snapshot", "iterationReadiness"],
+  "properties": {
+    "schemaVersion": {
+      "const": "project-model/frozen-v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16,64}$",
+      "description": "Hex digest (sha256/blake2b) of the canonical model content with this field excluded. MUST be identical across two runs on an unchanged repo HEAD. This is the determinism anchor."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["git"],
+      "properties": {
+        "git": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["headOid"],
+          "properties": {
+            "headOid": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{7,40}$",
+              "description": "git rev-parse HEAD of the decomposed checkout. Ties the model to a verifiable commit."
+            }
+          }
+        },
+        "tool": {
+          "type": "string",
+          "description": "Generator identity, e.g. 'arena.onboard@<version>'. NEVER a timestamp or wall-clock value."
+        }
+      }
+    },
+    "projectGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "description": "Every tracked file and directory in the repo, one node each. Sorted by id for determinism.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "path", "kind"],
+            "properties": {
+              "id": { "type": "string", "description": "Stable id derived from path (e.g. 'node:' + path). Deterministic." },
+              "path": { "type": "string", "pattern": "^[^/].*", "description": "Repo-relative POSIX path. No leading slash, no '..' segments." },
+              "kind": { "enum": ["file", "directory"] }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "description": "Static dependency edges between file nodes (e.g. Python imports resolved to in-repo files). Required as a key so the contract is stable; MAY be an empty array in the first frozen cut before edge extraction lands. Used for impact/blast-radius ranking.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to", "kind"],
+            "properties": {
+              "from": { "type": "string", "description": "Source node id." },
+              "to": { "type": "string", "description": "Target node id." },
+              "kind": { "enum": ["imports", "references"] }
+            }
+          }
+        }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components", "observable_checks", "verification_gaps", "unclassified_node_ids"],
+      "properties": {
+        "components": {
+          "type": "array",
+          "description": "The decomposition: named groupings of file nodes. Deterministic from path grouping (top-level surface) in the frozen cut. Sorted by id.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "owned_node_ids", "check_ids"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "kind": {
+                "type": "string",
+                "description": "Optional structural label derived deterministically from path: one of 'code'|'tests'|'docs'|'fixtures'|'config'|'scripts'|'other'."
+              },
+              "owned_node_ids": { "type": "array", "items": { "type": "string" }, "description": "File node ids owned by this component." },
+              "check_ids": { "type": "array", "items": { "type": "string" }, "description": "observable_checks ids that cover this component. Empty == no observable check (drives the 'untested component' finding)." }
+            }
+          }
+        },
+        "observable_checks": {
+          "type": "array",
+          "description": "Concrete, runnable checks discovered in the repo (test files / configured commands), mapped to the components they cover.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "component_ids"],
+            "properties": {
+              "id": { "type": "string" },
+              "command": { "type": "string", "description": "Runnable check command if derivable, e.g. 'pytest tests/test_scorer.py'." },
+              "component_ids": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "verification_gaps": {
+          "type": "array",
+          "description": "Mechanically-derivable gaps where the repo asserts/expects something it does not verify. Each gap is a ranking input. The arena-calibration fixture MUST yield kind 'patch_generalization_axis_missing' for F3_bad_passes_tests (manifest-derived).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "description"],
+            "properties": {
+              "id": { "type": "string" },
+              "kind": { "type": "string", "description": "Machine label, e.g. 'patch_generalization_axis_missing'|'component_untested'|'no_quality_gates'." },
+              "componentId": { "type": "string" },
+              "path": { "type": "string", "description": "Repo-relative path the gap is anchored to, when applicable (e.g. 'fixtures/F3_bad_passes_tests')." },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "unclassified_node_ids": {
+          "type": "array",
+          "description": "File node ids not owned by any component. COVERAGE-CLOSURE INVARIANT (enforced by the acceptance test): { all file node ids } == union(components[].owned_node_ids) UNION unclassified_node_ids, with empty intersection. A non-empty list is an honest 'unclassified surface' signal — never a silent drop. This is the deterministic 'thoroughness' guarantee.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "iterationReadiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["componentProfiles", "qualityGates"],
+      "properties": {
+        "componentProfiles": {
+          "type": "array",
+          "description": "One profile per component, carrying a deterministically-derived riskLevel. The rule (see implementation plan) is transparent, not model-produced: high == owns code with zero checks; low == checked or non-executable (docs/config/fixtures); medium otherwise.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["componentId", "riskLevel"],
+            "properties": {
+              "componentId": { "type": "string" },
+              "riskLevel": { "enum": ["low", "medium", "high"] },
+              "provenanceRefs": { "type": "array", "items": { "type": "string" }, "description": "Refs (rule id, manifest path) justifying the riskLevel. Optional but recommended for auditability." }
+            }
+          }
+        },
+        "qualityGates": {
+          "type": "array",
+          "description": "Repo-wide safe local checks (lint/type/test/build) discovered deterministically from config (pyproject, Makefile, etc.). Empty drives the 'no quality gates' high-severity finding.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["command"],
+            "properties": {
+              "id": { "type": "string" },
+              "command": { "type": "string" }
+            }
+          }
+        },
+        "openQuestions": {
+          "type": "array",
+          "description": "Optional. Mechanically-surfaced ambiguities (e.g. a declared-but-absent target). Drives an architecture finding. Omit or leave empty in the frozen cut if no deterministic source exists.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "question"],
+            "properties": {
+              "id": { "type": "string" },
+              "question": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

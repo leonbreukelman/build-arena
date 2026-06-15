@@ -9,7 +9,7 @@ import pytest
 
 from arena.project_graph import build_project_graph
 from arena.project_model_llm import build_fixture_model_output
-from arena.repo_goal_loop import RepoGoalLoopConfig, run_repo_goal_loop
+from arena.repo_goal_loop import RepoGoalLoopConfig, _EventLog, run_repo_goal_loop
 from arena.runners.base import RunnerError
 from arena.runners.diff_proposer import DiffProposalResponse
 
@@ -104,17 +104,20 @@ class _FixtureLiveLLM:
 
 
 class _StaticDiffTransport:
-    def __init__(self, diff_text: str, *, raise_error: bool = False) -> None:
+    def __init__(self, diff_text: str | list[str], *, raise_error: bool = False) -> None:
         self.diff_text = diff_text
         self.raise_error = raise_error
         self.calls = 0
+        self.requests: list[Any] = []
 
     def propose(self, request: Any) -> DiffProposalResponse:
         self.calls += 1
+        self.requests.append(request)
         if self.raise_error:
             raise RunnerError("provider failed: token=[REDACTED]")
+        diff_text = self.diff_text[self.calls - 1] if isinstance(self.diff_text, list) else self.diff_text
         return DiffProposalResponse(
-            diff_text=self.diff_text,
+            diff_text=diff_text,
             intent=request.intent,
             provenance={"transport": "test_static", "model": "test-live-proposer"},
         )
@@ -173,11 +176,20 @@ def test_live_modes_require_explicit_model_before_any_cycle(tmp_path: Path) -> N
         run_repo_goal_loop(_config(repo, apply_mode="live_diff", allow_live=True))
 
 
+def test_live_flags_require_a_live_mode_before_any_cycle(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+
+    with pytest.raises(ValueError, match="live flags require"):
+        run_repo_goal_loop(
+            _config(repo, allow_live=True, live_model="test-live-model", live_api_key_env="TEST_KEY", live_max_calls=1)
+        )
+
+
 def test_live_diff_requires_goal_config_before_any_cycle(tmp_path: Path) -> None:
     repo = _init_repo(tmp_path)
 
     with pytest.raises(ValueError, match="goal config"):
-        run_repo_goal_loop(_config(repo, apply_mode="live_diff", allow_live=True, live_model="test-live-model"))
+        run_repo_goal_loop(_config(repo, apply_mode="live_diff", allow_live=True, live_model="test-live-model", live_max_calls=10))
 
 
 def test_live_diff_requires_goal_config_tracked_in_head_before_any_cycle(tmp_path: Path) -> None:
@@ -185,7 +197,76 @@ def test_live_diff_requires_goal_config_tracked_in_head_before_any_cycle(tmp_pat
     _write_goal_config(repo)
 
     with pytest.raises(ValueError, match="tracked in git HEAD"):
-        run_repo_goal_loop(_config(repo, apply_mode="live_diff", allow_live=True, live_model="test-live-model"))
+        run_repo_goal_loop(_config(repo, apply_mode="live_diff", allow_live=True, live_model="test-live-model", live_max_calls=10))
+
+
+def test_live_modes_require_explicit_live_call_budget_before_any_cycle(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+
+    with pytest.raises(ValueError, match="live_max_calls"):
+        run_repo_goal_loop(_config(repo, decompose_mode="live", allow_live=True, live_model="test-live-model"))
+
+
+def test_live_call_budget_estimates_single_and_dual_live_modes(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+    from arena.repo_goal_loop import _planned_live_calls
+
+    assert _planned_live_calls(_config(repo, decompose_mode="live", max_cycles=2)) == 2
+    assert _planned_live_calls(_config(repo, apply_mode="live_diff", max_cycles=2)) == 4
+    assert _planned_live_calls(_config(repo, decompose_mode="live", apply_mode="live_diff", max_cycles=2)) == 6
+    assert _planned_live_calls(_config(repo, decompose_mode="live", run_adversarial_probes=True, max_cycles=2)) == 4
+    assert _planned_live_calls(
+        _config(repo, decompose_mode="live", apply_mode="live_diff", run_adversarial_probes=True, max_cycles=1)
+    ) == 4
+
+
+def test_live_call_budget_rejects_non_positive_cap(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+
+    with pytest.raises(ValueError, match="live_max_calls"):
+        run_repo_goal_loop(_config(repo, decompose_mode="live", allow_live=True, live_model="test-live-model", live_max_calls=0))
+
+
+def test_live_call_budget_cap_fails_before_adapter_calls(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+    llm = _FixtureLiveLLM(repo)
+
+    with pytest.raises(ValueError, match="planned live calls"):
+        run_repo_goal_loop(
+            _config(
+                repo,
+                decompose_mode="live",
+                apply_mode="live_diff",
+                allow_live=True,
+                live_model="test-live-model",
+                live_max_calls=3,
+                max_cycles=2,
+                _decompose_llm=llm,
+            )
+        )
+
+    assert llm.calls == 0
+
+
+def test_live_call_budget_cap_counts_adversarial_probe_slot_before_adapter_calls(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+    llm = _FixtureLiveLLM(repo)
+
+    with pytest.raises(ValueError, match="planned live calls"):
+        run_repo_goal_loop(
+            _config(
+                repo,
+                decompose_mode="live",
+                allow_live=True,
+                live_model="test-live-model",
+                live_max_calls=1,
+                run_adversarial_probes=True,
+                max_cycles=1,
+                _decompose_llm=llm,
+            )
+        )
+
+    assert llm.calls == 0
 
 
 def test_live_decomposition_gate_failure_fails_closed(tmp_path: Path) -> None:
@@ -198,6 +279,7 @@ def test_live_decomposition_gate_failure_fails_closed(tmp_path: Path) -> None:
             decompose_mode="live",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _decompose_llm=llm,
             max_cycles=3,
             max_consecutive_failures=1,
@@ -223,6 +305,7 @@ def test_live_decomposition_uses_injected_adapter_and_records_provenance(tmp_pat
             decompose_mode="live",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _decompose_llm=llm,
             max_cycles=1,
         )
@@ -251,6 +334,7 @@ def test_live_diff_apply_runs_patch_gate_and_changes_file(tmp_path: Path) -> Non
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _diff_transport=transport,
             max_cycles=1,
         )
@@ -286,6 +370,7 @@ def test_live_diff_rejected_by_patch_gate_is_apply_failure_not_crash(tmp_path: P
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _diff_transport=transport,
             max_cycles=3,
             max_consecutive_failures=1,
@@ -293,7 +378,7 @@ def test_live_diff_rejected_by_patch_gate_is_apply_failure_not_crash(tmp_path: P
     )
 
     events = _events(result)
-    assert transport.calls == 1
+    assert transport.calls == 2
     assert "CANDIDATE_APPLY_FAILED" in [event["type"] for event in events]
     assert "RUN_ENDED" in [event["type"] for event in events]
     assert result.promotions == 0
@@ -313,6 +398,7 @@ def test_live_diff_provider_error_is_failure_not_crash(tmp_path: Path) -> None:
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _diff_transport=transport,
             max_cycles=2,
             max_consecutive_failures=1,
@@ -339,6 +425,7 @@ def test_live_diff_code_promotion_still_requires_behaviour_gate(tmp_path: Path) 
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _diff_transport=transport,
             dry_run=False,
             allow_promotion=True,
@@ -368,6 +455,7 @@ def test_live_diff_promotion_stages_only_target_path(tmp_path: Path) -> None:
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _diff_transport=transport,
             dry_run=False,
             allow_promotion=True,
@@ -397,6 +485,7 @@ def test_loop_verification_commands_are_deterministic_not_model_controlled(tmp_p
             apply_mode="live_diff",
             allow_live=True,
             live_model="test-live-model",
+            live_max_calls=10,
             _decompose_llm=llm,
             _diff_transport=transport,
             max_cycles=1,
@@ -409,6 +498,49 @@ def test_loop_verification_commands_are_deterministic_not_model_controlled(tmp_p
     commands = [item["command"] for item in verified[0]["payload"]["commands"]]
     assert commands == ["python3 -m arena.code_quality_gate --repo . --path src/pkg/mod.py"]
     assert all("SystemExit(99)" not in command for command in commands)
+
+
+def test_run_started_records_live_call_budget(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path)
+    _document_repo(repo)
+    _write_goal_config(repo)
+    _commit(repo, "docs and goal config")
+    llm = _FixtureLiveLLM(repo)
+    transport = _StaticDiffTransport(_remove_unused_import_diff())
+
+    result = run_repo_goal_loop(
+        _config(
+            repo,
+            decompose_mode="live",
+            apply_mode="live_diff",
+            allow_live=True,
+            live_model="test-live-model",
+            live_max_calls=3,
+            _decompose_llm=llm,
+            _diff_transport=transport,
+            max_cycles=1,
+        )
+    )
+
+    started = _events(result)[0]
+    assert started["type"] == "RUN_STARTED"
+    assert started["payload"]["liveMaxCalls"] == 3
+    assert started["payload"]["plannedLiveCalls"] == 3
+    assert started["payload"]["liveRepairBudgetPerCycle"] == 1
+
+
+def test_deterministic_docs_generation_includes_source_references(tmp_path: Path) -> None:
+    from arena.markdown_links import has_source_references
+    from arena.repo_goal_loop import _generate_doc
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+
+    assert _generate_doc(repo, "docs/index.md") is True
+    generated = repo / "docs" / "index.md"
+    assert "## Source references" in generated.read_text(encoding="utf-8")
+    assert has_source_references(repo, generated) is True
 
 
 # --- deterministic tests ---
@@ -686,3 +818,131 @@ def test_select_promotable_skips_unverified_candidates() -> None:
     candidate = _select_promotable(ranked_bundle, set())
     assert candidate is not None
     assert candidate["findingId"] == "agent.agents-md.missing"
+
+
+def test_select_promotable_emits_candidate_skipped_for_empty_verification(tmp_path: Path) -> None:
+    from arena.repo_goal_loop import _select_promotable
+
+    log = _EventLog(tmp_path / "events.jsonl")
+    ranked_bundle = {
+        "ranked": {
+            "entries": [
+                {
+                    "findingId": "code.component.untested.comp-tools",
+                    "domain": "component_verification",
+                    "targetPath": "src/fmc_mcp/tools.py",
+                    "priorityScore": 540.0,
+                    "autonomyBoundary": "needs_code_change",
+                },
+                {
+                    "findingId": "agent.agents-md.missing",
+                    "domain": "documentation",
+                    "targetPath": "AGENTS.md",
+                    "priorityScore": 432.0,
+                    "autonomyBoundary": "safe_to_patch_docs_only",
+                },
+            ]
+        },
+        "plan": {
+            "candidates": [
+                {"finding_id": "code.component.untested.comp-tools", "verification_commands": []},
+                {"finding_id": "agent.agents-md.missing", "verification_commands": ["test -s AGENTS.md"]},
+            ]
+        },
+    }
+
+    candidate = _select_promotable(ranked_bundle, set(), log=log, cycle=7)
+
+    assert candidate is not None
+    events = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert [event["type"] for event in events] == ["CANDIDATE_SKIPPED"]
+    assert events[0]["cycle"] == 7
+    assert events[0]["payload"]["finding_id"] == "code.component.untested.comp-tools"
+    assert events[0]["payload"]["reason"] == "empty_verification"
+
+
+def test_select_promotable_skips_emit_for_already_tried(tmp_path: Path) -> None:
+    from arena.repo_goal_loop import _select_promotable
+
+    log = _EventLog(tmp_path / "events.jsonl")
+    ranked_bundle = {
+        "ranked": {
+            "entries": [
+                {"findingId": "docs.done", "domain": "documentation", "targetPath": "docs/index.md", "priorityScore": 10.0},
+                {"findingId": "docs.next", "domain": "documentation", "targetPath": "AGENTS.md", "priorityScore": 9.0},
+            ]
+        },
+        "plan": {
+            "candidates": [
+                {"finding_id": "docs.done", "verification_commands": ["test -s docs/index.md"]},
+                {"finding_id": "docs.next", "verification_commands": ["test -s AGENTS.md"]},
+            ]
+        },
+    }
+
+    candidate = _select_promotable(ranked_bundle, {"docs.done"}, log=log, cycle=3)
+
+    assert candidate is not None
+    assert candidate["findingId"] == "docs.next"
+    events = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert events[0]["type"] == "CANDIDATE_SKIPPED"
+    assert events[0]["payload"] == {"finding_id": "docs.done", "reason": "already_tried", "rank": 0}
+
+
+def test_code_component_candidate_is_selectable_and_gated(tmp_path: Path) -> None:
+    from arena.repo_goal_loop import _select_promotable
+
+    log = _EventLog(tmp_path / "events.jsonl")
+    ranked_bundle = {
+        "ranked": {
+            "entries": [
+                {
+                    "findingId": "code.component.untested.comp-tools",
+                    "domain": "component_verification",
+                    "targetPath": "src/fmc_mcp/tools.py",
+                    "priorityScore": 540.0,
+                    "autonomyBoundary": "needs_code_change",
+                }
+            ]
+        },
+        "plan": {
+            "candidates": [
+                {
+                    "finding_id": "code.component.untested.comp-tools",
+                    "target_path": "src/fmc_mcp/tools.py",
+                    "target_paths": ["src/fmc_mcp/tools.py"],
+                    "verification_commands": ["uv run ruff check .", "uv run pyright", "uv run pytest tests -q"],
+                }
+            ]
+        },
+    }
+
+    candidate = _select_promotable(ranked_bundle, set(), log=log, cycle=1)
+
+    assert candidate is not None
+    assert candidate["findingId"] == "code.component.untested.comp-tools"
+    assert candidate["targetPaths"] == ("src/fmc_mcp/tools.py",)
+    assert not (tmp_path / "events.jsonl").exists()
+
+
+def test_closed_loop_promotes_then_redecomposes(tmp_path: Path) -> None:
+    repo = _init_repo(tmp_path, with_missing_docs=True)
+
+    result = run_repo_goal_loop(
+        _config(
+            repo,
+            dry_run=False,
+            allow_promotion=True,
+            max_cycles=2,
+            test_command="python3 -c 'pass'",
+        )
+    )
+
+    events = _events(result)
+    types = [event["type"] for event in events]
+    assert "PROMOTED" in types
+    last_decomposition_index = max(index for index, type_ in enumerate(types) if type_ == "DECOMPOSITION_COMPLETED")
+    assert types.index("BASELINE_ADVANCED") < last_decomposition_index
+    completed = [event for event in events if event["type"] == "DECOMPOSITION_COMPLETED"]
+    assert len({event["payload"]["snapshot_id"] for event in completed}) >= 2
+    assert any(event["type"] == "RUN_COMPLETED" and event["payload"].get("promotions", 0) >= 1 for event in events)

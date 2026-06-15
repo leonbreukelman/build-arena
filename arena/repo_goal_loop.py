@@ -33,6 +33,7 @@ from arena.project_decomposer_ai import build_project_model_snapshot
 from arena.project_intake_scorecard import build_project_intake_scorecard
 from arena.proposal_planner import ProposalCandidate, build_proposal_plan, candidate_to_hypothesis
 from arena.proposal_ranker import build_ranked_proposals
+from arena.proposal_registry import ProposalRegistry
 from arena.runners.base import RunnerError
 from arena.runners.diff_proposer import DiffProposerRunner, OpenAICompatibleDiffTransport
 from scorer.goal_config import DEFAULT_GOAL_CONFIG, GoalConfigError, load_goal_config
@@ -60,6 +61,7 @@ class RepoGoalLoopConfig:
     live_base_url: str | None = None
     live_api_key_env: str | None = None
     live_max_tokens: int = 8192
+    live_max_calls: int | None = None
     decompose_model_output_path: str | Path | None = None
     run_adversarial_probes: bool = False
     # Test-only seams: inject fake live adapters without network or spend while
@@ -106,6 +108,7 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
     events_path.write_text("", encoding="utf-8")
     log = _EventLog(events_path)
 
+    live_requested = _live_requested(config)
     log.emit(
         "RUN_STARTED",
         payload={
@@ -114,9 +117,12 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
             "dryRun": config.dry_run,
             "decomposeMode": config.decompose_mode,
             "applyMode": config.apply_mode,
-            "live": config.decompose_mode == "live" or config.apply_mode == "live_diff",
-            "liveProvider": config.live_provider if (config.decompose_mode == "live" or config.apply_mode == "live_diff") else None,
-            "liveModel": config.live_model if (config.decompose_mode == "live" or config.apply_mode == "live_diff") else None,
+            "live": live_requested,
+            "liveProvider": config.live_provider if live_requested else None,
+            "liveModel": config.live_model if live_requested else None,
+            "liveMaxCalls": config.live_max_calls if live_requested else None,
+            "plannedLiveCalls": _planned_live_calls(config),
+            "liveRepairBudgetPerCycle": _live_repair_budget_per_cycle(config),
         },
     )
 
@@ -139,7 +145,7 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
                 halted_reason = "divergence"
                 break
             continue
-        candidate = _select_promotable(ranked, tried_finding_ids)
+        candidate = _select_promotable(ranked, tried_finding_ids, log=log, cycle=cycle)
         if candidate is None:
             log.emit("NOTHING_TO_IMPROVE", cycle=cycle, payload={"reason": "no untried positive-leverage candidate"})
             halted_reason = "nothing_to_improve"
@@ -152,9 +158,10 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
         tried_finding_ids.add(finding_id)
         log.emit("CANDIDATE_SELECTED", cycle=cycle, payload={"finding_id": finding_id, "domain": domain, "target_path": target_path, "priority_score": candidate["priorityScore"]})
 
+        target_paths = tuple(candidate.get("targetPaths", (target_path,))) or (target_path,)
         # Boundary check BEFORE any apply.
-        if is_boundary_violation([target_path], read_only_dirs=_read_only_dirs(config)):
-            log.emit("BOUNDARY_VIOLATION", cycle=cycle, payload={"finding_id": finding_id, "target_path": target_path})
+        if is_boundary_violation(target_paths, read_only_dirs=_read_only_dirs(config)):
+            log.emit("BOUNDARY_VIOLATION", cycle=cycle, payload={"finding_id": finding_id, "target_path": target_path, "target_paths": list(target_paths)})
             consecutive_failures += 1
             if consecutive_failures >= config.max_consecutive_failures:
                 log.emit("DIVERGENCE_HALT", cycle=cycle, payload={"reason": "boundary_violation_streak", "count": consecutive_failures})
@@ -184,6 +191,7 @@ def run_repo_goal_loop(config: RepoGoalLoopConfig) -> RepoGoalLoopResult:
             promoted = _promote(project, config, applied, candidate, log, cycle)
             if promoted:
                 promotions += 1
+                log.emit("RUN_COMPLETED", payload={"promotions": promotions, "cyclesRun": cycles_run})
                 tried_finding_ids.discard(finding_id)  # re-decompose may surface follow-ups
                 if config.stop_after_promotions is not None and promotions >= config.stop_after_promotions:
                     log.emit("RUN_COMPLETED", payload={"promotions": promotions, "cyclesRun": cycles_run})
@@ -214,11 +222,24 @@ def _validate_live_config(project: Path, config: RepoGoalLoopConfig) -> None:
         raise ValueError("decompose_mode='recorded' requires decompose_model_output_path")
     if config.live_max_tokens <= 0:
         raise ValueError("live_max_tokens must be positive")
-    live_requested = config.decompose_mode == "live" or config.apply_mode == "live_diff"
+    live_requested = _live_requested(config)
+    if not live_requested and _has_inert_live_flags(config):
+        raise ValueError("live flags require decompose_mode='live' or apply_mode='live_diff'; refusing inert live configuration")
     if live_requested and not config.allow_live:
         raise ValueError("live repo-goal modes require allow_live=True; refusing routine live spend")
     if live_requested and not config.live_model:
         raise ValueError("live repo-goal modes require an explicit live_model")
+    if live_requested:
+        if config.live_max_calls is None:
+            raise ValueError("live repo-goal modes require explicit live_max_calls")
+        if config.live_max_calls <= 0:
+            raise ValueError("live_max_calls must be positive")
+        planned_live_calls = _planned_live_calls(config)
+        if planned_live_calls > config.live_max_calls:
+            raise ValueError(
+                "planned live calls exceed live_max_calls: "
+                f"planned={planned_live_calls} live_max_calls={config.live_max_calls}"
+            )
     if config.apply_mode == "live_diff":
         try:
             load_goal_config(project)
@@ -236,6 +257,35 @@ def _validate_live_config(project: Path, config: RepoGoalLoopConfig) -> None:
             raise ValueError(
                 f"live_diff apply requires {goal_config_path} tracked in git HEAD; isolated cycle worktrees are created from HEAD"
             )
+
+
+def _live_requested(config: RepoGoalLoopConfig) -> bool:
+    return config.decompose_mode == "live" or config.apply_mode == "live_diff"
+
+
+def _has_inert_live_flags(config: RepoGoalLoopConfig) -> bool:
+    return (
+        config.allow_live
+        or config.live_model is not None
+        or config.live_base_url is not None
+        or config.live_api_key_env is not None
+        or config.live_max_calls is not None
+        or config.live_provider != "xai"
+        or config.live_max_tokens != 8192
+    )
+
+
+def _planned_live_calls(config: RepoGoalLoopConfig) -> int:
+    calls_per_cycle = (
+        int(config.decompose_mode == "live")
+        + int(config.apply_mode == "live_diff") * (1 + _live_repair_budget_per_cycle(config))
+        + int(config.decompose_mode == "live" and config.run_adversarial_probes)
+    )
+    return calls_per_cycle * config.max_cycles
+
+
+def _live_repair_budget_per_cycle(config: RepoGoalLoopConfig) -> int:
+    return 1 if config.apply_mode == "live_diff" else 0
 
 
 # A cycle can fail before ranking (e.g. live decomposition provider/gate failure).
@@ -330,31 +380,50 @@ def _decompose_and_rank(project: Path, config: RepoGoalLoopConfig, artifacts_roo
     ranked = build_ranked_proposals(project, scorecard_path, max_candidates=config.max_candidates)
     (cycle_dir / "ranked-proposals.json").write_text(json.dumps(ranked.to_jsonable(), sort_keys=True), encoding="utf-8")
     # Also build the plan so we have the executable candidate (intent, verification).
-    plan = build_proposal_plan(project, scorecard_path, max_candidates=config.max_candidates)
+    plan = build_proposal_plan(
+        project,
+        scorecard_path,
+        max_candidates=config.max_candidates,
+        proposal_registry=ProposalRegistry(artifacts_root / "proposal-registry.jsonl"),
+        run_id=f"repo-goal-cycle-{cycle}",
+    )
     (cycle_dir / "proposal-plan.json").write_text(json.dumps(plan.to_jsonable(), sort_keys=True), encoding="utf-8")
     return {"ok": True, "ranked": ranked.to_jsonable(), "plan": plan.to_jsonable(), "scorecard_path": scorecard_path, "cycle_dir": cycle_dir}
 
 
-def _select_promotable(ranked_bundle: dict[str, Any], tried: set[str]) -> dict[str, Any] | None:
+def _select_promotable(
+    ranked_bundle: dict[str, Any],
+    tried: set[str],
+    *,
+    log: _EventLog | None = None,
+    cycle: int | None = None,
+) -> dict[str, Any] | None:
     """Top-ranked entry (positive score) not already tried, joined with its plan
     candidate so we have the executable verification commands."""
     ranked = ranked_bundle["ranked"]
     plan = ranked_bundle["plan"]
     plan_by_finding = {c["finding_id"]: c for c in plan["candidates"]}
-    for entry in ranked["entries"]:
+    for rank, entry in enumerate(ranked["entries"]):
+        finding_id = entry["findingId"]
         if entry["priorityScore"] <= 0:
+            _emit_candidate_skipped(log, cycle, finding_id, "non_positive_priority", rank)
             continue
-        if entry["findingId"] in tried:
+        if finding_id in tried:
+            _emit_candidate_skipped(log, cycle, finding_id, "already_tried", rank)
             continue
-        plan_candidate = plan_by_finding.get(entry["findingId"])
+        plan_candidate = plan_by_finding.get(finding_id)
         if plan_candidate is None:
+            _emit_candidate_skipped(log, cycle, finding_id, "missing_plan_candidate", rank)
             continue
         if not tuple(plan_candidate.get("verification_commands", [])):
+            _emit_candidate_skipped(log, cycle, finding_id, "empty_verification", rank)
             continue
+        target_paths = tuple(str(path) for path in plan_candidate.get("target_paths", []) if str(path).strip()) or (entry["targetPath"],)
         return {
-            "findingId": entry["findingId"],
+            "findingId": finding_id,
             "domain": entry["domain"],
             "targetPath": entry["targetPath"],
+            "targetPaths": target_paths,
             "priorityScore": entry["priorityScore"],
             # Threaded through so the code-vs-docs promotion guard (#29 behaviour
             # gate) can classify non-.py code targets too, not just .py.
@@ -363,6 +432,18 @@ def _select_promotable(ranked_bundle: dict[str, Any], tried: set[str]) -> dict[s
             "plan_candidate": plan_candidate,
         }
     return None
+
+
+def _emit_candidate_skipped(
+    log: _EventLog | None,
+    cycle: int | None,
+    finding_id: str,
+    reason: str,
+    rank: int,
+) -> None:
+    if log is None:
+        return
+    log.emit("CANDIDATE_SKIPPED", cycle=cycle, payload={"finding_id": finding_id, "reason": reason, "rank": rank})
 
 
 def _apply_and_verify(
@@ -502,6 +583,9 @@ def _live_diff_apply(
             success_criterion=candidate.success_criterion,
             repo_facts=candidate.repo_facts_block,
             grounding_constraints=candidate.grounding_constraints,
+            pending_proposals=tuple(),
+            failure_notes=tuple(),
+            repair_budget=_live_repair_budget_per_cycle(config),
         )
         hypothesis = candidate_to_hypothesis(candidate, cycle_id=cycle_id, plan_id=str(selected_candidate.get("planId", "")))
         patch_path = asyncio.run(runner.apply(hypothesis, worktree))
@@ -525,6 +609,11 @@ def _proposal_candidate_from_plan(raw: dict[str, Any]) -> ProposalCandidate:
         priority_score=float(raw.get("priority_score", 0.0)),
         evidence_refs=tuple(item for item in raw.get("evidence_refs", []) if isinstance(item, dict)),
         source_recommended_action=str(raw.get("source_recommended_action", "")),
+        target_paths=tuple(str(item) for item in raw.get("target_paths", [raw.get("target_path", "")]) if str(item).strip()),
+        base_lineage=raw.get("base_lineage", {}) if isinstance(raw.get("base_lineage", {}), dict) else {},
+        intent_hash=str(raw.get("intent_hash", "")),
+        proposal_key=str(raw.get("proposal_key", "")),
+        registry_status=str(raw.get("registry_status", "")),
     )
 
 
@@ -577,6 +666,7 @@ def _generate_doc(worktree: Path, target_path: str) -> bool:
         # Relative link from the target back to README.
         rel = _relative_link(target, readme)
         lines.append(f"See [README]({rel}).")
+        lines.extend(["", "## Source references", "", f"- [README]({rel})"])
     else:
         lines.append("Project documentation index.")
     lines.append("")
@@ -645,9 +735,10 @@ def _promote(
     worktree_path = Path(worktree.path)
     cycle_id = worktree.cycle_id
     target_path = candidate["targetPath"]
+    target_paths = tuple(candidate.get("targetPaths", (target_path,))) or (target_path,)
     try:
-        # Stage ONLY the approved target, never `git add -A`.
-        subprocess.run(["git", "add", "--", target_path], cwd=worktree_path, check=True, capture_output=True)
+        # Stage ONLY the approved targets, never `git add -A`.
+        subprocess.run(["git", "add", "--", *target_paths], cwd=worktree_path, check=True, capture_output=True)
         staged_paths = [
             line.strip()
             for line in subprocess.run(["git", "diff", "--cached", "--name-only"], cwd=worktree_path, text=True, capture_output=True).stdout.splitlines()
@@ -658,8 +749,8 @@ def _promote(
             return False
         # Defense in depth: the staged set must be exactly the approved target and
         # must not touch any boundary-protected surface.
-        if set(staged_paths) != {target_path}:
-            log.emit("PROMOTION_REFUSED", cycle=cycle, payload={"reason": "staged_outside_target", "target_path": target_path, "staged": staged_paths})
+        if set(staged_paths) != set(target_paths):
+            log.emit("PROMOTION_REFUSED", cycle=cycle, payload={"reason": "staged_outside_target", "target_path": target_path, "target_paths": list(target_paths), "staged": staged_paths})
             return False
         if is_boundary_violation(staged_paths, read_only_dirs=_read_only_dirs(config)):
             log.emit("PROMOTION_REFUSED", cycle=cycle, payload={"reason": "staged_boundary_violation", "staged": staged_paths})
@@ -703,6 +794,7 @@ if __name__ == "__main__":
     parser.add_argument("--live-base-url")
     parser.add_argument("--live-api-key-env")
     parser.add_argument("--live-max-tokens", type=int, default=8192)
+    parser.add_argument("--live-max-calls", type=int)
     parser.add_argument("--run-adversarial-probes", action="store_true")
     args = parser.parse_args()
     result = run_repo_goal_loop(
@@ -723,6 +815,7 @@ if __name__ == "__main__":
             live_base_url=args.live_base_url,
             live_api_key_env=args.live_api_key_env,
             live_max_tokens=args.live_max_tokens,
+            live_max_calls=args.live_max_calls,
             decompose_model_output_path=args.decompose_model_output,
             run_adversarial_probes=args.run_adversarial_probes,
         )

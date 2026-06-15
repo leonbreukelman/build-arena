@@ -37,9 +37,9 @@ The post-Phase-4 AI-first decomposer is also implemented:
 - `arena/runners/diff_proposer.py` contains the deterministic diff proposer runner plus an OpenAI-compatible proposal transport. The shared LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration; the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, and `gate`; live mode is guarded by `--allow-live` and refuses routine live spend without that explicit flag.
 
-With mock/no-network verification green, Build Arena is ready to attempt a bounded, operator-authorized real run, not an unattended broad live loop; provider acceptance remains unverified until live smoke and any real attempt still needs an explicit model ID plus call budget.
+The shared OpenAI-compatible proposal path is operator-switchable by provider/base URL/model/API-key-env configuration and supports explicit live controls such as `--live-api-key-env XAI_API_KEY` and `--live-max-calls`. The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing. It proved live decomposition, freshness, synced intake, and safe gate failure; it did not prove a production improvement or broad unattended autonomy. Any future live run still needs an explicit model ID, explicit credential env such as `--live-api-key-env XAI_API_KEY`, and an explicit planned-call budget such as `--live-max-calls 2`.
 
-Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain`. Decomposition-informed dry-run hypothesis generation from Project Model v1, real promotion, dashboard control plane, rollback endpoint, and live subscription-CLI subprocess execution remain blocked or unimplemented. Milestone 3 now tracks a narrower naive worktree-only pilot path; it is blocked by internal Build Arena prerequisites (generic scorer, fail-closed proposer tests, and per-repo boundary config) rather than Project Model v1 cross-repo adoption.
+Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain` for broad autonomy while recording a scoped `boundedFmcMcpProductionRun` exception. The dashboard control plane, rollback endpoint, multi-cycle unattended production autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
 
 ---
 
@@ -85,7 +85,7 @@ Downstream of the Project Model, a deterministic intake → proposal → loop pi
 - `arena/repo_facts.py` collects deterministic repository facts (top-level files/dirs, docs and markdown inventory with truncation flags) to ground proposal prompts so a proposer cannot invent structure.
 - `arena/proposal_candidate_runner.py` selects a ranked candidate, drives `arena/runners/diff_proposer.py`, applies the unified diff inside a cycle worktree, and runs the candidate's verification gate. Live transport requires an explicit `--model` and otherwise fails closed; tests use `--fake-diff-file`.
 - `arena/repo_goal_loop.py` is the repo-scale `/goal` loop (the epic #25 capstone): each cycle decomposes → intake → cross-domain rank → selects the top promotable candidate → boundary-checks → applies a deterministic offline fix in an isolated worktree (`ruff --fix` for `.py`, a grounded generator for `.md`) → runs the domain gate → records (dry-run) or ff-only promotes (operator-authorized) → re-decomposes. It reuses `arena/budget.py`, `arena/divergence.py`, `arena/boundary.py`, and `arena/worktrees.py`. Promotion is fail-closed: a code change requires a configured+passing behaviour/test gate; promotion stages only the boundary-approved target and re-checks the boundary before the ff-only merge; dry-run is the default and never touches the repo.
-- `arena/markdown_links.py` is the deterministic documentation gate: it validates that local Markdown links resolve to real files and (with `--require-source-references`) that compliance-sensitive docs cite an existing source.
+- `arena/markdown_links.py` is the deterministic documentation gate: it validates that local Markdown links resolve to real files and, with `--require-source-references`, that documentation candidates cite an existing source. The planner now uses this source-reference gate for docs candidates by default.
 
 Status (epic #25, children #26–#31, all merged): the proposal component is **no longer documentation-only**. It produces and verifies real code-quality changes alongside documentation, ranks them cross-domain with an auditable breakdown, and runs them in a closed dry-run loop. Promotion (baseline mutation) is operator-gated and fail-closed; the default loop path is dry-run, deterministic, and offline (no live model). Broad live autonomy remains governed by the pre-live readiness register.
 
@@ -147,13 +147,12 @@ Provider/base URL/API-key-env are operator-switchable with `--live-provider`, `-
 
 Blockers before broad live autonomy:
 
-1. Dry-run hypothesis generation from Project Model v1 is not implemented.
-2. Worktree patch cycles driven by v1 snapshots are not implemented. A narrower naive Milestone 3 worktree-only pilot is planned separately and remains blocked until generic scoring, fail-closed proposal, and per-repo boundary config land.
-3. Real promotion remains blocked behind readiness-register closure and operator-controlled rollout.
-4. Dashboard control plane is not implemented.
-5. Rollback endpoint is not implemented.
-6. Live subscription-CLI subprocess execution is not implemented.
-7. Related downstream repos that consume Project Model v0 still need v1 adoption plans.
+1. Broad multi-cycle live autonomy remains unproven; only one bounded local fmc-mcp production run is scoped as ready after explicit operator authorization.
+2. Remote/reproducible handoff still requires pushing or PR'ing the local Build Arena and fmc-mcp commits.
+3. Dashboard control plane is not implemented.
+4. Rollback endpoint is not implemented.
+5. Live subscription-CLI subprocess execution is not implemented.
+6. Related downstream repos that consume Project Model v0 still need v1 adoption plans.
 
 Near-term useful work:
 

@@ -1,0 +1,49 @@
+{
+  "metadata": {
+    "api_key_source": "hermes_env_file",
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "aef0ea07b6c04605d944f16241f88c4c61c1d3e44d51455368c0fbf4858fb858",
+    "finish_reason": "stop",
+    "model": "grok-4.3",
+    "prompt_hash": "0a9bb7b5081c2e9fee861b1a61724235b2df9586ac3578c8fbf740a30463397c",
+    "provider": "xai",
+    "requested_model": "grok-4.3",
+    "requested_model_source": "argument",
+    "served_model_matches_requested": true,
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 185,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 499,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 38681000,
+      "num_sources_used": 0,
+      "prompt_tokens": 1834,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 128,
+        "image_tokens": 0,
+        "text_tokens": 1834
+      },
+      "total_tokens": 2518
+    }
+  },
+  "review_json": {
+    "final_owner_summary": "Report conclusions are directly supported by the command outputs and metadata provided; no overstatements of success on the live decomposition gate.",
+    "missing_checks": [],
+    "overclaims": [],
+    "supported_claims": [
+      "All local deterministic gates (pytest, ruff, pyright, make verify, generated-fresh) passed with exit code 0 and clean output.",
+      "xAI API key resolution succeeded and grok-4.3 was among the matching models.",
+      "Live smoke test reached xAI, received 200 response from exactly grok-4.3, and produced manifest with correct usage metadata.",
+      "Deterministic gate over model output failed closed (22 violations) as reported; this matches the explicit gate logic described.",
+      "Cost estimate and artifact paths are consistent with the run parameters shown."
+    ],
+    "verdict": "ACCEPT"
+  },
+  "review_text": "{\n  \"verdict\": \"ACCEPT\",\n  \"supported_claims\": [\n    \"All local deterministic gates (pytest, ruff, pyright, make verify, generated-fresh) passed with exit code 0 and clean output.\",\n    \"xAI API key resolution succeeded and grok-4.3 was among the matching models.\",\n    \"Live smoke test reached xAI, received 200 response from exactly grok-4.3, and produced manifest with correct usage metadata.\",\n    \"Deterministic gate over model output failed closed (22 violations) as reported; this matches the explicit gate logic described.\",\n    \"Cost estimate and artifact paths are consistent with the run parameters shown.\"\n  ],\n  \"overclaims\": [],\n  \"missing_checks\": [],\n  \"final_owner_summary\": \"Report conclusions are directly supported by the command outputs and metadata provided; no overstatements of success on the live decomposition gate.\"\n}"
+}

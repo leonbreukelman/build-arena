@@ -113,18 +113,23 @@
       ],
       "finding_id": "code.component.untested.comp-auth",
       "grounding_constraints": [
-        "Use only repository facts and current file contents; do not invent project structure, files, or commands."
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
       ],
-      "intent": "Prepare a grounded one-file improvement for src/pkg/auth.py based on finding code.component.untested.comp-auth: Component Auth has no observable check.",
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp-auth: Component Auth has no observable check. Limit changes to the component target path set: src/pkg/auth.py.",
       "priority_score": 250.0,
       "rank": 4,
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "repo_facts_hash": "<FACTS_HASH>",
       "source_recommended_action": "Add an observable check covering Auth.",
-      "success_criterion": "src/pkg/auth.py is changed in a bounded, repository-grounded way and project verification remains green.",
+      "success_criterion": "The component target path set (src/pkg/auth.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
       "target_path": "src/pkg/auth.py",
       "title": "Component Auth has no observable check",
-      "verification_commands": []
+      "verification_commands": [
+        "uv run ruff check .",
+        "uv run python -m pytest -q"
+      ]
     }
   ],
   "id": "<ID>",

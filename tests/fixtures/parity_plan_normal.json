@@ -13,7 +13,8 @@
       "grounding_constraints": [
         "Do not invent Markdown links to files absent from the repository facts.",
         "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
-        "Local Markdown links must resolve after the patch is applied."
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
       ],
       "intent": "Create a grounded docs/index.md that links only to existing repository files and names missing future documentation topics by title only, with no filename or extension.",
       "priority_score": 728.0,
@@ -21,12 +22,12 @@
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "repo_facts_hash": "<FACTS_HASH>",
       "source_recommended_action": "Create docs/index.md as canonical docs navigation.",
-      "success_criterion": "docs/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files.",
+      "success_criterion": "docs/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
       "target_path": "docs/index.md",
       "title": "Docs index is missing",
       "verification_commands": [
         "test -s docs/index.md",
-        "python3 -m arena.markdown_links --repo . --path docs/index.md"
+        "python3 -m arena.markdown_links --repo . --path docs/index.md --require-source-references"
       ]
     },
     {
@@ -41,7 +42,8 @@
       "grounding_constraints": [
         "Do not invent Markdown links to files absent from the repository facts.",
         "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
-        "Local Markdown links must resolve after the patch is applied."
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
       ],
       "intent": "Create a grounded AGENTS.md for future agents using existing repository facts, commands, and boundaries.",
       "priority_score": 672.0,
@@ -49,12 +51,12 @@
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "repo_facts_hash": "<FACTS_HASH>",
       "source_recommended_action": "Create AGENTS.md with commands, boundaries, and definition of done.",
-      "success_criterion": "AGENTS.md exists, is non-empty, and all local Markdown links resolve to existing repository files.",
+      "success_criterion": "AGENTS.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
       "target_path": "AGENTS.md",
       "title": "AGENTS.md is missing",
       "verification_commands": [
         "test -s AGENTS.md",
-        "python3 -m arena.markdown_links --repo . --path AGENTS.md"
+        "python3 -m arena.markdown_links --repo . --path AGENTS.md --require-source-references"
       ]
     },
     {
@@ -69,7 +71,8 @@
       "grounding_constraints": [
         "Do not invent Markdown links to files absent from the repository facts.",
         "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
-        "Local Markdown links must resolve after the patch is applied."
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
       ],
       "intent": "Create a grounded Markdown file at docs/decisions/index.md that addresses finding decision.history.missing: Decision records are missing.",
       "priority_score": 300.0,
@@ -77,12 +80,12 @@
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "repo_facts_hash": "<FACTS_HASH>",
       "source_recommended_action": "Create decision records.",
-      "success_criterion": "docs/decisions/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files.",
+      "success_criterion": "docs/decisions/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
       "target_path": "docs/decisions/index.md",
       "title": "Decision records are missing",
       "verification_commands": [
         "test -s docs/decisions/index.md",
-        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md"
+        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md --require-source-references"
       ]
     },
     {
@@ -110,18 +113,23 @@
       ],
       "finding_id": "code.component.untested.comp-auth",
       "grounding_constraints": [
-        "Use only repository facts and current file contents; do not invent project structure, files, or commands."
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
       ],
-      "intent": "Prepare a grounded one-file improvement for src/pkg/auth.py based on finding code.component.untested.comp-auth: Component Auth has no observable check.",
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp-auth: Component Auth has no observable check. Limit changes to the component target path set: src/pkg/auth.py.",
       "priority_score": 250.0,
       "rank": 4,
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "repo_facts_hash": "<FACTS_HASH>",
       "source_recommended_action": "Add an observable check covering Auth.",
-      "success_criterion": "src/pkg/auth.py is changed in a bounded, repository-grounded way and project verification remains green.",
+      "success_criterion": "The component target path set (src/pkg/auth.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
       "target_path": "src/pkg/auth.py",
       "title": "Component Auth has no observable check",
-      "verification_commands": []
+      "verification_commands": [
+        "uv run ruff check .",
+        "uv run python -m pytest -q"
+      ]
     }
   ],
   "id": "<ID>",

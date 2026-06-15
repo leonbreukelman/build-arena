@@ -30,6 +30,9 @@ class DiffProposalRequest:
     file_exists: bool = True
     repo_facts: str = ""
     grounding_constraints: tuple[str, ...] = ()
+    pending_proposals: tuple[str, ...] = ()
+    failure_notes: tuple[str, ...] = ()
+    repair_context: str = ""
 
 
 @dataclass(frozen=True)
@@ -134,11 +137,18 @@ class DiffProposerRunner:
         success_criterion: str,
         repo_facts: str = "",
         grounding_constraints: tuple[str, ...] = (),
+        pending_proposals: tuple[str, ...] = (),
+        failure_notes: tuple[str, ...] = (),
+        repair_budget: int = 0,
     ) -> None:
         self.transport = transport
         self.success_criterion = success_criterion
         self.repo_facts = repo_facts
         self.grounding_constraints = grounding_constraints
+        self.pending_proposals = pending_proposals
+        self.failure_notes = failure_notes
+        self.repair_budget = max(0, repair_budget)
+        self.repair_events: list[dict[str, Any]] = []
         self.applied_hypotheses: list[Hypothesis] = []
 
     async def apply(self, hypothesis: Hypothesis, worktree: Path) -> Path:
@@ -147,17 +157,42 @@ class DiffProposerRunner:
         config = load_goal_config(target)
         target_path = _single_target_path(hypothesis, config)
         file_contents, file_exists = _target_file_contents_or_empty(target, target_path)
-        request = DiffProposalRequest(
-            hypothesis_id=hypothesis.id,
-            target_path=target_path,
-            file_contents=file_contents,
-            success_criterion=self.success_criterion,
-            goal_config_sha=config.content_hash,
-            intent=hypothesis.intent,
-            file_exists=file_exists,
-            repo_facts=self.repo_facts,
-            grounding_constraints=self.grounding_constraints,
-        )
+        repair_context = ""
+        last_error: RunnerError | None = None
+        for attempt in range(self.repair_budget + 1):
+            request = DiffProposalRequest(
+                hypothesis_id=hypothesis.id,
+                target_path=target_path,
+                file_contents=file_contents,
+                success_criterion=self.success_criterion,
+                goal_config_sha=config.content_hash,
+                intent=hypothesis.intent,
+                file_exists=file_exists,
+                repo_facts=self.repo_facts,
+                grounding_constraints=self.grounding_constraints,
+                pending_proposals=self.pending_proposals,
+                failure_notes=self.failure_notes,
+                repair_context=repair_context,
+            )
+            try:
+                return self._apply_request(hypothesis, target, target_path, config, request)
+            except RunnerError as exc:
+                last_error = exc
+                if attempt >= self.repair_budget:
+                    raise
+                repair_context = f"Previous diff failed on attempt {attempt + 1}: {exc}"
+                self.repair_events.append({"attempt": attempt + 1, "error": str(exc)})
+        assert last_error is not None
+        raise last_error
+
+    def _apply_request(
+        self,
+        hypothesis: Hypothesis,
+        target: Path,
+        target_path: str,
+        config: GoalConfig,
+        request: DiffProposalRequest,
+    ) -> Path:
         response = self.transport.propose(request)
         _raise_for_response_status(response)
         gate = validate_unified_diff(target, response.diff_text, goal_config=config)
@@ -199,6 +234,9 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
     )
     facts = request.repo_facts.strip() or "No additional repository facts supplied."
     constraints = "\n".join(f"- {item}" for item in request.grounding_constraints) or "- Use only the provided target file and repository facts; do not invent files, links, or commands."
+    pending = "\n".join(f"- {item}" for item in request.pending_proposals) or "- None supplied."
+    failures = "\n".join(f"- {item}" for item in request.failure_notes) or "- None supplied."
+    repair = request.repair_context.strip() or "No prior failed attempt for this request."
     return (
         "Return only a unified diff for exactly the target file below.\n"
         "Do not include markdown fences, explanations, or changes to any other file.\n"
@@ -216,6 +254,12 @@ def _diff_prompt(request: DiffProposalRequest) -> str:
         "- If a source file is relevant, mention the exact path from the Source files list. If no exact path is listed, avoid naming the file.\n\n"
         "Grounding constraints:\n"
         f"{constraints}\n\n"
+        "Known pending proposals:\n"
+        f"{pending}\n\n"
+        "Known failure modes:\n"
+        f"{failures}\n\n"
+        "Repair feedback for this attempt:\n"
+        f"{repair}\n\n"
         "Current file contents:\n"
         "```text\n"
         f"{request.file_contents}"
@@ -416,7 +460,25 @@ def _unique_suffix_match(link: str, existing_paths: tuple[str, ...]) -> str | No
     normalized = link.lstrip("/").split("#", 1)[0]
     if not normalized or ":" in normalized:
         return None
-    matches = [path for path in existing_paths if path == normalized or path.endswith("/" + normalized)]
+    if normalized in existing_paths:
+        return normalized
+    collapsed = _collapsed_repeated_prefix_match(normalized, existing_paths)
+    if collapsed is not None:
+        return collapsed
+    matches = [path for path in existing_paths if path.endswith("/" + normalized)]
+    return matches[0] if len(matches) == 1 else None
+
+
+def _collapsed_repeated_prefix_match(path: str, existing_paths: tuple[str, ...]) -> str | None:
+    parts = path.split("/")
+    candidates: list[str] = []
+    for index in range(len(parts) - 1):
+        if parts[index] != parts[index + 1]:
+            continue
+        candidate = "/".join((*parts[:index], *parts[index + 1 :]))
+        if candidate:
+            candidates.append(candidate)
+    matches = [candidate for candidate in candidates if candidate in existing_paths]
     return matches[0] if len(matches) == 1 else None
 
 

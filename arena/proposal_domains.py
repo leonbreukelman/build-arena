@@ -38,6 +38,7 @@ class ProposalCandidateDraft:
     success_criterion: str
     grounding_constraints: tuple[str, ...] = ()
     verification_commands: tuple[str, ...] = ()
+    target_paths: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -111,7 +112,13 @@ def default_domain_registry() -> ProposalDomainRegistry:
     later phases of epic #25. ``code_quality`` precedes ``generic_file`` so a
     lint finding routes to the domain carrying the load-bearing gate rather than
     the bare single-file fallback."""
-    return ProposalDomainRegistry([DocumentationDomain(), CodeQualityDomain(), GenericFileDomain()])
+    return ProposalDomainRegistry([
+        DocumentationDomain(),
+        CodeQualityDomain(),
+        ComponentVerificationDomain(),
+        GenericFileDomain(),
+        ModelLevelDomain(),
+    ])
 
 
 _DOC_INDEX_TARGET = "docs/index.md"
@@ -197,6 +204,45 @@ class CodeQualityDomain:
         )]
 
 
+class ComponentVerificationDomain:
+    """Component/test-coverage findings that need code-facing verification."""
+
+    name = "component_verification"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        finding_id = str(finding.get("id", ""))
+        boundary = str(finding.get("autonomyBoundary", ""))
+        if not (finding_id.startswith("code.component.untested.") or boundary == "needs_code_change"):
+            return []
+        target_paths = _target_paths_for_finding(finding)
+        if not target_paths or not any(path.endswith(".py") for path in target_paths):
+            return []
+        verification = _finding_or_quality_gate_verification(finding, context)
+        title = str(finding.get("title") or finding_id)
+        joined_targets = ", ".join(target_paths)
+        intent = (
+            f"Add or prepare an observable, repository-grounded check for component finding {finding_id}: {title}. "
+            f"Limit changes to the component target path set: {joined_targets}."
+        )
+        success = (
+            f"The component target path set ({joined_targets}) is covered by a bounded change and the project's "
+            "load-bearing quality gate commands pass."
+        )
+        constraints = (
+            "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+            "Do not silence failures or remove behavior to make the gate pass.",
+            "Use only repository-grounded files and commands from the intake quality gates.",
+        )
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=target_paths[0],
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+            target_paths=target_paths,
+        )]
+
+
 class GenericFileDomain:
     """Fallback for a single-file, non-Markdown target (e.g. a code surface from a
     component finding). Produces a bounded one-file improvement request and reuses
@@ -228,10 +274,41 @@ class GenericFileDomain:
         )]
 
 
+class ModelLevelDomain:
+    """Model-level findings that have no concrete source target yet."""
+
+    name = "model_level"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        if not _is_model_level_finding(finding):
+            return []
+        target_path = "docs/agent-backlog.md"
+        finding_id = str(finding.get("id", ""))
+        title = str(finding.get("title") or finding_id)
+        intent = f"Record a grounded backlog/verification task for model-level finding {finding_id}: {title}."
+        success, constraints, verification = _markdown_success_contract(
+            target_path,
+            require_source_references=context.require_source_references,
+        )
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=target_path,
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+            target_paths=(target_path,),
+        )]
+
+
 # --- shared helpers (module-local; private to proposal_domains) ---
 
 
 def _single_target_path(finding: dict[str, Any]) -> str | None:
+    unique = _target_paths_for_finding(finding)
+    return unique[0] if len(unique) == 1 else None
+
+
+def _target_paths_for_finding(finding: dict[str, Any]) -> tuple[str, ...]:
     paths: list[str] = []
     for evidence in finding.get("evidence", []):
         if not isinstance(evidence, dict):
@@ -243,8 +320,7 @@ def _single_target_path(finding: dict[str, Any]) -> str | None:
         if path.is_absolute() or ".." in path.parts:
             continue
         paths.append(_proposal_target_for_evidence_path(path))
-    unique = tuple(dict.fromkeys(paths))
-    return unique[0] if len(unique) == 1 else None
+    return tuple(dict.fromkeys(paths))
 
 
 def _proposal_target_for_evidence_path(path: PurePosixPath) -> str:
@@ -266,3 +342,26 @@ def _markdown_success_contract(target_path: str, *, require_source_references: b
         constraints.append("Include a `## Source references` section that cites existing repository files for factual or compliance claims.")
         verification[-1] = f"python3 -m arena.markdown_links --repo . --path {target_path} --require-source-references"
     return (success, tuple(constraints), tuple(verification))
+
+
+def _finding_or_quality_gate_verification(finding: dict[str, Any], context: DomainContext) -> tuple[str, ...]:
+    explicit = tuple(str(command).strip() for command in finding.get("verification", []) if str(command).strip())
+    if explicit:
+        return explicit
+    from_context = context.extras.get("quality_gate_commands", ())
+    if isinstance(from_context, (tuple, list)):
+        commands = tuple(str(command).strip() for command in from_context if str(command).strip())
+        if commands:
+            return commands
+    return ("uv run ruff check .", "uv run pyright", "uv run pytest tests -q")
+
+
+def _is_model_level_finding(finding: dict[str, Any]) -> bool:
+    finding_id = str(finding.get("id", ""))
+    boundary = str(finding.get("autonomyBoundary", ""))
+    if boundary != "safe_to_patch_docs_only":
+        return False
+    if finding_id.startswith("architecture."):
+        return True
+    evidence = [item for item in finding.get("evidence", []) if isinstance(item, dict)]
+    return bool(evidence) and all(str(item.get("path", "")).startswith("iterationReadiness") for item in evidence)

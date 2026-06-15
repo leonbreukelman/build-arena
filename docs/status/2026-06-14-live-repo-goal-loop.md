@@ -7,8 +7,10 @@
 - live Project Model decomposition is selectable with `--decompose-mode live`;
 - live LLM diff proposal is selectable with `--apply-mode live_diff`;
 - live execution fails closed unless `--allow-live` and `--live-model` are explicit;
+- live execution now also requires an explicit planned-call budget with `--live-max-calls`;
 - live diff proposal requires a non-default target repo `.arena/goal.toml`;
 - live candidates must have deterministic verification commands before selection;
+- documentation candidates require source references through `arena.markdown_links --require-source-references`;
 - patch/provenance artifacts are preserved outside temporary worktrees;
 - fmc-mcp has a project goal config committed at `25f445806d5221f21d7ac675799db5c30499f1b7`.
 
@@ -62,7 +64,9 @@ uv run python -m arena.repo_goal_loop \
   --allow-live \
   --live-provider xai \
   --live-model grok-4.20-0309-non-reasoning \
+  --live-api-key-env XAI_API_KEY \
   --live-max-tokens 12000 \
+  --live-max-calls 2 \
   --test-command 'uv run python -m pytest -q' \
   --allow-promotion \
   --no-dry-run
@@ -70,6 +74,6 @@ uv run python -m arena.repo_goal_loop \
 
 ## Boundary
 
-Independent Opus review accepted the implementation for the bounded fmc-mcp production-live command. One minor patch-provenance robustness note was patched after review: repaired Markdown candidates now fail closed if no current diff can be recorded.
+Independent Opus review accepted the implementation for the bounded fmc-mcp production-live command after the readiness language was narrowed. The command is now ready to perform one bounded local fmc-mcp production run after explicit operator authorization; it is not proof of broad unattended autonomy. One minor patch-provenance robustness note was patched after review: repaired Markdown candidates now fail closed if no current diff can be recorded.
 
-This is ready for a bounded fmc-mcp production-live cycle. It is not a claim that broad unattended cross-repo autonomy is solved.
+The 2026-06-14 run is a verified xAI/Grok live dry-run, not a completed production promotion. The pre-live readiness register remains `not_ready_blockers_remain` for broad autonomy and records a scoped `boundedFmcMcpProductionRun` exception for this local CLI run.
