@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import importlib.metadata as importlib_metadata
 import json
 import re
 import subprocess
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
+
+import tree_sitter_javascript
+import tree_sitter_typescript
+from tree_sitter import Language, Node, Parser
 
 PRIMARY_CONTEXT_EXCLUDED_PREFIXES = (
     "docs/verification/",
@@ -88,6 +93,7 @@ class ProjectGraph:
     git: GitState
     nodes: list[GraphNode]
     edges: list[GraphEdge]
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 def _run_git(args: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
@@ -223,8 +229,19 @@ def _node(
     )
 
 
-def _edge(kind: str, from_node_id: str, to_node_id: str, provs: list[ProvenanceRef], label: str = "") -> GraphEdge:
+def _edge(
+    kind: str,
+    from_node_id: str,
+    to_node_id: str,
+    provs: list[ProvenanceRef],
+    label: str = "",
+    *,
+    confidence: str = "deterministic",
+    derived_by: str = "project_graph",
+) -> GraphEdge:
     raw = f"{kind}|{from_node_id}|{to_node_id}|{label}"
+    if kind in {"calls", "inherits"} or confidence != "deterministic" or derived_by != "project_graph":
+        raw = f"{raw}|{confidence}|{derived_by}"
     return GraphEdge(
         id="edge:" + _sha256_bytes(raw.encode())[:20],
         kind=kind,
@@ -232,6 +249,8 @@ def _edge(kind: str, from_node_id: str, to_node_id: str, provs: list[ProvenanceR
         to_node_id=to_node_id,
         label=label or kind,
         provenance_refs=provs,
+        confidence=confidence,
+        derived_by=derived_by,
     )
 
 
@@ -332,11 +351,740 @@ def _resolve_javascript_import(rel_path: str, imported: str) -> str:
     return ".".join(normalized)
 
 
+def _ast_reference_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    return None
+
+
+def _ast_line_start(node: ast.AST, fallback: int) -> int:
+    return int(getattr(node, "lineno", fallback) or fallback)
+
+
+def _ast_line_end(node: ast.AST, fallback: int) -> int:
+    return int(getattr(node, "end_lineno", getattr(node, "lineno", fallback)) or fallback)
+
+
+def _single_named_node(nodes_by_name: dict[str, list[GraphNode]], name: str | None) -> GraphNode | None:
+    if not name:
+        return None
+    candidates = nodes_by_name.get(name, [])
+    if len(candidates) != 1:
+        return None
+    return candidates[0]
+
+
+def _edge_symbol_label(prefix: str, from_node: GraphNode, to_node: GraphNode) -> str:
+    from_symbol = from_node.symbol or from_node.label
+    to_symbol = to_node.symbol or to_node.label
+    return f"{from_symbol} {prefix} {to_symbol}"
+
+
+def _add_python_inheritance_edges(
+    *,
+    rel_path: str,
+    data_hash: str,
+    git: GitState,
+    class_defs: list[ast.ClassDef],
+    class_nodes_by_name: dict[str, list[GraphNode]],
+    edges: dict[str, GraphEdge],
+) -> None:
+    for class_def in sorted(class_defs, key=lambda item: (item.lineno, item.col_offset, item.name)):
+        from_node = _single_named_node(class_nodes_by_name, class_def.name)
+        if from_node is None:
+            continue
+        for base in class_def.bases:
+            to_node = _single_named_node(class_nodes_by_name, _ast_reference_name(base))
+            if to_node is None:
+                continue
+            line_start = _ast_line_start(base, class_def.lineno)
+            prov = _prov(
+                rel_path=rel_path,
+                data_hash=data_hash,
+                git=git,
+                derived_by="python_ast",
+                line_start=line_start,
+                line_end=_ast_line_end(base, line_start),
+            )
+            edge = _edge(
+                "inherits",
+                from_node.id,
+                to_node.id,
+                [prov],
+                label=_edge_symbol_label("inherits", from_node, to_node),
+                confidence="deterministic",
+                derived_by="python_ast",
+            )
+            edges[edge.id] = edge
+
+
+class _PythonCallEdgeCollector(ast.NodeVisitor):
+    def __init__(
+        self,
+        *,
+        rel_path: str,
+        data_hash: str,
+        git: GitState,
+        function_nodes_by_name: dict[str, list[GraphNode]],
+        edges: dict[str, GraphEdge],
+    ) -> None:
+        self.rel_path = rel_path
+        self.data_hash = data_hash
+        self.git = git
+        self.function_nodes_by_name = function_nodes_by_name
+        self.edges = edges
+        self.function_stack: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self.function_stack.append(node)
+        self.generic_visit(node)
+        self.function_stack.pop()
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self.function_stack.append(node)
+        self.generic_visit(node)
+        self.function_stack.pop()
+
+    def visit_Call(self, node: ast.Call) -> None:
+        if self.function_stack:
+            caller_node = _single_named_node(self.function_nodes_by_name, self.function_stack[-1].name)
+            callee_node = _single_named_node(self.function_nodes_by_name, _ast_reference_name(node.func))
+            if caller_node is not None and callee_node is not None:
+                line_start = _ast_line_start(node, self.function_stack[-1].lineno)
+                prov = _prov(
+                    rel_path=self.rel_path,
+                    data_hash=self.data_hash,
+                    git=self.git,
+                    derived_by="python_ast",
+                    line_start=line_start,
+                    line_end=_ast_line_end(node, line_start),
+                )
+                edge = _edge(
+                    "calls",
+                    caller_node.id,
+                    callee_node.id,
+                    [prov],
+                    label=_edge_symbol_label("calls", caller_node, callee_node),
+                    confidence="deterministic",
+                    derived_by="python_ast",
+                )
+                self.edges[edge.id] = edge
+        self.generic_visit(node)
+
+
+def _ast_dotted_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        prefix = _ast_dotted_name(node.value)
+        if not prefix:
+            return None
+        return f"{prefix}.{node.attr}"
+    return None
+
+
+def _single_symbol_node(nodes_by_symbol: dict[str, list[GraphNode]], symbol: str | None) -> GraphNode | None:
+    if not symbol:
+        return None
+    candidates = nodes_by_symbol.get(symbol, [])
+    if len(candidates) != 1:
+        return None
+    return candidates[0]
+
+
+def _python_import_base(current_module: str, rel_path: str, node: ast.ImportFrom) -> str:
+    if node.level == 0:
+        return node.module or ""
+    current_parts = current_module.split(".") if current_module else []
+    if Path(rel_path).name != "__init__.py":
+        current_parts = current_parts[:-1]
+    keep = max(0, len(current_parts) - (node.level - 1))
+    base = current_parts[:keep]
+    if node.module:
+        base = [*base, *node.module.split(".")]
+    return ".".join(part for part in base if part)
+
+
+def _add_alias(aliases: dict[str, set[str]], local: str, target: str) -> None:
+    if local and target:
+        aliases.setdefault(local, set()).add(target)
+
+
+def _python_import_bindings(
+    *,
+    module: str,
+    rel_path: str,
+    tree: ast.AST,
+    function_symbols: set[str],
+    module_symbols: set[str],
+) -> tuple[dict[str, set[str]], set[str]]:
+    aliases: dict[str, set[str]] = {}
+    imported_modules: set[str] = set()
+    for child in sorted(ast.walk(tree), key=lambda item: (getattr(item, "lineno", 0), getattr(item, "col_offset", 0), type(item).__name__)):
+        if isinstance(child, ast.Import):
+            for alias in child.names:
+                imported_modules.add(alias.name)
+                if alias.asname:
+                    _add_alias(aliases, alias.asname, alias.name)
+                elif alias.name in module_symbols:
+                    _add_alias(aliases, alias.name.split(".", 1)[0], alias.name)
+        elif isinstance(child, ast.ImportFrom):
+            base = _python_import_base(module, rel_path, child)
+            for alias in child.names:
+                if alias.name == "*":
+                    continue
+                local = alias.asname or alias.name
+                target = f"{base}.{alias.name}" if base else alias.name
+                if target in function_symbols or target in module_symbols:
+                    _add_alias(aliases, local, target)
+    return aliases, imported_modules
+
+
+def _python_function_bound_names(node: ast.FunctionDef | ast.AsyncFunctionDef) -> set[str]:
+    names: set[str] = set()
+    args = node.args
+    for arg in [*args.posonlyargs, *args.args, *args.kwonlyargs]:
+        names.add(arg.arg)
+    if args.vararg:
+        names.add(args.vararg.arg)
+    if args.kwarg:
+        names.add(args.kwarg.arg)
+    for child in ast.walk(node):
+        if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Store):
+            names.add(child.id)
+    return names
+
+
+class _PythonCrossFileCallCollector(ast.NodeVisitor):
+    def __init__(
+        self,
+        *,
+        module: str,
+        rel_path: str,
+        data_hash: str,
+        git: GitState,
+        function_nodes_by_symbol: dict[str, list[GraphNode]],
+        same_file_function_names: set[str],
+        aliases: dict[str, set[str]],
+        imported_modules: set[str],
+        edges: dict[str, GraphEdge],
+    ) -> None:
+        self.module = module
+        self.rel_path = rel_path
+        self.data_hash = data_hash
+        self.git = git
+        self.function_nodes_by_symbol = function_nodes_by_symbol
+        self.same_file_function_names = same_file_function_names
+        self.aliases = aliases
+        self.imported_modules = imported_modules
+        self.edges = edges
+        self.function_stack: list[ast.FunctionDef | ast.AsyncFunctionDef] = []
+        self.bound_name_stack: list[set[str]] = []
+
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        self.function_stack.append(node)
+        self.bound_name_stack.append(_python_function_bound_names(node))
+        self.generic_visit(node)
+        self.bound_name_stack.pop()
+        self.function_stack.pop()
+
+    def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        self.function_stack.append(node)
+        self.bound_name_stack.append(_python_function_bound_names(node))
+        self.generic_visit(node)
+        self.bound_name_stack.pop()
+        self.function_stack.pop()
+
+    def visit_Call(self, node: ast.Call) -> None:
+        if self.function_stack:
+            self._maybe_add_call_edge(node)
+        self.generic_visit(node)
+
+    def _maybe_add_call_edge(self, node: ast.Call) -> None:
+        caller = self._caller_node()
+        target = self._target_node(node.func)
+        if caller is None or target is None or caller.path == target.path:
+            return
+        line_start = _ast_line_start(node, self.function_stack[-1].lineno)
+        prov = _prov(
+            rel_path=self.rel_path,
+            data_hash=self.data_hash,
+            git=self.git,
+            derived_by="python_ast",
+            line_start=line_start,
+            line_end=_ast_line_end(node, line_start),
+            confidence="heuristic",
+        )
+        edge = _edge(
+            "calls",
+            caller.id,
+            target.id,
+            [prov],
+            label=_edge_symbol_label("calls", caller, target),
+            confidence="heuristic",
+            derived_by="python_ast",
+        )
+        self.edges[edge.id] = edge
+
+    def _caller_node(self) -> GraphNode | None:
+        function_name = self.function_stack[-1].name
+        symbol = f"{self.module}.{function_name}" if self.module else function_name
+        return _single_symbol_node(self.function_nodes_by_symbol, symbol)
+
+    def _target_node(self, func: ast.AST) -> GraphNode | None:
+        if isinstance(func, ast.Name):
+            if func.id in self.same_file_function_names or func.id in self.bound_name_stack[-1]:
+                return None
+            targets = self.aliases.get(func.id, set())
+            if len(targets) != 1:
+                return None
+            return _single_symbol_node(self.function_nodes_by_symbol, next(iter(targets)))
+        dotted = _ast_dotted_name(func)
+        if not dotted:
+            return None
+        parts = dotted.split(".")
+        if parts[0] in self.bound_name_stack[-1] or parts[-1] in self.same_file_function_names:
+            return None
+        target_symbol = self._target_symbol_for_attribute(parts)
+        return _single_symbol_node(self.function_nodes_by_symbol, target_symbol)
+
+    def _target_symbol_for_attribute(self, parts: list[str]) -> str | None:
+        if len(parts) < 2:
+            return None
+        receiver = ".".join(parts[:-1])
+        attr = parts[-1]
+        direct_targets = self.aliases.get(receiver, set())
+        if len(direct_targets) == 1:
+            return f"{next(iter(direct_targets))}.{attr}"
+        if receiver in self.imported_modules:
+            return ".".join(parts)
+        first_targets = self.aliases.get(parts[0], set())
+        if len(first_targets) == 1:
+            return ".".join([next(iter(first_targets)), *parts[1:]])
+        return None
+
+
+def _add_python_cross_file_call_edges(
+    *,
+    root: Path,
+    git: GitState,
+    file_nodes: dict[str, GraphNode],
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+) -> None:
+    function_nodes_by_symbol: dict[str, list[GraphNode]] = {}
+    module_symbols: set[str] = set()
+    for node in nodes.values():
+        if node.kind == "python_function" and node.symbol:
+            function_nodes_by_symbol.setdefault(node.symbol, []).append(node)
+        elif node.kind == "python_module" and node.symbol:
+            module_symbols.add(node.symbol)
+    function_symbols = set(function_nodes_by_symbol)
+    for rel_path, file_node in sorted(file_nodes.items()):
+        if not rel_path.endswith(".py") or any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
+            continue
+        path = root / rel_path
+        if not _is_parseable_regular_file(path):
+            continue
+        try:
+            tree = ast.parse(path.read_text(encoding="utf-8"))
+        except (SyntaxError, UnicodeDecodeError, OSError):
+            continue
+        module = _module_name(rel_path)
+        same_file_function_names = {
+            node.label
+            for node in nodes.values()
+            if node.kind == "python_function" and node.path == rel_path
+        }
+        aliases, imported_modules = _python_import_bindings(
+            module=module,
+            rel_path=rel_path,
+            tree=tree,
+            function_symbols=function_symbols,
+            module_symbols=module_symbols,
+        )
+        data_hash = file_node.provenance_refs[0].content_hash if file_node.provenance_refs else _sha256_bytes(_file_identity_bytes(path))
+        _PythonCrossFileCallCollector(
+            module=module,
+            rel_path=rel_path,
+            data_hash=data_hash,
+            git=git,
+            function_nodes_by_symbol=function_nodes_by_symbol,
+            same_file_function_names=same_file_function_names,
+            aliases=aliases,
+            imported_modules=imported_modules,
+            edges=edges,
+        ).visit(tree)
+
+
 _JS_IMPORT_RE = re.compile(
     r"(?:import\s+(?:[^'\"]+?\s+from\s+)?|export\s+[^'\"]+?\s+from\s+|require\s*\()"
     r"['\"]([^'\"]+)['\"]"
 )
 _JS_FUNCTION_RE = re.compile(r"(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(")
+
+
+def _package_version(package: str) -> str:
+    try:
+        return importlib_metadata.version(package)
+    except importlib_metadata.PackageNotFoundError:
+        return "unknown"
+
+
+def _tree_sitter_metadata() -> dict[str, Any]:
+    return {
+        "tree_sitter": _package_version("tree-sitter"),
+        "tree_sitter_javascript": _package_version("tree-sitter-javascript"),
+        "tree_sitter_typescript": _package_version("tree-sitter-typescript"),
+    }
+
+
+def _tree_sitter_language(rel_path: str) -> Language | None:
+    if rel_path.endswith((".js", ".mjs", ".cjs")):
+        return Language(tree_sitter_javascript.language())
+    if rel_path.endswith(".tsx"):
+        return Language(tree_sitter_typescript.language_tsx())
+    if rel_path.endswith(".ts"):
+        return Language(tree_sitter_typescript.language_typescript())
+    return None
+
+
+def _parse_javascript_treesitter(rel_path: str, path: Path) -> tuple[bytes, Node] | None:
+    language = _tree_sitter_language(rel_path)
+    if language is None:
+        return None
+    data = _safe_read_bytes(path)
+    parser = Parser()
+    parser.language = language
+    return data, parser.parse(data).root_node
+
+
+def _ts_text(node: Node, data: bytes) -> str:
+    return data[node.start_byte : node.end_byte].decode("utf-8", "replace")
+
+
+def _ts_string_value(node: Node, data: bytes) -> str:
+    return _ts_text(node, data).strip("'\"")
+
+
+def _ts_descendants(node: Node) -> list[Node]:
+    found = [node]
+    for child in node.named_children:
+        found.extend(_ts_descendants(child))
+    return found
+
+
+def _ts_sorted_descendants(node: Node, node_type: str) -> list[Node]:
+    return sorted(
+        [candidate for candidate in _ts_descendants(node) if candidate.type == node_type],
+        key=lambda candidate: (candidate.start_byte, candidate.end_byte, candidate.type),
+    )
+
+
+def _ts_name(node: Node, data: bytes) -> str | None:
+    name = node.child_by_field_name("name")
+    if name is None:
+        return None
+    return _ts_text(name, data)
+
+
+def _ts_prov(*, rel_path: str, data_hash: str, git: GitState, node: Node, confidence: str = "deterministic") -> ProvenanceRef:
+    return _prov(
+        rel_path=rel_path,
+        data_hash=data_hash,
+        git=git,
+        derived_by="javascript_treesitter",
+        line_start=node.start_point.row + 1,
+        line_end=node.end_point.row + 1,
+        confidence=confidence,
+    )
+
+
+def _add_node_with_defined_edge(
+    *,
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+    node: GraphNode,
+    file_node: GraphNode,
+    prov: ProvenanceRef,
+) -> GraphNode:
+    existing = nodes.get(node.id)
+    if existing is not None:
+        return existing
+    nodes[node.id] = node
+    edge = _edge("defined_in", node.id, file_node.id, [prov])
+    edges[edge.id] = edge
+    return node
+
+
+def _add_javascript_treesitter_imports(
+    *,
+    rel_path: str,
+    data: bytes,
+    data_hash: str,
+    git: GitState,
+    root_node: Node,
+    module_node: GraphNode,
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+) -> None:
+    for import_node in _ts_sorted_descendants(root_node, "import_statement"):
+        source = import_node.child_by_field_name("source")
+        if source is None:
+            continue
+        imported = _resolve_javascript_import(rel_path, _ts_string_value(source, data))
+        prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=source)
+        graph_node = _node(kind="javascript_import", label=imported, rel_path=rel_path, symbol=imported, provenance_refs=[prov])
+        nodes.setdefault(graph_node.id, graph_node)
+        edge = _edge("imports", module_node.id, graph_node.id, [prov], label=imported)
+        edges.setdefault(edge.id, edge)
+
+
+def _add_javascript_treesitter_nodes_for_file(
+    *,
+    rel_path: str,
+    file_node: GraphNode,
+    data: bytes,
+    data_hash: str,
+    git: GitState,
+    root_node: Node,
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+) -> None:
+    module = _javascript_module_name(rel_path)
+    module_prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=root_node)
+    module_node = _node(kind="javascript_module", label=module, rel_path=rel_path, symbol=module, tags=file_node.tags, provenance_refs=[module_prov])
+    module_node = _add_node_with_defined_edge(nodes=nodes, edges=edges, node=module_node, file_node=file_node, prov=module_prov)
+    _add_javascript_treesitter_imports(rel_path=rel_path, data=data, data_hash=data_hash, git=git, root_node=root_node, module_node=module_node, nodes=nodes, edges=edges)
+    for class_node in _ts_sorted_descendants(root_node, "class_declaration"):
+        class_name = _ts_name(class_node, data)
+        if not class_name:
+            continue
+        prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=class_node)
+        class_graph_node = _node(kind="javascript_class", label=class_name, rel_path=rel_path, symbol=f"{module}.{class_name}" if module else class_name, tags=file_node.tags, provenance_refs=[prov])
+        _add_node_with_defined_edge(nodes=nodes, edges=edges, node=class_graph_node, file_node=file_node, prov=prov)
+        body = class_node.child_by_field_name("body")
+        if body is None:
+            continue
+        for method in [child for child in body.named_children if child.type == "method_definition"]:
+            method_name = _ts_name(method, data)
+            if not method_name:
+                continue
+            method_prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=method)
+            symbol = f"{module}.{class_name}.{method_name}" if module else f"{class_name}.{method_name}"
+            method_node = _node(kind="javascript_function", label=method_name, rel_path=rel_path, symbol=symbol, tags=file_node.tags, provenance_refs=[method_prov])
+            _add_node_with_defined_edge(nodes=nodes, edges=edges, node=method_node, file_node=file_node, prov=method_prov)
+    for function_node in _ts_sorted_descendants(root_node, "function_declaration"):
+        function_name = _ts_name(function_node, data)
+        if not function_name:
+            continue
+        prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=function_node)
+        symbol = f"{module}.{function_name}" if module else function_name
+        graph_node = _node(kind="javascript_function", label=function_name, rel_path=rel_path, symbol=symbol, tags=file_node.tags, provenance_refs=[prov])
+        _add_node_with_defined_edge(nodes=nodes, edges=edges, node=graph_node, file_node=file_node, prov=prov)
+    for declarator in _ts_sorted_descendants(root_node, "variable_declarator"):
+        value = declarator.child_by_field_name("value")
+        if value is None or value.type not in {"arrow_function", "function"}:
+            continue
+        variable_name = _ts_name(declarator, data)
+        if not variable_name:
+            continue
+        prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=declarator)
+        symbol = f"{module}.{variable_name}" if module else variable_name
+        graph_node = _node(kind="javascript_function", label=variable_name, rel_path=rel_path, symbol=symbol, tags=file_node.tags, provenance_refs=[prov])
+        _add_node_with_defined_edge(nodes=nodes, edges=edges, node=graph_node, file_node=file_node, prov=prov)
+
+
+def _javascript_import_bindings(
+    *,
+    rel_path: str,
+    data: bytes,
+    root_node: Node,
+    function_symbols: set[str],
+    class_symbols: set[str],
+) -> dict[str, set[str]]:
+    aliases: dict[str, set[str]] = {}
+    target_symbols = function_symbols | class_symbols
+    for import_node in _ts_sorted_descendants(root_node, "import_statement"):
+        source = import_node.child_by_field_name("source")
+        if source is None:
+            continue
+        imported_module = _resolve_javascript_import(rel_path, _ts_string_value(source, data))
+        for specifier in _ts_sorted_descendants(import_node, "import_specifier"):
+            name_node = specifier.child_by_field_name("name")
+            if name_node is None:
+                continue
+            alias_node = specifier.child_by_field_name("alias")
+            imported_name = _ts_text(name_node, data)
+            local_name = _ts_text(alias_node, data) if alias_node is not None else imported_name
+            target = f"{imported_module}.{imported_name}"
+            if target in target_symbols:
+                _add_alias(aliases, local_name, target)
+    return aliases
+
+
+def _javascript_same_file_symbols(nodes: dict[str, GraphNode], *, rel_path: str, kind: str) -> dict[str, list[GraphNode]]:
+    symbols: dict[str, list[GraphNode]] = {}
+    for node in nodes.values():
+        if node.kind == kind and node.path == rel_path:
+            symbols.setdefault(node.label, []).append(node)
+    return symbols
+
+
+def _javascript_resolve_symbol(
+    *,
+    name: str,
+    same_file: dict[str, list[GraphNode]],
+    aliases: dict[str, set[str]],
+    target_nodes_by_symbol: dict[str, list[GraphNode]],
+) -> tuple[GraphNode | None, str]:
+    same_file_target = _single_named_node(same_file, name)
+    if same_file_target is not None:
+        return same_file_target, "deterministic"
+    alias_targets = aliases.get(name, set())
+    if len(alias_targets) != 1:
+        return None, "ambiguous"
+    return _single_symbol_node(target_nodes_by_symbol, next(iter(alias_targets))), "heuristic"
+
+
+def _javascript_first_identifier(node: Node, data: bytes) -> str | None:
+    for child in _ts_descendants(node):
+        if child.type in {"identifier", "type_identifier"}:
+            return _ts_text(child, data)
+    return None
+
+
+def _add_javascript_inheritance_edges(
+    *,
+    rel_path: str,
+    data: bytes,
+    data_hash: str,
+    git: GitState,
+    root_node: Node,
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+    class_nodes_by_symbol: dict[str, list[GraphNode]],
+    class_symbols: set[str],
+) -> None:
+    aliases = _javascript_import_bindings(rel_path=rel_path, data=data, root_node=root_node, function_symbols=set(), class_symbols=class_symbols)
+    same_file_classes = _javascript_same_file_symbols(nodes, rel_path=rel_path, kind="javascript_class")
+    for class_node in _ts_sorted_descendants(root_node, "class_declaration"):
+        class_name = _ts_name(class_node, data)
+        if not class_name:
+            continue
+        from_node = _single_named_node(same_file_classes, class_name)
+        heritage = next((child for child in class_node.named_children if child.type == "class_heritage"), None)
+        if from_node is None or heritage is None:
+            continue
+        base_name = _javascript_first_identifier(heritage, data)
+        if not base_name:
+            continue
+        to_node, confidence = _javascript_resolve_symbol(name=base_name, same_file=same_file_classes, aliases=aliases, target_nodes_by_symbol=class_nodes_by_symbol)
+        if to_node is None:
+            continue
+        prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=heritage, confidence=confidence)
+        edge = _edge("inherits", from_node.id, to_node.id, [prov], label=_edge_symbol_label("inherits", from_node, to_node), confidence=confidence, derived_by="javascript_treesitter")
+        edges[edge.id] = edge
+
+
+def _javascript_function_scopes(*, module: str, rel_path: str, data: bytes, root_node: Node, function_nodes_by_symbol: dict[str, list[GraphNode]]) -> list[tuple[GraphNode, Node]]:
+    scopes: list[tuple[GraphNode, Node]] = []
+    for class_node in _ts_sorted_descendants(root_node, "class_declaration"):
+        class_name = _ts_name(class_node, data)
+        body = class_node.child_by_field_name("body")
+        if not class_name or body is None:
+            continue
+        for method in [child for child in body.named_children if child.type == "method_definition"]:
+            method_name = _ts_name(method, data)
+            if not method_name:
+                continue
+            symbol = f"{module}.{class_name}.{method_name}" if module else f"{class_name}.{method_name}"
+            graph_node = _single_symbol_node(function_nodes_by_symbol, symbol)
+            body_node = method.child_by_field_name("body") or method
+            if graph_node is not None:
+                scopes.append((graph_node, body_node))
+    for function_node in _ts_sorted_descendants(root_node, "function_declaration"):
+        function_name = _ts_name(function_node, data)
+        if not function_name:
+            continue
+        symbol = f"{module}.{function_name}" if module else function_name
+        graph_node = _single_symbol_node(function_nodes_by_symbol, symbol)
+        body_node = function_node.child_by_field_name("body") or function_node
+        if graph_node is not None:
+            scopes.append((graph_node, body_node))
+    for declarator in _ts_sorted_descendants(root_node, "variable_declarator"):
+        value = declarator.child_by_field_name("value")
+        if value is None or value.type not in {"arrow_function", "function"}:
+            continue
+        variable_name = _ts_name(declarator, data)
+        if not variable_name:
+            continue
+        symbol = f"{module}.{variable_name}" if module else variable_name
+        graph_node = _single_symbol_node(function_nodes_by_symbol, symbol)
+        if graph_node is not None:
+            scopes.append((graph_node, value))
+    return sorted(scopes, key=lambda item: (item[1].start_byte, item[0].id))
+
+
+def _add_javascript_call_edges(
+    *,
+    rel_path: str,
+    data: bytes,
+    data_hash: str,
+    git: GitState,
+    root_node: Node,
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+    function_nodes_by_symbol: dict[str, list[GraphNode]],
+    function_symbols: set[str],
+) -> None:
+    module = _javascript_module_name(rel_path)
+    aliases = _javascript_import_bindings(rel_path=rel_path, data=data, root_node=root_node, function_symbols=function_symbols, class_symbols=set())
+    same_file_functions = _javascript_same_file_symbols(nodes, rel_path=rel_path, kind="javascript_function")
+    for from_node, body in _javascript_function_scopes(module=module, rel_path=rel_path, data=data, root_node=root_node, function_nodes_by_symbol=function_nodes_by_symbol):
+        for call in _ts_sorted_descendants(body, "call_expression"):
+            callee = call.child_by_field_name("function")
+            if callee is None or callee.type not in {"identifier", "property_identifier"}:
+                continue
+            target, confidence = _javascript_resolve_symbol(name=_ts_text(callee, data), same_file=same_file_functions, aliases=aliases, target_nodes_by_symbol=function_nodes_by_symbol)
+            if target is None:
+                continue
+            prov = _ts_prov(rel_path=rel_path, data_hash=data_hash, git=git, node=call, confidence=confidence)
+            edge = _edge("calls", from_node.id, target.id, [prov], label=_edge_symbol_label("calls", from_node, target), confidence=confidence, derived_by="javascript_treesitter")
+            edges[edge.id] = edge
+
+
+def _add_javascript_treesitter_nodes_and_edges(
+    *,
+    root: Path,
+    git: GitState,
+    file_nodes: dict[str, GraphNode],
+    nodes: dict[str, GraphNode],
+    edges: dict[str, GraphEdge],
+) -> None:
+    parsed: dict[str, tuple[bytes, Node, str]] = {}
+    for rel_path, file_node in sorted(file_nodes.items()):
+        if not rel_path.endswith((".js", ".mjs", ".cjs", ".ts", ".tsx")) or any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
+            continue
+        parsed_file = _parse_javascript_treesitter(rel_path, root / rel_path)
+        if parsed_file is None:
+            continue
+        data, root_node = parsed_file
+        data_hash = file_node.provenance_refs[0].content_hash if file_node.provenance_refs else _sha256_bytes(data)
+        parsed[rel_path] = (data, root_node, data_hash)
+        _add_javascript_treesitter_nodes_for_file(rel_path=rel_path, file_node=file_node, data=data, data_hash=data_hash, git=git, root_node=root_node, nodes=nodes, edges=edges)
+    function_nodes_by_symbol: dict[str, list[GraphNode]] = {}
+    class_nodes_by_symbol: dict[str, list[GraphNode]] = {}
+    for node in nodes.values():
+        if node.kind == "javascript_function" and node.symbol:
+            function_nodes_by_symbol.setdefault(node.symbol, []).append(node)
+        elif node.kind == "javascript_class" and node.symbol:
+            class_nodes_by_symbol.setdefault(node.symbol, []).append(node)
+    function_symbols = set(function_nodes_by_symbol)
+    class_symbols = set(class_nodes_by_symbol)
+    for rel_path, (data, root_node, data_hash) in sorted(parsed.items()):
+        _add_javascript_inheritance_edges(rel_path=rel_path, data=data, data_hash=data_hash, git=git, root_node=root_node, nodes=nodes, edges=edges, class_nodes_by_symbol=class_nodes_by_symbol, class_symbols=class_symbols)
+        _add_javascript_call_edges(rel_path=rel_path, data=data, data_hash=data_hash, git=git, root_node=root_node, nodes=nodes, edges=edges, function_nodes_by_symbol=function_nodes_by_symbol, function_symbols=function_symbols)
 
 
 def _add_javascript_nodes(
@@ -400,15 +1148,24 @@ def _add_python_nodes(
     nodes[module_node.id] = module_node
     edge = _edge("defined_in", module_node.id, file_node.id, [module_prov])
     edges[edge.id] = edge
+    class_defs: list[ast.ClassDef] = []
+    class_nodes_by_name: dict[str, list[GraphNode]] = {}
+    function_nodes_by_name: dict[str, list[GraphNode]] = {}
     for child in ast.walk(tree):
         if isinstance(child, (ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
-            kind = "python_class" if isinstance(child, ast.ClassDef) else "python_function"
+            is_class = isinstance(child, ast.ClassDef)
+            kind = "python_class" if is_class else "python_function"
             symbol = f"{module}.{child.name}" if module else child.name
             end_lineno = getattr(child, "end_lineno", child.lineno)
             prov = _prov(rel_path=rel_path, data_hash=data_hash, git=git, derived_by="python_ast", line_start=child.lineno, line_end=end_lineno)
             sym_node = _node(kind=kind, label=child.name, rel_path=rel_path, symbol=symbol, tags=file_node.tags, provenance_refs=[prov])
             nodes[sym_node.id] = sym_node
             edges[_edge("defined_in", sym_node.id, file_node.id, [prov]).id] = _edge("defined_in", sym_node.id, file_node.id, [prov])
+            if is_class:
+                class_defs.append(child)
+                class_nodes_by_name.setdefault(child.name, []).append(sym_node)
+            else:
+                function_nodes_by_name.setdefault(child.name, []).append(sym_node)
         elif isinstance(child, (ast.Import, ast.ImportFrom)):
             names: list[str] = []
             if isinstance(child, ast.Import):
@@ -420,6 +1177,21 @@ def _add_python_nodes(
                 import_node = _node(kind="python_import", label=imported, rel_path=rel_path, symbol=imported, provenance_refs=[prov])
                 nodes[import_node.id] = import_node
                 edges[_edge("imports", module_node.id, import_node.id, [prov], label=imported).id] = _edge("imports", module_node.id, import_node.id, [prov], label=imported)
+    _add_python_inheritance_edges(
+        rel_path=rel_path,
+        data_hash=data_hash,
+        git=git,
+        class_defs=class_defs,
+        class_nodes_by_name=class_nodes_by_name,
+        edges=edges,
+    )
+    _PythonCallEdgeCollector(
+        rel_path=rel_path,
+        data_hash=data_hash,
+        git=git,
+        function_nodes_by_name=function_nodes_by_name,
+        edges=edges,
+    ).visit(tree)
     if rel_path.startswith("tests/") or Path(rel_path).name.startswith("test_"):
         guessed = Path(rel_path).stem
         if guessed.startswith("test_"):
@@ -525,6 +1297,8 @@ def build_project_graph(project_root: str | Path) -> ProjectGraph:
             _add_javascript_nodes(rel_path=rel_path, path=path, data_hash=data_hash, git=git, file_node=file_node, nodes=nodes, edges=edges)
         if rel_path.endswith(".md") and not any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
             _add_markdown_nodes(rel_path=rel_path, path=path, data_hash=data_hash, git=git, file_node=file_node, nodes=nodes, edges=edges)
+    _add_python_cross_file_call_edges(root=root, git=git, file_nodes=file_nodes, nodes=nodes, edges=edges)
+    _add_javascript_treesitter_nodes_and_edges(root=root, git=git, file_nodes=file_nodes, nodes=nodes, edges=edges)
     # Second pass for tests after all module nodes exist.
     for rel_path, file_node in sorted(file_nodes.items()):
         if (rel_path.startswith("tests/") or Path(rel_path).name.startswith("test_")) and rel_path.endswith(".py"):
@@ -539,6 +1313,7 @@ def build_project_graph(project_root: str | Path) -> ProjectGraph:
         git=git,
         nodes=sorted(nodes.values(), key=lambda n: n.id),
         edges=sorted(edges.values(), key=lambda e: e.id),
+        metadata={"tree_sitter": _tree_sitter_metadata()},
     )
 
 
