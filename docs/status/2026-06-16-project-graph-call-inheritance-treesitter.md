@@ -1,6 +1,6 @@
 # Project graph call/inheritance + tree-sitter status — 2026-06-16
 
-Status: implemented locally on branch `graph/call-inheritance-treesitter`; not committed.
+Status: merged to `main` via PR #40 (merge commit 360e9a2); feature commit af48ead.
 
 Changed:
 - Added Python `inherits` and `calls` edges using the existing `ast` path.
