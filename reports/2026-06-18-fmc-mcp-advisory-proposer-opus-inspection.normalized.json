@@ -1,0 +1,97 @@
+{
+  "advisory_architecture_finding_design": {
+    "candidate_generation": "Route architecture.open-questions-or-gaps (and other architecture.* advisory_only findings) through an advisory/backlog domain that emits a single aggregating candidate targeting docs/agent-backlog.md. The candidate intent embeds the actual openQuestions and snapshot.verification_gaps text (plumbed via DomainContext.extras), instructing the proposer to convert each into an explicit, grounded backlog/verification task entry \u2014 exactly the finding's recommendedAction ('Convert high-impact gaps into explicit backlog or verification tasks').",
+    "target_selection": "Do not fabricate per-question filenames or invent paths. Use one stable, repo-root-relative aggregating doc whose parent exists (docs/agent-backlog.md; or docs/decisions/ when the gap is decision-shaped and that dir already exists). Targets are synthesized by policy, not derived from the (filtered) iterationReadiness evidence path, and the parent-exists check in diff_proposer._target_file_contents_or_empty still applies.",
+    "verification_gate": "Replace the bare markdown contract with a backlog gate: (1) test -s target (non-empty); (2) markdown_links resolves with no fabricated/missing links; (3) NEW content assertion \u2014 every open-question/gap identifier passed via context appears as a task entry (count/id presence match), rejecting a no-op or boilerplate backlog that ignores the real items. Fail-closed if the expected-items list is empty or unmatched."
+  },
+  "advisory_verification_finding_design": {
+    "candidate_generation": "verification.quality-gates.present is positive/informational (gates already exist) and must NOT become a mutation candidate \u2014 patching it would fabricate work. It is already consumed as planner context (its commands feed _quality_gate_commands \u2192 DomainContext.extras and the intake context block, and are reused by ComponentVerificationDomain via _finding_or_quality_gate_verification). Keep it as context and label its skip 'consumed_as_context'. The actionable sibling, verification.quality-gates.missing (boundary blocks_autonomous_mutation), is correctly not autonomously patchable and should remain recorded-but-blocked.",
+    "target_selection": "No mutation target. As context it may inform the verification sections of other candidates that DO run (AGENTS.md, docs/runbooks) by supplying the canonical gate command list; it never selects a file of its own.",
+    "verification_gate": "Not applicable as a standalone candidate. If a future doc candidate chooses to surface these commands, reuse the markdown gate plus a presence check that each gate command string from context appears verbatim, so the doc cannot drift from the real gates."
+  },
+  "current_code_findings": [
+    {
+      "evidence": [
+        "proposal_domains.py:359-367 _is_model_level_finding",
+        "proposal_domains.py:362 `if boundary != \"safe_to_patch_docs_only\": return False`",
+        "project_intake_scorecard.py:461 architecture.open-questions-or-gaps emitted with boundary 'advisory_only'"
+      ],
+      "finding": "ModelLevelDomain is the one domain designed to target architecture.* findings with no file target (it writes docs/agent-backlog.md), but it rejects any finding whose autonomyBoundary is not 'safe_to_patch_docs_only'. Architecture/verification advisory findings carry 'advisory_only', so the domain returns [] before reaching its `finding_id.startswith('architecture.')` branch.",
+      "id": "modellevel-boundary-excludes-advisory",
+      "required_change": "Allow ModelLevelDomain (or a new advisory domain) to claim architecture.* findings whose boundary is 'advisory_only', not only 'safe_to_patch_docs_only'.",
+      "severity": "high"
+    },
+    {
+      "evidence": [
+        "proposal_domains.py:311-323 _target_paths_for_finding",
+        "proposal_domains.py:317 `or raw.startswith(\"iterationReadiness\")` filter",
+        "scorecard evidence path 'iterationReadiness.openQuestions/snapshot.verification_gaps' and 'iterationReadiness.qualityGates'"
+      ],
+      "finding": "All file-targeting domains derive targets from evidence paths, but Project-Model evidence paths (iterationReadiness.*, snapshot.verification_gaps) are intentionally filtered out, leaving these findings with an empty target set. Combined with the boundary gate above, nothing can claim them.",
+      "id": "iterationreadiness-evidence-stripped",
+      "required_change": "Advisory candidate generation must not depend on a filesystem evidence path; it must synthesize a stable docs target and instead read the gap/question *content* from the Project Model carried via context.",
+      "severity": "high"
+    },
+    {
+      "evidence": [
+        "proposal_planner.py:141-149 builds DomainContext with only quality_gate_commands in extras",
+        "proposal_domains.py:282-300 ModelLevelDomain intent uses only finding title/id, not the actual questions/gaps"
+      ],
+      "finding": "Even when ModelLevelDomain fires, it grounds the candidate only on the finding's title and the generic markdown contract; the actual open questions and verification_gaps text from the Project Model snapshot is never plumbed into DomainContext, so a generated backlog cannot faithfully enumerate them.",
+      "id": "no-content-plumbing-for-advisory",
+      "required_change": "Plumb openQuestions + verification_gaps (and the gate command list) from the scorecard/snapshot into DomainContext.extras so the advisory candidate's intent and gate can reference real items.",
+      "severity": "high"
+    },
+    {
+      "evidence": [
+        "proposal_domains.py:332-344 _markdown_success_contract",
+        "verification commands: `test -s <path>` + `python3 -m arena.markdown_links`"
+      ],
+      "finding": "The only gate ModelLevelDomain can attach is the markdown contract: file non-empty + local links resolve (+ optional source references). This accepts any non-empty prose; it cannot reject a backlog that ignores the actual open questions/gaps, so an advisory 'fix' can be a content-shallow no-op that still passes.",
+      "id": "markdown-contract-gate-too-weak-for-backlog",
+      "required_change": "Add a content-aware backlog gate that asserts each enumerated open question / verification gap appears as a task entry, in addition to the markdown link check.",
+      "severity": "medium"
+    },
+    {
+      "evidence": [
+        "proposal_planner.py:156 skipped.append(_skipped_finding(finding, 'no_single_file_target'))",
+        "proposal_planner.py:358-366 _quality_gate_commands already consumes verification.quality-gates.present as context"
+      ],
+      "finding": "verification.quality-gates.present is already harvested into planner context, yet it is also reported with the generic skip reason 'no_single_file_target', which misrepresents an intentionally-consumed informational finding as an unhandled one.",
+      "id": "skip-reason-conflates-context-vs-untargetable",
+      "required_change": "Distinguish skip reasons: 'consumed_as_context' (informational advisory already used), 'advisory_backlogged' (converted to a backlog candidate), vs genuine 'no_single_file_target'.",
+      "severity": "low"
+    }
+  ],
+  "doc_proposer_failure_note": "The rank-1 docs run failed in diff_proposer._validate_changed_markdown because of a checker-vs-authoring mismatch, not a model hallucination. The runbooks finding has target docs/runbooks (no suffix), so _proposal_target_for_evidence_path appends index.md \u2192 docs/runbooks/index.md. The prompt instructs the model to use repo-relative paths (docs/index.md, README.md), and it did. But markdown_links._resolve_target (markdown_links.py:190) resolves non-absolute links relative to markdown_path.parent, i.e. docs/runbooks/, yielding docs/runbooks/docs/index.md and docs/runbooks/README.md \u2014 both missing. Auto-repair (_unique_suffix_match) couldn't help: the link text 'docs/index.md' is ALREADY the canonical repo path, so there is no better string to substitute; the bug is the resolver, not the text. For root-level docs this never shows because repo-relative == parent-relative. This DOES affect the advisory design: docs/agent-backlog.md lives under docs/, so any repo-relative link it emits (e.g. README.md \u2192 resolved as docs/README.md) hits the same failure. Mitigation options: make the resolver also attempt repo-root resolution for repo-relative-looking links, OR place the advisory backlog at repo root, OR constrain the contract to root-absolute '/path' links and same-directory references.",
+  "minimal_viable_patch": [
+    "In proposal_domains.py _is_model_level_finding, accept architecture.* findings when boundary is either 'safe_to_patch_docs_only' OR 'advisory_only' (keep the existing iterationReadiness-only-evidence branch unchanged).",
+    "This alone makes architecture.open-questions-or-gaps route to ModelLevelDomain \u2192 a docs/agent-backlog.md candidate carrying the markdown contract gate, so it is proposed instead of skipped.",
+    "Leave verification.quality-gates.present as context-only (it is already consumed via _quality_gate_commands); optionally change its skip label to 'consumed_as_context' in _skipped_finding for honest accounting.",
+    "Add/adjust tests in tests/test_project_decomposer_ai.py and the proposer tests asserting: architecture advisory finding now yields candidateCount>=1 with target docs/agent-backlog.md; quality-gates.present remains non-candidate."
+  ],
+  "proper_architecture": [
+    "Introduce an explicit AdvisoryDomain (or rename/extend ModelLevelDomain) whose contract is 'findings with no file target but actionable Project-Model content', decoupled from the boundary string so policy lives in one place.",
+    "Carry the source content in DomainContext.extras: add openQuestions, verificationGaps, and qualityGateCommands harvested in proposal_planner.build_proposal_plan_with_registry from the scorecard/snapshot, mirroring how quality_gate_commands is already passed.",
+    "Generate the backlog candidate's intent from the real items (enumerate each open question/gap by its model id/text) rather than the finding title, so the diff proposer has concrete grounding.",
+    "Add arena.backlog_gate (a load-bearing gate analogous to arena.code_quality_gate) that, given the repo and the expected question/gap identifiers, fails closed unless the target file enumerates each item as a structured task entry and adds no fabricated source links; attach it as the candidate's verification_commands.",
+    "Formalize a finding taxonomy in the planner: actionable-advisory (architecture gaps \u2192 backlog candidate), informational-advisory (quality-gates present \u2192 fold into context, never a candidate), and blocked (quality-gates missing / blocks_autonomous_mutation \u2192 recorded, not proposed), each with a distinct skip/route reason.",
+    "Fix the nested-doc link resolution mismatch (see doc_proposer_failure_note) so docs/agent-backlog.md, which lives under docs/, can safely reference repo-root files."
+  ],
+  "recommended_next_implementation_slice": [
+    "1. Fix markdown_links._resolve_target (or add repo-root fallback) so nested doc targets like docs/agent-backlog.md and docs/runbooks/index.md can reference repo-root files; add a regression test reproducing the docs/runbooks/index.md failure.",
+    "2. Plumb openQuestions, verification_gaps, and qualityGateCommands from the scorecard/snapshot into DomainContext.extras in proposal_planner.build_proposal_plan_with_registry (and the ranker's context).",
+    "3. Loosen _is_model_level_finding to claim architecture.* advisory_only findings, and have ModelLevelDomain build the backlog intent from the plumbed openQuestions/verification_gaps content.",
+    "4. Add arena.backlog_gate enforcing per-item enumeration + markdown links + no fabricated source links, and attach it as the advisory candidate's verification_commands instead of the bare markdown contract.",
+    "5. Add explicit skip/route reasons ('advisory_backlogged', 'consumed_as_context') in proposal_planner._skipped_finding and proposal_ranker._skipped so accounting stops reporting consumed/handled findings as 'no_single_file_target'.",
+    "6. Tests: architecture advisory \u2192 candidateCount>=1 (docs/agent-backlog.md) that fails the new gate on a no-op diff and passes on a content-complete one; verification.quality-gates.present stays context-only; nested-doc link regression covered."
+  ],
+  "risks": [
+    "No-op/shallow advisory fixes: the markdown contract accepts any non-empty prose, so a backlog that doesn't reflect the gaps would 'pass'. Mitigation: ship the content-aware backlog gate (id/count presence) before relying on the MVP boundary change in autonomous runs.",
+    "Fabrication of facts: a backlog grounded only on a finding title invites invented context. Mitigation: plumb the real openQuestions/verification_gaps content and require source-reference grounding via the existing --require-source-references path.",
+    "Nested-doc link breakage: docs/agent-backlog.md will hit the same relative-resolution bug as docs/runbooks/index.md. Mitigation: fix _resolve_target or target repo root before enabling advisory docs.",
+    "Mislabeling informational findings as actionable: if the boundary loosening is too broad it could turn verification.quality-gates.present into a spurious candidate. Mitigation: scope the predicate to architecture.* + actionable advisory, and keep an explicit informational-advisory\u2192context route.",
+    "Churn / duplicate backlogs across runs: repeated runs could regenerate or duplicate the backlog. Mitigation: the proposal_registry proposal_key/lineage path already dedupes by finding+target+intent_hash; ensure the advisory candidate participates so promoted entries are skipped."
+  ],
+  "summary": "Advisory architecture/verification findings are skipped purely because no proposal domain claims them. Two mechanisms cause this: (1) every single-file domain depends on _target_paths_for_finding, which deliberately drops evidence paths beginning with `iterationReadiness` (proposal_domains.py:317), so these Project-Model findings have zero file targets and DocumentationDomain/GenericFileDomain/ComponentVerificationDomain all return []; (2) ModelLevelDomain already exists to handle target-less architecture findings by writing docs/agent-backlog.md, but its predicate _is_model_level_finding requires boundary == 'safe_to_patch_docs_only' (proposal_domains.py:362) and these findings carry boundary == 'advisory_only', so it bails before its architecture.* branch is reached. Result: registry.first_candidate returns None and both planner and ranker record `no_single_file_target`. The verification.quality-gates.present finding is a different case \u2014 it is informational/positive and is already consumed as planner context (its commands flow into _quality_gate_commands \u2192 DomainContext.extras and the intake context block), so it should stay context, not become a mutation candidate. Making architecture gaps actionable is a small predicate change for an MVP, but a durable fix requires plumbing the actual openQuestions/verification_gaps content into DomainContext and adding a content-aware backlog gate, because the only gate available to ModelLevelDomain today (the non-empty + links-resolve markdown contract) cannot reject a shallow no-op backlog and is itself broken for nested doc targets."
+}
