@@ -1,0 +1,29 @@
+{
+  "blocking_issues": [],
+  "nonblocking_issues": [
+    {
+      "issue": "Most code claims are presented as 'Evidence' with line numbers; only the markdown_links resolution is explicitly marked 'Verified code.' The Opus inspection findings (proposal_domains, proposal_planner, project_intake_scorecard line refs) are taken as given.",
+      "location": "Section 1 (markdown_links:186-190) and Section 2 line citations",
+      "note": "Acceptable for an owner-facing report, but consider marking which line citations were directly verified vs. carried from the Opus inspection artifact, so a reader knows the confidence level per claim."
+    }
+  ],
+  "owner_summary": "The report is sound and ACCEPT-able with light edits. It faithfully describes the bounded run as fail-closed (no mutation, no patch, clean worktree), correctly separates the narrow nested-markdown link bug from the deeper advisory architecture/verification actionability gap, and accurately and consistently relays the Opus code findings (ModelLevelDomain's safe_to_patch_docs_only boundary excluding advisory_only findings; stripped evidence paths; advisory content not plumbed into extras; weak markdown gate; gates-present being context not a candidate). External patterns (ATAM-lite, fitness functions, ArchUnit, test-gap analysis, ADR, Agentless) are used as reference shapes, explicitly stated not to solve Build Arena alone (e.g., 'not necessarily Java ArchUnit itself'), so no overclaiming. The recommended next slice follows from the evidence: fix nested docs link semantics + regression first, add explicit route accounting, then a minimal AdvisoryDomain with a content-aware backlog gate before broader domains. Before finalizing, reconcile the Section 7 'ready to attempt docs candidates' phrasing with the Owner answer's 'not clean enough' framing, qualify the 'diff was reversed' claim as an inference, and tighten the Owner-answer sentence that blurs the link bug with the advisory gap. None of these block release.",
+  "patch_before_final": [
+    {
+      "fix": "Reconcile with the Owner answer: state that the proposer can attempt docs candidates but cannot currently succeed on even the top docs candidate because the nested-markdown link contract is broken. Avoid the word \"ready.\"",
+      "issue": "\"Current proposer is ready to attempt docs candidates\" reads as a partial-success framing that sits in tension with the Owner answer (\"not clean enough even for the top docs candidate yet\") and with the live run, which fail-closed on the rank-1 docs candidate (ops.runbooks.missing -> docs/runbooks/index.md). \"Attempted\" is true, but \"ready\" overstates it.",
+      "location": "Section 7 \u2014 Final verdict, first line"
+    },
+    {
+      "fix": "Either qualify as inference (\"worktree was left clean; no patch was recorded, consistent with the failed diff being discarded/reversed\") or cite the runner behavior that performs the reversal.",
+      "issue": "This is an inferred mechanism, not directly evidenced. The post-run evidence shows only 'no patch dir' and a clean-looking 'HEAD (no branch)' worktree. Faithful to clean worktree / no patch; 'reversed' specifically is an assumption about how the runner cleaned up.",
+      "location": "Section 1 \u2014 Interpretation, \"The diff was reversed.\""
+    },
+    {
+      "fix": "Clarify that the docs run failed on a path-resolution/prompt mismatch (a separate, narrower defect) while the advisory actionability gap is a distinct, deeper issue \u2014 both are target/gate-semantics problems but are not the same defect.",
+      "issue": "\"The failure also exposed the same class of problem we are discussing\" lightly conflates the narrow markdown link path-resolution bug with the advisory architecture/verification actionability gap. The body (Sections 1 vs 2) keeps these correctly distinct; the framing sentence blurs them.",
+      "location": "Owner answer, third paragraph"
+    }
+  ],
+  "verdict": "ACCEPT_WITH_CHANGES"
+}
