@@ -2,6 +2,7 @@
 
 Raw run dir: `/tmp/build-arena-proposer-architecture-fitness-live-verify`
 Summary JSON: `/home/leonb/projects/build-arena-proposer-architecture-fitness/reports/2026-06-19-proposer-architecture-fitness-live-verification.json`
+Opus checker: initial full review `reports/2026-06-19-proposer-architecture-fitness-opus-checker-review.json`; follow-up review `reports/2026-06-19-proposer-architecture-fitness-opus-followup-review.json` after regenerating the synthetic accepted-failing proof.
 
 ## fmc-mcp route table
 ```tsv
