@@ -1,0 +1,4 @@
+## ba/proposal-emit-ticket-ready...origin/main
+?? arena/proposal_emit.py
+?? reports/2026-06-19-proposal-emit-ticket-ready/
+?? tests/test_proposal_emit.py

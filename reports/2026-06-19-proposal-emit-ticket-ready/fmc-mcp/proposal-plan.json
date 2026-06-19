@@ -1,0 +1,672 @@
+{
+  "baseLineage": {
+    "baseBranch": "",
+    "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+    "dirty": false,
+    "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dirtyPaths": [],
+    "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+    "runId": "",
+    "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+    "scorecardId": "aa43d8e321ae5c89",
+    "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+    "snapshotId": "snapshot-d9e419b1e0695a46"
+  },
+  "candidateCount": 9,
+  "candidates": [
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "componentId": "comp:client",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/client.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:bcfd8e782d7fe500"
+        }
+      ],
+      "finding_id": "code.component.untested.comp:client",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:client: Component MCPClient has no observable check. Limit changes to the component target path set: src/fmc_mcp/client.py.",
+      "intent_hash": "280a4221aabc58bd891b9577a1340c41d9f6ec37f597d960836e9ac9af032872",
+      "priority_score": 540.0,
+      "proposal_key": "6cc015c64ded77c2adc223400bd179b37e8c6afe2c005cbd9e463621e31663d6",
+      "rank": 1,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Add an observable check (e.g. a focused test) covering MCPClient before mutating it.",
+      "success_criterion": "The component target path set (src/fmc_mcp/client.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "target_path": "src/fmc_mcp/client.py",
+      "target_paths": [
+        "src/fmc_mcp/client.py"
+      ],
+      "title": "Component MCPClient has no observable check",
+      "verification_commands": [
+        "uv run --extra dev mypy src/fmc_mcp",
+        "uv run --extra dev python -m pytest -q",
+        "uv run --extra dev ruff check ."
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "componentId": "comp:config",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/config.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:b380701c2879efce"
+        }
+      ],
+      "finding_id": "code.component.untested.comp:config",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:config: Component ConfigurationManagement has no observable check. Limit changes to the component target path set: src/fmc_mcp/config.py.",
+      "intent_hash": "b1cd13975f21940b64626c445664ea67df80ae6d8d35b98a84feee1d3c7555b4",
+      "priority_score": 540.0,
+      "proposal_key": "fa54044d7c96779350c29d6b0cef4319d7a546dad0849aa12f09e7ecc0319f89",
+      "rank": 2,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Add an observable check (e.g. a focused test) covering ConfigurationManagement before mutating it.",
+      "success_criterion": "The component target path set (src/fmc_mcp/config.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "target_path": "src/fmc_mcp/config.py",
+      "target_paths": [
+        "src/fmc_mcp/config.py"
+      ],
+      "title": "Component ConfigurationManagement has no observable check",
+      "verification_commands": [
+        "uv run --extra dev mypy src/fmc_mcp",
+        "uv run --extra dev python -m pytest -q",
+        "uv run --extra dev ruff check ."
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "componentId": "comp:resources",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/resources.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:4e62ae79d2c07a9c"
+        }
+      ],
+      "finding_id": "code.component.untested.comp:resources",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:resources: Component ResourceProvider has no observable check. Limit changes to the component target path set: src/fmc_mcp/resources.py.",
+      "intent_hash": "4cb12fbbf2aec0963c58ab15f5a234764ef6e403418c521c621e191b557a2ba4",
+      "priority_score": 540.0,
+      "proposal_key": "f65868a4a3754c02b3bede0071e074788287fc7feab3ad16b706bc3930ca6074",
+      "rank": 3,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Add an observable check (e.g. a focused test) covering ResourceProvider before mutating it.",
+      "success_criterion": "The component target path set (src/fmc_mcp/resources.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "target_path": "src/fmc_mcp/resources.py",
+      "target_paths": [
+        "src/fmc_mcp/resources.py"
+      ],
+      "title": "Component ResourceProvider has no observable check",
+      "verification_commands": [
+        "uv run --extra dev mypy src/fmc_mcp",
+        "uv run --extra dev python -m pytest -q",
+        "uv run --extra dev ruff check ."
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "componentId": "comp:tools",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/tools.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:750d7fda533e438c"
+        }
+      ],
+      "finding_id": "code.component.untested.comp:tools",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:tools: Component ToolRegistry has no observable check. Limit changes to the component target path set: src/fmc_mcp/tools.py.",
+      "intent_hash": "dedf0081b5b06c8ee9657fab6dc48af7d3a81a87fb98d8155a0b4f758d10ff2e",
+      "priority_score": 540.0,
+      "proposal_key": "0c4cc76a19752263f9112f2e9661da9003528560b3f7788cc70595ca2c5067e2",
+      "rank": 4,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Add an observable check (e.g. a focused test) covering ToolRegistry before mutating it.",
+      "success_criterion": "The component target path set (src/fmc_mcp/tools.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "target_path": "src/fmc_mcp/tools.py",
+      "target_paths": [
+        "src/fmc_mcp/tools.py"
+      ],
+      "title": "Component ToolRegistry has no observable check",
+      "verification_commands": [
+        "uv run --extra dev mypy src/fmc_mcp",
+        "uv run --extra dev python -m pytest -q",
+        "uv run --extra dev ruff check ."
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "AGENTS.md"
+        }
+      ],
+      "finding_id": "agent.agents-md.missing",
+      "grounding_constraints": [
+        "Do not invent Markdown links to files absent from the repository facts.",
+        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
+      ],
+      "intent": "Create a grounded AGENTS.md for future agents using existing repository facts, commands, and boundaries.",
+      "intent_hash": "5cd02c7f1f194cb940bc294b45b3adbe8b7abc7f23b907d2aed9421f68dcd3c9",
+      "priority_score": 432.0,
+      "proposal_key": "20db26bc98d07a4fa6504e8cd255906a13577016fc4c4d0852d6cd68bdc42eb2",
+      "rank": 5,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Create AGENTS.md with commands, boundaries, and definition of done.",
+      "success_criterion": "AGENTS.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "target_path": "AGENTS.md",
+      "target_paths": [
+        "AGENTS.md"
+      ],
+      "title": "AGENTS.md is missing",
+      "verification_commands": [
+        "test -s AGENTS.md",
+        "python3 -m arena.markdown_links --repo . --path AGENTS.md --require-source-references"
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "kind": "project_model",
+          "path": "iterationReadiness.openQuestions/snapshot.verification_gaps"
+        }
+      ],
+      "finding_id": "architecture.open-questions-or-gaps",
+      "grounding_constraints": [
+        "Fitness contracts may only reference modules present in the freshly rebuilt project graph.",
+        "Acceptance means valid, grounded, and binding; it does not mean the guarded violation has been fixed.",
+        "Expected current status for this contract is failing; do not auto-promote it as a passing behaviour change.",
+        "Exact contract JSON to write to tests/architecture/architecture-fitness-bb5e598eb664.json:\n{\n  \"description\": \"Prevent the graph-evidenced import cycle fmc_mcp -> fmc_mcp.server -> fmc_mcp.\",\n  \"findingId\": \"architecture.open-questions-or-gaps\",\n  \"forbiddenEdges\": [\n    {\n      \"from\": \"fmc_mcp\",\n      \"to\": \"fmc_mcp.server\"\n    },\n    {\n      \"from\": \"fmc_mcp.server\",\n      \"to\": \"fmc_mcp\"\n    }\n  ],\n  \"id\": \"architecture-fitness-bb5e598eb664\",\n  \"kind\": \"forbid_import_cycle\",\n  \"modules\": [\n    \"fmc_mcp\",\n    \"fmc_mcp.server\"\n  ],\n  \"schemaVersion\": \"architecture-fitness-contract/v0\"\n}\n"
+      ],
+      "intent": "Create a deterministic architecture fitness contract at tests/architecture/architecture-fitness-bb5e598eb664.json that captures the graph-evidenced import cycle fmc_mcp -> fmc_mcp.server -> fmc_mcp. Write exactly the JSON contract shown in the grounding constraints; do not add architectural intent that is not evidenced by the graph.",
+      "intent_hash": "e372fb27dbb0f201d4b8ddd2bb68583ef1a705a2ca92f6412963f9c1aa00f906",
+      "priority_score": 252.0,
+      "proposal_key": "386c70b9ac109c04ebd86f87c8bcb00b9a78988ec0fa6f9f56d8b87872f6e84d",
+      "rank": 6,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Convert high-impact gaps into explicit backlog or verification tasks.",
+      "success_criterion": "The architecture fitness contract is syntactically valid, references only real graph modules, and is accepted by arena.architecture_fitness_gate as a binding currently-failing guardrail.",
+      "target_path": "tests/architecture/architecture-fitness-bb5e598eb664.json",
+      "target_paths": [
+        "tests/architecture/architecture-fitness-bb5e598eb664.json"
+      ],
+      "title": "Project Model contains open questions or verification gaps",
+      "verification_commands": [
+        "python3 -m arena.architecture_fitness_gate --repo . --contract tests/architecture/architecture-fitness-bb5e598eb664.json"
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "componentId": "comp:entry",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/__init__.py"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/__main__.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:aeec7a1dae758e4e"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:da6e96a18d26d1cf"
+        }
+      ],
+      "finding_id": "code.component.untested.comp:entry",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:entry: Component PackageEntrypoint has no observable check. Limit changes to the component target path set: src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py.",
+      "intent_hash": "b7d38dca8a7a377d38f490bd7d3a8a42356e3493a6bc93f7c46458dc6e2f9668",
+      "priority_score": 180.0,
+      "proposal_key": "54546725ae07b2f51c8db67f3056b18171c6d9af055fd8f2581dee1396dedbb0",
+      "rank": 7,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Add an observable check (e.g. a focused test) covering PackageEntrypoint before mutating it.",
+      "success_criterion": "The component target path set (src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "target_path": "src/fmc_mcp/__init__.py",
+      "target_paths": [
+        "src/fmc_mcp/__init__.py",
+        "src/fmc_mcp/__main__.py"
+      ],
+      "title": "Component PackageEntrypoint has no observable check",
+      "verification_commands": [
+        "uv run --extra dev mypy src/fmc_mcp",
+        "uv run --extra dev python -m pytest -q",
+        "uv run --extra dev ruff check ."
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "docs/decisions"
+        }
+      ],
+      "finding_id": "decision.history.missing",
+      "grounding_constraints": [
+        "Do not invent Markdown links to files absent from the repository facts.",
+        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
+      ],
+      "intent": "Create a grounded Markdown file at docs/decisions/index.md that addresses finding decision.history.missing: Decision records are missing.",
+      "intent_hash": "caa5da6fa5d963c0dc24c7abcabd8a159c0a610663f7e3239f39e7e342821f4f",
+      "priority_score": 176.0,
+      "proposal_key": "6dd7ecb78ee4addc0499d93a3ff355df57f0b9614a42fcfc6f698894691f5eff",
+      "rank": 8,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Create decision records for architecture-significant constraints.",
+      "success_criterion": "docs/decisions/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "target_path": "docs/decisions/index.md",
+      "target_paths": [
+        "docs/decisions/index.md"
+      ],
+      "title": "Decision records are missing",
+      "verification_commands": [
+        "test -s docs/decisions/index.md",
+        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md --require-source-references"
+      ]
+    },
+    {
+      "base_lineage": {
+        "baseBranch": "",
+        "baseHeadOid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce",
+        "dirty": false,
+        "dirtyFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "dirtyPaths": [],
+        "projectId": "build-arena-proposal-emit-fmc-mcp-origin",
+        "runId": "",
+        "scorecardHash": "af9a3b3906f32796fbf6d563078adca16ac28596adecfd72bdd3624b1b9728a1",
+        "scorecardId": "aa43d8e321ae5c89",
+        "snapshotHash": "e97e7eda4dfad5bea4c8b8c9cd2242e8951a70d0a76e5ee498dccf82e4d7b3b5",
+        "snapshotId": "snapshot-d9e419b1e0695a46"
+      },
+      "evidence_refs": [
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "docs/runbooks"
+        }
+      ],
+      "finding_id": "ops.runbooks.missing",
+      "grounding_constraints": [
+        "Do not invent Markdown links to files absent from the repository facts.",
+        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
+      ],
+      "intent": "Create a grounded Markdown file at docs/runbooks/index.md that addresses finding ops.runbooks.missing: Runbooks are missing.",
+      "intent_hash": "35b3f37239a5d3d7e5e4114c3483266899f476d8093a2c3b6f380c6b89072372",
+      "priority_score": 88.0,
+      "proposal_key": "b55a81cb56cf2714b278ae53f8cfa43973bfbac7faa440d2eb10b68237de8d18",
+      "rank": 9,
+      "registry_status": "untracked",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: yes\n- Top-level files: LICENSE, README.md, fmc-mcp-spec.md, pyproject.toml, uv.lock\n- Top-level directories: docs, src, tests\n- Existing docs markdown files: docs/index.md\n- Markdown files: README.md, docs/index.md, fmc-mcp-spec.md\n- Source files: pyproject.toml, src/fmc_mcp/__init__.py, src/fmc_mcp/__main__.py, src/fmc_mcp/client.py, src/fmc_mcp/config.py, src/fmc_mcp/resources.py, src/fmc_mcp/server.py, src/fmc_mcp/tools.py, tests/conftest.py, tests/test_client.py, tests/test_live.py, tests/test_resources.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run --extra dev mypy src/fmc_mcp\n- uv run --extra dev python -m pytest -q\n- uv run --extra dev ruff check .\nAutonomy boundaries from intake:\n- needs_code_change\n- safe_to_patch_docs_only\n- advisory_only",
+      "repo_facts_hash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+      "source_recommended_action": "Document start/stop/deploy/rollback/troubleshooting procedures.",
+      "success_criterion": "docs/runbooks/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "target_path": "docs/runbooks/index.md",
+      "target_paths": [
+        "docs/runbooks/index.md"
+      ],
+      "title": "Runbooks are missing",
+      "verification_commands": [
+        "test -s docs/runbooks/index.md",
+        "python3 -m arena.markdown_links --repo . --path docs/runbooks/index.md --require-source-references"
+      ]
+    }
+  ],
+  "findingDispositions": [
+    {
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/fmc_mcp/client.py"
+      ],
+      "finding_id": "code.component.untested.comp:client",
+      "rank": 1,
+      "target_path": "src/fmc_mcp/client.py",
+      "title": "Component MCPClient has no observable check"
+    },
+    {
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/fmc_mcp/config.py"
+      ],
+      "finding_id": "code.component.untested.comp:config",
+      "rank": 2,
+      "target_path": "src/fmc_mcp/config.py",
+      "title": "Component ConfigurationManagement has no observable check"
+    },
+    {
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/fmc_mcp/resources.py"
+      ],
+      "finding_id": "code.component.untested.comp:resources",
+      "rank": 3,
+      "target_path": "src/fmc_mcp/resources.py",
+      "title": "Component ResourceProvider has no observable check"
+    },
+    {
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/fmc_mcp/tools.py"
+      ],
+      "finding_id": "code.component.untested.comp:tools",
+      "rank": 4,
+      "target_path": "src/fmc_mcp/tools.py",
+      "title": "Component ToolRegistry has no observable check"
+    },
+    {
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "evidence_paths": [
+        "AGENTS.md"
+      ],
+      "finding_id": "agent.agents-md.missing",
+      "rank": 5,
+      "target_path": "AGENTS.md",
+      "title": "AGENTS.md is missing"
+    },
+    {
+      "disposition": "fitness_function_candidate",
+      "domain": "architecture_fitness",
+      "evidence_paths": [
+        "iterationReadiness.openQuestions/snapshot.verification_gaps"
+      ],
+      "finding_id": "architecture.open-questions-or-gaps",
+      "rank": 6,
+      "target_path": "tests/architecture/architecture-fitness-bb5e598eb664.json",
+      "title": "Project Model contains open questions or verification gaps"
+    },
+    {
+      "disposition": "consumed_as_context",
+      "domain": "",
+      "evidence_paths": [
+        "iterationReadiness.qualityGates"
+      ],
+      "finding_id": "verification.quality-gates.present",
+      "rank": 7,
+      "target_path": "",
+      "title": "Project Model exposes local quality gates"
+    },
+    {
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/fmc_mcp/__init__.py",
+        "src/fmc_mcp/__main__.py"
+      ],
+      "finding_id": "code.component.untested.comp:entry",
+      "rank": 8,
+      "target_path": "src/fmc_mcp/__init__.py",
+      "title": "Component PackageEntrypoint has no observable check"
+    },
+    {
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "evidence_paths": [
+        "docs/decisions"
+      ],
+      "finding_id": "decision.history.missing",
+      "rank": 9,
+      "target_path": "docs/decisions/index.md",
+      "title": "Decision records are missing"
+    },
+    {
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "evidence_paths": [
+        "docs/runbooks"
+      ],
+      "finding_id": "ops.runbooks.missing",
+      "rank": 10,
+      "target_path": "docs/runbooks/index.md",
+      "title": "Runbooks are missing"
+    }
+  ],
+  "id": "a0577ee653064ee8",
+  "omittedCount": 0,
+  "projectRoot": "/tmp/build-arena-proposal-emit-fmc-mcp-origin",
+  "repoFactsHash": "4b3ddc0a27b067148109e06b1f1b618e20b0b9e5206f1558df7a1bee5a4e96b7",
+  "schemaVersion": "proposal-plan/v0",
+  "skippedCount": 1,
+  "skippedFindings": [
+    {
+      "evidence_paths": [
+        "iterationReadiness.qualityGates"
+      ],
+      "finding_id": "verification.quality-gates.present",
+      "rank": 7,
+      "reason": "consumed_as_context",
+      "title": "Project Model exposes local quality gates"
+    }
+  ],
+  "snapshotId": "snapshot-d9e419b1e0695a46",
+  "sourceScorecardId": "aa43d8e321ae5c89"
+}

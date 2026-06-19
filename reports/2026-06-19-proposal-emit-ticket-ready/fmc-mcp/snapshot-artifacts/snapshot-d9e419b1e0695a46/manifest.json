@@ -1,0 +1,85 @@
+{
+  "artifact_hashes": {
+    "gate_report": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+    "graph_file": "d7f10726fcd913135fcc7b5eeb25818dfbf5f0a152c58dc3ef82393baf65a25b",
+    "import_contract_closure": "dc487b657917de001e5e792891b95fb318a531d32a4b4c819912daaa4a18db92",
+    "project_model_v0": "ca2367e2470a0230dc98dca4746c0c7f82df38497e8165bad8f2d270d298565a",
+    "project_model_v1": "6b7e87a9c17093a57f0913b5b71a72749df708188e197d068e274269c9c4119e",
+    "snapshot": "a389fffd02f549e253469ed5bb15019f46bb2f2ead726dc0515a417b4a555c91"
+  },
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "dirty_state": {
+    "dirty": false,
+    "dirty_paths": [],
+    "head_oid": "d60155bf05841f97d5ec3ba1752e0b7f588d54ce"
+  },
+  "encyclopedia_manifest_hash": "036fa92b7b8f065e841915a80d7f80b4895b9f208605341f5f16dc41ab1ba36e",
+  "encyclopedia_manifest_path": "encyclopedia/manifest.json",
+  "gate_report_hash": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+  "gate_report_path": "gate-report.json",
+  "goal": "Emit a ticket-ready proposal for the top Build Arena foundation candidate.",
+  "graph_file_hash": "d7f10726fcd913135fcc7b5eeb25818dfbf5f0a152c58dc3ef82393baf65a25b",
+  "graph_hash": "4f58cc7781c8f368a56a55ed066d7d1394f2c3571b9100a6c6be5e29f1c535ba",
+  "graph_path": "graph.json",
+  "input_hashes": {
+    "graph": "4f58cc7781c8f368a56a55ed066d7d1394f2c3571b9100a6c6be5e29f1c535ba"
+  },
+  "live_provider_metadata": {
+    "api_key_source": "hermes_env_file",
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "16a11a716205ae4cb271de941a1ed73aba4ae872d8a888b64afe8f40db4cfa12",
+    "finish_reason": "stop",
+    "model": "grok-4.3",
+    "prompt_hash": "3797ef5d83df594a35aa4f77db493ba2237938a38d6ded4ec82885acfed3d840",
+    "provider": "xai",
+    "requested_model": "grok-4.3",
+    "requested_model_source": "argument",
+    "served_model_matches_requested": true,
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 1310,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1175,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 154693500,
+      "num_sources_used": 0,
+      "prompt_tokens": 7513,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 128,
+        "image_tokens": 0,
+        "text_tokens": 7513
+      },
+      "total_tokens": 9998
+    }
+  },
+  "model_ids": {
+    "decomposer": "grok-4.3",
+    "probe_builder": "none",
+    "skeptic": "fixture-skeptic-f3-reviewer"
+  },
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "output_hashes": {
+    "decomposer": "314466e6f859d0d2000d47cab4be39fb34fe4bdb83f8a28b4c61f7fdb400a019"
+  },
+  "project_id": "fmc-mcp",
+  "project_model_primary_path": "project-model-v1.json",
+  "project_model_v0_hash": "ca2367e2470a0230dc98dca4746c0c7f82df38497e8165bad8f2d270d298565a",
+  "project_model_v0_path": "project-model-v0.json",
+  "project_model_v1_hash": "6b7e87a9c17093a57f0913b5b71a72749df708188e197d068e274269c9c4119e",
+  "project_model_v1_path": "project-model-v1.json",
+  "project_root": "/tmp/build-arena-proposal-emit-fmc-mcp-origin",
+  "prompt_hashes": {
+    "decomposer": "d62a89ef12a4d3ef3a9d562d57a1ccf1bf524ae02e983e84ab4f8ff6fbb633ad"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_hash": "a389fffd02f549e253469ed5bb15019f46bb2f2ead726dc0515a417b4a555c91",
+  "snapshot_id": "snapshot-d9e419b1e0695a46",
+  "snapshot_path": "snapshot.json"
+}

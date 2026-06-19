@@ -1,0 +1,128 @@
+{
+  "candidate_finding_id": "code.component.untested.comp:client",
+  "candidate_rank": 1,
+  "field_trace": [
+    {
+      "candidate_fields": [
+        "title",
+        "finding_id fallback"
+      ],
+      "invented_content": "none; fallback not used because title is populated",
+      "proposal_section": "Title",
+      "rendered_from": {
+        "finding_id": "code.component.untested.comp:client",
+        "title": "Component MCPClient has no observable check"
+      }
+    },
+    {
+      "candidate_fields": [
+        "intent",
+        "target_paths"
+      ],
+      "invented_content": "none; fixed labels only",
+      "proposal_section": "What & where",
+      "rendered_from": {
+        "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp:client: Component MCPClient has no observable check. Limit changes to the component target path set: src/fmc_mcp/client.py.",
+        "target_paths": [
+          "src/fmc_mcp/client.py"
+        ]
+      }
+    },
+    {
+      "candidate_fields": [
+        "evidence_refs",
+        "source_recommended_action"
+      ],
+      "invented_content": "none; evidence refs are stable JSON dump of candidate field",
+      "proposal_section": "Why",
+      "rendered_from": {
+        "evidence_refs": [
+          {
+            "checked": true,
+            "componentId": "comp:client",
+            "kind": "component"
+          },
+          {
+            "checked": true,
+            "kind": "absence",
+            "path": "iterationReadiness.componentProfiles"
+          },
+          {
+            "checked": true,
+            "kind": "owned_surface",
+            "path": "src/fmc_mcp/client.py"
+          },
+          {
+            "checked": true,
+            "kind": "provenance",
+            "ref": "prov:bcfd8e782d7fe500"
+          }
+        ],
+        "source_recommended_action": "Add an observable check (e.g. a focused test) covering MCPClient before mutating it."
+      }
+    },
+    {
+      "candidate_fields": [
+        "success_criterion"
+      ],
+      "invented_content": "none",
+      "proposal_section": "Definition of done",
+      "rendered_from": {
+        "success_criterion": "The component target path set (src/fmc_mcp/client.py) is covered by a bounded change and the project's load-bearing quality gate commands pass."
+      }
+    },
+    {
+      "candidate_fields": [
+        "grounding_constraints"
+      ],
+      "invented_content": "none",
+      "proposal_section": "Constraints / guardrails",
+      "rendered_from": {
+        "grounding_constraints": [
+          "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+          "Do not silence failures or remove behavior to make the gate pass.",
+          "Use only repository-grounded files and commands from the intake quality gates."
+        ]
+      }
+    },
+    {
+      "candidate_fields": [
+        "verification_commands"
+      ],
+      "invented_content": "none",
+      "proposal_section": "How to verify",
+      "rendered_from": {
+        "verification_commands": [
+          "uv run --extra dev mypy src/fmc_mcp",
+          "uv run --extra dev python -m pytest -q",
+          "uv run --extra dev ruff check ."
+        ]
+      }
+    },
+    {
+      "candidate_fields": [
+        "priority_score",
+        "finding_id"
+      ],
+      "invented_content": "none; no derived priority bucket",
+      "proposal_section": "Priority & source",
+      "rendered_from": {
+        "finding_id": "code.component.untested.comp:client",
+        "priority_score": 540.0
+      }
+    }
+  ],
+  "intentionally_omitted_candidate_fields": [
+    "rank",
+    "target_path",
+    "repo_facts_hash",
+    "repo_facts_block",
+    "base_lineage",
+    "intent_hash",
+    "proposal_key",
+    "registry_status"
+  ],
+  "plan_path": "/home/leonb/projects/build-arena-proposal-emit/reports/2026-06-19-proposal-emit-ticket-ready/fmc-mcp/proposal-plan.json",
+  "proposal_path": "/home/leonb/projects/build-arena-proposal-emit/reports/2026-06-19-proposal-emit-ticket-ready/fmc-mcp/proposal.md",
+  "proposal_sha256": "7cb59f0ca88490d07b3ad1d7c77bdf3cc3684448f4eac777bd3114e50aae2e96"
+}

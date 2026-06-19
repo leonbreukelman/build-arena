@@ -1,0 +1,484 @@
+{
+  "advisorySignalHandoff": {
+    "consumer": "elenchus-core",
+    "expectedFields": [
+      "goal",
+      "nonGoals",
+      "components",
+      "dependencies",
+      "observableChecks",
+      "verificationGaps"
+    ],
+    "optionalFLabelHint": true
+  },
+  "assumptions": [
+    {
+      "description": "LLM claims are advisory until deterministic gates pass.",
+      "id": "assumption-llm-advisory",
+      "status": "confirmed"
+    }
+  ],
+  "components": [
+    {
+      "id": "comp-config",
+      "kind": "source",
+      "name": "ConfigurationManagement",
+      "observableCheckIds": [
+        "check-comp-config"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/config.py"
+      ],
+      "responsibilities": [
+        "Manage application settings and pydantic configuration loading"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-client",
+      "kind": "source",
+      "name": "MCPClient",
+      "observableCheckIds": [
+        "check-comp-client"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/client.py"
+      ],
+      "responsibilities": [
+        "Handle HTTP client interactions and async MCP protocol calls"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-resources",
+      "kind": "source",
+      "name": "ResourceProvider",
+      "observableCheckIds": [
+        "check-comp-resources"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/resources.py"
+      ],
+      "responsibilities": [
+        "Provide resource definitions and client retrieval utilities"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-tools",
+      "kind": "source",
+      "name": "ToolRegistry",
+      "observableCheckIds": [
+        "check-comp-tools"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/tools.py"
+      ],
+      "responsibilities": [
+        "Define and register available MCP tools for the server"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-server",
+      "kind": "source",
+      "name": "ServerCore",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/server.py"
+      ],
+      "responsibilities": [
+        "Orchestrate FastMCP server lifecycle and module integration"
+      ],
+      "riskLevel": "medium"
+    },
+    {
+      "id": "comp-entry",
+      "kind": "source",
+      "name": "PackageEntrypoint",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "ownedSurfaces": [
+        "src/fmc_mcp/__init__.py",
+        "src/fmc_mcp/__main__.py"
+      ],
+      "responsibilities": [
+        "Expose package initialization and command line execution entry"
+      ],
+      "riskLevel": "medium"
+    }
+  ],
+  "dependencies": [
+    {
+      "description": "Auto import contract comp:resources to comp:client",
+      "fromComponent": "comp-resources",
+      "id": "contract-auto-25c3c6d20a305beeeca9",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-resources"
+      ],
+      "toComponent": "comp-client"
+    },
+    {
+      "description": "Auto import contract comp:entry to comp:server",
+      "fromComponent": "comp-entry",
+      "id": "contract-auto-2f396cd20dda22594653",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "toComponent": "comp-server"
+    },
+    {
+      "description": "Auto import contract comp:server to comp:tools",
+      "fromComponent": "comp-server",
+      "id": "contract-auto-36e31fda6d2df7b6c8ff",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-tools"
+    },
+    {
+      "description": "Auto import contract comp:client to comp:config",
+      "fromComponent": "comp-client",
+      "id": "contract-auto-4db395dbd95108d60b32",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-client"
+      ],
+      "toComponent": "comp-config"
+    },
+    {
+      "description": "Auto import contract comp:client to comp:config",
+      "fromComponent": "comp-client",
+      "id": "contract-auto-5962c73618f92db925d1",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-client"
+      ],
+      "toComponent": "comp-config"
+    },
+    {
+      "description": "Auto import contract comp:entry to comp:server",
+      "fromComponent": "comp-entry",
+      "id": "contract-auto-5b8bcc3fe1c85d144f09",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "toComponent": "comp-server"
+    },
+    {
+      "description": "Auto import contract comp:tools to comp:resources",
+      "fromComponent": "comp-tools",
+      "id": "contract-auto-68860f44ca677cc65828",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-tools"
+      ],
+      "toComponent": "comp-resources"
+    },
+    {
+      "description": "Auto import contract comp:server to comp:config",
+      "fromComponent": "comp-server",
+      "id": "contract-auto-70b02da26b7d5371300e",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-config"
+    },
+    {
+      "description": "Auto import contract comp:tools to comp:resources",
+      "fromComponent": "comp-tools",
+      "id": "contract-auto-85277c562519c8594ad7",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-tools"
+      ],
+      "toComponent": "comp-resources"
+    },
+    {
+      "description": "Auto import contract comp:entry to comp:server",
+      "fromComponent": "comp-entry",
+      "id": "contract-auto-b2b2314baf57aa2e487d",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "toComponent": "comp-server"
+    },
+    {
+      "description": "Auto import contract comp:entry to comp:server",
+      "fromComponent": "comp-entry",
+      "id": "contract-auto-c9d784d508ce31bca57a",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "toComponent": "comp-server"
+    },
+    {
+      "description": "Auto import contract comp:entry to comp:server",
+      "fromComponent": "comp-entry",
+      "id": "contract-auto-ca5e1295204bdf16bacf",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-entry"
+      ],
+      "toComponent": "comp-server"
+    },
+    {
+      "description": "Auto import contract comp:server to comp:resources",
+      "fromComponent": "comp-server",
+      "id": "contract-auto-e7d89d2157e18cc96de3",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-resources"
+    },
+    {
+      "description": "Auto import contract comp:server to comp:entry",
+      "fromComponent": "comp-server",
+      "id": "contract-auto-f5439cc4db4e0ea6bf94",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-entry"
+    },
+    {
+      "description": "ServerClientImport",
+      "fromComponent": "comp-server",
+      "id": "contract-server-client",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-client"
+    },
+    {
+      "description": "ServerConfigImport",
+      "fromComponent": "comp-server",
+      "id": "contract-server-config",
+      "kind": "requires",
+      "observableCheckIds": [
+        "check-comp-server"
+      ],
+      "toComponent": "comp-config"
+    }
+  ],
+  "evidenceRequirements": [
+    {
+      "acceptedArtifactTypes": [
+        "json",
+        "markdown",
+        "command-output"
+      ],
+      "description": "Deterministic gate report and provenance-backed snapshot artifacts.",
+      "id": "evidence-gate-report",
+      "requiredFor": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server",
+        "comp-entry"
+      ]
+    }
+  ],
+  "goal": "Emit a ticket-ready proposal for the top Build Arena foundation candidate.",
+  "heldOutProbes": [],
+  "id": "fmc-mcp",
+  "invariants": [
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server",
+        "comp-entry"
+      ],
+      "description": "Prevent fabrication of unproven results across all modules",
+      "id": "concern-anti_fabrication",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-resources",
+        "check-comp-tools",
+        "check-comp-server",
+        "check-comp-entry"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server",
+        "comp-entry"
+      ],
+      "description": "Enforce deterministic behavior in all components",
+      "id": "concern-determinism",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-resources",
+        "check-comp-tools",
+        "check-comp-server",
+        "check-comp-entry"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server",
+        "comp-entry"
+      ],
+      "description": "Track provenance for all owned nodes and edges",
+      "id": "concern-provenance",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-resources",
+        "check-comp-tools",
+        "check-comp-server",
+        "check-comp-entry"
+      ]
+    },
+    {
+      "componentIds": [
+        "comp-config",
+        "comp-client",
+        "comp-resources",
+        "comp-tools",
+        "comp-server",
+        "comp-entry"
+      ],
+      "description": "Reject any live paid API acceptance in components",
+      "id": "concern-no_live_paid_api_acceptance",
+      "observableCheckIds": [
+        "check-comp-config",
+        "check-comp-client",
+        "check-comp-resources",
+        "check-comp-tools",
+        "check-comp-server",
+        "check-comp-entry"
+      ]
+    }
+  ],
+  "nearNeighborAlternatives": [],
+  "nonGoals": [
+    "do not treat file buckets as final components"
+  ],
+  "observableChecks": [
+    {
+      "componentId": "comp-config",
+      "description": "Observable local check for ConfigurationManagement.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-config",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    },
+    {
+      "componentId": "comp-client",
+      "description": "Observable local check for MCPClient.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-client",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    },
+    {
+      "componentId": "comp-resources",
+      "description": "Observable local check for ResourceProvider.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-resources",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    },
+    {
+      "componentId": "comp-tools",
+      "description": "Observable local check for ToolRegistry.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-tools",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    },
+    {
+      "componentId": "comp-server",
+      "description": "Observable local check for ServerCore.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-server",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    },
+    {
+      "componentId": "comp-entry",
+      "description": "Observable local check for PackageEntrypoint.",
+      "evidenceRequired": [
+        "passing local command output",
+        "gate-report.json"
+      ],
+      "id": "check-comp-entry",
+      "mode": "test",
+      "noLiveApi": true,
+      "observableSignal": "pytest"
+    }
+  ],
+  "risks": [
+    {
+      "description": "A fluent decomposition could optimize the wrong target; deterministic gates, near-neighbors, and explicit semantic-validation gaps keep that risk visible until probe proof exists.",
+      "id": "risk-f3-wrong-target",
+      "level": "medium",
+      "mitigation": "Run deterministic gates now; close semantic-validation gaps with held-out probes before claiming independent adversarial validation."
+    }
+  ],
+  "schemaVersion": "project-model/v0",
+  "source": {
+    "primaryBacklogItem": "local-snapshot",
+    "repo": "/tmp/build-arena-proposal-emit-fmc-mcp-origin",
+    "task": "AI-first project decomposition"
+  },
+  "unclassifiedProjectSurface": [],
+  "verificationGaps": [
+    {
+      "affectedComponentIds": [
+        "comp-server"
+      ],
+      "description": "Unproven semantic probe on held-out test paths",
+      "id": "gap-probe-semantic",
+      "proposedClosureCheck": "Add a deterministic local check or independent review artifact.",
+      "severity": "medium"
+    }
+  ]
+}

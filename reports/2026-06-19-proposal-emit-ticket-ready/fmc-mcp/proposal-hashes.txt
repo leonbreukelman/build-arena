@@ -1,0 +1,2 @@
+7cb59f0ca88490d07b3ad1d7c77bdf3cc3684448f4eac777bd3114e50aae2e96  reports/2026-06-19-proposal-emit-ticket-ready/fmc-mcp/proposal.md
+7cb59f0ca88490d07b3ad1d7c77bdf3cc3684448f4eac777bd3114e50aae2e96  reports/2026-06-19-proposal-emit-ticket-ready/fmc-mcp/proposal-second-run.md

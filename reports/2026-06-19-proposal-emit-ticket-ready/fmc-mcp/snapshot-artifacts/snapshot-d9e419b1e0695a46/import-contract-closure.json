@@ -1,0 +1,22 @@
+{
+  "autoContractCount": 14,
+  "autoContractIds": [
+    "contract.auto.25c3c6d20a305beeeca9",
+    "contract.auto.2f396cd20dda22594653",
+    "contract.auto.36e31fda6d2df7b6c8ff",
+    "contract.auto.4db395dbd95108d60b32",
+    "contract.auto.5962c73618f92db925d1",
+    "contract.auto.5b8bcc3fe1c85d144f09",
+    "contract.auto.68860f44ca677cc65828",
+    "contract.auto.70b02da26b7d5371300e",
+    "contract.auto.85277c562519c8594ad7",
+    "contract.auto.b2b2314baf57aa2e487d",
+    "contract.auto.c9d784d508ce31bca57a",
+    "contract.auto.ca5e1295204bdf16bacf",
+    "contract.auto.e7d89d2157e18cc96de3",
+    "contract.auto.f5439cc4db4e0ea6bf94"
+  ],
+  "note": "Auto contracts are deterministic import-edge closure derived from graph evidence and model component ownership.",
+  "schemaVersion": "import-contract-closure/v0",
+  "snapshotId": "snapshot-d9e419b1e0695a46"
+}

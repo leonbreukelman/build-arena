@@ -1,0 +1,189 @@
+Build an AI-first project decomposition from the deterministic graph evidence below. You enrich the graph into responsibility-bearing components; you do not invent identifiers.
+Project: fmc-mcp
+Goal: Emit a ticket-ready proposal for the top Build Arena foundation candidate.
+Non-goals: ["do not treat file buckets as final components"]
+
+Output STRICT JSON with these exact keys (no markdown):
+{
+  "model_id": str, "project_id": str, "goal": str, "non_goals": [str],
+  "components": [{"id": str, "name": str, "responsibility": str (>=6 words, a semantic responsibility not a file list),
+     "owned_node_ids": [node_id from the list below], "provenance_refs": [prov id from a node you own],
+     "contract_ids": [id of a contract you declare], "check_ids": [id of an observable_check you declare],
+     "verification_gap_ids": [id of a verification_gap you declare]}],
+  "contracts": [{"id": str, "name": str, "from_component_id": component id, "to_component_id": component id,
+     "supporting_edge_ids": [edge_id from the list below connecting the two components],
+     "near_neighbor_alternative_ids": [], "provenance_refs": [prov id]}],
+  "cross_cutting_concerns": [{"id": str, "category": str, "description": str, "component_ids": [component id],
+     "contract_ids": [], "provenance_refs": [prov id]}],
+  "observable_checks": [{"id": str, "description": str, "command": str, "component_ids": [component id],
+     "contract_ids": [], "provenance_refs": [prov id]}],
+  "verification_gaps": [{"id": str, "description": str, "severity": "low|medium|high|blocker",
+     "component_ids": [component id], "contract_ids": [], "provenance_refs": [prov id]}],
+  "near_neighbor_alternatives": [{"id": str, "target_id": component id, "alternative": str,
+     "why_not_primary": str, "provenance_refs": [prov id]}]
+}
+Rules: reuse only node_id/edge_id/prov ids shown below; never invent ids.
+- EVERY primary module node listed below must be owned by exactly one component (or, if you cannot responsibly place it, covered by a verification_gap whose provenance_refs includes that node's prov id). Uncovered primary modules fail the inventory gate.
+- Every component must own >=1 node, cite a provenance id from a node it owns, and declare >=1 of contract/check/gap.
+- Decompose into MULTIPLE components (one per distinct responsibility); a single component covering the whole repo is a file-bucket and fails the gate. Each listed primary module must be owned by some component.
+- Every contract must connect TWO DISTINCT components (from_component_id != to_component_id) and cite at least one supporting_edge_id from the edges below whose endpoints map to those two components. A self-referential contract or one with no supporting edge fails the gate.
+- Include the universal cross_cutting_concerns: anti_fabrication, determinism, provenance, no_live_paid_api_acceptance (each covering all components), plus protected_surface_integrity and generated_artifact_integrity if such surfaces exist.
+- Provide at least one observable_check.
+- HELD-OUT PROBES: you have no probe-execution artifacts, so do NOT claim probe pass/fail. Instead record at least one verification_gap whose description mentions 'probe' and one of: 'semantic', 'independent', 'held-out', or 'planted-negative' (this is the accepted unproven-probe gap).
+- Reject vague/file-bucket leaves.
+
+Primary modules to fully cover (7 total):
+- node_id=node:127af2b0f9d32f8164c6 kind=python_module path=src/fmc_mcp/__init__.py prov=prov:aeec7a1dae758e4e
+- node_id=node:257d836fb3f003e3e2c2 kind=python_module path=src/fmc_mcp/config.py prov=prov:b380701c2879efce
+- node_id=node:4042451215c279f0dca7 kind=python_module path=src/fmc_mcp/client.py prov=prov:bcfd8e782d7fe500
+- node_id=node:84a7c7e4c189e28cb1bb kind=python_module path=src/fmc_mcp/resources.py prov=prov:4e62ae79d2c07a9c
+- node_id=node:9810fbe9bc4ff06aee73 kind=python_module path=src/fmc_mcp/server.py prov=prov:d10dbb159e6fb524
+- node_id=node:a32d71cbbae4bcadc234 kind=python_module path=src/fmc_mcp/tools.py prov=prov:750d7fda533e438c
+- node_id=node:b3d9c9b0b868f763b2b8 kind=python_module path=src/fmc_mcp/__main__.py prov=prov:da6e96a18d26d1cf
+- node_id=node:09fa114aae85cc01a973 kind=python_function path=tests/test_client.py prov=prov:f06cf30b5c86d1c2
+- node_id=node:0e8ad26f3fa7f9f70124 kind=python_function path=src/fmc_mcp/server.py prov=prov:4de3689c602c27c8
+- node_id=node:0f2924d0972b4ea19f44 kind=python_function path=src/fmc_mcp/server.py prov=prov:9044166d96fafc27
+- node_id=node:129f8a03fb8f09f4c107 kind=python_function path=src/fmc_mcp/client.py prov=prov:4a7607b917067ce1
+- node_id=node:136a3d4798dcdcba19ed kind=python_function path=src/fmc_mcp/resources.py prov=prov:bec0ec8d4b515a01
+- node_id=node:1498bdfe6a32f0ebb94a kind=python_function path=tests/test_resources.py prov=prov:20e2b0c7e921513b
+- node_id=node:18cb6e0edd2c101a1f7d kind=python_class path=src/fmc_mcp/client.py prov=prov:6922c4cbc76c847b
+- node_id=node:24b7fac72b5fafcca05d kind=python_function path=src/fmc_mcp/client.py prov=prov:92742fc0a75e8da2
+- node_id=node:2931ded44efc706fee80 kind=python_function path=tests/test_resources.py prov=prov:33210c991062bd14
+- node_id=node:2de54a4e65b20280ce26 kind=python_function path=tests/conftest.py prov=prov:6766d512b10bb683
+- node_id=node:2dfb6c0f7f92da0973b4 kind=python_function path=src/fmc_mcp/server.py prov=prov:85323dd67853d257
+- node_id=node:32d74ba3048c219b4163 kind=python_function path=tests/test_resources.py prov=prov:e18356a7426b1c56
+- node_id=node:35502b4b0a3419c5e6c2 kind=python_function path=src/fmc_mcp/tools.py prov=prov:1f43efdcff932aea
+- node_id=node:39969e6e4501f125fc41 kind=python_function path=src/fmc_mcp/client.py prov=prov:50daf627e73eb5d4
+- node_id=node:3e7a8dfb7a06f8c9b2e3 kind=python_function path=tests/test_client.py prov=prov:dbd8f33c88bc1bc7
+- node_id=node:434ee10dea72f8ad3749 kind=python_function path=tests/test_resources.py prov=prov:2864ea7baaeacc06
+- node_id=node:45e6bbf2da2e9192f7de kind=python_function path=src/fmc_mcp/resources.py prov=prov:5432e12dd9b06188
+- node_id=node:47d3c4730e119fa97525 kind=python_function path=src/fmc_mcp/client.py prov=prov:f7d930f9242cdf6b
+- node_id=node:4aca351dec5346ca420b kind=python_function path=src/fmc_mcp/resources.py prov=prov:187cb860ee557503
+- node_id=node:4ce07f1cf13158676b4b kind=python_function path=src/fmc_mcp/client.py prov=prov:8b4e55af20732ac6
+- node_id=node:52bc5943688cf09a17e6 kind=python_function path=src/fmc_mcp/client.py prov=prov:77f6ea0500ad864c
+- node_id=node:531e8e03393414aec6cf kind=python_class path=src/fmc_mcp/config.py prov=prov:a9e9273cfe1c61b5
+- node_id=node:57a3ee9a39c89be240b9 kind=python_class path=tests/test_client.py prov=prov:6ee931714d574d45
+- node_id=node:613b26deabd092943c56 kind=python_function path=src/fmc_mcp/client.py prov=prov:8bc6b516dc0b436f
+- node_id=node:61c74dac5be72d9e88dd kind=python_function path=tests/test_resources.py prov=prov:8bc3f37c78ecc091
+- node_id=node:61e803c05fe5265559f0 kind=python_function path=tests/test_client.py prov=prov:cd0d5846490d61ee
+- node_id=node:65741e2dd1a2ef275a44 kind=python_function path=tests/conftest.py prov=prov:4f319b2cfae58f1b
+- node_id=node:65a1dc1e8805d5f44a70 kind=python_function path=src/fmc_mcp/client.py prov=prov:dcca6daf179a5f4c
+- node_id=node:65d308e43bf21c6af38e kind=python_function path=tests/conftest.py prov=prov:ddd6f48cdc67467b
+- node_id=node:67292e641e7d5bfb38dd kind=python_function path=tests/conftest.py prov=prov:46fe9767c5347ca4
+- node_id=node:6827423cb5b2e7e8a417 kind=python_class path=tests/test_client.py prov=prov:b9e960142dcb9ea5
+- node_id=node:6872a67935e83f43a93a kind=python_function path=src/fmc_mcp/config.py prov=prov:fd5b9444de7916dc
+- node_id=node:70d989b28f98f5b15895 kind=python_function path=src/fmc_mcp/client.py prov=prov:655157d7f34b01d3
+- node_id=node:73768c54c3cf6f371cfe kind=python_function path=tests/test_client.py prov=prov:678dfaeef0318b9e
+- node_id=node:7b22938d89aade938666 kind=python_function path=tests/conftest.py prov=prov:f0de02958bc24ecb
+- node_id=node:7f7e30eced9337b46e54 kind=python_function path=tests/test_client.py prov=prov:6cbbcad30f824c02
+- node_id=node:80751a890deaf14d110e kind=python_function path=tests/conftest.py prov=prov:cba37443cecefc78
+- node_id=node:84c170abfc9e65eddf63 kind=python_function path=tests/test_resources.py prov=prov:8b510a4b6b46d7b9
+- node_id=node:8ace3f8b214115f0e1aa kind=python_function path=src/fmc_mcp/client.py prov=prov:5545b2c1b69e08a3
+- node_id=node:8b78e495ac66ff242a2f kind=python_function path=src/fmc_mcp/client.py prov=prov:911fe64a8a563f4a
+- node_id=node:8cb879f11a7d8c065b0a kind=python_function path=tests/conftest.py prov=prov:8fb0e3e063883119
+- node_id=node:8eb0135d460674f3bd02 kind=python_function path=src/fmc_mcp/config.py prov=prov:c8f5f3e6b252fc58
+- node_id=node:8ef91f22504e7c5a9a2e kind=python_function path=tests/conftest.py prov=prov:0c89e2ef46a22715
+- node_id=node:93d901aae17ef2918806 kind=python_function path=src/fmc_mcp/client.py prov=prov:9734a80e5a0aa51f
+- node_id=node:95369d0862dbe7fff032 kind=python_function path=tests/test_resources.py prov=prov:1a9b1dd4e2694f13
+- node_id=node:95e13f464c6439696de9 kind=python_function path=src/fmc_mcp/client.py prov=prov:870e595051701097
+- node_id=node:98dc68c534a0acf6545d kind=python_function path=tests/test_client.py prov=prov:74a62232073e2d4d
+- node_id=node:998da832dbd6dad49961 kind=python_function path=src/fmc_mcp/tools.py prov=prov:1908bb239917dc71
+- node_id=node:9cc261dc16025460761f kind=python_function path=src/fmc_mcp/client.py prov=prov:762795fe8b07b883
+- node_id=node:9e357f7cc209ca8ba2ca kind=python_function path=src/fmc_mcp/client.py prov=prov:bb311405d7893be6
+- node_id=node:a09c072ec43192acb1e3 kind=python_function path=tests/test_live.py prov=prov:ff6bd90548c917c9
+- node_id=node:a217f0c5fc08981d87f2 kind=python_function path=src/fmc_mcp/server.py prov=prov:819e17895eea1040
+- node_id=node:a2e531a5ab606f41d9bc kind=python_function path=src/fmc_mcp/resources.py prov=prov:f38f20980d380538
+- node_id=node:a35043109973f2a21639 kind=python_function path=src/fmc_mcp/client.py prov=prov:1b3f2c1d7897a7d9
+- node_id=node:a55ddd453b2c383a7c94 kind=python_class path=tests/test_resources.py prov=prov:35ebe3a05dfb61ea
+- node_id=node:aa34a15837a9e9acb195 kind=python_function path=tests/test_client.py prov=prov:15b0d9ea38dc8b30
+- node_id=node:aeb3e06acca87605afc7 kind=python_function path=tests/test_resources.py prov=prov:45436d74f269afd8
+- node_id=node:aef65ffb7e6fade21725 kind=python_function path=src/fmc_mcp/client.py prov=prov:5ab061c5e7644b3b
+- node_id=node:b77720dc4f38e785e29a kind=python_function path=tests/test_client.py prov=prov:d2fa68e702a0336c
+- node_id=node:b94240282f08b87349d2 kind=python_function path=src/fmc_mcp/client.py prov=prov:df3a9487fe343323
+- node_id=node:bd98487d5865d99b4393 kind=python_function path=src/fmc_mcp/client.py prov=prov:e6637d97bcb4c874
+- node_id=node:c204a8afcaec78c9d6e0 kind=python_function path=src/fmc_mcp/server.py prov=prov:e4d3ef2280bcf7de
+- node_id=node:c6405ff28ca10fee3a33 kind=python_function path=tests/test_resources.py prov=prov:8be16bde66785662
+- node_id=node:cb973cc1f27e59c0c208 kind=python_function path=src/fmc_mcp/server.py prov=prov:c6bbdfa1c267b0ff
+- node_id=node:cd9074a3fc12c17f4842 kind=python_function path=src/fmc_mcp/server.py prov=prov:37ab6cf2892de795
+- node_id=node:cdb54772758be2dc463d kind=python_function path=tests/test_client.py prov=prov:a71d2f3991b3dd12
+- node_id=node:d0893ef81233885128b1 kind=python_class path=src/fmc_mcp/client.py prov=prov:18b0c8871bdafce4
+- node_id=node:d0f542d08179725d9549 kind=python_function path=tests/test_client.py prov=prov:f45e6d71592c9856
+- node_id=node:d100cc89f61477235e08 kind=python_function path=src/fmc_mcp/resources.py prov=prov:f66191feea1cc687
+- node_id=node:d561ab3d7d70e246d07e kind=python_function path=src/fmc_mcp/client.py prov=prov:c7518e8eb39130cf
+- node_id=node:d89de7fef0f8e4e66bb0 kind=python_function path=src/fmc_mcp/resources.py prov=prov:a77f09fd05b8d122
+- node_id=node:e56033259801308832a6 kind=python_function path=tests/test_client.py prov=prov:55c376cef7131912
+- node_id=node:ea9dac13eecb61f72c33 kind=python_function path=src/fmc_mcp/client.py prov=prov:8ef0247e5bf6d05d
+- node_id=node:ec03a4ae8776bb4a28da kind=python_function path=src/fmc_mcp/server.py prov=prov:b5271f40f46ff232
+- node_id=node:f0d8fc51741705d8d8ef kind=python_class path=tests/test_resources.py prov=prov:c57441decd9b395c
+- node_id=node:f5858de4be98b7930ef2 kind=python_function path=src/fmc_mcp/client.py prov=prov:1dcdb60f3cd2d9b7
+
+Graph edges (reuse these ids for contract support):
+- edge_id=edge:037f299e6ee142364aa5 kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:json
+- edge_id=edge:14322f3a0d9f20b055c8 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:asyncio
+- edge_id=edge:14cbf620f2c5c632352d kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:fmc_mcp.resources
+- edge_id=edge:1a77bf20262135e93292 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:logging
+- edge_id=edge:1dbd45e8683cedc3c87a kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp.config
+- edge_id=edge:2028fa4bc4c71f3e2417 kind=imports from=node:84a7c7e4c189e28cb1bb to=node:python_import:json
+- edge_id=edge:20676dd28381e382a661 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:json
+- edge_id=edge:2266d2f3d2a25f20b86b kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:fmc_mcp.client
+- edge_id=edge:25c3c6d20a305beeeca9 kind=imports from=node:84a7c7e4c189e28cb1bb to=node:python_import:fmc_mcp.client
+- edge_id=edge:2f396cd20dda22594653 kind=imports from=node:127af2b0f9d32f8164c6 to=node:python_import:fmc_mcp.server.main
+- edge_id=edge:2f3a9bfafe89ef94d454 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:asyncio
+- edge_id=edge:330a182f3d06cd9dc033 kind=imports from=node:84a7c7e4c189e28cb1bb to=node:python_import:typing
+- edge_id=edge:358deff7a11b59cd8af1 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:fmc_mcp.config
+- edge_id=edge:360da5d5f287f7a09ee6 kind=tests from=node:7548f8dc68792603d8be to=node:84a7c7e4c189e28cb1bb
+- edge_id=edge:36e31fda6d2df7b6c8ff kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp.tools
+- edge_id=edge:3f011dcb2ef05226a750 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:base64
+- edge_id=edge:3fb68098eb173977aa27 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:fmc_mcp.resources
+- edge_id=edge:45b3800fb48b6a0993c0 kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:fmc_mcp.tools
+- edge_id=edge:46ccd0facf6c0f148ecd kind=imports from=node:a3ea09c9a38816923b96 to=node:python_import:re
+- edge_id=edge:4782e0cd73aa05aee2b2 kind=tests from=node:69c4263d96d5a82e1220 to=node:b74698bb7eda4aa768bd
+- edge_id=edge:4ac4bc2928903a9f6cdb kind=imports from=node:4042451215c279f0dca7 to=node:python_import:time
+- edge_id=edge:4db395dbd95108d60b32 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:fmc_mcp.config
+- edge_id=edge:54cb67860dcd9fd888a0 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:typing
+- edge_id=edge:553a567055a211a15038 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:os
+- edge_id=edge:575f266b83f043302446 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:fmc_mcp.tools
+- edge_id=edge:5962c73618f92db925d1 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:fmc_mcp.config.get_settings
+- edge_id=edge:5b8bcc3fe1c85d144f09 kind=imports from=node:127af2b0f9d32f8164c6 to=node:python_import:fmc_mcp.server.mcp
+- edge_id=edge:5d1f4fcd1c78c002ebbc kind=imports from=node:257d836fb3f003e3e2c2 to=node:python_import:logging
+- edge_id=edge:5e6dcd302645d60731ed kind=imports from=node:4042451215c279f0dca7 to=node:python_import:logging
+- edge_id=edge:5e86899c2b2b270e3dca kind=imports from=node:a32d71cbbae4bcadc234 to=node:python_import:json
+- edge_id=edge:622989e9cb39b49520e8 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:pytest
+- edge_id=edge:6605bc440397f23478a1 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:contextlib
+- edge_id=edge:66f7fa1f81266d13d1cf kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:fmc_mcp
+- edge_id=edge:68860f44ca677cc65828 kind=imports from=node:a32d71cbbae4bcadc234 to=node:python_import:fmc_mcp.resources
+- edge_id=edge:6daf3014cdf7860d5352 kind=imports from=node:257d836fb3f003e3e2c2 to=node:python_import:functools
+- edge_id=edge:70b02da26b7d5371300e kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp.config.get_settings
+- edge_id=edge:73dbdcd070f390c7d5eb kind=imports from=node:a32d71cbbae4bcadc234 to=node:python_import:ipaddress
+- edge_id=edge:7699387eb3b5e4772358 kind=imports from=node:7016dc7cbefc37d26f49 to=node:python_import:pytest_httpx
+- edge_id=edge:78c845c345be8ceb186b kind=imports from=node:7016dc7cbefc37d26f49 to=node:python_import:fmc_mcp.config
+- edge_id=edge:811b7022c3ffe9616bc1 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:collections.abc
+- edge_id=edge:85277c562519c8594ad7 kind=imports from=node:a32d71cbbae4bcadc234 to=node:python_import:fmc_mcp.resources.get_client
+- edge_id=edge:85cca138963a3384ad7d kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:fmc_mcp.client
+- edge_id=edge:90de6e931e2ea2877fe9 kind=imports from=node:a32d71cbbae4bcadc234 to=node:python_import:logging
+- edge_id=edge:949a3b0102d9ea17bd4b kind=imports from=node:a3ea09c9a38816923b96 to=node:python_import:fmc_mcp.client
+- edge_id=edge:95682332b8df7d4b76ab kind=imports from=node:a3ea09c9a38816923b96 to=node:python_import:pytest
+- edge_id=edge:99c22cbb1dea4079e875 kind=imports from=node:4042451215c279f0dca7 to=node:python_import:httpx
+- edge_id=edge:9c5b03556bd2c3c2031a kind=tests from=node:7548f8dc68792603d8be to=node:663ef6b7a92a5221f7a7
+- edge_id=edge:a07c828181cb36654e59 kind=imports from=node:663ef6b7a92a5221f7a7 to=node:python_import:pytest_httpx
+- edge_id=edge:a93146125117b8253955 kind=imports from=node:257d836fb3f003e3e2c2 to=node:python_import:functools.lru_cache
+- edge_id=edge:aeac71aa3f93133e7c14 kind=imports from=node:a3ea09c9a38816923b96 to=node:python_import:fmc_mcp.config
+- edge_id=edge:b2b2314baf57aa2e487d kind=imports from=node:b3d9c9b0b868f763b2b8 to=node:python_import:fmc_mcp.server
+- edge_id=edge:b8a91b6c54c2c206345b kind=imports from=node:7016dc7cbefc37d26f49 to=node:python_import:fmc_mcp.client
+- edge_id=edge:ba6c53dbb1f818fdab3c kind=imports from=node:257d836fb3f003e3e2c2 to=node:python_import:pydantic
+- edge_id=edge:bc08c33ab6f843043811 kind=tests from=node:8e6b62038b56f6d5e8c0 to=node:a3ea09c9a38816923b96
+- edge_id=edge:bdcf0b7421c4ea5fc9ec kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:mcp.server.fastmcp
+- edge_id=edge:be098ea973e49def1f00 kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:fmc_mcp
+- edge_id=edge:c7436ff03a3a13b20c0f kind=imports from=node:b74698bb7eda4aa768bd to=node:python_import:asyncio
+- edge_id=edge:c9d784d508ce31bca57a kind=imports from=node:127af2b0f9d32f8164c6 to=node:python_import:fmc_mcp.server
+- edge_id=edge:ca5e1295204bdf16bacf kind=imports from=node:b3d9c9b0b868f763b2b8 to=node:python_import:fmc_mcp.server.main
+- edge_id=edge:cbfc0096826b93771472 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp.client
+- edge_id=edge:ce7b0c6b39091e55fab5 kind=imports from=node:7016dc7cbefc37d26f49 to=node:python_import:pytest
+- edge_id=edge:db02e79b9841819d02bb kind=imports from=node:257d836fb3f003e3e2c2 to=node:python_import:pydantic_settings
+- edge_id=edge:deeec8f2246c646f6595 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:contextlib.asynccontextmanager
+- edge_id=edge:e0be2df14a1b9e0672c5 kind=imports from=node:84a7c7e4c189e28cb1bb to=node:python_import:logging
+- edge_id=edge:e7d89d2157e18cc96de3 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp.resources
+- edge_id=edge:ef6342495b9319b77ef8 kind=tests from=node:8ff2e095ade3b2a987b8 to=node:4042451215c279f0dca7
+- edge_id=edge:f5439cc4db4e0ea6bf94 kind=imports from=node:9810fbe9bc4ff06aee73 to=node:python_import:fmc_mcp
+- edge_id=edge:f82dc68881202fdb2b6c kind=imports from=node:a3ea09c9a38816923b96 to=node:python_import:pytest_httpx
+- edge_id=edge:fa8480396179ddb8b7c9 kind=tests from=node:8ff2e095ade3b2a987b8 to=node:7016dc7cbefc37d26f49

@@ -1,0 +1,297 @@
+{
+  "_provider_metadata": {
+    "api_key_source": "hermes_env_file",
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "16a11a716205ae4cb271de941a1ed73aba4ae872d8a888b64afe8f40db4cfa12",
+    "finish_reason": "stop",
+    "model": "grok-4.3",
+    "prompt_hash": "3797ef5d83df594a35aa4f77db493ba2237938a38d6ded4ec82885acfed3d840",
+    "provider": "xai",
+    "requested_model": "grok-4.3",
+    "requested_model_source": "argument",
+    "served_model_matches_requested": true,
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 1310,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1175,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 154693500,
+      "num_sources_used": 0,
+      "prompt_tokens": 7513,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 128,
+        "image_tokens": 0,
+        "text_tokens": 7513
+      },
+      "total_tokens": 9998
+    }
+  },
+  "components": [
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract:server-config",
+        "contract.auto.4db395dbd95108d60b32",
+        "contract.auto.5962c73618f92db925d1",
+        "contract.auto.70b02da26b7d5371300e"
+      ],
+      "id": "comp:config",
+      "name": "ConfigurationManagement",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Manage application settings and pydantic configuration loading",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract:server-client",
+        "contract.auto.25c3c6d20a305beeeca9",
+        "contract.auto.4db395dbd95108d60b32",
+        "contract.auto.5962c73618f92db925d1"
+      ],
+      "id": "comp:client",
+      "name": "MCPClient",
+      "owned_node_ids": [
+        "node:4042451215c279f0dca7"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "responsibility": "Handle HTTP client interactions and async MCP protocol calls",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.25c3c6d20a305beeeca9",
+        "contract.auto.68860f44ca677cc65828",
+        "contract.auto.85277c562519c8594ad7",
+        "contract.auto.e7d89d2157e18cc96de3"
+      ],
+      "id": "comp:resources",
+      "name": "ResourceProvider",
+      "owned_node_ids": [
+        "node:84a7c7e4c189e28cb1bb"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "responsibility": "Provide resource definitions and client retrieval utilities",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.36e31fda6d2df7b6c8ff",
+        "contract.auto.68860f44ca677cc65828",
+        "contract.auto.85277c562519c8594ad7"
+      ],
+      "id": "comp:tools",
+      "name": "ToolRegistry",
+      "owned_node_ids": [
+        "node:a32d71cbbae4bcadc234"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c"
+      ],
+      "responsibility": "Define and register available MCP tools for the server",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check:run-tests"
+      ],
+      "contract_ids": [
+        "contract:server-config",
+        "contract:server-client",
+        "contract.auto.2f396cd20dda22594653",
+        "contract.auto.36e31fda6d2df7b6c8ff",
+        "contract.auto.5b8bcc3fe1c85d144f09",
+        "contract.auto.70b02da26b7d5371300e",
+        "contract.auto.b2b2314baf57aa2e487d",
+        "contract.auto.c9d784d508ce31bca57a",
+        "contract.auto.ca5e1295204bdf16bacf",
+        "contract.auto.e7d89d2157e18cc96de3",
+        "contract.auto.f5439cc4db4e0ea6bf94"
+      ],
+      "id": "comp:server",
+      "name": "ServerCore",
+      "owned_node_ids": [
+        "node:9810fbe9bc4ff06aee73"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "responsibility": "Orchestrate FastMCP server lifecycle and module integration",
+      "verification_gap_ids": [
+        "gap:probe-semantic"
+      ]
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.2f396cd20dda22594653",
+        "contract.auto.5b8bcc3fe1c85d144f09",
+        "contract.auto.b2b2314baf57aa2e487d",
+        "contract.auto.c9d784d508ce31bca57a",
+        "contract.auto.ca5e1295204bdf16bacf",
+        "contract.auto.f5439cc4db4e0ea6bf94"
+      ],
+      "id": "comp:entry",
+      "name": "PackageEntrypoint",
+      "owned_node_ids": [
+        "node:127af2b0f9d32f8164c6",
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "responsibility": "Expose package initialization and command line execution entry",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp:server",
+      "id": "contract:server-config",
+      "name": "ServerConfigImport",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:1dbd45e8683cedc3c87a"
+      ],
+      "to_component_id": "comp:config"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract:server-client",
+      "name": "ServerClientImport",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbfc0096826b93771472"
+      ],
+      "to_component_id": "comp:client"
+    }
+  ],
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Prevent fabrication of unproven results across all modules",
+      "id": "concern:anti_fabrication",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ]
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Enforce deterministic behavior in all components",
+      "id": "concern:determinism",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ]
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Track provenance for all owned nodes and edges",
+      "id": "concern:provenance",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ]
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Reject any live paid API acceptance in components",
+      "id": "concern:no_live_paid_api_acceptance",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ]
+    }
+  ],
+  "goal": "Emit a ticket-ready proposal for the top Build Arena foundation candidate.",
+  "model_id": "grok-4.3",
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "observable_checks": [
+    {
+      "command": "pytest",
+      "component_ids": [
+        "comp:server"
+      ],
+      "contract_ids": [],
+      "description": "Execute pytest to verify module integration",
+      "id": "check:run-tests",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ]
+    }
+  ],
+  "project_id": "fmc-mcp",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "comp:server"
+      ],
+      "contract_ids": [],
+      "description": "Unproven semantic probe on held-out test paths",
+      "id": "gap:probe-semantic",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

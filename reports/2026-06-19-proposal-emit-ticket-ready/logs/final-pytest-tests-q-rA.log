@@ -1,0 +1,621 @@
+........................................................................ [ 13%]
+........................................................................ [ 26%]
+................................sssssssssss............................. [ 40%]
+........................................................................ [ 53%]
+........................................................................ [ 67%]
+........................................................................ [ 80%]
+........................................................................ [ 93%]
+.................................                                        [100%]
+==================================== PASSES ====================================
+____________ test_gate_cli_returns_zero_on_real_fix_and_one_on_noop ____________
+----------------------------- Captured stdout call -----------------------------
+{
+  "ok": true,
+  "path": "src/mod.py",
+  "reason": "improved",
+  "suppressionsAfter": 0,
+  "suppressionsBefore": 0,
+  "violationsAfter": 0,
+  "violationsBefore": 1
+}
+{
+  "ok": false,
+  "path": "src/mod.py",
+  "reason": "no_improvement",
+  "suppressionsAfter": 0,
+  "suppressionsBefore": 0,
+  "violationsAfter": 1,
+  "violationsBefore": 1
+}
+___________ test_script_helpers_are_exercised_without_touching_repo ____________
+----------------------------- Captured stdout call -----------------------------
+updated .arena/scorer.lock.toml 9eef3e0df8e98dfcc620afbbe74070b714c12a34670e2a86011f2edcac523720
+rebuilt calibration repo and 13 patches under /tmp/pytest-of-leonb/pytest-7163/test_script_helpers_are_exerci0/calibration
+__________ test_source_references_reject_missing_local_file_citations __________
+----------------------------- Captured stdout call -----------------------------
+{
+  "checked": [],
+  "escaped": [],
+  "missing": [
+    {
+      "line": 5,
+      "link": "missing.md",
+      "resolved_path": "missing.md",
+      "source_path": "proposal.md"
+    }
+  ],
+  "ok": false,
+  "path": "proposal.md",
+  "sourceReferencesOk": false
+}
+______________ test_snapshot_cli_forwards_live_provider_switches _______________
+----------------------------- Captured stderr call -----------------------------
+stop before network
+_____ test_proposal_candidate_runner_applies_fake_diff_from_grounded_plan ______
+----------------------------- Captured stdout call -----------------------------
+{"candidateRank": 1, "findingId": "doc.index.missing", "ok": true, "patchPath": "/tmp/pytest-of-leonb/pytest-7163/test_proposal_candidate_runner0/repo/.arena/patches/hyp-proposal-r1-68e004aa427e.patch", "provenancePath": "/tmp/pytest-of-leonb/pytest-7163/test_proposal_candidate_runner0/repo/.arena/patches/hyp-proposal-r1-68e004aa427e.patch.provenance.json", "targetPath": "docs/index.md", "verification": {"commands": [{"command": "test -s docs/index.md", "exitCode": 0, "stderr": "", "stdout": ""}, {"command": "python3 -m arena.markdown_links --repo . --path docs/index.md", "exitCode": 0, "stderr": "", "stdout": "{\n  \"checked\": [\n    {\n      \"line\": 3,\n      \"link\": \"../README.md\",\n      \"resolved_path\": \"README.md\",\n      \"source_path\": \"docs/index.md\"\n    }\n  ],\n  \"escaped\": [],\n  \"missing\": [],\n  \"ok\": true,\n  \"path\": \"docs/index.md\"\n}"}], "ran": true}}
+_ test_proposal_candidate_runner_rejects_dead_markdown_links_without_patch_artifact _
+----------------------------- Captured stdout call -----------------------------
+{"error": "RunnerError: missing Markdown link target: overview.md->docs/overview.md", "ok": false}
+_ test_proposal_candidate_runner_fails_closed_when_no_verification_commands_run _
+----------------------------- Captured stdout call -----------------------------
+{"candidateRank": 1, "error": "no verification commands configured for proposal candidate", "findingId": "doc.index.missing", "ok": false, "patchPath": "", "provenancePath": "", "targetPath": "docs/index.md", "verification": {"commands": [], "ran": false}}
+_______ test_proposal_candidate_runner_rejects_unverified_candidate_rank _______
+----------------------------- Captured stdout call -----------------------------
+{"error": "proposal candidate rank not found: 2", "ok": false}
+_____________ test_code_quality_candidate_passes_gate_on_real_fix ______________
+----------------------------- Captured stdout call -----------------------------
+{"candidateRank": 1, "findingId": "code.quality.lint.src/dirty.py", "ok": true, "patchPath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_pa0/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch", "provenancePath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_pa0/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch.provenance.json", "targetPath": "src/dirty.py", "verification": {"commands": [{"command": "python3 -m arena.code_quality_gate --repo . --path src/dirty.py", "exitCode": 0, "stderr": "", "stdout": "{\n  \"ok\": true,\n  \"path\": \"src/dirty.py\",\n  \"reason\": \"improved\",\n  \"suppressionsAfter\": 0,\n  \"suppressionsBefore\": 0,\n  \"violationsAfter\": 0,\n  \"violationsBefore\": 1\n}"}], "ran": true}}
+____________ test_code_quality_candidate_fails_gate_on_noop_change _____________
+----------------------------- Captured stdout call -----------------------------
+{"candidateRank": 1, "findingId": "code.quality.lint.src/dirty.py", "ok": false, "patchPath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_fa0/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch", "provenancePath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_fa0/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch.provenance.json", "targetPath": "src/dirty.py", "verification": {"commands": [{"command": "python3 -m arena.code_quality_gate --repo . --path src/dirty.py", "exitCode": 1, "stderr": "", "stdout": "{\n  \"ok\": false,\n  \"path\": \"src/dirty.py\",\n  \"reason\": \"no_improvement\",\n  \"suppressionsAfter\": 0,\n  \"suppressionsBefore\": 0,\n  \"violationsAfter\": 1,\n  \"violationsBefore\": 1\n}"}], "ran": true}}
+____________ test_code_quality_candidate_fails_gate_on_suppression _____________
+----------------------------- Captured stdout call -----------------------------
+{"candidateRank": 1, "findingId": "code.quality.lint.src/dirty.py", "ok": false, "patchPath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_fa1/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch", "provenancePath": "/tmp/pytest-of-leonb/pytest-7163/test_code_quality_candidate_fa1/repo/.arena/patches/hyp-proposal-r1-bcbffef4aee0.patch.provenance.json", "targetPath": "src/dirty.py", "verification": {"commands": [{"command": "python3 -m arena.code_quality_gate --repo . --path src/dirty.py", "exitCode": 1, "stderr": "", "stdout": "{\n  \"ok\": false,\n  \"path\": \"src/dirty.py\",\n  \"reason\": \"suppression_gaming\",\n  \"suppressionsAfter\": 1,\n  \"suppressionsBefore\": 0,\n  \"violationsAfter\": 0,\n  \"violationsBefore\": 1\n}"}], "ran": true}}
+_ test_empty_or_invalid_rank_one_plan_fails_closed[plan0-no candidate with rank 1] _
+----------------------------- Captured stderr call -----------------------------
+proposal_emit: no candidate with rank 1
+_ test_empty_or_invalid_rank_one_plan_fails_closed[plan1-no candidate with rank 1] _
+----------------------------- Captured stderr call -----------------------------
+proposal_emit: no candidate with rank 1
+_ test_empty_or_invalid_rank_one_plan_fails_closed[plan2-multiple candidates with rank 1] _
+----------------------------- Captured stderr call -----------------------------
+proposal_emit: multiple candidates with rank 1
+=========================== short test summary info ============================
+PASSED tests/test_ablation.py::test_default_verifier_config_uses_ollama_and_three_lanham_probes
+PASSED tests/test_ablation.py::test_verifier_config_rejects_probe_sets_that_are_not_three_of_four
+PASSED tests/test_ablation.py::test_verifier_config_rejects_invalid_quorum
+PASSED tests/test_ablation.py::test_verifier_loads_config_toml
+PASSED tests/test_ablation.py::test_deterministic_ablation_runner_discriminates_load_bearing_reasoning
+PASSED tests/test_ablation.py::test_deterministic_ablation_runner_handles_paraphrase_and_mistake_probes
+PASSED tests/test_ablation.py::test_real_ablation_runner_can_be_sole_reject_reason
+PASSED tests/test_ablation.py::test_real_ablation_runner_can_satisfy_quorum
+PASSED tests/test_ablation.py::test_verify_reruns_all_probes_without_cache_reuse
+PASSED tests/test_ablation.py::test_verify_worktree_rescores_live_candidate_each_call
+PASSED tests/test_advisory_backlog.py::test_advisory_backlog_domain_routes_open_advisory_finding
+PASSED tests/test_advisory_backlog.py::test_backlog_gate_accepts_grounded_entry_and_rejects_noop_or_dead_links
+PASSED tests/test_agent_wiki.py::test_wiki_record_append_and_read_roundtrip
+PASSED tests/test_agent_wiki.py::test_wiki_rejects_secret_like_payloads
+PASSED tests/test_agent_wiki.py::test_wiki_rejects_secret_like_json_keys_even_without_sk_prefix
+PASSED tests/test_architecture_fitness.py::test_architecture_fitness_domain_emits_grounded_contract_candidate
+PASSED tests/test_architecture_fitness.py::test_architecture_gate_accepts_binding_failing_cycle_and_cli_fails_closed
+PASSED tests/test_architecture_fitness.py::test_architecture_gate_rejects_fabricated_vacuous_duplicate_and_digest_mismatch
+PASSED tests/test_architecture_fitness.py::test_cycle_selection_and_contract_target_are_deterministic
+PASSED tests/test_boundary.py::test_boundary_violation_rejects_scorer_target_before_runner_spawn
+PASSED tests/test_boundary.py::test_boundary_violation_rejects_schema_and_verifier_targets
+PASSED tests/test_boundary.py::test_boundary_rejects_scorer_lock_and_generated_artifacts
+PASSED tests/test_boundary.py::test_boundary_allows_ordinary_arena_files
+PASSED tests/test_boundary.py::test_boundary_allows_similar_but_unprotected_names
+PASSED tests/test_boundary.py::test_boundary_rejects_absolute_or_traversing_targets
+PASSED tests/test_boundary.py::test_boundary_uses_target_repo_goal_config_read_only_measurement_paths
+PASSED tests/test_budget.py::test_zero_promotion_cycle_cap_reports_zero_promotion_halt_reason
+PASSED tests/test_budget.py::test_cap_after_promotion_reports_wall_clock_breach
+PASSED tests/test_budget.py::test_runner_credit_cap_uses_zero_promotion_reason_until_first_promotion
+PASSED tests/test_calibration_ordering.py::test_calibration_catalog_has_thirteen_expected_diffs
+PASSED tests/test_calibration_ordering.py::test_calibration_baseline_is_healthy
+PASSED tests/test_calibration_ordering.py::test_positive_calibration_diffs_score_above_baseline[P-1]
+PASSED tests/test_calibration_ordering.py::test_positive_calibration_diffs_score_above_baseline[P-2]
+PASSED tests/test_calibration_ordering.py::test_positive_calibration_diffs_score_above_baseline[P-3]
+PASSED tests/test_calibration_ordering.py::test_positive_calibration_diffs_score_above_baseline[P-4]
+PASSED tests/test_calibration_ordering.py::test_positive_calibration_diffs_score_above_baseline[P-5]
+PASSED tests/test_calibration_ordering.py::test_negative_calibration_diffs_score_below_or_pin_regress[N-1]
+PASSED tests/test_calibration_ordering.py::test_negative_calibration_diffs_score_below_or_pin_regress[N-2]
+PASSED tests/test_calibration_ordering.py::test_negative_calibration_diffs_score_below_or_pin_regress[N-3]
+PASSED tests/test_calibration_ordering.py::test_negative_calibration_diffs_score_below_or_pin_regress[N-4]
+PASSED tests/test_calibration_ordering.py::test_negative_calibration_diffs_score_below_or_pin_regress[N-5]
+PASSED tests/test_calibration_ordering.py::test_neutral_calibration_diffs_stay_within_epsilon[Z-1]
+PASSED tests/test_calibration_ordering.py::test_neutral_calibration_diffs_stay_within_epsilon[Z-2]
+PASSED tests/test_calibration_ordering.py::test_neutral_calibration_diffs_stay_within_epsilon[Z-3]
+PASSED tests/test_calibration_ordering.py::test_coverage_drop_above_floor_is_not_a_pinned_regression
+PASSED tests/test_calibration_ordering.py::test_pinned_regressions_report_each_pinned_axis
+PASSED tests/test_candidate_packager.py::test_candidate_packager_creates_candidate_branch_without_advancing_main
+PASSED tests/test_candidate_packager.py::test_candidate_packager_excludes_evidence_patch_artifacts
+PASSED tests/test_code_quality_domain.py::test_registry_includes_code_quality_before_generic
+PASSED tests/test_code_quality_domain.py::test_code_quality_domain_claims_lint_finding_for_python_file
+PASSED tests/test_code_quality_domain.py::test_code_quality_domain_ignores_non_python_and_markdown
+PASSED tests/test_code_quality_domain.py::test_code_quality_domain_ignores_non_lint_findings
+PASSED tests/test_code_quality_domain.py::test_code_quality_constraints_forbid_suppression_gaming
+PASSED tests/test_code_quality_gate.py::test_gate_accepts_real_fix_that_removes_violation
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_noop_change
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_suppression_gaming
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_type_ignore_gaming
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_file_level_ruff_noqa
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_file_level_ruff_noqa_with_codes
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_flake8_file_level_noqa
+PASSED tests/test_code_quality_gate.py::test_gate_does_not_count_noqa_inside_string_literal
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_change_that_breaks_python_syntax
+PASSED tests/test_code_quality_gate.py::test_gate_rejects_deletion_of_public_symbol
+PASSED tests/test_code_quality_gate.py::test_gate_allows_keeping_all_public_symbols
+PASSED tests/test_code_quality_gate.py::test_gate_fails_closed_when_no_baseline_in_git
+PASSED tests/test_code_quality_gate.py::test_gate_fails_closed_when_working_file_missing
+PASSED tests/test_code_quality_gate.py::test_gate_is_deterministic
+PASSED tests/test_code_quality_gate.py::test_gate_cli_returns_zero_on_real_fix_and_one_on_noop
+PASSED tests/test_coverage_closure.py::test_script_helpers_are_exercised_without_touching_repo
+PASSED tests/test_coverage_closure.py::test_budget_boundary_fingerprint_and_ledger_edge_cases
+PASSED tests/test_coverage_closure.py::test_event_projection_and_payload_edge_cases
+PASSED tests/test_coverage_closure.py::test_hypothesizer_and_divergence_edge_cases
+PASSED tests/test_coverage_closure.py::test_loop_discards_boundary_failed_ledger_apply_and_structural_cases
+PASSED tests/test_coverage_closure.py::test_loop_halts_before_promotion_when_verifier_does_not_score_worktree
+PASSED tests/test_coverage_closure.py::test_loop_promotes_then_continues_until_budget_and_helper_edges
+PASSED tests/test_coverage_closure.py::test_runner_edge_cases
+PASSED tests/test_coverage_closure.py::test_worktree_reaping_and_runtime_cleanup
+PASSED tests/test_coverage_closure.py::test_scorer_error_and_fallback_paths
+PASSED tests/test_coverage_closure.py::test_verifier_and_calibration_edge_cases
+PASSED tests/test_coverage_closure.py::test_project_model_v0_quality_gate_edge_cases
+PASSED tests/test_coverage_closure.py::test_decomposer_private_and_cli_edge_cases
+PASSED tests/test_coverage_closure.py::test_decomposer_validation_reports_all_error_families
+PASSED tests/test_coverage_closure.py::test_decomposer_v0_mapping_fallbacks_and_unclassified_surface
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_prompt_includes_grounding_facts_and_constraints
+PASSED tests/test_diff_proposer.py::test_prompt_includes_pending_proposals_and_failure_notes
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_requests_unified_diff_and_records_provenance
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_rejects_truncated_empty_and_non_diff[result0-truncated]
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_rejects_truncated_empty_and_non_diff[result1-empty]
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_rejects_truncated_empty_and_non_diff[result2-unified diff]
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_converts_real_client_errors_to_runner_error
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_strips_single_markdown_diff_fence
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_adds_missing_final_newline
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_repairs_single_new_file_hunk_count
+PASSED tests/test_diff_proposer.py::test_diff_proposer_applies_live_transport_valid_diff_after_patch_gate
+PASSED tests/test_diff_proposer.py::test_same_diff_transport_config_can_target_xai_openai_openrouter
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_requires_explicit_model_without_injected_client
+PASSED tests/test_diff_proposer.py::test_openai_compatible_diff_transport_strictly_rejects_served_model_mismatch
+PASSED tests/test_diff_proposer.py::test_diff_proposer_applies_valid_fake_diff_after_patch_gate
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response0]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response1]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response2]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response3]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response4]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_invalid_fake_outputs_without_mutation[response5]
+PASSED tests/test_diff_proposer.py::test_diff_proposer_runner_router_integration
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_multi_target_hypotheses
+PASSED tests/test_diff_proposer.py::test_diff_proposer_applies_single_new_file_diff_after_patch_gate
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_markdown_with_missing_relative_links
+PASSED tests/test_diff_proposer.py::test_diff_proposer_repairs_markdown_file_mentions_to_exact_repo_paths
+PASSED tests/test_diff_proposer.py::test_repair_collapses_doubled_repo_root_prefix
+PASSED tests/test_diff_proposer.py::test_prefix_collapse_does_not_touch_legitimate_paths
+PASSED tests/test_diff_proposer.py::test_apply_retries_with_gate_error_feedback
+PASSED tests/test_diff_proposer.py::test_apply_repair_budget_exhausted_fails_cleanly
+PASSED tests/test_diff_proposer.py::test_diff_proposer_applies_nested_new_file_diff_when_parent_is_missing
+PASSED tests/test_diff_proposer.py::test_diff_proposer_rejects_protected_missing_target_without_transport_call
+PASSED tests/test_divergence.py::test_boundary_violation_attempts_trip_after_threshold
+PASSED tests/test_divergence.py::test_fingerprint_cluster_failure_requires_minimum_distinct_fingerprints
+PASSED tests/test_divergence.py::test_scorer_verifier_disagreement_streak_trips
+PASSED tests/test_events_projection.py::test_event_log_assigns_monotonic_seq_and_replays_jsonl_projection
+PASSED tests/test_events_projection.py::test_event_log_ignores_incomplete_crash_tail_line
+PASSED tests/test_failure_ledger.py::test_failure_ledger_rejects_recorded_failed_fingerprint_after_reopen
+PASSED tests/test_failure_ledger.py::test_failure_ledger_collision_check_rejects_before_runner_spawn
+PASSED tests/test_failure_ledger.py::test_failure_ledger_collision_check_permits_clean_fingerprint_spawn
+PASSED tests/test_failure_ledger.py::test_successful_fingerprint_does_not_block_retry
+PASSED tests/test_failure_ledger.py::test_failure_ledger_ignores_malformed_jsonl_rows_without_mutating
+PASSED tests/test_fingerprints.py::test_fingerprint_is_stable_order_insensitive_and_schema_shaped
+PASSED tests/test_fingerprints.py::test_fingerprint_changes_when_technique_or_ast_pattern_changes
+PASSED tests/test_fingerprints.py::test_fingerprint_is_reproducible_across_processes
+PASSED tests/test_generic_scorer.py::test_scorer_uses_goal_config_commands_source_roots_weights_and_provenance
+PASSED tests/test_generic_scorer.py::test_scorer_marks_tests_failed_when_configured_coverage_floor_is_not_met
+PASSED tests/test_generic_scorer.py::test_scorer_uses_all_configured_source_roots_for_commands_and_complexity
+PASSED tests/test_generic_scorer.py::test_scorer_does_not_leave_runtime_artifacts_in_target_repo
+PASSED tests/test_generic_scorer.py::test_scorer_fails_closed_when_goal_config_is_missing
+PASSED tests/test_generic_scorer.py::test_boundary_accepts_goal_config_read_only_and_out_of_scope_paths
+PASSED tests/test_goal_config.py::test_load_goal_config_normalizes_commands_paths_and_hash
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_missing_required_commands
+PASSED tests/test_goal_config.py::test_goal_config_defaults_are_deterministic_and_documented
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_empty_commands
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_unsafe_paths[../outside]
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_unsafe_paths[src/..]
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_unsafe_paths[.]
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_bool_numeric_fields[coverage.floor-[coverage]\nsource = "coverage.json"\nfloor = true]
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_bool_numeric_fields[diff_caps.max_files-[coverage]\nsource = "coverage.json"\n\n[diff_caps]\nmax_files = true]
+PASSED tests/test_goal_config.py::test_load_goal_config_rejects_missing_config_file
+PASSED tests/test_goal_config.py::test_build_arena_goal_config_file_loads
+PASSED tests/test_goal_config.py::test_calibration_fixture_goal_config_file_loads
+PASSED tests/test_hypothesizer_bandit.py::test_bandit_cold_start_pulls_each_arm_in_config_order
+PASSED tests/test_hypothesizer_bandit.py::test_bandit_uses_ucb_after_cold_start
+PASSED tests/test_hypothesizer_bandit.py::test_bandit_rejects_empty_arm_set
+PASSED tests/test_hypothesizer_bandit.py::test_symbolic_hypothesizer_creates_hypothesis_without_filesystem_writes
+PASSED tests/test_llm_adapter.py::test_provider_registry_presets_are_openai_compatible
+PASSED tests/test_llm_adapter.py::test_chat_client_posts_visible_messages_and_records_metadata
+PASSED tests/test_llm_adapter.py::test_chat_client_extracts_structured_visible_content_parts
+PASSED tests/test_llm_adapter.py::test_chat_client_rejects_no_choices_empty_content_and_length[payload0-no choices]
+PASSED tests/test_llm_adapter.py::test_chat_client_rejects_no_choices_empty_content_and_length[payload1-empty content]
+PASSED tests/test_llm_adapter.py::test_chat_client_rejects_no_choices_empty_content_and_length[payload2-truncated|length]
+PASSED tests/test_llm_adapter.py::test_chat_client_redacts_provider_errors
+PASSED tests/test_llm_adapter.py::test_chat_client_reads_api_key_from_hermes_env_file
+PASSED tests/test_llm_adapter.py::test_chat_client_records_hermes_env_api_key_source_without_leaking_key
+PASSED tests/test_llm_adapter.py::test_resolve_provider_config_can_require_explicit_model
+PASSED tests/test_llm_adapter.py::test_chat_client_strict_served_model_match_fails_closed
+PASSED tests/test_loop_phase4.py::test_run_loop_turns_budget_breach_into_halt_record
+PASSED tests/test_loop_phase4.py::test_run_loop_enforces_wall_clock_budget_before_starting_cycle
+PASSED tests/test_loop_phase4.py::test_run_loop_turns_unexpected_exception_into_halt_record_and_tears_down_worktree
+PASSED tests/test_loop_phase4.py::test_run_loop_records_cleanup_failure_without_masking_unexpected_halt
+PASSED tests/test_loop_phase4.py::test_verified_discard_emits_single_verdict_and_disagreement
+PASSED tests/test_loop_phase4.py::test_calibration_loop_promotes_one_positive_patch
+PASSED tests/test_markdown_links.py::test_extract_markdown_links_ignores_external_and_anchor_targets
+PASSED tests/test_markdown_links.py::test_extract_markdown_links_includes_reference_style_targets
+PASSED tests/test_markdown_links.py::test_check_markdown_links_reports_checked_and_missing_targets
+PASSED tests/test_markdown_links.py::test_nested_markdown_links_can_resolve_repo_root_targets
+PASSED tests/test_markdown_links.py::test_repo_root_fallback_does_not_mask_dead_nested_links_or_escape_attempts
+PASSED tests/test_markdown_links.py::test_check_markdown_links_checks_plain_file_mentions_so_gate_is_not_vacuous
+PASSED tests/test_markdown_links.py::test_check_markdown_links_rejects_links_that_escape_repo
+PASSED tests/test_markdown_links.py::test_has_source_references_requires_source_heading_and_resolving_reference
+PASSED tests/test_markdown_links.py::test_source_references_reject_missing_local_file_citations
+PASSED tests/test_patch_gate.py::test_patch_gate_accepts_valid_diff_without_mutating_worktree
+PASSED tests/test_patch_gate.py::test_patch_gate_rejects_invalid_outputs_without_mutation[-empty_diff]
+PASSED tests/test_patch_gate.py::test_patch_gate_rejects_invalid_outputs_without_mutation[Please change src/app.py to return 2.-malformed_diff]
+PASSED tests/test_patch_gate.py::test_patch_gate_rejects_invalid_outputs_without_mutation[diff --git a/src/app.py b/src/app.py\nGIT binary patch\nliteral 0\n-binary_diff]
+PASSED tests/test_patch_gate.py::test_patch_gate_rejects_invalid_outputs_without_mutation[diff --git a/private/secret.py b/private/secret.py\n--- a/private/secret.py\n+++ b/private/secret.py\n@@ -1,2 +1,2 @@\n def value() -> int:\n-    return 1\n+    return 2\n-boundary_violation]
+PASSED tests/test_patch_gate.py::test_patch_gate_rejects_diff_caps_without_mutation
+PASSED tests/test_pr_packaging.py::test_dry_run_renders_traceable_pr_body_without_gh
+PASSED tests/test_pr_packaging.py::test_fabricated_claim_fixture_fails
+PASSED tests/test_pr_packaging.py::test_open_pr_requires_explicit_operator_authorization
+PASSED tests/test_pr_packaging.py::test_open_pr_rejects_build_arena_remote_for_different_target
+PASSED tests/test_pr_packaging.py::test_open_pr_uses_git_push_and_gh_create_when_authorized
+PASSED tests/test_pr_packaging.py::test_owner_outcome_records_back_to_ledger
+PASSED tests/test_pr_packaging.py::test_cli_dry_run_prints_body_without_pushing
+PASSED tests/test_project_decomposer.py::test_decomposer_generates_valid_canonical_model_for_synthetic_git_project
+PASSED tests/test_project_decomposer.py::test_decomposer_emits_valid_project_model_v0_from_primary_task
+PASSED tests/test_project_decomposer.py::test_git_subdirectory_resolves_to_repo_toplevel
+PASSED tests/test_project_decomposer.py::test_missing_or_non_directory_project_path_fails_explicitly
+PASSED tests/test_project_decomposer.py::test_cli_rejects_missing_project_path
+PASSED tests/test_project_decomposer.py::test_hashes_raw_disk_bytes_and_reports_dirty_tree
+PASSED tests/test_project_decomposer.py::test_untracked_files_are_reported_without_marking_tracked_tree_dirty
+PASSED tests/test_project_decomposer.py::test_deleted_tracked_file_is_reported_missing_on_disk
+PASSED tests/test_project_decomposer.py::test_filesystem_fallback_uses_denylist_and_typed_exclusions
+PASSED tests/test_project_decomposer.py::test_fresh_git_repo_without_commit_does_not_crash
+PASSED tests/test_project_decomposer.py::test_validate_project_model_rejects_sloppy_references
+PASSED tests/test_project_decomposer.py::test_validate_project_model_rejects_multiple_owners_and_stale_coverage
+PASSED tests/test_project_decomposer.py::test_validate_project_model_rejects_missing_cross_cutting_component
+PASSED tests/test_project_decomposer.py::test_decompose_project_does_not_execute_project_checks
+PASSED tests/test_project_decomposer.py::test_f3_gap_is_derived_from_manifest_ground_truth
+PASSED tests/test_project_decomposer.py::test_cli_outputs_canonical_json_to_stdout_and_file
+PASSED tests/test_project_decomposer.py::test_cli_outputs_project_model_v0_when_requested_without_changing_default
+PASSED tests/test_project_decomposer.py::test_cli_fail_on_gap_returns_nonzero_for_gap_model
+PASSED tests/test_project_decomposer.py::test_cli_project_model_v0_fail_on_gap_uses_quality_gate_and_surfaces_gaps
+PASSED tests/test_project_decomposer.py::test_project_model_v0_validation_flags_vague_and_missing_responsibilities
+PASSED tests/test_project_decomposer.py::test_arena_calibration_checkout_model_is_ready_when_available
+PASSED tests/test_project_decomposer_ai.py::test_build_project_model_snapshot_writes_sidecars_and_v0_projection
+PASSED tests/test_project_decomposer_ai.py::test_build_project_model_snapshot_can_run_real_adversarial_probe
+PASSED tests/test_project_decomposer_ai.py::test_build_project_model_snapshot_requires_overwrite_for_existing_snapshot_dir
+PASSED tests/test_project_decomposer_ai.py::test_decomposer_rebuilds_from_filesystem_truth_each_run
+PASSED tests/test_project_decomposer_ai.py::test_recorded_model_output_uses_same_ingestion_path_and_bad_bucket_is_rejected
+PASSED tests/test_project_decomposer_ai.py::test_fixture_decomposer_handles_javascript_import_contracts
+PASSED tests/test_project_decomposer_ai.py::test_fixture_decomposer_covers_every_owned_cross_component_import_edge
+PASSED tests/test_project_decomposer_ai.py::test_fixture_decomposer_emits_iteration_ready_model_for_fmc_like_project
+PASSED tests/test_project_decomposer_ai.py::test_quality_gates_use_dev_extra_when_tooling_is_optional_dependency
+PASSED tests/test_project_decomposer_ai.py::test_recorded_live_shaped_output_gets_deterministic_import_contract_closure
+PASSED tests/test_project_decomposer_ai.py::test_contract_closure_is_idempotent_and_stable
+PASSED tests/test_project_decomposer_ai.py::test_contract_closure_does_not_mask_unmeasurable_no_edge_component
+PASSED tests/test_project_decomposer_ai.py::test_contract_closure_requires_provenance_for_auto_contracts
+PASSED tests/test_project_encyclopedia.py::test_encyclopedia_writes_manifest_and_source_linked_pages
+PASSED tests/test_project_encyclopedia.py::test_encyclopedia_redacts_secret_shaped_content
+PASSED tests/test_project_graph.py::test_graph_rebuilds_from_git_toplevel_and_records_dirty_state
+PASSED tests/test_project_graph.py::test_graph_build_is_deterministic_for_unchanged_head
+PASSED tests/test_project_graph.py::test_graph_discovers_python_symbols_imports_tests_docs_configs_and_surfaces
+PASSED tests/test_project_graph.py::test_graph_records_python_inheritance_and_same_file_calls
+PASSED tests/test_project_graph.py::test_graph_drops_unresolved_python_call_and_inheritance_targets
+PASSED tests/test_project_graph.py::test_graph_does_not_resolve_python_attribute_calls_or_bases_by_trailing_name
+PASSED tests/test_project_graph.py::test_graph_records_python_cross_file_calls_from_import_bindings
+PASSED tests/test_project_graph.py::test_graph_does_not_duplicate_same_file_call_with_cross_file_import
+PASSED tests/test_project_graph.py::test_graph_drops_shadowed_or_unknown_receiver_cross_file_calls
+PASSED tests/test_project_graph.py::test_graph_does_not_guess_cross_file_calls_by_name_only
+PASSED tests/test_project_graph.py::test_graph_excludes_prior_verification_outputs_from_source_truth
+PASSED tests/test_project_graph.py::test_graph_excludes_embedded_calibration_repos_from_primary_context
+PASSED tests/test_project_graph.py::test_graph_normalizes_src_layout_python_modules
+PASSED tests/test_project_graph.py::test_graph_resolves_python_relative_imports_to_project_modules
+PASSED tests/test_project_graph.py::test_graph_resolves_python_package_import_aliases_to_owned_modules
+PASSED tests/test_project_graph.py::test_graph_records_symlink_identity_without_following_targets
+PASSED tests/test_project_graph.py::test_graph_discovers_javascript_modules_functions_and_relative_imports
+PASSED tests/test_project_graph.py::test_graph_records_javascript_treesitter_classes_methods_arrows_inherits_and_calls
+PASSED tests/test_project_graph.py::test_graph_records_typescript_treesitter_nodes_and_calls
+PASSED tests/test_project_graph.py::test_graph_tags_common_generated_output_as_generated_surface
+PASSED tests/test_project_graph.py::test_graph_marks_ignored_generated_directory_with_sentinel
+PASSED tests/test_project_intake_scorecard.py::test_profile_weights_match_reviewed_spec
+PASSED tests/test_project_intake_scorecard.py::test_priority_formula_is_deterministic_and_weighted
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_records_absence_findings_quality_gates_and_first_recommendation
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_output_is_stable_and_markdown_is_concise
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_cli_writes_json_and_markdown
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_does_not_write_to_target_repo
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_source_has_no_live_provider_imports
+PASSED tests/test_project_intake_scorecard.py::test_high_risk_untested_component_yields_nondoc_finding
+PASSED tests/test_project_intake_scorecard.py::test_high_risk_untested_component_becomes_nondoc_proposal_candidate
+PASSED tests/test_project_intake_scorecard.py::test_docs_absence_findings_still_emitted_with_components
+PASSED tests/test_project_intake_scorecard.py::test_high_risk_untested_component_outranks_docs_under_active_development
+PASSED tests/test_project_intake_scorecard.py::test_component_findings_are_deterministic
+PASSED tests/test_project_intake_scorecard.py::test_component_finding_evidence_is_grounded_in_snapshot
+PASSED tests/test_project_intake_scorecard.py::test_component_risk_level_maps_to_severity
+PASSED tests/test_project_intake_scorecard.py::test_component_findings_absent_when_snapshot_lacks_components
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_emits_lint_finding_for_file_with_violations
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_lint_findings_are_deterministic
+PASSED tests/test_project_intake_scorecard.py::test_scorecard_lint_findings_absent_when_no_violations
+PASSED tests/test_project_intake_scorecard.py::test_component_covered_only_by_observable_check_is_not_flagged
+PASSED tests/test_project_intake_scorecard.py::test_extensionless_single_owned_surface_does_not_become_doc_candidate
+PASSED tests/test_project_intake_scorecard.py::test_multi_file_component_becomes_multi_target_candidate
+PASSED tests/test_project_intake_scorecard.py::test_component_with_unresolvable_nodes_yields_no_finding
+PASSED tests/test_project_intake_scorecard.py::test_unknown_risk_level_component_finding_is_medium_severity
+PASSED tests/test_project_meta_decomposer.py::test_observable_check_serializes_execution_metadata_and_legacy_defaults
+PASSED tests/test_project_meta_decomposer.py::test_gate_requires_execution_dir_and_acceptance_proof
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_discovers_root_scoped_checks_for_two_manifest_roots
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_handles_non_app_three_root_shape_without_identity_branch
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_output_is_deterministic
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_marks_unrun_semantic_probe_quality_as_gap_not_passed
+PASSED tests/test_project_meta_decomposer.py::test_decomposition_logic_has_no_target_identity_branches
+PASSED tests/test_project_meta_decomposer.py::test_contract_ids_remain_unique_when_component_names_share_long_prefix
+PASSED tests/test_project_meta_decomposer.py::test_import_target_selection_prefers_exact_module_over_longer_test_descendant
+PASSED tests/test_project_meta_decomposer.py::test_import_target_selection_does_not_suffix_match_single_segment_stdlib_names
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_resolves_python_src_root_relative_import_contracts
+PASSED tests/test_project_meta_decomposer.py::test_gate_edge_coverage_sees_python_src_root_relative_imports
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_keeps_test_symbols_out_of_source_components
+PASSED tests/test_project_meta_decomposer.py::test_fixture_decomposer_surfaces_gap_when_multi_component_root_has_no_contracts
+PASSED tests/test_project_model_cli_ai.py::test_snapshot_cli_writes_artifacts_and_prints_summary_json
+PASSED tests/test_project_model_cli_ai.py::test_snapshot_cli_returns_one_when_gate_fails_but_writes_diagnostics
+PASSED tests/test_project_model_cli_ai.py::test_snapshot_cli_refuses_live_mode_without_explicit_live_flag
+PASSED tests/test_project_model_cli_ai.py::test_snapshot_cli_refuses_live_mode_without_explicit_model
+PASSED tests/test_project_model_cli_ai.py::test_snapshot_cli_forwards_live_provider_switches
+PASSED tests/test_project_model_cli_ai.py::test_gate_and_graph_cli
+PASSED tests/test_project_model_freshness.py::test_fresh_snapshot_is_safe_and_schema_valid
+PASSED tests/test_project_model_freshness.py::test_dirty_worktree_precedes_base_advanced_and_exits_two
+PASSED tests/test_project_model_freshness.py::test_base_advanced_when_current_head_descends_from_snapshot
+PASSED tests/test_project_model_freshness.py::test_branch_diverged_when_current_head_is_not_descendant
+PASSED tests/test_project_model_freshness.py::test_snapshot_hash_mismatch_takes_precedence
+PASSED tests/test_project_model_freshness.py::test_cli_emits_json_for_non_fresh_status
+PASSED tests/test_project_model_freshness.py::test_freshness_output_is_stable_for_identical_inputs
+PASSED tests/test_project_model_freshness.py::test_missing_git_fails_closed_to_unknown
+PASSED tests/test_project_model_freshness.py::test_freshness_does_not_write_to_target_repo
+PASSED tests/test_project_model_llm_live.py::test_load_recorded_model_output_rejects_cancelled_empty_wrapper
+PASSED tests/test_project_model_llm_live.py::test_load_recorded_model_output_rejects_internal_thought_without_final_text
+PASSED tests/test_project_model_llm_live.py::test_load_recorded_model_output_rejects_invalid_json_wrapper_text
+PASSED tests/test_project_model_llm_live.py::test_live_project_model_llm_uses_direct_xai_json_api_and_records_metadata
+PASSED tests/test_project_model_llm_live.py::test_live_project_model_llm_rejects_truncated_or_empty_content
+PASSED tests/test_project_model_llm_live.py::test_live_project_model_llm_requires_explicit_model
+PASSED tests/test_project_model_llm_live.py::test_live_project_model_llm_rejects_served_model_mismatch
+PASSED tests/test_project_model_llm_live.py::test_build_project_model_snapshot_live_uses_injected_llm_and_records_hashes
+PASSED tests/test_project_model_llm_live.py::test_snapshot_from_model_output_is_fail_closed_on_real_world_shape
+PASSED tests/test_project_model_llm_live.py::test_snapshot_from_model_output_rejects_nonconforming_component_cleanly
+PASSED tests/test_project_model_llm_live.py::test_snapshot_from_model_output_rejects_scalar_for_list_field
+PASSED tests/test_project_model_llm_live.py::test_acceptance_command_allowlist_is_filtered_fail_closed
+PASSED tests/test_project_model_llm_live.py::test_decomposer_prompt_schema_keys_do_not_drift_from_snapshot_fields
+PASSED tests/test_project_model_llm_live.py::test_gate_rejects_empty_owned_nodes_and_provenance
+PASSED tests/test_project_model_v0_contract.py::test_project_model_v0_examples_validate_against_schema_and_quality_gate
+PASSED tests/test_project_model_v0_contract.py::test_project_model_v0_python_model_forbids_extra_fields_and_schema_invalid_shapes
+PASSED tests/test_project_model_v0_contract.py::test_quality_gate_flags_meta_f3_failure_modes
+PASSED tests/test_project_model_v1_contract.py::test_project_model_v1_schema_validates_ai_decomposer_primary_artifact
+PASSED tests/test_project_model_v1_contract.py::test_project_model_v1_schema_validates_probe_backed_snapshot
+PASSED tests/test_project_model_v1_contract.py::test_project_model_v1_schema_rejects_legacy_v0_shape
+PASSED tests/test_project_model_v1_contract.py::test_project_model_v1_from_snapshot_requires_gate_report_and_graph_context
+PASSED tests/test_project_probe_runner.py::test_path_bucket_probe_passes_golden_and_rejects_planted_negative
+PASSED tests/test_project_probe_runner.py::test_planted_negative_is_path_bucket_and_gate_rejects_it
+PASSED tests/test_project_probe_runner.py::test_probe_result_is_deterministic_for_same_inputs
+PASSED tests/test_project_probe_runner.py::test_probe_does_not_write_or_attach_proof_when_control_fails
+PASSED tests/test_project_probe_runner.py::test_canonical_probe_control_hash_ignores_attached_probes_only
+PASSED tests/test_project_probe_runner.py::test_write_probe_proof_artifacts_writes_only_passed_payloads
+PASSED tests/test_project_probe_runner.py::test_gate_accepts_passed_probe_with_valid_replayable_proof_json
+PASSED tests/test_project_probe_runner.py::test_gate_rejects_passed_probe_when_proof_json_is_missing_or_invalid
+PASSED tests/test_project_probe_runner.py::test_gate_rejects_forged_internally_consistent_probe_proof
+PASSED tests/test_project_probe_runner.py::test_gate_rejects_replayed_probe_proof_for_different_control_snapshot
+PASSED tests/test_project_probe_runner.py::test_gate_rejects_absolute_or_parent_relative_probe_proof_paths
+PASSED tests/test_project_probe_runner.py::test_gate_rejects_negative_that_fails_for_unrelated_reason_only
+PASSED tests/test_project_snapshot_gate.py::test_gate_passes_minimal_well_grounded_snapshot
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_fluent_non_vague_sibling_file_bucket_decomposition
+PASSED tests/test_project_snapshot_gate.py::test_gate_requires_goal_non_goals_and_near_neighbor_anchors
+PASSED tests/test_project_snapshot_gate.py::test_gate_requires_independent_probe_decoy_and_golden_control
+PASSED tests/test_project_snapshot_gate.py::test_gate_allows_missing_probe_when_explicit_semantic_gap_declares_unproven_quality
+PASSED tests/test_project_snapshot_gate.py::test_gate_rejects_probe_success_without_proof_artifact
+PASSED tests/test_project_snapshot_gate.py::test_gate_requires_unproven_probe_to_reference_gap
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_live_paid_api_acceptance_checks_not_allowlisted
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_unsafe_acceptance_command_even_when_allowlisted
+PASSED tests/test_project_snapshot_gate.py::test_gate_requires_primary_inventory_owned_or_gap_covered
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_llm_only_high_impact_edges_without_gap
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_reversed_contract_direction_even_when_structurally_complete
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_protected_surface_policy_violations
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_protected_surface_provenance_claims
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_responsibility_text_file_bucket_even_with_symbol_nodes
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_when_owned_import_edge_loses_contract_attribution
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_when_universal_anti_fabrication_not_all_component_covered
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_self_referential_contract_after_merge
+PASSED tests/test_project_snapshot_gate.py::test_gate_fails_cross_cutting_concern_unknown_component_reference
+PASSED tests/test_project_status_docs.py::test_status_index_exists_and_classifies_every_status_doc
+PASSED tests/test_project_status_docs.py::test_active_status_docs_do_not_claim_uncommitted_when_tracked_in_head
+PASSED tests/test_project_status_docs.py::test_active_status_stale_claim_regex_rejects_negated_merge_phrasing
+PASSED tests/test_project_status_docs.py::test_superseded_status_docs_point_to_existing_successor
+PASSED tests/test_project_status_docs.py::test_project_graph_status_doc_reflects_merged_pr
+PASSED tests/test_project_status_docs.py::test_readme_describes_ai_first_v1_and_bounded_live_status
+PASSED tests/test_project_status_docs.py::test_agents_current_status_reflects_post_phase4_decomposer_and_readiness
+PASSED tests/test_project_status_docs.py::test_project_brief_current_status_matches_implemented_foundation
+PASSED tests/test_project_status_docs.py::test_current_state_doc_is_historical_not_live_calibration_instructions
+PASSED tests/test_project_status_docs.py::test_agents_preserves_safety_boundaries
+PASSED tests/test_project_status_docs.py::test_june5_final_report_records_committed_outcome_not_precommit_state
+PASSED tests/test_project_status_docs.py::test_docs_describe_bounded_real_run_attempt_as_safe_failed_not_unqualified_readiness
+PASSED tests/test_project_status_docs.py::test_failed_live_decomposition_report_does_not_use_unqualified_accept_verdict
+PASSED tests/test_project_status_docs.py::test_pre_live_register_scopes_bounded_fmc_mcp_production_run_without_broad_overclaim
+PASSED tests/test_project_status_docs.py::test_live_provider_docs_disclose_credentials_and_model_enforcement
+PASSED tests/test_project_status_docs.py::test_docs_caveat_ablation_stand_in_and_replacement_decision
+PASSED tests/test_project_status_docs.py::test_docs_caveat_scorer_genericity_and_measurement_boundaries
+PASSED tests/test_project_status_docs.py::test_verification_evidence_retention_policy_is_documented
+PASSED tests/test_project_status_docs.py::test_documented_cli_surfaces_exist
+PASSED tests/test_project_status_docs.py::test_agents_md_does_not_claim_scorecard_unimplemented
+PASSED tests/test_project_status_docs.py::test_agents_md_documents_intake_proposal_pipeline
+PASSED tests/test_project_status_docs.py::test_project_brief_documents_intake_proposal_pipeline
+PASSED tests/test_project_status_docs.py::test_orientation_docs_referenced_arena_modules_exist
+PASSED tests/test_project_status_docs.py::test_documented_intake_proposal_cli_surfaces_exist
+PASSED tests/test_proposal_candidate_runner.py::test_proposal_candidate_runner_applies_fake_diff_from_grounded_plan
+PASSED tests/test_proposal_candidate_runner.py::test_proposal_candidate_runner_rejects_dead_markdown_links_without_patch_artifact
+PASSED tests/test_proposal_candidate_runner.py::test_proposal_candidate_runner_fails_closed_when_no_verification_commands_run
+PASSED tests/test_proposal_candidate_runner.py::test_proposal_candidate_runner_rejects_unverified_candidate_rank
+PASSED tests/test_proposal_candidate_runner.py::test_code_quality_candidate_passes_gate_on_real_fix
+PASSED tests/test_proposal_candidate_runner.py::test_code_quality_candidate_fails_gate_on_noop_change
+PASSED tests/test_proposal_candidate_runner.py::test_code_quality_candidate_fails_gate_on_suppression
+PASSED tests/test_proposal_domains.py::test_proposal_plan_matches_pre_refactor_golden[parity_scorecard_normal.json-repo-parity_plan_normal.json]
+PASSED tests/test_proposal_domains.py::test_proposal_plan_matches_pre_refactor_golden[parity_scorecard_compliance.json-cmmc-level1-readiness-assistant-parity_plan_compliance.json]
+PASSED tests/test_proposal_domains.py::test_proposal_domains_are_registered_in_fixed_order
+PASSED tests/test_proposal_domains.py::test_registry_iteration_is_deterministic
+PASSED tests/test_proposal_domains.py::test_domain_missing_protocol_method_is_rejected_at_construction
+PASSED tests/test_proposal_domains.py::test_planner_orchestrates_registered_domains_union
+PASSED tests/test_proposal_domains.py::test_documentation_domain_gate_still_rejects_dead_links
+PASSED tests/test_proposal_domains.py::test_documentation_and_generic_domains_are_mutually_exclusive[docs/index.md-documentation]
+PASSED tests/test_proposal_domains.py::test_documentation_and_generic_domains_are_mutually_exclusive[AGENTS.md-documentation]
+PASSED tests/test_proposal_domains.py::test_documentation_and_generic_domains_are_mutually_exclusive[docs/decisions-documentation]
+PASSED tests/test_proposal_domains.py::test_documentation_and_generic_domains_are_mutually_exclusive[src/pkg/auth.py-generic_file]
+PASSED tests/test_proposal_domains.py::test_documentation_and_generic_domains_are_mutually_exclusive[Makefile.py-generic_file]
+PASSED tests/test_proposal_domains.py::test_neither_domain_claims_multi_file_finding
+PASSED tests/test_proposal_domains.py::test_multi_file_finding_produces_component_candidate
+PASSED tests/test_proposal_domains.py::test_component_finding_gets_load_bearing_gate
+PASSED tests/test_proposal_domains.py::test_multi_file_component_produces_candidate
+PASSED tests/test_proposal_domains.py::test_model_level_finding_becomes_backlog_task_candidate
+PASSED tests/test_proposal_emit.py::test_render_ticket_markdown_maps_every_populated_ticket_field
+PASSED tests/test_proposal_emit.py::test_render_ticket_markdown_uses_rank_one_only_and_omits_unmapped_fields
+PASSED tests/test_proposal_emit.py::test_render_ticket_markdown_is_deterministic_with_stable_evidence_key_order
+PASSED tests/test_proposal_emit.py::test_render_ticket_markdown_fallback_title_and_empty_section_omission
+PASSED tests/test_proposal_emit.py::test_emit_proposal_cli_writes_same_bytes_as_renderer
+PASSED tests/test_proposal_emit.py::test_cli_module_invocation_writes_output
+PASSED tests/test_proposal_emit.py::test_empty_or_invalid_rank_one_plan_fails_closed[plan0-no candidate with rank 1]
+PASSED tests/test_proposal_emit.py::test_empty_or_invalid_rank_one_plan_fails_closed[plan1-no candidate with rank 1]
+PASSED tests/test_proposal_emit.py::test_empty_or_invalid_rank_one_plan_fails_closed[plan2-multiple candidates with rank 1]
+PASSED tests/test_proposal_plan_schema.py::test_proposal_plan_schema_accepts_planner_output
+PASSED tests/test_proposal_plan_schema.py::test_proposal_plan_schema_rejects_unknown_finding_disposition
+PASSED tests/test_proposal_planner.py::test_proposal_plan_builds_grounded_top_n_without_copying_recommended_action
+PASSED tests/test_proposal_planner.py::test_proposal_plan_maps_missing_docs_directories_to_index_markdown_targets
+PASSED tests/test_proposal_planner.py::test_proposal_plan_requires_source_references_for_compliance_repos
+PASSED tests/test_proposal_planner.py::test_proposal_plan_is_stable_and_caps_candidates
+PASSED tests/test_proposal_planner.py::test_proposal_plan_and_ranker_are_deterministic_on_parity_fixture
+PASSED tests/test_proposal_planner.py::test_candidate_to_hypothesis_uses_one_target_and_success_criterion
+PASSED tests/test_proposal_planner.py::test_quality_gate_commands_threaded_into_domain_context
+PASSED tests/test_proposal_planner.py::test_domain_context_plumbs_advisory_evidence_and_fresh_graph_edges
+PASSED tests/test_proposal_planner.py::test_plan_carries_base_lineage_fields
+PASSED tests/test_proposal_ranker.py::test_cross_domain_ranking_is_deterministic
+PASSED tests/test_proposal_ranker.py::test_priority_formula_pinned
+PASSED tests/test_proposal_ranker.py::test_profile_changes_ranking
+PASSED tests/test_proposal_ranker.py::test_score_breakdown_present
+PASSED tests/test_proposal_ranker.py::test_skipped_and_omitted_accounting
+PASSED tests/test_proposal_ranker.py::test_top10_spans_multiple_domains
+PASSED tests/test_proposal_ranker.py::test_high_severity_nondoc_outranks_docs
+PASSED tests/test_proposal_ranker.py::test_ranked_artifact_round_trips
+PASSED tests/test_proposal_ranker.py::test_ranked_artifact_validates_against_schema
+PASSED tests/test_proposal_ranker.py::test_ranker_recompute_matches_intake_stored_score
+PASSED tests/test_proposal_ranker.py::test_ranker_uses_scorecard_profile_consistently
+PASSED tests/test_proposal_ranker.py::test_ranker_rejects_unknown_profile
+PASSED tests/test_proposal_ranker.py::test_ranker_honors_scorecard_stored_weights_over_live_table
+PASSED tests/test_proposal_ranker.py::test_ranker_order_matches_planner_for_same_scorecard
+PASSED tests/test_proposal_ranker.py::test_ranker_gets_same_domain_context_evidence_as_planner
+PASSED tests/test_proposal_registry.py::test_registry_dedup_marks_repeat_as_duplicate
+PASSED tests/test_proposal_registry.py::test_lineage_stamp_captures_base_git_state
+PASSED tests/test_proposal_registry.py::test_promoted_finding_is_not_reproposed
+PASSED tests/test_proposal_registry.py::test_lineage_mismatch_blocks_apply
+PASSED tests/test_proposer_handoff.py::test_handoff_from_fresh_scorecard_is_schema_valid_and_non_authorizing
+PASSED tests/test_proposer_handoff.py::test_non_fresh_status_blocks_mutation_in_handoff
+PASSED tests/test_proposer_handoff.py::test_missing_verification_requires_owner_approval
+PASSED tests/test_proposer_handoff.py::test_prohibited_paths_include_full_boundary_defaults
+PASSED tests/test_proposer_handoff.py::test_handoff_output_is_stable_for_identical_inputs
+PASSED tests/test_proposer_handoff.py::test_handoff_cli_writes_packet
+PASSED tests/test_proposer_handoff.py::test_handoff_source_has_no_live_provider_or_runner_imports
+PASSED tests/test_proposer_hypothesizer.py::test_target_selection_hypothesizer_preserves_fingerprint_ledger_semantics
+PASSED tests/test_repo_facts.py::test_collect_repo_facts_reports_docs_and_top_level_files_deterministically
+PASSED tests/test_repo_facts.py::test_collect_repo_facts_ignores_hidden_cache_markdown
+PASSED tests/test_repo_facts.py::test_collect_repo_facts_handles_repo_without_docs
+PASSED tests/test_repo_facts.py::test_collect_repo_facts_surfaces_markdown_truncation
+PASSED tests/test_repo_goal_loop.py::test_live_modes_require_allow_live_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_modes_require_explicit_model_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_flags_require_a_live_mode_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_diff_requires_goal_config_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_diff_requires_goal_config_tracked_in_head_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_modes_require_explicit_live_call_budget_before_any_cycle
+PASSED tests/test_repo_goal_loop.py::test_live_call_budget_estimates_single_and_dual_live_modes
+PASSED tests/test_repo_goal_loop.py::test_live_call_budget_rejects_non_positive_cap
+PASSED tests/test_repo_goal_loop.py::test_live_call_budget_cap_fails_before_adapter_calls
+PASSED tests/test_repo_goal_loop.py::test_live_call_budget_cap_counts_adversarial_probe_slot_before_adapter_calls
+PASSED tests/test_repo_goal_loop.py::test_live_decomposition_gate_failure_fails_closed
+PASSED tests/test_repo_goal_loop.py::test_live_decomposition_uses_injected_adapter_and_records_provenance
+PASSED tests/test_repo_goal_loop.py::test_live_diff_apply_runs_patch_gate_and_changes_file
+PASSED tests/test_repo_goal_loop.py::test_live_diff_rejected_by_patch_gate_is_apply_failure_not_crash
+PASSED tests/test_repo_goal_loop.py::test_live_diff_provider_error_is_failure_not_crash
+PASSED tests/test_repo_goal_loop.py::test_live_diff_code_promotion_still_requires_behaviour_gate
+PASSED tests/test_repo_goal_loop.py::test_live_diff_promotion_stages_only_target_path
+PASSED tests/test_repo_goal_loop.py::test_loop_verification_commands_are_deterministic_not_model_controlled
+PASSED tests/test_repo_goal_loop.py::test_run_started_records_live_call_budget
+PASSED tests/test_repo_goal_loop.py::test_deterministic_docs_generation_includes_source_references
+PASSED tests/test_repo_goal_loop.py::test_loop_cycle_is_deterministic_in_dry_run
+PASSED tests/test_repo_goal_loop.py::test_budget_halts_loop
+PASSED tests/test_repo_goal_loop.py::test_no_promotion_without_authorization
+PASSED tests/test_repo_goal_loop.py::test_boundary_enforced_each_cycle
+PASSED tests/test_repo_goal_loop.py::test_divergence_halts_on_repeated_gate_failure
+PASSED tests/test_repo_goal_loop.py::test_repo_scale_goal_loop_improves_fixture
+PASSED tests/test_repo_goal_loop.py::test_loop_stops_when_no_positive_candidate
+PASSED tests/test_repo_goal_loop.py::test_promotion_ff_only_when_authorized
+PASSED tests/test_repo_goal_loop.py::test_promotion_requires_test_gate_for_code_candidate
+PASSED tests/test_repo_goal_loop.py::test_code_candidate_not_promoted_without_test_command
+PASSED tests/test_repo_goal_loop.py::test_promoted_diff_confined_to_target_path
+PASSED tests/test_repo_goal_loop.py::test_dry_run_leaves_working_tree_pristine
+PASSED tests/test_repo_goal_loop.py::test_missing_gate_binary_is_recorded_not_crashed
+PASSED tests/test_repo_goal_loop.py::test_autonomy_boundary_threaded_into_candidate_for_code_guard
+PASSED tests/test_repo_goal_loop.py::test_select_promotable_skips_unverified_candidates
+PASSED tests/test_repo_goal_loop.py::test_select_promotable_skips_architecture_fitness_guardrails
+PASSED tests/test_repo_goal_loop.py::test_select_promotable_emits_candidate_skipped_for_empty_verification
+PASSED tests/test_repo_goal_loop.py::test_select_promotable_skips_emit_for_already_tried
+PASSED tests/test_repo_goal_loop.py::test_code_component_candidate_is_selectable_and_gated
+PASSED tests/test_repo_goal_loop.py::test_closed_loop_promotes_then_redecomposes
+PASSED tests/test_runner_router.py::test_claude_weekly_limit_stream_triggers_ollama_fallback
+PASSED tests/test_runner_router.py::test_router_reports_runner_error_when_primary_and_fallback_exhaust
+PASSED tests/test_schema_generation.py::test_generated_linkml_artifacts_exist_and_import
+PASSED tests/test_scorer_determinism.py::test_rescoring_same_git_oid_is_deterministic
+PASSED tests/test_scorer_determinism.py::test_drift_check_rejects_changed_baseline_git_oid
+PASSED tests/test_scorer_determinism.py::test_drift_check_rejects_axis_drift_without_oid_change
+PASSED tests/test_scorer_lock.py::test_scorer_lock_exists_and_validates
+PASSED tests/test_scorer_lock.py::test_scorer_lock_mismatch_refuses_load
+PASSED tests/test_scorer_lock.py::test_scorer_lock_rejects_new_scorer_file
+PASSED tests/test_scorer_lock.py::test_scorer_lock_rejects_missing_locked_file_as_mismatch
+PASSED tests/test_target_picker.py::test_select_targets_ranks_candidates_stably_with_raw_signal_values
+PASSED tests/test_target_picker.py::test_select_targets_excludes_goal_config_and_default_boundary_paths
+PASSED tests/test_target_picker.py::test_select_targets_uses_path_tiebreakers_and_limit
+PASSED tests/test_target_picker.py::test_select_targets_handles_missing_optional_signal_files
+PASSED tests/test_target_picker.py::test_target_picker_has_no_llm_provider_imports
+PASSED tests/test_verifier_advisory.py::test_ablation_advisory_allows_non_ollama_and_does_not_gate_real_cycle
+PASSED tests/test_verifier_advisory.py::test_strict_verifier_still_rejects_non_load_bearing_ablation
+PASSED tests/test_verifier_calibration.py::test_verifier_calibration_measures_fp_and_fn_separately
+PASSED tests/test_verifier_calibration.py::test_verifier_calibration_records_reject_reasons
+PASSED tests/test_verifier_gates.py::test_verifier_promotes_when_all_four_gates_pass
+PASSED tests/test_verifier_gates.py::test_verifier_rejects_failed_tests_but_still_runs_ablation
+PASSED tests/test_verifier_gates.py::test_verifier_rejects_pinned_regression_before_score_reason
+PASSED tests/test_verifier_gates.py::test_pinned_regression_takes_precedence_over_nonpositive_score_delta
+PASSED tests/test_verifier_gates.py::test_verifier_rejects_nonpositive_score_delta
+PASSED tests/test_verifier_gates.py::test_verifier_rejects_non_load_bearing_reasoning
+PASSED tests/test_verifier_gates.py::test_pyright_regression_is_reported_as_pinned_regression
+PASSED tests/test_view_before_edit.py::test_read_then_edit_same_path_in_same_turn_passes
+PASSED tests/test_view_before_edit.py::test_edit_without_same_turn_read_raises
+PASSED tests/test_view_before_edit.py::test_read_in_previous_turn_does_not_authorize_later_edit
+PASSED tests/test_view_before_edit.py::test_write_requires_same_turn_read_too
+PASSED tests/test_worktree_cycle_evidence.py::test_missing_goal_config_boundary_fallback_is_evented
+PASSED tests/test_worktree_cycle_evidence.py::test_malformed_present_goal_config_fails_closed
+PASSED tests/test_worktree_cycle_evidence.py::test_worktree_cycle_packages_candidate_branch_and_writes_mechanical_evidence
+PASSED tests/test_worktree_cycle_evidence.py::test_target_picker_diff_proposer_cycle_packages_candidate_branch
+PASSED tests/test_worktree_cycle_evidence.py::test_loop_records_failures_through_failure_ledger_interface
+PASSED tests/test_worktree_cycle_evidence.py::test_budget_breach_writes_halt_evidence
+PASSED tests/test_worktrees.py::test_worktree_manager_creates_promotes_and_tears_down_git_worktree
+SKIPPED [1] tests/test_onboarding_acceptance.py:108: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:117: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:125: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:142: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:153: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:161: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:184: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:197: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:208: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:222: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.
+SKIPPED [1] tests/test_onboarding_acceptance.py:232: Set ARENA_CALIBRATION_PATH to a checkout of the arena-calibration fixture repo to run the onboarding acceptance test.

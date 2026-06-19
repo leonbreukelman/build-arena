@@ -1,0 +1,476 @@
+{
+  "acceptance_command_allowlist": [],
+  "components": [
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.4db395dbd95108d60b32",
+        "contract.auto.5962c73618f92db925d1",
+        "contract.auto.70b02da26b7d5371300e",
+        "contract:server-config"
+      ],
+      "id": "comp:config",
+      "name": "ConfigurationManagement",
+      "owned_node_ids": [
+        "node:257d836fb3f003e3e2c2"
+      ],
+      "provenance_refs": [
+        "prov:b380701c2879efce"
+      ],
+      "responsibility": "Manage application settings and pydantic configuration loading",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.25c3c6d20a305beeeca9",
+        "contract.auto.4db395dbd95108d60b32",
+        "contract.auto.5962c73618f92db925d1",
+        "contract:server-client"
+      ],
+      "id": "comp:client",
+      "name": "MCPClient",
+      "owned_node_ids": [
+        "node:4042451215c279f0dca7"
+      ],
+      "provenance_refs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "responsibility": "Handle HTTP client interactions and async MCP protocol calls",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.25c3c6d20a305beeeca9",
+        "contract.auto.68860f44ca677cc65828",
+        "contract.auto.85277c562519c8594ad7",
+        "contract.auto.e7d89d2157e18cc96de3"
+      ],
+      "id": "comp:resources",
+      "name": "ResourceProvider",
+      "owned_node_ids": [
+        "node:84a7c7e4c189e28cb1bb"
+      ],
+      "provenance_refs": [
+        "prov:4e62ae79d2c07a9c"
+      ],
+      "responsibility": "Provide resource definitions and client retrieval utilities",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.36e31fda6d2df7b6c8ff",
+        "contract.auto.68860f44ca677cc65828",
+        "contract.auto.85277c562519c8594ad7"
+      ],
+      "id": "comp:tools",
+      "name": "ToolRegistry",
+      "owned_node_ids": [
+        "node:a32d71cbbae4bcadc234"
+      ],
+      "provenance_refs": [
+        "prov:750d7fda533e438c"
+      ],
+      "responsibility": "Define and register available MCP tools for the server",
+      "verification_gap_ids": []
+    },
+    {
+      "check_ids": [
+        "check:run-tests"
+      ],
+      "contract_ids": [
+        "contract.auto.2f396cd20dda22594653",
+        "contract.auto.36e31fda6d2df7b6c8ff",
+        "contract.auto.5b8bcc3fe1c85d144f09",
+        "contract.auto.70b02da26b7d5371300e",
+        "contract.auto.b2b2314baf57aa2e487d",
+        "contract.auto.c9d784d508ce31bca57a",
+        "contract.auto.ca5e1295204bdf16bacf",
+        "contract.auto.e7d89d2157e18cc96de3",
+        "contract.auto.f5439cc4db4e0ea6bf94",
+        "contract:server-client",
+        "contract:server-config"
+      ],
+      "id": "comp:server",
+      "name": "ServerCore",
+      "owned_node_ids": [
+        "node:9810fbe9bc4ff06aee73"
+      ],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "responsibility": "Orchestrate FastMCP server lifecycle and module integration",
+      "verification_gap_ids": [
+        "gap:probe-semantic"
+      ]
+    },
+    {
+      "check_ids": [],
+      "contract_ids": [
+        "contract.auto.2f396cd20dda22594653",
+        "contract.auto.5b8bcc3fe1c85d144f09",
+        "contract.auto.b2b2314baf57aa2e487d",
+        "contract.auto.c9d784d508ce31bca57a",
+        "contract.auto.ca5e1295204bdf16bacf",
+        "contract.auto.f5439cc4db4e0ea6bf94"
+      ],
+      "id": "comp:entry",
+      "name": "PackageEntrypoint",
+      "owned_node_ids": [
+        "node:127af2b0f9d32f8164c6",
+        "node:b3d9c9b0b868f763b2b8"
+      ],
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "responsibility": "Expose package initialization and command line execution entry",
+      "verification_gap_ids": []
+    }
+  ],
+  "contracts": [
+    {
+      "from_component_id": "comp:resources",
+      "id": "contract.auto.25c3c6d20a305beeeca9",
+      "name": "Auto import contract comp:resources to comp:client",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:9688276cf5e240e7"
+      ],
+      "supporting_edge_ids": [
+        "edge:25c3c6d20a305beeeca9"
+      ],
+      "to_component_id": "comp:client"
+    },
+    {
+      "from_component_id": "comp:entry",
+      "id": "contract.auto.2f396cd20dda22594653",
+      "name": "Auto import contract comp:entry to comp:server",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1e2be92d09840adf"
+      ],
+      "supporting_edge_ids": [
+        "edge:2f396cd20dda22594653"
+      ],
+      "to_component_id": "comp:server"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract.auto.36e31fda6d2df7b6c8ff",
+      "name": "Auto import contract comp:server to comp:tools",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1cd5d87538f7fc4b"
+      ],
+      "supporting_edge_ids": [
+        "edge:36e31fda6d2df7b6c8ff"
+      ],
+      "to_component_id": "comp:tools"
+    },
+    {
+      "from_component_id": "comp:client",
+      "id": "contract.auto.4db395dbd95108d60b32",
+      "name": "Auto import contract comp:client to comp:config",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:ccb407380f605c8b"
+      ],
+      "supporting_edge_ids": [
+        "edge:4db395dbd95108d60b32"
+      ],
+      "to_component_id": "comp:config"
+    },
+    {
+      "from_component_id": "comp:client",
+      "id": "contract.auto.5962c73618f92db925d1",
+      "name": "Auto import contract comp:client to comp:config",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:ccb407380f605c8b"
+      ],
+      "supporting_edge_ids": [
+        "edge:5962c73618f92db925d1"
+      ],
+      "to_component_id": "comp:config"
+    },
+    {
+      "from_component_id": "comp:entry",
+      "id": "contract.auto.5b8bcc3fe1c85d144f09",
+      "name": "Auto import contract comp:entry to comp:server",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1e2be92d09840adf"
+      ],
+      "supporting_edge_ids": [
+        "edge:5b8bcc3fe1c85d144f09"
+      ],
+      "to_component_id": "comp:server"
+    },
+    {
+      "from_component_id": "comp:tools",
+      "id": "contract.auto.68860f44ca677cc65828",
+      "name": "Auto import contract comp:tools to comp:resources",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:3dfa2aaf889c6db2"
+      ],
+      "supporting_edge_ids": [
+        "edge:68860f44ca677cc65828"
+      ],
+      "to_component_id": "comp:resources"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract.auto.70b02da26b7d5371300e",
+      "name": "Auto import contract comp:server to comp:config",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:a490824f581f0eb5"
+      ],
+      "supporting_edge_ids": [
+        "edge:70b02da26b7d5371300e"
+      ],
+      "to_component_id": "comp:config"
+    },
+    {
+      "from_component_id": "comp:tools",
+      "id": "contract.auto.85277c562519c8594ad7",
+      "name": "Auto import contract comp:tools to comp:resources",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:3dfa2aaf889c6db2"
+      ],
+      "supporting_edge_ids": [
+        "edge:85277c562519c8594ad7"
+      ],
+      "to_component_id": "comp:resources"
+    },
+    {
+      "from_component_id": "comp:entry",
+      "id": "contract.auto.b2b2314baf57aa2e487d",
+      "name": "Auto import contract comp:entry to comp:server",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:e08d506150373eea"
+      ],
+      "supporting_edge_ids": [
+        "edge:b2b2314baf57aa2e487d"
+      ],
+      "to_component_id": "comp:server"
+    },
+    {
+      "from_component_id": "comp:entry",
+      "id": "contract.auto.c9d784d508ce31bca57a",
+      "name": "Auto import contract comp:entry to comp:server",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1e2be92d09840adf"
+      ],
+      "supporting_edge_ids": [
+        "edge:c9d784d508ce31bca57a"
+      ],
+      "to_component_id": "comp:server"
+    },
+    {
+      "from_component_id": "comp:entry",
+      "id": "contract.auto.ca5e1295204bdf16bacf",
+      "name": "Auto import contract comp:entry to comp:server",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:e08d506150373eea"
+      ],
+      "supporting_edge_ids": [
+        "edge:ca5e1295204bdf16bacf"
+      ],
+      "to_component_id": "comp:server"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract.auto.e7d89d2157e18cc96de3",
+      "name": "Auto import contract comp:server to comp:resources",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1cd5d87538f7fc4b"
+      ],
+      "supporting_edge_ids": [
+        "edge:e7d89d2157e18cc96de3"
+      ],
+      "to_component_id": "comp:resources"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract.auto.f5439cc4db4e0ea6bf94",
+      "name": "Auto import contract comp:server to comp:entry",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:1cd5d87538f7fc4b"
+      ],
+      "supporting_edge_ids": [
+        "edge:f5439cc4db4e0ea6bf94"
+      ],
+      "to_component_id": "comp:entry"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract:server-client",
+      "name": "ServerClientImport",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:cbfc0096826b93771472"
+      ],
+      "to_component_id": "comp:client"
+    },
+    {
+      "from_component_id": "comp:server",
+      "id": "contract:server-config",
+      "name": "ServerConfigImport",
+      "near_neighbor_alternative_ids": [],
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "supporting_edge_ids": [
+        "edge:1dbd45e8683cedc3c87a"
+      ],
+      "to_component_id": "comp:config"
+    }
+  ],
+  "created_at_utc": "1970-01-01T00:00:00Z",
+  "cross_cutting_concerns": [
+    {
+      "category": "anti_fabrication",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Prevent fabrication of unproven results across all modules",
+      "id": "concern:anti_fabrication",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "determinism",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Enforce deterministic behavior in all components",
+      "id": "concern:determinism",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "provenance",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Track provenance for all owned nodes and edges",
+      "id": "concern:provenance",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "triggered_by": []
+    },
+    {
+      "category": "no_live_paid_api_acceptance",
+      "component_ids": [
+        "comp:config",
+        "comp:client",
+        "comp:resources",
+        "comp:tools",
+        "comp:server",
+        "comp:entry"
+      ],
+      "contract_ids": [],
+      "description": "Reject any live paid API acceptance in components",
+      "id": "concern:no_live_paid_api_acceptance",
+      "provenance_refs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "triggered_by": []
+    }
+  ],
+  "goal": "Emit a ticket-ready proposal for the top Build Arena foundation candidate.",
+  "graph_hash": "4f58cc7781c8f368a56a55ed066d7d1394f2c3571b9100a6c6be5e29f1c535ba",
+  "held_out_probes": [],
+  "input_hashes": {
+    "graph": "4f58cc7781c8f368a56a55ed066d7d1394f2c3571b9100a6c6be5e29f1c535ba"
+  },
+  "model_output_hashes": {
+    "decomposer": "314466e6f859d0d2000d47cab4be39fb34fe4bdb83f8a28b4c61f7fdb400a019"
+  },
+  "near_neighbor_alternatives": [],
+  "non_goals": [
+    "do not treat file buckets as final components"
+  ],
+  "observable_checks": [
+    {
+      "acceptance_command_id": null,
+      "command": "pytest",
+      "component_ids": [
+        "comp:server"
+      ],
+      "contract_ids": [],
+      "description": "Execute pytest to verify module integration",
+      "execution_dir": ".",
+      "execution_status": "execution_proven",
+      "id": "check:run-tests",
+      "proof_artifact": null,
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "requires_network": false,
+      "requires_paid_api": false,
+      "safe_to_run_by_default": true,
+      "safety_status": "safe_by_default",
+      "verification_gap_ids": []
+    }
+  ],
+  "primary_model_id": "grok-4.3",
+  "project_id": "fmc-mcp",
+  "project_root": "/tmp/build-arena-proposal-emit-fmc-mcp-origin",
+  "prompt_hashes": {
+    "decomposer": "d62a89ef12a4d3ef3a9d562d57a1ccf1bf524ae02e983e84ab4f8ff6fbb633ad"
+  },
+  "schema_version": "project-model-snapshot/v0.1",
+  "snapshot_id": "snapshot-d9e419b1e0695a46",
+  "verification_gaps": [
+    {
+      "component_ids": [
+        "comp:server"
+      ],
+      "contract_ids": [],
+      "description": "Unproven semantic probe on held-out test paths",
+      "id": "gap:probe-semantic",
+      "proposed_closure_check": "Add a deterministic local check or independent review artifact.",
+      "provenance_refs": [
+        "prov:d10dbb159e6fb524"
+      ],
+      "severity": "medium"
+    }
+  ]
+}

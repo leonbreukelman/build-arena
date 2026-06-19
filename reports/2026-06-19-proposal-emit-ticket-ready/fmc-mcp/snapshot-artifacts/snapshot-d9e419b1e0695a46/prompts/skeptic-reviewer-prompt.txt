@@ -1,0 +1,3 @@
+Attack the candidate decomposition for F3 wrong-target risk, fluent file buckets, fabricated provenance, weak contracts, fake probe-proof claims, and unclosed semantic-validation gaps.
+Goal: Emit a ticket-ready proposal for the top Build Arena foundation candidate.
+Non-goals: ["do not treat file buckets as final components"]
