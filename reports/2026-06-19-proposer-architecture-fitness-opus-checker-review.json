@@ -1,0 +1,53 @@
+{
+  "duration_ms": 205133,
+  "is_error": false,
+  "num_turns": 16,
+  "parsed_result": {
+    "blockers": [],
+    "checkedClaims": [
+      {
+        "claim": "1. fmc-mcp architecture.open-questions-or-gaps -> fitness_function_candidate; contract names a real import cycle with graph evidence",
+        "evidence": "JSON routes show disposition=fitness_function_candidate, target tests/architecture/architecture-fitness-bb5e598eb664.json. Contract forbids fmc_mcp<->fmc_mcp.server. Resolved graph.json edges edge:c9d784d508ce31bca57a and edge:f5439cc4db4e0ea6bf94 to real AST-backed import edges with provenance src/fmc_mcp/__init__.py:5 and src/fmc_mcp/server.py:11; confirmed against actual source (line5 'from fmc_mcp.server import main,mcp'; line11 'from fmc_mcp import resources,tools'). Real cycle.",
+        "status": "pass"
+      },
+      {
+        "claim": "2. Gate rejection reasons are live-run outputs: fabricated->unknown_module; vacuous->non_binding_contract; duplicate->duplicate_contract; no-op backlog->boilerplate_entry",
+        "evidence": "live-verify/logs/*.stdout.txt show exact JSON gate stdout for each (exit codes 1). architecture_fitness.py:127/130/134/115 and backlog_gate.py:66 compute each reason from real graph/module/digest checks, not hard-coded prose.",
+        "status": "pass"
+      },
+      {
+        "claim": "3. A currently-failing guardrail is accepted as grounded but not promotable; records needs_code_change follow-up",
+        "evidence": "fmc-real-contract-gate.stdout: accepted=true, currentStatus=failing, derivedFindings autonomyBoundary=needs_code_change (code.change.break-import-cycle.bb5e598eb664), exit 1. not-promoted-events.jsonl: CANDIDATE_SKIPPED reason fitness_guardrail_not_promotable. Logic at architecture_fitness.py:131-153 requires edges live for acceptance => failing is sound.",
+        "status": "pass"
+      },
+      {
+        "claim": "4. Existing docs/lint candidates additive-only vs base; current proposal/ranker outputs deterministic (build twice identical)",
+        "evidence": "Independently recomputed sha256: plan-1==plan-2 and ranked-1==ranked-2 for both projects. Base->current candidate id sets: nothing removed/modified; only addition is architecture.open-questions-or-gaps. Common docs/lint candidates differ only in the 'rank' ordinal (+1 from inserting the new candidate); all substantive fields unchanged.",
+        "status": "pass"
+      },
+      {
+        "claim": "5. Protected paths scorer/ verifier/ schema/ .arena/scorer.lock.toml untouched",
+        "evidence": "Ran myself: git diff --name-only fe90dc0..HEAD -- scorer verifier schema .arena/scorer.lock.toml => empty; git status --short same => empty. Full diff touches only arena/, docs/, tests/.",
+        "status": "pass"
+      },
+      {
+        "claim": "6. Full gates passed: pytest/ruff/pyright",
+        "evidence": "verification-logs: ruff-check.log 'All checks passed!'; pyright.log '0 errors, 0 warnings, 0 informations'; pytest-tests-q.log all pass (only expected 's' skips); pytest-tests-q-rA.log shows PASSED/SKIPPED, no failures; onboarding-calibration 11 passed.",
+        "status": "pass"
+      }
+    ],
+    "leonSummary": "All six claims hold on real evidence \u2014 the contract names a genuine fmc_mcp<->fmc_mcp.server cycle, gate reasons are live and computed, determinism and protected paths check out \u2014 but your 'accepted_failing_contract' synthetic proof is broken (it returned duplicate_contract), so fix that label since only the real fmc-mcp gate actually carries claim 3.",
+    "nonBlockingNotes": [
+      "The synthetic gate-proof labeled 'accepted_failing_contract' (architecture-fitness-943bf4434d58.json) actually returned accepted=false reason=duplicate_contract, because the same digest exists at both tests/architecture/ and tests/architecture/nested/ in the proof repo. So no SYNTHETIC proof in this run demonstrates an accepted-but-failing contract; claim 3 rests solely (and correctly) on the real fmc-mcp contract. Mislabeled proof in the harness, not a feature defect.",
+      "Additive-only check: existing docs candidates are not byte-identical to base \u2014 their 'rank' shifts +1 when the new fitness candidate is inserted ahead. Substance (finding_id/disposition/domain/target_path) is unchanged and nothing is removed, so additive-only holds; the report's 'changed_common_docs_lint_candidates: []' is comparing substantive routing fields, not the rank ordinal.",
+      "graph_cycle_lines in the report (from_symbol/to_symbol/line_start/git_oid) is a flattened/derived rendering; raw graph.json uses from_node_id/to_node_id with provenance_refs. Values reconcile correctly but are not literal graph.json lines."
+    ],
+    "verdict": "ACCEPT"
+  },
+  "raw_result": "I have enough evidence to render a verdict. All six claims verified against source and live artifacts independently. Let me note one anomaly I found in the synthetic proof set.\n\nThe core gate logic (`architecture_fitness.py:117-153`) is genuinely rigorous: acceptance *requires* modules to exist in a fresh live graph slice, the contract to be an exact simple cycle, AND every forbidden edge to be a currently-live import edge \u2014 so \"accepted/failing + needs_code_change\" can only happen for a real, currently-broken cycle. Reasons are computed, not hard-coded.\n\n```json\n{\n  \"verdict\": \"ACCEPT\",\n  \"checkedClaims\": [\n    {\n      \"claim\": \"1. fmc-mcp architecture.open-questions-or-gaps -> fitness_function_candidate; contract names a real import cycle with graph evidence\",\n      \"status\": \"pass\",\n      \"evidence\": \"JSON routes show disposition=fitness_function_candidate, target tests/architecture/architecture-fitness-bb5e598eb664.json. Contract forbids fmc_mcp<->fmc_mcp.server. Resolved graph.json edges edge:c9d784d508ce31bca57a and edge:f5439cc4db4e0ea6bf94 to real AST-backed import edges with provenance src/fmc_mcp/__init__.py:5 and src/fmc_mcp/server.py:11; confirmed against actual source (line5 'from fmc_mcp.server import main,mcp'; line11 'from fmc_mcp import resources,tools'). Real cycle.\"\n    },\n    {\n      \"claim\": \"2. Gate rejection reasons are live-run outputs: fabricated->unknown_module; vacuous->non_binding_contract; duplicate->duplicate_contract; no-op backlog->boilerplate_entry\",\n      \"status\": \"pass\",\n      \"evidence\": \"live-verify/logs/*.stdout.txt show exact JSON gate stdout for each (exit codes 1). architecture_fitness.py:127/130/134/115 and backlog_gate.py:66 compute each reason from real graph/module/digest checks, not hard-coded prose.\"\n    },\n    {\n      \"claim\": \"3. A currently-failing guardrail is accepted as grounded but not promotable; records needs_code_change follow-up\",\n      \"status\": \"pass\",\n      \"evidence\": \"fmc-real-contract-gate.stdout: accepted=true, currentStatus=failing, derivedFindings autonomyBoundary=needs_code_change (code.change.break-import-cycle.bb5e598eb664), exit 1. not-promoted-events.jsonl: CANDIDATE_SKIPPED reason fitness_guardrail_not_promotable. Logic at architecture_fitness.py:131-153 requires edges live for acceptance => failing is sound.\"\n    },\n    {\n      \"claim\": \"4. Existing docs/lint candidates additive-only vs base; current proposal/ranker outputs deterministic (build twice identical)\",\n      \"status\": \"pass\",\n      \"evidence\": \"Independently recomputed sha256: plan-1==plan-2 and ranked-1==ranked-2 for both projects. Base->current candidate id sets: nothing removed/modified; only addition is architecture.open-questions-or-gaps. Common docs/lint candidates differ only in the 'rank' ordinal (+1 from inserting the new candidate); all substantive fields unchanged.\"\n    },\n    {\n      \"claim\": \"5. Protected paths scorer/ verifier/ schema/ .arena/scorer.lock.toml untouched\",\n      \"status\": \"pass\",\n      \"evidence\": \"Ran myself: git diff --name-only fe90dc0..HEAD -- scorer verifier schema .arena/scorer.lock.toml => empty; git status --short same => empty. Full diff touches only arena/, docs/, tests/.\"\n    },\n    {\n      \"claim\": \"6. Full gates passed: pytest/ruff/pyright\",\n      \"status\": \"pass\",\n      \"evidence\": \"verification-logs: ruff-check.log 'All checks passed!'; pyright.log '0 errors, 0 warnings, 0 informations'; pytest-tests-q.log all pass (only expected 's' skips); pytest-tests-q-rA.log shows PASSED/SKIPPED, no failures; onboarding-calibration 11 passed.\"\n    }\n  ],\n  \"blockers\": [],\n  \"nonBlockingNotes\": [\n    \"The synthetic gate-proof labeled 'accepted_failing_contract' (architecture-fitness-943bf4434d58.json) actually returned accepted=false reason=duplicate_contract, because the same digest exists at both tests/architecture/ and tests/architecture/nested/ in the proof repo. So no SYNTHETIC proof in this run demonstrates an accepted-but-failing contract; claim 3 rests solely (and correctly) on the real fmc-mcp contract. Mislabeled proof in the harness, not a feature defect.\",\n    \"Additive-only check: existing docs candidates are not byte-identical to base \u2014 their 'rank' shifts +1 when the new fitness candidate is inserted ahead. Substance (finding_id/disposition/domain/target_path) is unchanged and nothing is removed, so additive-only holds; the report's 'changed_common_docs_lint_candidates: []' is comparing substantive routing fields, not the rank ordinal.\",\n    \"graph_cycle_lines in the report (from_symbol/to_symbol/line_start/git_oid) is a flattened/derived rendering; raw graph.json uses from_node_id/to_node_id with provenance_refs. Values reconcile correctly but are not literal graph.json lines.\"\n  ],\n  \"leonSummary\": \"All six claims hold on real evidence \u2014 the contract names a genuine fmc_mcp<->fmc_mcp.server cycle, gate reasons are live and computed, determinism and protected paths check out \u2014 but your 'accepted_failing_contract' synthetic proof is broken (it returned duplicate_contract), so fix that label since only the real fmc-mcp gate actually carries claim 3.\"\n}\n```",
+  "reviewer": "Claude Code Opus",
+  "session_id": "62b06466-77ff-4638-b31e-049ee98b5479",
+  "source_json": "/tmp/build-arena-proposer-architecture-fitness-verification-logs/opus-checker-review.json",
+  "subtype": "success",
+  "total_cost_usd": 1.6607565
+}
