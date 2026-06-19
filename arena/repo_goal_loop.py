@@ -411,6 +411,12 @@ def _select_promotable(
         if finding_id in tried:
             _emit_candidate_skipped(log, cycle, finding_id, "already_tried", rank)
             continue
+        if entry.get("domain") == "architecture_fitness":
+            _emit_candidate_skipped(log, cycle, finding_id, "fitness_guardrail_not_promotable", rank)
+            continue
+        if entry.get("domain") == "advisory_backlog":
+            _emit_candidate_skipped(log, cycle, finding_id, "advisory_backlog_not_promotable", rank)
+            continue
         plan_candidate = plan_by_finding.get(finding_id)
         if plan_candidate is None:
             _emit_candidate_skipped(log, cycle, finding_id, "missing_plan_candidate", rank)

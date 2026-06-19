@@ -6,6 +6,7 @@ Maintenance rule: when a status doc's feature or run state changes, either updat
 
 ## Active
 
+- `2026-06-18-proposer-architecture-fitness-status.md` — in-progress status for the proposer architecture-fitness extension slice.
 - `2026-06-16-project-graph-call-inheritance-treesitter.md` — project graph call/inheritance and JS/TS tree-sitter extraction; merged via PR #40 / 360e9a2.
 - `2026-06-15-full-autonomy-gap-remediation-implementation-status.md` — current implementation status for the first full-autonomy gap-remediation slice.
 

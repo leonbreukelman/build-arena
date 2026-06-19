@@ -43,7 +43,44 @@ def test_proposal_plan_schema_accepts_planner_output(tmp_path: Path) -> None:
     payload = build_proposal_plan(repo, scorecard, max_candidates=10).to_jsonable()
     assert "skippedFindings" in payload
     assert "skippedCount" in payload
+    assert "findingDispositions" in payload
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     errors = sorted(Draft202012Validator(schema).iter_errors(payload), key=lambda error: list(error.path))
 
     assert errors == []
+
+
+def test_proposal_plan_schema_rejects_unknown_finding_disposition(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    scorecard = tmp_path / "scorecard.json"
+    scorecard.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "scorecard-schema",
+                "snapshotId": "snapshot-schema",
+                "projectRoot": str(repo),
+                "findings": [
+                    {
+                        "id": "doc.index.missing",
+                        "title": "Docs index is missing",
+                        "evidence": [{"kind": "absence", "path": "docs/index.md", "checked": True}],
+                        "recommendedAction": "Create docs/index.md as canonical docs navigation.",
+                        "verification": ["test -e docs/index.md"],
+                        "priorityScore": 728.0,
+                        "rank": 1,
+                    }
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    payload = build_proposal_plan(repo, scorecard, max_candidates=10).to_jsonable()
+    payload["findingDispositions"][0]["disposition"] = "mystery_route"
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    errors = sorted(Draft202012Validator(schema).iter_errors(payload), key=lambda error: list(error.path))
+
+    assert any("mystery_route" in error.message for error in errors)

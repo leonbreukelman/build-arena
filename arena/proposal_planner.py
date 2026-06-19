@@ -9,6 +9,7 @@ from typing import Any
 
 from arena.fingerprints import compute_fingerprint
 from arena.generated.models import Hypothesis
+from arena.graph_slice import fresh_graph_slice
 from arena.proposal_domains import (
     DomainContext,
     ProposalCandidateDraft,
@@ -25,6 +26,7 @@ from arena.repo_facts import RepoFacts, collect_repo_facts
 
 SCHEMA_VERSION = "proposal-plan/v0"
 TECHNIQUE_TAG = "diff_proposal"
+CANDIDATE_DISPOSITIONS = {"docs_candidate", "code_candidate", "fitness_function_candidate", "advisory_backlogged"}
 
 
 @dataclass(frozen=True)
@@ -70,6 +72,7 @@ class ProposalPlan:
     omitted_count: int
     skipped_count: int
     skipped_findings: tuple[dict[str, Any], ...]
+    finding_dispositions: tuple[dict[str, Any], ...]
     candidates: tuple[ProposalCandidate, ...]
     base_lineage: dict[str, Any]
 
@@ -86,6 +89,7 @@ class ProposalPlan:
             "omittedCount": self.omitted_count,
             "skippedCount": self.skipped_count,
             "skippedFindings": list(self.skipped_findings),
+            "findingDispositions": list(self.finding_dispositions),
             "candidates": [candidate.to_jsonable() for candidate in self.candidates],
         }
 
@@ -138,22 +142,27 @@ def build_proposal_plan_with_registry(
         scorecard_hash=scorecard_hash,
         run_id=run_id,
     )
-    quality_gate_commands = _quality_gate_commands(findings)
-    intake_context_block = _intake_context_block(findings)
-    context = DomainContext(
-        project_name=project_path.name,
-        facts=facts,
-        intake_context_block=intake_context_block,
+    context = build_domain_context(
+        project_path,
+        scorecard,
+        facts,
         require_source_references=_requires_source_references(project_path, facts),
-        extras={"quality_gate_commands": quality_gate_commands},
     )
-    facts_block = "\n".join(part for part in (facts.to_prompt_block(), intake_context_block) if part)
+    facts_block = "\n".join(part for part in (facts.to_prompt_block(), context.intake_context_block) if part)
     planned: list[ProposalCandidate] = []
     skipped: list[dict[str, Any]] = []
+    dispositions: list[dict[str, Any]] = []
     for finding in findings:
+        if _is_consumed_context_finding(finding):
+            disposition = _finding_disposition(finding, "consumed_as_context")
+            dispositions.append(disposition)
+            skipped.append(_skipped_from_disposition(disposition))
+            continue
         result = registry.first_candidate(finding, context)
         if result is None:
-            skipped.append(_skipped_finding(finding, "no_single_file_target"))
+            disposition = _finding_disposition(finding, "no_single_file_target")
+            dispositions.append(disposition)
+            skipped.append(_skipped_from_disposition(disposition))
             continue
         domain_name, draft = result
         candidate = _candidate_from_draft(
@@ -166,6 +175,14 @@ def build_proposal_plan_with_registry(
             lineage=lineage,
             proposal_registry=proposal_registry,
             run_id=run_id,
+        )
+        dispositions.append(
+            _finding_disposition(
+                finding,
+                _candidate_disposition_for_domain(domain_name),
+                domain=domain_name,
+                target_path=candidate.target_path,
+            )
         )
         if candidate.registry_status == "promoted":
             skipped.append(_skipped_finding(finding, "promoted_in_registry"))
@@ -183,6 +200,7 @@ def build_proposal_plan_with_registry(
         "omittedCount": max(0, len(planned) - len(limited)),
         "skippedCount": len(skipped),
         "skippedFindings": skipped,
+        "findingDispositions": dispositions,
         "candidates": [candidate.to_jsonable() for candidate in limited],
     }
     return ProposalPlan(
@@ -196,6 +214,7 @@ def build_proposal_plan_with_registry(
         omitted_count=max(0, len(planned) - len(limited)),
         skipped_count=len(skipped),
         skipped_findings=tuple(skipped),
+        finding_dispositions=tuple(dispositions),
         candidates=limited,
         base_lineage=lineage.to_jsonable(),
     )
@@ -242,13 +261,117 @@ def _ranked_findings(scorecard: dict[str, Any]) -> list[dict[str, Any]]:
     )
 
 
+def build_domain_context(
+    project_path: Path,
+    scorecard: dict[str, Any],
+    facts: RepoFacts,
+    *,
+    require_source_references: bool,
+) -> DomainContext:
+    """Build the shared context consumed by planner and ranker domains.
+
+    Advisory text comes from the scorecard's v1 snapshot when available. The
+    graph slice is rebuilt from current filesystem/git state, matching the
+    anti-fabrication rule that cached projections are not authoritative for
+    scanner/scorer decisions.
+    """
+    findings = _ranked_findings(scorecard)
+    snapshot = _snapshot_from_scorecard(scorecard)
+    quality_gate_commands = _quality_gate_commands(findings)
+    return DomainContext(
+        project_name=project_path.name,
+        facts=facts,
+        intake_context_block=_intake_context_block(findings),
+        require_source_references=require_source_references,
+        open_questions=_snapshot_items(snapshot, "iterationReadiness", "openQuestions"),
+        verification_gaps=_snapshot_items(snapshot, "snapshot", "verification_gaps"),
+        graph_slice=fresh_graph_slice(project_path),
+        extras={"quality_gate_commands": quality_gate_commands},
+    )
+
+
+def _snapshot_from_scorecard(scorecard: dict[str, Any]) -> dict[str, Any]:
+    snapshot_path = scorecard.get("snapshotPath")
+    if not isinstance(snapshot_path, str) or not snapshot_path.strip():
+        return {}
+    path = Path(snapshot_path)
+    if not path.is_file():
+        return {}
+    try:
+        return _load_json(path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return {}
+
+
+def _snapshot_items(snapshot: dict[str, Any], *keys: str) -> tuple[dict[str, Any], ...]:
+    current: Any = snapshot
+    for key in keys:
+        if not isinstance(current, dict):
+            return ()
+        current = current.get(key)
+    if not isinstance(current, list):
+        return ()
+    items = [json.loads(json.dumps(item, sort_keys=True)) for item in current if isinstance(item, dict)]
+    return tuple(sorted(items, key=_stable_json))
+
+
+def _stable_json(payload: dict[str, Any]) -> str:
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def _is_consumed_context_finding(finding: dict[str, Any]) -> bool:
+    return str(finding.get("id", "")) == "verification.quality-gates.present"
+
+
+def _candidate_disposition_for_domain(domain_name: str) -> str:
+    if domain_name in {"documentation", "model_level"}:
+        return "docs_candidate"
+    if domain_name == "architecture_fitness":
+        return "fitness_function_candidate"
+    if domain_name == "advisory_backlog":
+        return "advisory_backlogged"
+    return "code_candidate"
+
+
+def _finding_disposition(
+    finding: dict[str, Any],
+    disposition: str,
+    *,
+    domain: str = "",
+    target_path: str = "",
+) -> dict[str, Any]:
+    return {
+        "finding_id": str(finding.get("id", "")),
+        "rank": int(finding.get("rank", 0) or 0),
+        "title": str(finding.get("title", "")),
+        "disposition": disposition,
+        "domain": domain,
+        "target_path": target_path,
+        "evidence_paths": _evidence_paths(finding),
+    }
+
+
+def _skipped_from_disposition(disposition: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "finding_id": str(disposition.get("finding_id", "")),
+        "rank": int(disposition.get("rank", 0) or 0),
+        "title": str(disposition.get("title", "")),
+        "reason": str(disposition.get("disposition", "")),
+        "evidence_paths": [str(path) for path in disposition.get("evidence_paths", []) if str(path)],
+    }
+
+
+def _evidence_paths(finding: dict[str, Any]) -> list[str]:
+    return [str(evidence.get("path", "")) for evidence in finding.get("evidence", []) if isinstance(evidence, dict) and evidence.get("path")]
+
+
 def _skipped_finding(finding: dict[str, Any], reason: str) -> dict[str, Any]:
     return {
         "finding_id": str(finding.get("id", "")),
         "rank": int(finding.get("rank", 0) or 0),
         "title": str(finding.get("title", "")),
         "reason": reason,
-        "evidence_paths": [str(evidence.get("path", "")) for evidence in finding.get("evidence", []) if isinstance(evidence, dict) and evidence.get("path")],
+        "evidence_paths": _evidence_paths(finding),
     }
 
 

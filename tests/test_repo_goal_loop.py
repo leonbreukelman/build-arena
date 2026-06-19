@@ -820,6 +820,54 @@ def test_select_promotable_skips_unverified_candidates() -> None:
     assert candidate["findingId"] == "agent.agents-md.missing"
 
 
+def test_select_promotable_skips_architecture_fitness_guardrails(tmp_path: Path) -> None:
+    from arena.repo_goal_loop import _select_promotable
+
+    log = _EventLog(tmp_path / "events.jsonl")
+    ranked_bundle = {
+        "ranked": {
+            "entries": [
+                {
+                    "findingId": "architecture.open-questions-or-gaps",
+                    "domain": "architecture_fitness",
+                    "targetPath": "tests/architecture/architecture-fitness-abc123.json",
+                    "priorityScore": 999.0,
+                    "autonomyBoundary": "advisory_only",
+                },
+                {
+                    "findingId": "agent.agents-md.missing",
+                    "domain": "documentation",
+                    "targetPath": "AGENTS.md",
+                    "priorityScore": 100.0,
+                    "autonomyBoundary": "safe_to_patch_docs_only",
+                },
+            ]
+        },
+        "plan": {
+            "candidates": [
+                {
+                    "finding_id": "architecture.open-questions-or-gaps",
+                    "verification_commands": [
+                        "python3 -m arena.architecture_fitness_gate --repo . --contract tests/architecture/architecture-fitness-abc123.json"
+                    ],
+                },
+                {"finding_id": "agent.agents-md.missing", "verification_commands": ["test -s AGENTS.md"]},
+            ]
+        },
+    }
+
+    candidate = _select_promotable(ranked_bundle, set(), log=log, cycle=4)
+
+    assert candidate is not None
+    assert candidate["findingId"] == "agent.agents-md.missing"
+    events = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert events[0]["payload"] == {
+        "finding_id": "architecture.open-questions-or-gaps",
+        "reason": "fitness_guardrail_not_promotable",
+        "rank": 0,
+    }
+
+
 def test_select_promotable_emits_candidate_skipped_for_empty_verification(tmp_path: Path) -> None:
     from arena.repo_goal_loop import _select_promotable
 

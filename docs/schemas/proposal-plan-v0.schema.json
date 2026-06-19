@@ -16,6 +16,7 @@
     "omittedCount",
     "skippedCount",
     "skippedFindings",
+    "findingDispositions",
     "candidates"
   ],
   "properties": {
@@ -30,9 +31,33 @@
     "omittedCount": {"type": "integer", "minimum": 0},
     "skippedCount": {"type": "integer", "minimum": 0},
     "skippedFindings": {"type": "array", "items": {"$ref": "#/$defs/skippedFinding"}},
+    "findingDispositions": {"type": "array", "items": {"$ref": "#/$defs/findingDisposition"}},
     "candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}}
   },
   "$defs": {
+    "findingDisposition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["finding_id", "rank", "title", "disposition", "domain", "target_path", "evidence_paths"],
+      "properties": {
+        "finding_id": {"type": "string"},
+        "rank": {"type": "integer"},
+        "title": {"type": "string"},
+        "disposition": {
+          "enum": [
+            "consumed_as_context",
+            "docs_candidate",
+            "code_candidate",
+            "fitness_function_candidate",
+            "advisory_backlogged",
+            "no_single_file_target"
+          ]
+        },
+        "domain": {"type": "string"},
+        "target_path": {"type": "string"},
+        "evidence_paths": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "skippedFinding": {
       "type": "object",
       "additionalProperties": false,
