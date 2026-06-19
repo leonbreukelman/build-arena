@@ -156,8 +156,8 @@ def test_skipped_and_omitted_accounting(tmp_path: Path) -> None:
     assert ranked.omitted_count == 1
     assert len(ranked.omitted) == 1
     assert ranked.omitted[0]["findingId"]
-    # the non-targetable finding is skipped with a reason.
-    assert any(s["reason"] == "no_single_file_target" for s in ranked.skipped)
+    # the quality-gate finding is consumed into domain context rather than emitted as a candidate.
+    assert any(s["reason"] == "consumed_as_context" for s in ranked.skipped)
 
 
 def test_top10_spans_multiple_domains(tmp_path: Path) -> None:
@@ -345,3 +345,67 @@ def test_ranker_order_matches_planner_for_same_scorecard(tmp_path: Path) -> None
     ranked_order = [e.finding_id for e in ranked.entries]
     plan_order = [c.finding_id for c in plan.candidates]
     assert ranked_order == plan_order
+
+
+def test_ranker_gets_same_domain_context_evidence_as_planner(tmp_path: Path) -> None:
+    from arena.proposal_domains import ProposalCandidateDraft, ProposalDomainRegistry
+
+    repo = tmp_path / "repo"
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "src" / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "src" / "pkg" / "a.py").write_text("from pkg import b\n", encoding="utf-8")
+    (repo / "src" / "pkg" / "b.py").write_text("VALUE = 1\n", encoding="utf-8")
+    snapshot = tmp_path / "project-model-v1.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-model/v1",
+                "id": "snapshot-ranker-evidence",
+                "projectGraph": {"nodes": [], "edges": []},
+                "snapshot": {"verification_gaps": [{"id": "gap.arch", "description": "No import guard."}]},
+                "iterationReadiness": {
+                    "openQuestions": [{"id": "question.arch", "question": "Should pkg.a import pkg.b?"}],
+                    "qualityGates": [],
+                },
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    finding = _finding(
+        "probe.context",
+        "architecture_specs_contracts",
+        "medium",
+        evidence_path="iterationReadiness.openQuestions",
+    )
+    finding["autonomyBoundary"] = "advisory_only"
+    scorecard = tmp_path / "scorecard.json"
+    payload = {
+        "schemaVersion": "project-intake-scorecard/v0",
+        "id": "scorecard-ranker-evidence",
+        "snapshotId": "snapshot-ranker-evidence",
+        "snapshotPath": str(snapshot),
+        "profile": "new-project",
+        "weights": {"architecture_specs_contracts": 14},
+        "findings": [finding],
+    }
+    scorecard.write_text(json.dumps(payload, sort_keys=True), encoding="utf-8")
+
+    class ContextProbeDomain:
+        name = "context_probe"
+
+        def candidates_for_finding(self, finding, context):  # type: ignore[no-untyped-def]
+            import_pairs = {(edge.from_symbol, edge.to_symbol) for edge in context.graph_slice.import_edges}
+            if context.open_questions and context.verification_gaps and ("pkg.a", "pkg.b") in import_pairs:
+                return [ProposalCandidateDraft("context intent", "src/pkg/a.py", "context success")]
+            return []
+
+    ranked = build_ranked_proposals(
+        repo,
+        scorecard,
+        max_candidates=10,
+        registry=ProposalDomainRegistry([ContextProbeDomain()]),
+    )
+
+    assert [entry.finding_id for entry in ranked.entries] == ["probe.context"]
+    assert ranked.skipped == ()

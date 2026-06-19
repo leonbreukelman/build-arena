@@ -25,6 +25,22 @@ from dataclasses import dataclass, field
 from pathlib import PurePosixPath
 from typing import Any, Protocol
 
+from arena.advisory_backlog import (
+    BACKLOG_TARGET,
+    advisory_expected_target,
+    backlog_markdown_entry,
+    build_advisory_expected,
+    canonical_expected_text,
+    expected_digest,
+)
+from arena.architecture_fitness import (
+    architecture_contract_target,
+    build_import_cycle_contract,
+    canonical_contract_text,
+    contract_digest,
+    selected_import_cycle,
+)
+from arena.graph_slice import GraphSlice
 from arena.repo_facts import RepoFacts
 
 
@@ -49,6 +65,9 @@ class DomainContext:
     facts: RepoFacts
     intake_context_block: str
     require_source_references: bool
+    open_questions: tuple[dict[str, Any], ...] = ()
+    verification_gaps: tuple[dict[str, Any], ...] = ()
+    graph_slice: GraphSlice = field(default_factory=GraphSlice)
     extras: dict[str, Any] = field(default_factory=dict)
 
 
@@ -117,6 +136,8 @@ def default_domain_registry() -> ProposalDomainRegistry:
         CodeQualityDomain(),
         ComponentVerificationDomain(),
         GenericFileDomain(),
+        ArchitectureFitnessDomain(),
+        AdvisoryBacklogDomain(),
         ModelLevelDomain(),
     ])
 
@@ -274,6 +295,92 @@ class GenericFileDomain:
         )]
 
 
+class ArchitectureFitnessDomain:
+    """Graph-evidenced architecture concerns converted into binding guardrails."""
+
+    name = "architecture_fitness"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        if not _is_architecture_finding(finding):
+            return []
+        cycle = selected_import_cycle(context.graph_slice)
+        if not cycle:
+            return []
+        finding_id = str(finding.get("id", ""))
+        contract = build_import_cycle_contract(finding_id=finding_id, cycle=cycle)
+        digest = contract_digest(contract)
+        target_path = architecture_contract_target(digest)
+        contract_text = canonical_contract_text(contract)
+        cycle_text = " -> ".join((*cycle, cycle[0]))
+        intent = (
+            f"Create a deterministic architecture fitness contract at {target_path} that captures the "
+            f"graph-evidenced import cycle {cycle_text}. Write exactly the JSON contract shown in the "
+            "grounding constraints; do not add architectural intent that is not evidenced by the graph."
+        )
+        success = (
+            "The architecture fitness contract is syntactically valid, references only real graph modules, "
+            "and is accepted by arena.architecture_fitness_gate as a binding currently-failing guardrail."
+        )
+        constraints = (
+            "Fitness contracts may only reference modules present in the freshly rebuilt project graph.",
+            "Acceptance means valid, grounded, and binding; it does not mean the guarded violation has been fixed.",
+            "Expected current status for this contract is failing; do not auto-promote it as a passing behaviour change.",
+            f"Exact contract JSON to write to {target_path}:\n{contract_text}",
+        )
+        verification = (f"python3 -m arena.architecture_fitness_gate --repo . --contract {target_path}",)
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=target_path,
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+            target_paths=(target_path,),
+        )]
+
+
+class AdvisoryBacklogDomain:
+    """Ground advisory-only findings that have no mechanical signal into backlog."""
+
+    name = "advisory_backlog"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        if not _is_advisory_backlog_finding(finding):
+            return []
+        items = _advisory_items_for_finding(finding, context)
+        if not items:
+            return []
+        finding_id = str(finding.get("id", ""))
+        expected = build_advisory_expected(finding_id=finding_id, items=items)
+        digest = expected_digest(expected)
+        expected_path = advisory_expected_target(digest)
+        expected_text = canonical_expected_text(expected)
+        backlog_text = backlog_markdown_entry(finding_id=finding_id, items=items)
+        item_summary = "; ".join(f"{item['id']}: {item['text']}" for item in items)
+        intent = (
+            f"Append a grounded advisory backlog entry to {BACKLOG_TARGET} for {finding_id}, covering {item_summary}. "
+            f"Also write the expected-item sidecar at {expected_path} so arena.backlog_gate can verify the entry."
+        )
+        success = (
+            "The advisory backlog entry contains the expected advisory IDs and text, is not boilerplate, "
+            "and all local Markdown links resolve."
+        )
+        constraints = (
+            "Do not invent architectural constraints for advisory-only questions; record them as backlog until a mechanical signal exists.",
+            "The backlog entry must include every expected advisory ID and exact text from the sidecar.",
+            f"Exact expected sidecar JSON to write to {expected_path}:\n{expected_text}",
+            f"Suggested backlog Markdown for {BACKLOG_TARGET}:\n{backlog_text}",
+        )
+        verification = (f"python3 -m arena.backlog_gate --repo . --path {BACKLOG_TARGET} --expected {expected_path}",)
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=BACKLOG_TARGET,
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+            target_paths=(BACKLOG_TARGET, expected_path),
+        )]
+
+
 class ModelLevelDomain:
     """Model-level findings that have no concrete source target yet."""
 
@@ -365,3 +472,47 @@ def _is_model_level_finding(finding: dict[str, Any]) -> bool:
         return True
     evidence = [item for item in finding.get("evidence", []) if isinstance(item, dict)]
     return bool(evidence) and all(str(item.get("path", "")).startswith("iterationReadiness") for item in evidence)
+
+
+def _is_architecture_finding(finding: dict[str, Any]) -> bool:
+    finding_id = str(finding.get("id", ""))
+    dimension = str(finding.get("dimension", ""))
+    return finding_id.startswith("architecture.") or dimension == "architecture_specs_contracts"
+
+
+def _is_advisory_backlog_finding(finding: dict[str, Any]) -> bool:
+    finding_id = str(finding.get("id", ""))
+    boundary = str(finding.get("autonomyBoundary", ""))
+    if boundary != "advisory_only":
+        return False
+    return finding_id not in {"verification.quality-gates.present", "verification.quality-gates.missing"}
+
+
+def _advisory_items_for_finding(finding: dict[str, Any], context: DomainContext) -> tuple[dict[str, str], ...]:
+    finding_id = str(finding.get("id", ""))
+    evidence_paths = {str(item.get("path", "")) for item in finding.get("evidence", []) if isinstance(item, dict)}
+    include_questions = finding_id.startswith("architecture.") or any("openQuestions" in path for path in evidence_paths)
+    include_gaps = finding_id.startswith("architecture.") or any("verification_gaps" in path or "verificationGaps" in path for path in evidence_paths)
+    items: list[dict[str, str]] = []
+    if include_questions:
+        for question in context.open_questions:
+            item = _advisory_item(question, "open_question")
+            if item:
+                items.append(item)
+    if include_gaps:
+        for gap in context.verification_gaps:
+            item = _advisory_item(gap, "verification_gap")
+            if item:
+                items.append(item)
+    unique: dict[tuple[str, str, str], dict[str, str]] = {}
+    for item in items:
+        unique[(item["kind"], item["id"], item["text"])] = item
+    return tuple(unique[key] for key in sorted(unique))
+
+
+def _advisory_item(raw: dict[str, Any], kind: str) -> dict[str, str]:
+    item_id = str(raw.get("id", "")).strip()
+    text = str(raw.get("question", "") or raw.get("description", "") or raw.get("text", "")).strip()
+    if not item_id or not text:
+        return {}
+    return {"kind": kind, "id": item_id, "text": text}

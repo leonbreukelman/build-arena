@@ -57,6 +57,43 @@ def test_check_markdown_links_reports_checked_and_missing_targets(tmp_path: Path
     assert report.to_jsonable()["missing"][0]["resolved_path"] == "docs/overview.md"
 
 
+def test_nested_markdown_links_can_resolve_repo_root_targets(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    runbooks = repo / "docs" / "runbooks"
+    runbooks.mkdir(parents=True)
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    (repo / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    index = runbooks / "index.md"
+    index.write_text(
+        "# Runbooks\n\nSee README.md and docs/index.md for source context.\n",
+        encoding="utf-8",
+    )
+
+    report = check_markdown_links(repo, index)
+
+    assert report.ok is True
+    assert [item.resolved_path for item in report.checked] == ["README.md", "docs/index.md"]
+    assert not report.missing
+
+
+def test_repo_root_fallback_does_not_mask_dead_nested_links_or_escape_attempts(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    runbooks = repo / "docs" / "runbooks"
+    runbooks.mkdir(parents=True)
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    index = runbooks / "index.md"
+    index.write_text(
+        "[Missing](missing.md)\n[Escape](../../../outside.md)\n",
+        encoding="utf-8",
+    )
+
+    report = check_markdown_links(repo, index)
+
+    assert report.ok is False
+    assert [item.link for item in report.missing] == ["missing.md"]
+    assert [item.link for item in report.escaped] == ["../../../outside.md"]
+
+
 def test_check_markdown_links_checks_plain_file_mentions_so_gate_is_not_vacuous(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     docs = repo / "docs"

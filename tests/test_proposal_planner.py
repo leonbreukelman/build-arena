@@ -97,7 +97,21 @@ def test_proposal_plan_builds_grounded_top_n_without_copying_recommended_action(
     assert plan.candidate_count == 2
     assert plan.skipped_count == 1
     assert plan.skipped_findings[0]["finding_id"] == "verification.quality-gates.present"
-    assert plan.skipped_findings[0]["reason"] == "no_single_file_target"
+    assert plan.skipped_findings[0]["reason"] == "consumed_as_context"
+    assert [item["disposition"] for item in plan.finding_dispositions] == [
+        "docs_candidate",
+        "docs_candidate",
+        "consumed_as_context",
+    ]
+    assert [item["finding_id"] for item in plan.finding_dispositions] == [
+        "doc.index.missing",
+        "agent.agents-md.missing",
+        "verification.quality-gates.present",
+    ]
+    non_candidate_dispositions = [
+        item for item in plan.finding_dispositions if item["disposition"] not in {"docs_candidate", "code_candidate"}
+    ]
+    assert plan.candidate_count + len(non_candidate_dispositions) == 3
     assert plan.candidates[0].finding_id == "doc.index.missing"
     assert plan.candidates[0].target_path == "docs/index.md"
     assert plan.candidates[0].intent != "Create docs/index.md as canonical docs navigation."
@@ -192,6 +206,31 @@ def test_proposal_plan_is_stable_and_caps_candidates(tmp_path: Path) -> None:
     assert len(first["candidates"]) == 1
 
 
+def test_proposal_plan_and_ranker_are_deterministic_on_parity_fixture(tmp_path: Path) -> None:
+    """P0 characterization: the mixed fixture must build byte-identical planner
+    and ranker artifacts twice. This catches hidden timestamps, route ordering
+    drift, or mutable global inputs before additive domains are introduced."""
+    from arena.proposal_ranker import build_ranked_proposals
+
+    fixture = Path(__file__).resolve().parent / "fixtures" / "parity_scorecard_normal.json"
+    raw = json.loads(fixture.read_text(encoding="utf-8"))
+    repo = tmp_path / "repo"
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "README.md").write_text("# Readme\n", encoding="utf-8")
+    (repo / "src" / "pkg" / "auth.py").write_text("def login():\n    return True\n", encoding="utf-8")
+    raw["projectRoot"] = str(repo)
+    scorecard = tmp_path / "scorecard.json"
+    scorecard.write_text(json.dumps(raw, sort_keys=True), encoding="utf-8")
+
+    plan_1 = build_proposal_plan(repo, scorecard, max_candidates=20).to_jsonable()
+    plan_2 = build_proposal_plan(repo, scorecard, max_candidates=20).to_jsonable()
+    ranked_1 = build_ranked_proposals(repo, scorecard, max_candidates=20).to_jsonable()
+    ranked_2 = build_ranked_proposals(repo, scorecard, max_candidates=20).to_jsonable()
+
+    assert json.dumps(plan_1, sort_keys=True) == json.dumps(plan_2, sort_keys=True)
+    assert json.dumps(ranked_1, sort_keys=True) == json.dumps(ranked_2, sort_keys=True)
+
+
 def test_candidate_to_hypothesis_uses_one_target_and_success_criterion(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     repo.mkdir()
@@ -247,6 +286,83 @@ def test_quality_gate_commands_threaded_into_domain_context(tmp_path: Path) -> N
     candidate = plan.candidates[0]
     assert candidate.finding_id == "code.component.untested.comp-app"
     assert candidate.verification_commands == ("uv run ruff check .", "uv run pyright", "uv run pytest tests -q")
+
+
+def test_domain_context_plumbs_advisory_evidence_and_fresh_graph_edges(tmp_path: Path) -> None:
+    from arena.proposal_domains import ProposalCandidateDraft, ProposalDomainRegistry
+    from arena.proposal_planner import build_proposal_plan_with_registry
+
+    repo = tmp_path / "repo"
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "src" / "pkg" / "__init__.py").write_text("", encoding="utf-8")
+    (repo / "src" / "pkg" / "a.py").write_text("from pkg import b\n", encoding="utf-8")
+    (repo / "src" / "pkg" / "b.py").write_text("VALUE = 1\n", encoding="utf-8")
+    snapshot = tmp_path / "project-model-v1.json"
+    snapshot.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-model/v1",
+                "id": "snapshot-evidence",
+                "projectGraph": {"nodes": [], "edges": []},
+                "snapshot": {
+                    "verification_gaps": [
+                        {"id": "gap.arch", "description": "Import direction is not guarded.", "severity": "medium"}
+                    ]
+                },
+                "iterationReadiness": {
+                    "openQuestions": [{"id": "question.arch", "question": "Should pkg.a import pkg.b?"}],
+                    "qualityGates": [],
+                },
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    scorecard = tmp_path / "scorecard.json"
+    scorecard.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "scorecard-evidence",
+                "snapshotId": "snapshot-evidence",
+                "snapshotPath": str(snapshot),
+                "findings": [
+                    {
+                        "id": "probe.context",
+                        "title": "Probe context",
+                        "evidence": [],
+                        "recommendedAction": "probe",
+                        "verification": [],
+                        "priorityScore": 1.0,
+                        "rank": 1,
+                    }
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    class ContextProbeDomain:
+        name = "context_probe"
+
+        def candidates_for_finding(self, finding, context):  # type: ignore[no-untyped-def]
+            import_pairs = {(edge.from_symbol, edge.to_symbol) for edge in context.graph_slice.import_edges}
+            assert context.open_questions == ({"id": "question.arch", "question": "Should pkg.a import pkg.b?"},)
+            assert context.verification_gaps == (
+                {"id": "gap.arch", "description": "Import direction is not guarded.", "severity": "medium"},
+            )
+            assert ("pkg.a", "pkg.b") in import_pairs
+            return [ProposalCandidateDraft("context intent", "src/pkg/a.py", "context success")]
+
+    plan = build_proposal_plan_with_registry(
+        repo,
+        scorecard,
+        ProposalDomainRegistry([ContextProbeDomain()]),
+        max_candidates=10,
+    )
+
+    assert plan.candidates[0].target_path == "src/pkg/a.py"
 
 
 def test_plan_carries_base_lineage_fields(tmp_path: Path) -> None:

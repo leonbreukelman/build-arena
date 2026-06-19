@@ -34,7 +34,8 @@ from arena.project_intake_scorecard import (
     PROFILE_WEIGHTS,
     finding_priority_score,
 )
-from arena.proposal_domains import DomainContext, ProposalDomainRegistry, default_domain_registry
+from arena.proposal_domains import ProposalDomainRegistry, default_domain_registry
+from arena.proposal_planner import _is_consumed_context_finding, build_domain_context
 from arena.repo_facts import collect_repo_facts
 
 SCHEMA_VERSION = "ranked-proposals/v0"
@@ -123,11 +124,11 @@ def build_ranked_proposals(
     domain_registry = registry or default_domain_registry()
 
     facts = collect_repo_facts(project_path)
-    context = DomainContext(
-        project_name=project_path.name,
-        facts=facts,
-        intake_context_block="",
-        require_source_references=False,
+    context = build_domain_context(
+        project_path,
+        scorecard,
+        facts,
+        require_source_references=True,
     )
 
     findings = [f for f in scorecard.get("findings", []) if isinstance(f, dict)]
@@ -135,6 +136,9 @@ def build_ranked_proposals(
     scored: list[tuple[tuple[float, float, float, float, str], RankedEntry]] = []
     skipped: list[dict[str, Any]] = []
     for finding in findings:
+        if _is_consumed_context_finding(finding):
+            skipped.append(_skipped(finding, "consumed_as_context"))
+            continue
         result = domain_registry.first_candidate(finding, context)
         if result is None:
             skipped.append(_skipped(finding, "no_single_file_target"))

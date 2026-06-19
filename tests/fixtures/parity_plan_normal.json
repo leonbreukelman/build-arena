@@ -1,7 +1,103 @@
 {
+  "id": "<ID>",
+  "schemaVersion": "proposal-plan/v0",
+  "sourceScorecardId": "scorecard-parity",
+  "snapshotId": "snapshot-parity",
+  "projectRoot": "<REPO>",
+  "repoFactsHash": "<FACTS_HASH>",
   "candidateCount": 4,
+  "omittedCount": 0,
+  "skippedCount": 1,
+  "skippedFindings": [
+    {
+      "finding_id": "verification.quality-gates.present",
+      "rank": 5,
+      "title": "Project Model exposes local quality gates",
+      "reason": "consumed_as_context",
+      "evidence_paths": [
+        "iterationReadiness.qualityGates"
+      ]
+    }
+  ],
+  "findingDispositions": [
+    {
+      "finding_id": "doc.index.missing",
+      "rank": 1,
+      "title": "Docs index is missing",
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "target_path": "docs/index.md",
+      "evidence_paths": [
+        "docs/index.md"
+      ]
+    },
+    {
+      "finding_id": "agent.agents-md.missing",
+      "rank": 2,
+      "title": "AGENTS.md is missing",
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "target_path": "AGENTS.md",
+      "evidence_paths": [
+        "AGENTS.md"
+      ]
+    },
+    {
+      "finding_id": "decision.history.missing",
+      "rank": 3,
+      "title": "Decision records are missing",
+      "disposition": "docs_candidate",
+      "domain": "documentation",
+      "target_path": "docs/decisions/index.md",
+      "evidence_paths": [
+        "docs/decisions"
+      ]
+    },
+    {
+      "finding_id": "code.component.untested.comp-auth",
+      "rank": 4,
+      "title": "Component Auth has no observable check",
+      "disposition": "code_candidate",
+      "domain": "component_verification",
+      "target_path": "src/pkg/auth.py",
+      "evidence_paths": [
+        "iterationReadiness.componentProfiles",
+        "src/pkg/auth.py"
+      ]
+    },
+    {
+      "finding_id": "verification.quality-gates.present",
+      "rank": 5,
+      "title": "Project Model exposes local quality gates",
+      "disposition": "consumed_as_context",
+      "domain": "",
+      "target_path": "",
+      "evidence_paths": [
+        "iterationReadiness.qualityGates"
+      ]
+    }
+  ],
   "candidates": [
     {
+      "rank": 1,
+      "finding_id": "doc.index.missing",
+      "title": "Docs index is missing",
+      "target_path": "docs/index.md",
+      "intent": "Create a grounded docs/index.md that links only to existing repository files and names missing future documentation topics by title only, with no filename or extension.",
+      "success_criterion": "docs/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "repo_facts_hash": "<FACTS_HASH>",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
+      "grounding_constraints": [
+        "Do not invent Markdown links to files absent from the repository facts.",
+        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
+        "Local Markdown links must resolve after the patch is applied.",
+        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
+      ],
+      "verification_commands": [
+        "test -s docs/index.md",
+        "python3 -m arena.markdown_links --repo . --path docs/index.md --require-source-references"
+      ],
+      "priority_score": 728.0,
       "evidence_refs": [
         {
           "checked": true,
@@ -9,28 +105,28 @@
           "path": "docs/index.md"
         }
       ],
-      "finding_id": "doc.index.missing",
+      "source_recommended_action": "Create docs/index.md as canonical docs navigation."
+    },
+    {
+      "rank": 2,
+      "finding_id": "agent.agents-md.missing",
+      "title": "AGENTS.md is missing",
+      "target_path": "AGENTS.md",
+      "intent": "Create a grounded AGENTS.md for future agents using existing repository facts, commands, and boundaries.",
+      "success_criterion": "AGENTS.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "repo_facts_hash": "<FACTS_HASH>",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "grounding_constraints": [
         "Do not invent Markdown links to files absent from the repository facts.",
         "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
         "Local Markdown links must resolve after the patch is applied.",
         "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
       ],
-      "intent": "Create a grounded docs/index.md that links only to existing repository files and names missing future documentation topics by title only, with no filename or extension.",
-      "priority_score": 728.0,
-      "rank": 1,
-      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
-      "repo_facts_hash": "<FACTS_HASH>",
-      "source_recommended_action": "Create docs/index.md as canonical docs navigation.",
-      "success_criterion": "docs/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
-      "target_path": "docs/index.md",
-      "title": "Docs index is missing",
       "verification_commands": [
-        "test -s docs/index.md",
-        "python3 -m arena.markdown_links --repo . --path docs/index.md --require-source-references"
-      ]
-    },
-    {
+        "test -s AGENTS.md",
+        "python3 -m arena.markdown_links --repo . --path AGENTS.md --require-source-references"
+      ],
+      "priority_score": 672.0,
       "evidence_refs": [
         {
           "checked": true,
@@ -38,28 +134,28 @@
           "path": "AGENTS.md"
         }
       ],
-      "finding_id": "agent.agents-md.missing",
+      "source_recommended_action": "Create AGENTS.md with commands, boundaries, and definition of done."
+    },
+    {
+      "rank": 3,
+      "finding_id": "decision.history.missing",
+      "title": "Decision records are missing",
+      "target_path": "docs/decisions/index.md",
+      "intent": "Create a grounded Markdown file at docs/decisions/index.md that addresses finding decision.history.missing: Decision records are missing.",
+      "success_criterion": "docs/decisions/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
+      "repo_facts_hash": "<FACTS_HASH>",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "grounding_constraints": [
         "Do not invent Markdown links to files absent from the repository facts.",
         "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
         "Local Markdown links must resolve after the patch is applied.",
         "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
       ],
-      "intent": "Create a grounded AGENTS.md for future agents using existing repository facts, commands, and boundaries.",
-      "priority_score": 672.0,
-      "rank": 2,
-      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
-      "repo_facts_hash": "<FACTS_HASH>",
-      "source_recommended_action": "Create AGENTS.md with commands, boundaries, and definition of done.",
-      "success_criterion": "AGENTS.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
-      "target_path": "AGENTS.md",
-      "title": "AGENTS.md is missing",
       "verification_commands": [
-        "test -s AGENTS.md",
-        "python3 -m arena.markdown_links --repo . --path AGENTS.md --require-source-references"
-      ]
-    },
-    {
+        "test -s docs/decisions/index.md",
+        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md --require-source-references"
+      ],
+      "priority_score": 300.0,
       "evidence_refs": [
         {
           "checked": true,
@@ -67,28 +163,27 @@
           "path": "docs/decisions"
         }
       ],
-      "finding_id": "decision.history.missing",
-      "grounding_constraints": [
-        "Do not invent Markdown links to files absent from the repository facts.",
-        "If a future documentation topic has no existing file, describe it by title only, with no filename or extension.",
-        "Local Markdown links must resolve after the patch is applied.",
-        "Include a `## Source references` section that cites existing repository files for factual or compliance claims."
-      ],
-      "intent": "Create a grounded Markdown file at docs/decisions/index.md that addresses finding decision.history.missing: Decision records are missing.",
-      "priority_score": 300.0,
-      "rank": 3,
-      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
-      "repo_facts_hash": "<FACTS_HASH>",
-      "source_recommended_action": "Create decision records.",
-      "success_criterion": "docs/decisions/index.md exists, is non-empty, and all local Markdown links resolve to existing repository files. It includes a Source references section citing at least one existing repository file.",
-      "target_path": "docs/decisions/index.md",
-      "title": "Decision records are missing",
-      "verification_commands": [
-        "test -s docs/decisions/index.md",
-        "python3 -m arena.markdown_links --repo . --path docs/decisions/index.md --require-source-references"
-      ]
+      "source_recommended_action": "Create decision records."
     },
     {
+      "rank": 4,
+      "finding_id": "code.component.untested.comp-auth",
+      "title": "Component Auth has no observable check",
+      "target_path": "src/pkg/auth.py",
+      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp-auth: Component Auth has no observable check. Limit changes to the component target path set: src/pkg/auth.py.",
+      "success_criterion": "The component target path set (src/pkg/auth.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "repo_facts_hash": "<FACTS_HASH>",
+      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
+      "grounding_constraints": [
+        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
+        "Do not silence failures or remove behavior to make the gate pass.",
+        "Use only repository-grounded files and commands from the intake quality gates."
+      ],
+      "verification_commands": [
+        "uv run ruff check .",
+        "uv run python -m pytest -q"
+      ],
+      "priority_score": 250.0,
       "evidence_refs": [
         {
           "checked": true,
@@ -111,44 +206,7 @@
           "ref": "prov.auth"
         }
       ],
-      "finding_id": "code.component.untested.comp-auth",
-      "grounding_constraints": [
-        "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
-        "Do not silence failures or remove behavior to make the gate pass.",
-        "Use only repository-grounded files and commands from the intake quality gates."
-      ],
-      "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp-auth: Component Auth has no observable check. Limit changes to the component target path set: src/pkg/auth.py.",
-      "priority_score": 250.0,
-      "rank": 4,
-      "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
-      "repo_facts_hash": "<FACTS_HASH>",
-      "source_recommended_action": "Add an observable check covering Auth.",
-      "success_criterion": "The component target path set (src/pkg/auth.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
-      "target_path": "src/pkg/auth.py",
-      "title": "Component Auth has no observable check",
-      "verification_commands": [
-        "uv run ruff check .",
-        "uv run python -m pytest -q"
-      ]
+      "source_recommended_action": "Add an observable check covering Auth."
     }
-  ],
-  "id": "<ID>",
-  "omittedCount": 0,
-  "projectRoot": "<REPO>",
-  "repoFactsHash": "<FACTS_HASH>",
-  "schemaVersion": "proposal-plan/v0",
-  "skippedCount": 1,
-  "skippedFindings": [
-    {
-      "evidence_paths": [
-        "iterationReadiness.qualityGates"
-      ],
-      "finding_id": "verification.quality-gates.present",
-      "rank": 5,
-      "reason": "no_single_file_target",
-      "title": "Project Model exposes local quality gates"
-    }
-  ],
-  "snapshotId": "snapshot-parity",
-  "sourceScorecardId": "scorecard-parity"
+  ]
 }

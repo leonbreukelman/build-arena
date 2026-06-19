@@ -4,7 +4,7 @@ import argparse
 import json
 import re
 from dataclasses import asdict, dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote
 
@@ -187,7 +187,28 @@ def _resolve_target(root: Path, markdown_path: Path, target: str) -> Path:
     cleaned = unquote(target.split("#", 1)[0])
     if cleaned.startswith("/"):
         return (root / cleaned.lstrip("/")).resolve()
-    return (markdown_path.parent / cleaned).resolve()
+    relative = (markdown_path.parent / cleaned).resolve()
+    if relative.exists() or not _should_try_repo_root_fallback(root, cleaned):
+        return relative
+    return (root / cleaned).resolve()
+
+
+def _should_try_repo_root_fallback(root: Path, cleaned_target: str) -> bool:
+    """Return true for repo-root-looking links from nested generated docs.
+
+    Markdown relative semantics stay primary. The fallback is intentionally narrow:
+    only targets without ``..`` and whose first component already exists at repo
+    root can fall back to repo-root resolution. This fixes generated nested docs
+    that cite ``README.md`` or ``docs/index.md`` without turning arbitrary dead
+    links into silently accepted root-relative paths or weakening escape checks.
+    """
+    if not cleaned_target or cleaned_target.startswith("/"):
+        return False
+    posix = PurePosixPath(cleaned_target)
+    if posix.is_absolute() or ".." in posix.parts:
+        return False
+    first_part = posix.parts[0] if posix.parts else ""
+    return bool(first_part) and (root / first_part).exists()
 
 
 def _is_inside(root: Path, path: Path) -> bool:
