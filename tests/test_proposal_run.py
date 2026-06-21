@@ -444,3 +444,16 @@ def test_main_maps_stage_failure_exit(monkeypatch: pytest.MonkeyPatch, capsys: p
     rc = main(["run", "/some/repo", "--live-model", "m"])
     assert rc == EXIT_STAGE_FAILURE
     assert "boom happened" in capsys.readouterr().err
+
+
+def test_missing_subcommand_exits_via_argparse() -> None:
+    # The subparser is required, so argparse rejects a bare invocation before main() dispatches.
+    with pytest.raises(SystemExit) as excinfo:
+        main([])
+    assert excinfo.value.code == 2
+
+
+def test_unknown_subcommand_exits_via_argparse() -> None:
+    with pytest.raises(SystemExit) as excinfo:
+        main(["does-not-exist"])
+    assert excinfo.value.code == 2

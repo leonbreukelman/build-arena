@@ -376,19 +376,18 @@ def _config_from_args(args: argparse.Namespace) -> RunConfig:
 def main(argv: list[str] | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
-    if args.command == "run":
-        config = _config_from_args(args)
-        try:
-            return run(config)
-        except ProposalRunError as exc:
-            if not exc.already_reported:
-                print(f"proposal run failed: {exc}", file=sys.stderr)
-            return exc.exit_code
-        except EmitError as exc:  # defensive: emit runs as a subprocess, but stay fail-closed.
+    # ``_build_parser`` registers a single, required subcommand; argparse rejects missing or
+    # unknown commands (SystemExit, exit code 2) before ``run`` can dispatch.
+    config = _config_from_args(args)
+    try:
+        return run(config)
+    except ProposalRunError as exc:
+        if not exc.already_reported:
             print(f"proposal run failed: {exc}", file=sys.stderr)
-            return EXIT_STAGE_FAILURE
-    parser.error("unknown command")
-    return EXIT_USAGE
+        return exc.exit_code
+    except EmitError as exc:  # defensive: emit runs as a subprocess, but stay fail-closed.
+        print(f"proposal run failed: {exc}", file=sys.stderr)
+        return EXIT_STAGE_FAILURE
 
 
 if __name__ == "__main__":  # pragma: no cover
