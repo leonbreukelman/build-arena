@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 from jsonschema import Draft202012Validator
 
 from arena.project_intake_scorecard import (
@@ -43,6 +44,12 @@ def _validate(payload: dict[str, Any]) -> None:
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     errors = sorted(Draft202012Validator(schema).iter_errors(payload), key=lambda error: list(error.path))
     assert errors == []
+
+
+def _write_repo_file(repo: Path, rel_path: str, content: str = "present\n") -> None:
+    target = repo / rel_path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content, encoding="utf-8")
 
 
 def test_profile_weights_match_reviewed_spec() -> None:
@@ -94,6 +101,134 @@ def test_scorecard_records_absence_findings_quality_gates_and_first_recommendati
     assert "agent.agents-md.missing" in ids
     assert "verification.quality-gates.present" in ids
     assert scorecard["firstRecommendedImprovement"]["findingId"] == scorecard["findings"][0]["id"]
+    assert scorecard["advisoryOnly"] is True
+    assert scorecard["loopReadiness"]["advisory"] is True
+    _validate(scorecard)
+
+
+@pytest.mark.parametrize(
+    ("finding_id", "present_path"),
+    [
+        ("verification.ci.missing", ".github/workflows/ci.yml"),
+        ("verification.lockfile.missing", "uv.lock"),
+        ("verification.precommit.missing", ".pre-commit-config.yaml"),
+        ("security.policy.missing", "SECURITY.md"),
+        ("security.dep-update.missing", ".github/dependabot.yml"),
+        ("governance.contributing.missing", "CONTRIBUTING.md"),
+        ("governance.codeowners.missing", "CODEOWNERS"),
+        ("governance.templates.missing", ".github/pull_request_template.md"),
+        ("ops.env-example.missing", ".env.example"),
+        ("architecture.overview.missing", "ARCHITECTURE.md"),
+    ],
+)
+def test_readiness_absence_checks_emit_once_and_clear_when_present(
+    tmp_path: Path,
+    finding_id: str,
+    present_path: str,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    missing = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+    assert finding_id in {finding["id"] for finding in missing["findings"]}
+
+    _write_repo_file(repo, present_path)
+    present = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+    assert finding_id not in {finding["id"] for finding in present["findings"]}
+    _validate(present)
+
+
+@pytest.mark.parametrize(
+    ("rel_path", "content"),
+    [
+        ("pyproject.toml", "[tool.pytest.ini_options]\naddopts = '-q'\n"),
+        ("Makefile", "test:\n\tpytest\n"),
+        ("package.json", '{"scripts": {"test": "pytest"}}\n'),
+        ("tox.ini", "[tox]\nenvlist = py\n"),
+        ("pytest.ini", "[pytest]\naddopts = -q\n"),
+    ],
+)
+def test_verification_test_command_sources_are_discovered(
+    tmp_path: Path,
+    rel_path: str,
+    content: str,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo_file(repo, rel_path, content)
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+
+    assert "verification.test-command.missing" not in {finding["id"] for finding in scorecard["findings"]}
+    _validate(scorecard)
+
+
+def test_dimension_scores_roll_up_readiness_checks(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    empty = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+    assert empty["dimensionScores"]["documentation_project_knowledge"] == {
+        "covered": 0,
+        "total": 2,
+        "fraction": 0.0,
+    }
+    assert empty["dimensionScores"]["reproducible_verification"] == {
+        "covered": 0,
+        "total": 4,
+        "fraction": 0.0,
+    }
+
+    _write_repo_file(repo, ".github/workflows/ci.yml")
+    _write_repo_file(repo, "pyproject.toml", "[tool.pytest.ini_options]\naddopts = '-q'\n")
+    partly_ready = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+    assert partly_ready["dimensionScores"]["reproducible_verification"] == {
+        "covered": 2,
+        "total": 4,
+        "fraction": 0.5,
+    }
+    _validate(partly_ready)
+
+
+def test_loop_readiness_fails_without_ci_or_test_command(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+
+    ids = {finding["id"] for finding in scorecard["findings"]}
+    assert "verification.ci.missing" in ids
+    assert "verification.test-command.missing" in ids
+    assert scorecard["loopReadiness"] == {
+        "reproducibleVerificationGate": "fail",
+        "failingChecks": ["verification.ci.missing", "verification.test-command.missing"],
+        "advisory": True,
+    }
+    assert scorecard["advisoryOnly"] is True
+    _validate(scorecard)
+
+
+def test_loop_readiness_passes_with_ci_workflow_and_pytest_config(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo_file(repo, ".github/workflows/ci.yml")
+    _write_repo_file(repo, "pyproject.toml", "[tool.pytest.ini_options]\naddopts = '-q'\n")
+    snapshot = _snapshot(tmp_path / "project-model-v1.json", repo)
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="new-project")
+
+    ids = {finding["id"] for finding in scorecard["findings"]}
+    assert "verification.ci.missing" not in ids
+    assert "verification.test-command.missing" not in ids
+    assert scorecard["loopReadiness"] == {
+        "reproducibleVerificationGate": "pass",
+        "failingChecks": [],
+        "advisory": True,
+    }
     assert scorecard["advisoryOnly"] is True
     _validate(scorecard)
 
