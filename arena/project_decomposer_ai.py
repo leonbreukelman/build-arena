@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import logging
 import re
 import shutil
 from dataclasses import dataclass
@@ -16,6 +17,7 @@ from arena.project_graph import (
     graph_to_dict,
 )
 from arena.project_model_gate import (
+    UNIVERSAL_CONCERNS,
     close_import_contracts_for_gate,
     run_project_model_gate,
     write_gate_report,
@@ -47,6 +49,8 @@ from arena.project_snapshot import (
     stable_hash_json,
     write_json,
 )
+
+_LOG = logging.getLogger(__name__)
 
 
 @dataclass(slots=True)
@@ -344,6 +348,42 @@ def _coerce_list(cls: type, raw: dict[str, Any], canonical: str) -> list[Any]:
     ]
 
 
+def _normalise_universal_concern_id(raw_id: str) -> str | None:
+    normalised = re.sub(r"[^a-z0-9]+", "_", raw_id.lower()).strip("_")
+    if normalised in UNIVERSAL_CONCERNS:
+        return normalised
+    for prefix in ("ccc_", "concern_"):
+        if normalised.startswith(prefix) and normalised.removeprefix(prefix) in UNIVERSAL_CONCERNS:
+            return normalised.removeprefix(prefix)
+    return None
+
+
+def _normalise_cross_cutting_concerns(
+    concerns: list[CrossCuttingConcern], components: list[Component]
+) -> list[CrossCuttingConcern]:
+    provenance_by_component = {component.id: list(component.provenance_refs) for component in components}
+    for concern in concerns:
+        canonical = _normalise_universal_concern_id(concern.id)
+        if concern.category not in UNIVERSAL_CONCERNS and canonical is not None:
+            _LOG.warning(
+                "Canonicalized universal concern category from id",
+                extra={"concern_id": concern.id, "old_category": concern.category, "new_category": canonical},
+            )
+            concern.category = canonical
+        if concern.category not in UNIVERSAL_CONCERNS or concern.provenance_refs:
+            continue
+        refs: list[str] = []
+        for component_id in concern.component_ids:
+            refs.extend(provenance_by_component.get(component_id, []))
+        concern.provenance_refs = list(dict.fromkeys(ref for ref in refs if ref))
+        if concern.provenance_refs:
+            _LOG.warning(
+                "Backfilled universal concern provenance from covered components",
+                extra={"concern_id": concern.id, "category": concern.category, "count": len(concern.provenance_refs)},
+            )
+    return concerns
+
+
 def _snapshot_from_model_output(
     raw: dict[str, Any],
     *,
@@ -356,6 +396,10 @@ def _snapshot_from_model_output(
 ) -> ProjectModelSnapshot:
     if not isinstance(raw, dict):
         raise ValueError(f"model output must be a JSON object, got {type(raw).__name__}")
+    components = _coerce_list(Component, raw, "components")
+    cross_cutting_concerns = _normalise_cross_cutting_concerns(
+        _coerce_list(CrossCuttingConcern, raw, "cross_cutting_concerns"), components
+    )
     observable_checks = _coerce_list(ObservableCheck, raw, "observable_checks")
     return ProjectModelSnapshot(
         project_id=project_id,
@@ -364,9 +408,9 @@ def _snapshot_from_model_output(
         non_goals=list(raw.get("non_goals") or non_goals),
         primary_model_id=str(raw.get("model_id") or "unknown-model"),
         graph_hash=graph_hash,
-        components=_coerce_list(Component, raw, "components"),
+        components=components,
         contracts=_coerce_list(Contract, raw, "contracts"),
-        cross_cutting_concerns=_coerce_list(CrossCuttingConcern, raw, "cross_cutting_concerns"),
+        cross_cutting_concerns=cross_cutting_concerns,
         observable_checks=observable_checks,
         held_out_probes=_coerce_list(HeldOutProbe, raw, "held_out_probes"),
         verification_gaps=_coerce_list(VerificationGap, raw, "verification_gaps"),
@@ -576,15 +620,15 @@ def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], grap
         "Output STRICT JSON with these exact keys (no markdown):\n"
         '{\n'
         '  "model_id": str, "project_id": str, "goal": str, "non_goals": [str],\n'
-        '  "components": [{"id": str, "name": str, "responsibility": str (>=6 words, a semantic responsibility not a file list),\n'
+        '  "components": [{"id": str, "name": str, "responsibility": str (>=8 words, a semantic responsibility not a file list),\n'
         '     "owned_node_ids": [node_id from the list below], "provenance_refs": [prov id from a node you own],\n'
         '     "contract_ids": [id of a contract you declare], "check_ids": [id of an observable_check you declare],\n'
         '     "verification_gap_ids": [id of a verification_gap you declare]}],\n'
         '  "contracts": [{"id": str, "name": str, "from_component_id": component id, "to_component_id": component id,\n'
         '     "supporting_edge_ids": [edge_id from the list below connecting the two components],\n'
         '     "near_neighbor_alternative_ids": [], "provenance_refs": [prov id]}],\n'
-        '  "cross_cutting_concerns": [{"id": str, "category": str, "description": str, "component_ids": [component id],\n'
-        '     "contract_ids": [], "provenance_refs": [prov id]}],\n'
+        '  "cross_cutting_concerns": [{"id": str, "category": str (exact canonical category), "description": str, "component_ids": [component id],\n'
+        '     "contract_ids": [], "provenance_refs": [prov id from covered components]}],\n'
         '  "observable_checks": [{"id": str, "description": str, "command": str, "component_ids": [component id],\n'
         '     "contract_ids": [], "provenance_refs": [prov id]}],\n'
         '  "verification_gaps": [{"id": str, "description": str, "severity": "low|medium|high|blocker",\n'
@@ -602,9 +646,11 @@ def _decomposer_prompt(*, project_id: str, goal: str, non_goals: list[str], grap
         "- Every contract must connect TWO DISTINCT components (from_component_id != to_component_id) and cite at least "
         "one supporting_edge_id from the edges below whose endpoints map to those two components. A self-referential "
         "contract or one with no supporting edge fails the gate.\n"
-        "- Include the universal cross_cutting_concerns: anti_fabrication, determinism, provenance, "
-        "no_live_paid_api_acceptance (each covering all components), plus protected_surface_integrity and "
-        "generated_artifact_integrity if such surfaces exist.\n"
+        "- Include the universal cross_cutting_concerns with category EXACTLY one of: anti_fabrication, "
+        "determinism, provenance, no_live_paid_api_acceptance. Do not put thematic labels such as "
+        "integrity, reliability, traceability, or compliance in category. Each universal concern must cover "
+        "all components and include at least one provenance_refs entry copied from a covered component. Also "
+        "include protected_surface_integrity and generated_artifact_integrity if such surfaces exist.\n"
         "- Provide at least one observable_check.\n"
         "- HELD-OUT PROBES: you have no probe-execution artifacts, so do NOT claim probe pass/fail. Instead record at "
         "least one verification_gap whose description mentions 'probe' and one of: 'semantic', 'independent', "
