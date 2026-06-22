@@ -4,7 +4,7 @@
   "title": "Project Intake Scorecard v0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "id", "projectRoot", "snapshotPath", "snapshotId", "snapshotHash", "repoHead", "profile", "weights", "advisoryOnly", "findings", "improvementCandidates", "firstRecommendedImprovement"],
+  "required": ["schemaVersion", "id", "projectRoot", "snapshotPath", "snapshotId", "snapshotHash", "repoHead", "profile", "weights", "advisoryOnly", "dimensionScores", "loopReadiness", "findings", "improvementCandidates", "firstRecommendedImprovement"],
   "properties": {
     "schemaVersion": {"const": "project-intake-scorecard/v0"},
     "id": {"type": "string"},
@@ -16,11 +16,47 @@
     "profile": {"enum": ["new-project", "active-development", "production", "documentation-first"]},
     "weights": {"type": "object", "additionalProperties": {"type": "integer"}},
     "advisoryOnly": {"const": true},
+    "dimensionScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["documentation_project_knowledge", "reproducible_verification", "architecture_specs_contracts", "ai_agent_usability", "decision_history", "backlog_change_governance", "security_supply_chain_hygiene", "operations_release_rollback"],
+      "properties": {
+        "documentation_project_knowledge": {"$ref": "#/$defs/dimensionScore"},
+        "reproducible_verification": {"$ref": "#/$defs/dimensionScore"},
+        "architecture_specs_contracts": {"$ref": "#/$defs/dimensionScore"},
+        "ai_agent_usability": {"$ref": "#/$defs/dimensionScore"},
+        "decision_history": {"$ref": "#/$defs/dimensionScore"},
+        "backlog_change_governance": {"$ref": "#/$defs/dimensionScore"},
+        "security_supply_chain_hygiene": {"$ref": "#/$defs/dimensionScore"},
+        "operations_release_rollback": {"$ref": "#/$defs/dimensionScore"}
+      }
+    },
+    "loopReadiness": {"$ref": "#/$defs/loopReadiness"},
     "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}},
     "improvementCandidates": {"type": "array", "items": {"type": "object"}},
     "firstRecommendedImprovement": {"type": ["object", "null"]}
   },
   "$defs": {
+    "dimensionScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["covered", "total", "fraction"],
+      "properties": {
+        "covered": {"type": "integer", "minimum": 0},
+        "total": {"type": "integer", "minimum": 0},
+        "fraction": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "loopReadiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reproducibleVerificationGate", "failingChecks", "advisory"],
+      "properties": {
+        "reproducibleVerificationGate": {"enum": ["pass", "fail"]},
+        "failingChecks": {"type": "array", "items": {"type": "string"}},
+        "advisory": {"const": true}
+      }
+    },
     "finding": {
       "type": "object",
       "additionalProperties": false,

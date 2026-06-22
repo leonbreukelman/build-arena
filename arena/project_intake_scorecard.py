@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
+import tomllib
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -66,6 +68,46 @@ _SEVERITY = {"low": 1.0, "medium": 2.0, "high": 3.0, "critical": 4.0}
 _CONFIDENCE = {"low": 0.5, "medium": 0.75, "high": 1.0}
 _EFFORT = {"small": 1.0, "medium": 2.0, "large": 3.0, "unknown": 4.0}
 
+_AbsenceSpec = tuple[str, str, str, str | tuple[str, ...], str, int, int, int, int]
+
+_ABSENCE_SEVERITY = {
+    "doc.readme.missing": "high",
+    "agent.agents-md.missing": "high",
+    "verification.ci.missing": "high",
+    "verification.lockfile.missing": "low",
+    "verification.precommit.missing": "low",
+    "security.policy.missing": "medium",
+    "security.dep-update.missing": "low",
+    "governance.contributing.missing": "low",
+    "governance.codeowners.missing": "low",
+    "governance.templates.missing": "low",
+    "ops.env-example.missing": "low",
+    "architecture.overview.missing": "medium",
+}
+
+_ABSENCE_EFFORT = {
+    "verification.ci.missing": "unknown",
+    "verification.lockfile.missing": "unknown",
+    "verification.precommit.missing": "unknown",
+    "security.policy.missing": "unknown",
+    "security.dep-update.missing": "unknown",
+    "governance.contributing.missing": "unknown",
+    "governance.codeowners.missing": "unknown",
+    "governance.templates.missing": "unknown",
+    "ops.env-example.missing": "unknown",
+    "architecture.overview.missing": "unknown",
+}
+
+_READINESS_SIGNAL_FINDINGS = frozenset(_ABSENCE_EFFORT) | {"verification.test-command.missing"}
+
+_TEST_COMMAND_CHECK_PATHS = (
+    "pyproject.toml",
+    "Makefile",
+    "package.json",
+    "tox.ini",
+    "pytest.ini",
+)
+
 
 def finding_priority_score(
     *,
@@ -90,6 +132,7 @@ def build_project_intake_scorecard(project: str | Path, snapshot: str | Path, *,
     snapshot_data = _load_json(snapshot_path)
     weights = PROFILE_WEIGHTS[profile]
     findings = _findings(project_path, snapshot_data, weights)
+    readiness_checks = _readiness_check_results(project_path)
     findings = sorted(
         findings,
         key=lambda finding: (
@@ -113,6 +156,8 @@ def build_project_intake_scorecard(project: str | Path, snapshot: str | Path, *,
         "profile": profile,
         "weights": weights,
         "advisoryOnly": True,
+        "dimensionScores": _dimension_scores(readiness_checks),
+        "loopReadiness": _loop_readiness(readiness_checks),
         "findings": findings,
         "improvementCandidates": _improvement_candidates(findings),
         "firstRecommendedImprovement": first,
@@ -163,6 +208,7 @@ def _load_json(path: Path) -> dict[str, Any]:
 def _findings(project: Path, snapshot: dict[str, Any], weights: dict[str, int]) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     findings.extend(_absence_findings(project, weights))
+    findings.extend(_verification_capability_findings(project, weights))
     findings.extend(_component_findings(snapshot, weights))
     findings.extend(_lint_findings(project, weights))
     findings.extend(_quality_gate_findings(snapshot, weights))
@@ -362,30 +408,33 @@ def _components_with_checks(snapshot: dict[str, Any]) -> set[str]:
 
 
 def _absence_findings(project: Path, weights: dict[str, int]) -> list[dict[str, Any]]:
-    specs = [
-        ("doc.readme.missing", "documentation_project_knowledge", "README is missing", "README.md", "Create a README with purpose, setup, commands, status, and links.", 5, 4, 1, 5),
-        ("doc.index.missing", "documentation_project_knowledge", "Docs index is missing", "docs/index.md", "Create docs/index.md as canonical docs navigation.", 4, 3, 1, 5),
-        ("agent.agents-md.missing", "ai_agent_usability", "AGENTS.md is missing", "AGENTS.md", "Create AGENTS.md with commands, boundaries, and definition of done.", 5, 5, 2, 4),
-        ("decision.history.missing", "decision_history", "Decision records are missing", "docs/decisions", "Create decision records for architecture-significant constraints.", 3, 3, 1, 4),
-        ("ops.runbooks.missing", "operations_release_rollback", "Runbooks are missing", "docs/runbooks", "Document start/stop/deploy/rollback/troubleshooting procedures.", 3, 4, 2, 2),
-    ]
     findings: list[dict[str, Any]] = []
-    for fid, dimension, title, rel_path, action, impact, risk, verification, docs in specs:
-        if (project / rel_path).exists():
+    for fid, dimension, title, rel_paths, action, impact, risk, verification, docs in _absence_specs():
+        checked_paths = _check_paths(rel_paths)
+        primary_path = checked_paths[0]
+        if _any_path_exists(project, checked_paths):
             continue
+        evidence_path = (
+            f"iterationReadiness.readinessChecks.{fid}"
+            if fid in _READINESS_SIGNAL_FINDINGS
+            else primary_path
+        )
+        evidence: dict[str, Any] = {"kind": "absence", "path": evidence_path, "checked": True}
+        if len(checked_paths) > 1 or evidence_path != primary_path:
+            evidence["checkedPaths"] = list(checked_paths)
         findings.append(
             _finding(
                 fid,
                 dimension,
                 title,
-                "high" if fid in {"doc.readme.missing", "agent.agents-md.missing"} else "medium",
+                _ABSENCE_SEVERITY.get(fid, "medium"),
                 "high",
-                [{"kind": "absence", "path": rel_path, "checked": True}],
-                f"{rel_path} is absent, reducing future agent or operator understanding.",
+                [evidence],
+                f"{primary_path} is absent, reducing future agent or operator understanding.",
                 action,
-                [f"test -e {rel_path}"],
-                "safe_to_patch_docs_only",
-                "small",
+                [f"test -e {primary_path}"],
+                "readiness_signal_only" if fid in _READINESS_SIGNAL_FINDINGS else "safe_to_patch_docs_only",
+                _ABSENCE_EFFORT.get(fid, "small"),
                 weights,
                 impact,
                 risk,
@@ -394,6 +443,354 @@ def _absence_findings(project: Path, weights: dict[str, int]) -> list[dict[str, 
             )
         )
     return findings
+
+
+def _absence_specs() -> list[_AbsenceSpec]:
+    return [
+        (
+            "doc.readme.missing",
+            "documentation_project_knowledge",
+            "README is missing",
+            "README.md",
+            "Create a README with purpose, setup, commands, status, and links.",
+            5,
+            4,
+            1,
+            5,
+        ),
+        (
+            "doc.index.missing",
+            "documentation_project_knowledge",
+            "Docs index is missing",
+            "docs/index.md",
+            "Create docs/index.md as canonical docs navigation.",
+            4,
+            3,
+            1,
+            5,
+        ),
+        (
+            "agent.agents-md.missing",
+            "ai_agent_usability",
+            "AGENTS.md is missing",
+            "AGENTS.md",
+            "Create AGENTS.md with commands, boundaries, and definition of done.",
+            5,
+            5,
+            2,
+            4,
+        ),
+        (
+            "decision.history.missing",
+            "decision_history",
+            "Decision records are missing",
+            "docs/decisions",
+            "Create decision records for architecture-significant constraints.",
+            3,
+            3,
+            1,
+            4,
+        ),
+        (
+            "ops.runbooks.missing",
+            "operations_release_rollback",
+            "Runbooks are missing",
+            "docs/runbooks",
+            "Document start/stop/deploy/rollback/troubleshooting procedures.",
+            3,
+            4,
+            2,
+            2,
+        ),
+        (
+            "verification.ci.missing",
+            "reproducible_verification",
+            "CI configuration is missing",
+            (
+                ".github/workflows/ci.yml",
+                ".github/workflows/*.yml",
+                ".github/workflows/*.yaml",
+                ".gitlab-ci.yml",
+                ".circleci/config.yml",
+                "azure-pipelines.yml",
+            ),
+            "Add a CI workflow or equivalent host CI configuration for the repository test command.",
+            1,
+            1,
+            1,
+            1,
+        ),
+        (
+            "verification.lockfile.missing",
+            "reproducible_verification",
+            "Dependency lockfile is missing",
+            ("uv.lock", "package-lock.json", "poetry.lock"),
+            "Commit a dependency lockfile so local and CI installs resolve reproducibly.",
+            2,
+            3,
+            3,
+            1,
+        ),
+        (
+            "verification.precommit.missing",
+            "reproducible_verification",
+            "Pre-commit hook configuration is missing",
+            ".pre-commit-config.yaml",
+            "Add pre-commit hook configuration for repeatable local checks.",
+            2,
+            2,
+            3,
+            1,
+        ),
+        (
+            "security.policy.missing",
+            "security_supply_chain_hygiene",
+            "Security policy is missing",
+            "SECURITY.md",
+            "Create SECURITY.md with vulnerability reporting and support policy.",
+            2,
+            4,
+            1,
+            2,
+        ),
+        (
+            "security.dep-update.missing",
+            "security_supply_chain_hygiene",
+            "Dependency update configuration is missing",
+            (".github/dependabot.yml", "renovate.json"),
+            "Add Dependabot or Renovate configuration for dependency update hygiene.",
+            2,
+            3,
+            2,
+            1,
+        ),
+        (
+            "governance.contributing.missing",
+            "backlog_change_governance",
+            "Contributing guide is missing",
+            "CONTRIBUTING.md",
+            "Create CONTRIBUTING.md with contribution, review, and verification expectations.",
+            2,
+            2,
+            1,
+            3,
+        ),
+        (
+            "governance.codeowners.missing",
+            "backlog_change_governance",
+            "CODEOWNERS is missing",
+            ("CODEOWNERS", ".github/CODEOWNERS"),
+            "Add CODEOWNERS so ownership and review routing are explicit.",
+            2,
+            3,
+            1,
+            1,
+        ),
+        (
+            "governance.templates.missing",
+            "backlog_change_governance",
+            "Issue or PR templates are missing",
+            (
+                ".github/pull_request_template.md",
+                ".github/ISSUE_TEMPLATE",
+                "PULL_REQUEST_TEMPLATE.md",
+            ),
+            "Add an issue or pull request template with acceptance and verification fields.",
+            2,
+            2,
+            1,
+            2,
+        ),
+        (
+            "ops.env-example.missing",
+            "operations_release_rollback",
+            "Environment example is missing",
+            ".env.example",
+            "Create .env.example documenting required environment variables without secrets.",
+            2,
+            3,
+            2,
+            2,
+        ),
+        (
+            "architecture.overview.missing",
+            "architecture_specs_contracts",
+            "Architecture overview is missing",
+            ("ARCHITECTURE.md", "docs/architecture"),
+            "Create an architecture overview that names major components and contracts.",
+            4,
+            4,
+            2,
+            4,
+        ),
+    ]
+
+
+def _verification_capability_findings(project: Path, weights: dict[str, int]) -> list[dict[str, Any]]:
+    if _discover_test_command(project) is not None:
+        return []
+    return [
+        _finding(
+            "verification.test-command.missing",
+            "reproducible_verification",
+            "Declared test command is missing",
+            "high",
+            "high",
+            [
+                {
+                    "kind": "absence",
+                    "path": "iterationReadiness.readinessChecks.verification.test-command.missing",
+                    "checked": True,
+                    "checkedPaths": list(_TEST_COMMAND_CHECK_PATHS),
+                }
+            ],
+            "No local test command is discoverable from common project manifests, so changes cannot be mechanically verified.",
+            "Declare a test command in pyproject.toml, Makefile, package.json, tox.ini, or pytest.ini.",
+            [],
+            "readiness_signal_only",
+            "unknown",
+            weights,
+            1,
+            1,
+            1,
+            1,
+        )
+    ]
+
+
+def _readiness_check_results(project: Path) -> list[dict[str, Any]]:
+    results: list[dict[str, Any]] = []
+    for fid, dimension, _title, rel_paths, _action, _impact, _risk, _verification, _docs in _absence_specs():
+        results.append(
+            {
+                "id": fid,
+                "dimension": dimension,
+                "covered": _any_path_exists(project, _check_paths(rel_paths)),
+            }
+        )
+    results.append(
+        {
+            "id": "verification.test-command.missing",
+            "dimension": "reproducible_verification",
+            "covered": _discover_test_command(project) is not None,
+        }
+    )
+    return results
+
+
+def _dimension_scores(checks: list[dict[str, Any]]) -> dict[str, dict[str, int | float]]:
+    counters = {dimension: {"covered": 0, "total": 0} for dimension in DIMENSIONS}
+    for check in checks:
+        dimension = str(check.get("dimension", ""))
+        if dimension not in counters:
+            continue
+        counters[dimension]["total"] += 1
+        if bool(check.get("covered")):
+            counters[dimension]["covered"] += 1
+    scores: dict[str, dict[str, int | float]] = {}
+    for dimension in DIMENSIONS:
+        covered = counters[dimension]["covered"]
+        total = counters[dimension]["total"]
+        scores[dimension] = {
+            "covered": covered,
+            "total": total,
+            "fraction": round(covered / total, 6) if total else 1.0,
+        }
+    return scores
+
+
+def _loop_readiness(checks: list[dict[str, Any]]) -> dict[str, Any]:
+    by_id = {str(check.get("id", "")): bool(check.get("covered")) for check in checks}
+    failing = [
+        check_id
+        for check_id in ("verification.ci.missing", "verification.test-command.missing")
+        if not by_id.get(check_id, False)
+    ]
+    return {
+        "reproducibleVerificationGate": "fail" if failing else "pass",
+        "failingChecks": failing,
+        "advisory": True,
+    }
+
+
+def _check_paths(rel_paths: str | tuple[str, ...]) -> tuple[str, ...]:
+    if isinstance(rel_paths, str):
+        return (rel_paths,)
+    return rel_paths
+
+
+def _any_path_exists(project: Path, rel_paths: tuple[str, ...]) -> bool:
+    return any(_path_exists(project, rel_path) for rel_path in rel_paths)
+
+
+def _path_exists(project: Path, rel_path: str) -> bool:
+    if any(marker in rel_path for marker in "*?["):
+        return any(project.glob(rel_path))
+    return (project / rel_path).exists()
+
+
+def _discover_test_command(project: Path) -> dict[str, str] | None:
+    pyproject = project / "pyproject.toml"
+    if pyproject.exists() and _pyproject_declares_pytest(pyproject):
+        return {"kind": "pyproject", "path": "pyproject.toml", "command": "pytest"}
+
+    makefile = project / "Makefile"
+    if makefile.exists() and _makefile_declares_test_target(makefile):
+        return {"kind": "makefile", "path": "Makefile", "command": "make test"}
+
+    package_json = project / "package.json"
+    package_test = _package_json_test_script(package_json) if package_json.exists() else None
+    if package_test:
+        return {"kind": "package_json", "path": "package.json", "command": package_test}
+
+    tox_ini = project / "tox.ini"
+    if tox_ini.exists():
+        return {"kind": "tox", "path": "tox.ini", "command": "tox"}
+
+    pytest_ini = project / "pytest.ini"
+    if pytest_ini.exists():
+        return {"kind": "pytest_ini", "path": "pytest.ini", "command": "pytest"}
+
+    return None
+
+
+def _pyproject_declares_pytest(path: Path) -> bool:
+    try:
+        with path.open("rb") as handle:
+            data = tomllib.load(handle)
+    except (OSError, tomllib.TOMLDecodeError):
+        return False
+    tool = data.get("tool")
+    if not isinstance(tool, dict):
+        return False
+    pytest_section = tool.get("pytest")
+    if not isinstance(pytest_section, dict):
+        return False
+    return isinstance(pytest_section.get("ini_options"), dict)
+
+
+def _makefile_declares_test_target(path: Path) -> bool:
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    return re.search(r"(?m)^test\s*:{1,2}(?:\s|$)", content) is not None
+
+
+def _package_json_test_script(path: Path) -> str | None:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    scripts = data.get("scripts")
+    if not isinstance(scripts, dict):
+        return None
+    test = scripts.get("test")
+    if not isinstance(test, str) or not test.strip():
+        return None
+    return test
 
 
 def _quality_gate_findings(snapshot: dict[str, Any], weights: dict[str, int]) -> list[dict[str, Any]]:
