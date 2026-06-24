@@ -22,7 +22,7 @@ beyond what a domain needs to read the project facts passed in via context.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 from typing import Any, Protocol
 
 from arena.advisory_backlog import (
@@ -40,6 +40,7 @@ from arena.architecture_fitness import (
     contract_digest,
     selected_import_cycle,
 )
+from arena.ci_workflow import canonical_ci_text, ci_workflow_target, detect_ci_inputs
 from arena.graph_slice import GraphSlice
 from arena.repo_facts import RepoFacts
 
@@ -128,13 +129,14 @@ class ProposalDomainRegistry:
 def default_domain_registry() -> ProposalDomainRegistry:
     """The built-in registry. Documentation and code-quality are implemented;
     other non-doc domains (tests, dependencies, security, ...) are added in
-    later phases of epic #25. ``code_quality`` precedes ``generic_file`` so a
-    lint finding routes to the domain carrying the load-bearing gate rather than
-    the bare single-file fallback."""
+    later phases of epic #25. ``code_quality`` and ``ci_workflow`` precede
+    ``generic_file`` so findings route to domains carrying load-bearing gates
+    rather than the bare single-file fallback."""
     return ProposalDomainRegistry([
         DocumentationDomain(),
         CodeQualityDomain(),
         ComponentVerificationDomain(),
+        CiWorkflowDomain(),
         GenericFileDomain(),
         ArchitectureFitnessDomain(),
         AdvisoryBacklogDomain(),
@@ -261,6 +263,42 @@ class ComponentVerificationDomain:
             grounding_constraints=constraints,
             verification_commands=verification,
             target_paths=target_paths,
+        )]
+
+
+class CiWorkflowDomain:
+    """Missing-CI findings converted into deterministic, fact-grounded workflow files."""
+
+    name = "ci_workflow"
+
+    def candidates_for_finding(self, finding: dict[str, Any], context: DomainContext) -> list[ProposalCandidateDraft]:
+        if str(finding.get("id", "")) != "verification.ci.missing":
+            return []
+        inputs = detect_ci_inputs(Path(context.facts.project_root))
+        if inputs.test_command is None:
+            return []
+        text = canonical_ci_text(inputs)
+        target = ci_workflow_target()
+        intent = (
+            f"Create the CI workflow at {target} exactly as shown in the grounding constraints, "
+            "running only the repository's detected commands."
+        )
+        success = (
+            "The workflow byte-equals the canonical CI text for the detected inputs and "
+            "`python3 -m arena.ci_workflow --repo . --check` passes."
+        )
+        constraints = (
+            "The workflow may run only commands detected in the repository (test, and lint/typecheck only if their tools are present); do not invent jobs, tools, actions, or versions.",
+            f"Exact workflow YAML to write to {target}:\n{text}",
+        )
+        verification = ("python3 -m arena.ci_workflow --repo . --check",)
+        return [ProposalCandidateDraft(
+            intent=intent,
+            target_path=target,
+            success_criterion=success,
+            grounding_constraints=constraints,
+            verification_commands=verification,
+            target_paths=(target,),
         )]
 
 
