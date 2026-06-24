@@ -75,6 +75,7 @@ def test_proposal_domains_are_registered_in_fixed_order() -> None:
         "documentation",
         "code_quality",
         "component_verification",
+        "ci_workflow",
         "generic_file",
         "architecture_fitness",
         "advisory_backlog",
@@ -171,6 +172,138 @@ def _domain_context() -> Any:
         content_hash="hash",
     )
     return DomainContext(project_name="x", facts=facts, intake_context_block="", require_source_references=False)
+
+
+def _domain_context_for_repo(repo: Path) -> Any:
+    from arena.proposal_domains import DomainContext
+    from arena.repo_facts import collect_repo_facts
+
+    return DomainContext(
+        project_name=repo.name,
+        facts=collect_repo_facts(repo),
+        intake_context_block="",
+        require_source_references=False,
+    )
+
+
+def _ci_missing_finding(*, single_target: bool = False) -> dict[str, Any]:
+    if single_target:
+        evidence = [{"kind": "absence", "path": ".github/workflows/ci.yml", "checked": True}]
+    else:
+        evidence = [
+            {"kind": "absence", "path": ".github/workflows/ci.yml", "checked": True},
+            {"kind": "absence", "path": ".github/workflows/*.yml", "checked": True},
+            {"kind": "absence", "path": ".github/workflows/*.yaml", "checked": True},
+            {"kind": "absence", "path": ".gitlab-ci.yml", "checked": True},
+            {"kind": "absence", "path": ".circleci/config.yml", "checked": True},
+            {"kind": "absence", "path": "azure-pipelines.yml", "checked": True},
+        ]
+    return {
+        "id": "verification.ci.missing",
+        "title": "CI configuration is missing",
+        "evidence": evidence,
+        "verification": [],
+        "priorityScore": 100.0,
+        "rank": 1,
+    }
+
+
+def test_ci_workflow_domain_routes_missing_ci_to_grounded_candidate(tmp_path: Path) -> None:
+    from arena.proposal_domains import default_domain_registry
+
+    repo = _prepare_repo(tmp_path, "repo")
+    (repo / "uv.lock").write_text("", encoding="utf-8")
+    (repo / "pyproject.toml").write_text("[tool.pytest.ini_options]\n", encoding="utf-8")
+    ctx = _domain_context_for_repo(repo)
+
+    result = default_domain_registry().first_candidate(_ci_missing_finding(single_target=True), ctx)
+
+    assert result is not None
+    domain_name, candidate = result
+    assert domain_name == "ci_workflow"
+    assert candidate.target_path == ".github/workflows/ci.yml"
+    assert candidate.target_paths == (".github/workflows/ci.yml",)
+    assert "uv run pytest" in "\n".join(candidate.grounding_constraints)
+    assert candidate.verification_commands == ("python3 -m arena.ci_workflow --repo . --check",)
+
+
+def test_ci_workflow_precedes_generic_file_for_missing_ci(tmp_path: Path) -> None:
+    from arena.proposal_domains import GenericFileDomain, default_domain_registry
+
+    repo = _prepare_repo(tmp_path, "repo")
+    (repo / "pyproject.toml").write_text("[tool.pytest.ini_options]\n", encoding="utf-8")
+    ctx = _domain_context_for_repo(repo)
+    finding = _ci_missing_finding(single_target=True)
+
+    result = default_domain_registry().first_candidate(finding, ctx)
+
+    assert GenericFileDomain().candidates_for_finding(finding, ctx)
+    assert result is not None
+    assert result[0] == "ci_workflow"
+
+
+def test_ci_workflow_domain_returns_no_candidate_without_test_command(tmp_path: Path) -> None:
+    from arena.proposal_domains import CiWorkflowDomain, default_domain_registry
+
+    repo = _prepare_repo(tmp_path, "repo")
+    (repo / "pyproject.toml").write_text("[project]\nname = 'repo'\n", encoding="utf-8")
+    ctx = _domain_context_for_repo(repo)
+
+    assert CiWorkflowDomain().candidates_for_finding(_ci_missing_finding(), ctx) == []
+    assert default_domain_registry().first_candidate(_ci_missing_finding(), ctx) is None
+
+
+def test_planner_emits_ci_workflow_candidate_for_missing_ci_with_test_command(tmp_path: Path) -> None:
+    repo = _prepare_repo(tmp_path, "repo")
+    (repo / "uv.lock").write_text("", encoding="utf-8")
+    (repo / "pyproject.toml").write_text("[tool.pytest.ini_options]\n", encoding="utf-8")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [_ci_missing_finding()],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
+
+    assert plan.candidate_count == 1
+    candidate = plan.candidates[0]
+    assert candidate.finding_id == "verification.ci.missing"
+    assert candidate.target_path == ".github/workflows/ci.yml"
+    assert candidate.target_paths == (".github/workflows/ci.yml",)
+    assert "uv run pytest" in "\n".join(candidate.grounding_constraints)
+    assert any(disposition.get("domain") == "ci_workflow" for disposition in plan.finding_dispositions)
+
+
+def test_planner_keeps_missing_ci_finding_skipped_without_test_command(tmp_path: Path) -> None:
+    repo = _prepare_repo(tmp_path, "repo")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [_ci_missing_finding()],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10)
+
+    assert plan.candidate_count == 0
+    assert plan.skipped_findings[0]["finding_id"] == "verification.ci.missing"
 
 
 @pytest.mark.parametrize(
