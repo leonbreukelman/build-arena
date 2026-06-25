@@ -1,0 +1,20 @@
+flowchart TD
+    A[Repo: build-arena main @ 2c6f6cb] --> B[Project Model v1 snapshot<br/>Q/OP: llm-mode, live model, goal]
+    B --> C[Intake scorecard<br/>Q: profile active-development, top findings]
+    B --> D[capability_lift<br/>Q: component-granularity + lift prompt]
+    D --> E[Capability map review stand-in<br/>OP: review.reviewed=true for A1 only]
+    E --> F[dream_generate injected fake seam<br/>Q: generation prompt, mode mix prompt, topFindings[:8], temp/max_tokens]
+    C --> F
+    F --> G[dream_research injected fake seam<br/>Q/F: research prompt, anchor hashing instructions, temp/max_tokens]
+    G --> H{dream_gate<br/>F: reviewed map, graphHash, target ids, anchor kind/id/contentHash, recipe, confidence cap}
+    H -->|accepted: dream.a1.carrier-survives<br/>premiseConfidence=all_resolved| I[gated-dreams.json]
+    H -->|killed: dream.a1.function-killed<br/>contentHash mismatch for component.arena-runners| J[dream-gate-trace.json]
+    I --> K[dream_emit<br/>F: gatedBy marker + all_resolved only; refuses proposal.md<br/>Q: render ordering]
+    K --> L[dream.md]
+
+    classDef q fill:#e8f4ff,stroke:#1f77b4,color:#111;
+    classDef f fill:#fff4e6,stroke:#ff7f0e,color:#111;
+    classDef op fill:#efe6ff,stroke:#6f42c1,color:#111;
+    class B,C,D,F,G,K q;
+    class H,I,J f;
+    class E op;
