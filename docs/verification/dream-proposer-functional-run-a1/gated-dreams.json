@@ -1,0 +1,67 @@
+{
+  "capabilityMap": {
+    "path": "<run-dir>/capability-map.review-standin.json",
+    "reviewed": true
+  },
+  "dreams": [
+    {
+      "citedEvidence": [
+        {
+          "anchorId": "component.arena",
+          "anchorKind": "component",
+          "claim": "Component component.arena is the current realized carrier for the target capability.",
+          "contentHash": "fbda068c3c6011464ca643c2dd68264b949a436c518b2c3f476b67bd9a2ae86a"
+        },
+        {
+          "anchorId": "capability.component.arena",
+          "anchorKind": "capability",
+          "claim": "Capability capability.component.arena exists in the reviewed capability map.",
+          "contentHash": "159ec1e140720f0de9fa6a66d85ddd675ea0c6e3955edb09d70f87d3f51bb1e5"
+        }
+      ],
+      "conclusionConfidence": {
+        "band": "medium",
+        "value": 0.6
+      },
+      "id": "dream.a1.carrier-survives",
+      "idea": "Consider replacing the current capability carrier with a narrower dream-lane seam.",
+      "mode": "carrier_swap",
+      "premiseConfidence": "all_resolved",
+      "rationale": "The dream is grounded in a real component-to-capability mapping, but the benefit remains speculative.",
+      "targetCapabilityIds": [
+        "capability.component.arena"
+      ],
+      "validationRecipe": {
+        "action": "prototype a narrower seam behind the same CLI in a throwaway branch",
+        "expectedDirection": "increase",
+        "observable": "focused dream-lane test surface"
+      }
+    }
+  ],
+  "projectId": "build-arena",
+  "provenance": {
+    "gatedBy": "arena.dream_gate",
+    "generatedBy": "arena.dream_generate",
+    "inputHashes": {
+      "capabilityMap": "1adc903b52189e4fdffc7915a4a5ff0788e7eb43dc6747297ef5ae2c9c29d5c8",
+      "projectModelV1": "595fb912030a78f2ea4e74e8b56e72fe1ac325ba21eef11d6304e604d15a044e",
+      "rawDreams": "224866b97430240f827a94dfc3dc0a6f4685df6bc80e6f108acc7ee80b863882",
+      "researchedDreams": "c498109239baacd88e6264d7d6b3f551e9f9210fdea44b443c041503c066c9b9",
+      "scorecard": "4d4dc162bf7db7a0e4d2513bb6c209f1e68edc2f09d3cd025438c724840f164e"
+    },
+    "modelId": "injected-model",
+    "promptHashes": {
+      "gate": "a0339772c8b9481bcca66ea0d5fd887c25d81912d4101b1443b4addabcdb5ad1",
+      "generate": "f08fdce8a1b4453207fb5b9487dfafaae0fddf38b243b24ef5e930f72c2d74ef",
+      "generatePromptVersion": "aee19fa0f07c39175d6e9cb976ae9ebe57f5bb1103a29f39eed665e5a60f7f04",
+      "research": "3d2a3870a513b74873bac61f87c879e7b6a6c009a15079cd6c7911da757f66cc",
+      "researchPromptVersion": "d0839dbbfeeaecfb994fed5f715713eafabfc98c61a4a872410842cc068044aa"
+    },
+    "researchedBy": "arena.dream_research"
+  },
+  "schemaVersion": "dream/v0",
+  "sourceModel": {
+    "graphHash": "15308551bebe583886efd75d470a61bdd2e1e1da785ecbd47cc04daf1309f2dc",
+    "projectModelV1Path": "<run-dir>/snapshots/snapshot-63a959a94c1c8068/project-model-v1.json"
+  }
+}

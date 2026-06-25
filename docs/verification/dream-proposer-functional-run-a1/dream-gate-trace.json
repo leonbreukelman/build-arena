@@ -1,0 +1,19 @@
+{
+  "acceptedDreamIds": [
+    "dream.a1.carrier-survives"
+  ],
+  "killedDreams": [
+    {
+      "id": "dream.a1.function-killed",
+      "premiseConfidence": "unresolved",
+      "reasons": [
+        "citedEvidence[0] contentHash mismatch for component component.arena-runners"
+      ]
+    }
+  ],
+  "schemaVersion": "dream-gate-trace/v0",
+  "summary": {
+    "accepted": 1,
+    "killed": 1
+  }
+}
