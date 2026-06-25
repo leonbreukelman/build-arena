@@ -4,7 +4,7 @@ Date: 2026-06-19
 
 ## Goal
 
-Add one narrow proposer stage that takes an already-built `proposal plan JSON`, mechanically filters out weak or ungrounded candidates, then uses one default LLM as a pairwise judge to choose the single best surviving proposal. The output is still a `proposal-plan/v0` file with the selected winner assigned `rank: 1`, so the existing emit step can keep selecting rank 1 unchanged.
+Add one narrow proposer stage that takes an already-built `proposal-plan.json`, mechanically filters out weak or ungrounded candidates, then uses one default LLM as a pairwise judge to choose the single best surviving proposal. The output is still a `proposal-plan/v0` file with the selected winner assigned `rank: 1`, so the existing emit step can keep selecting rank 1 unchanged.
 
 This replaces reliance on absolute `priority_score` for the final pick. It does not replace intake scoring, domain proposal generation, gates, apply, promotion, or emit.
 
@@ -48,12 +48,12 @@ Observed code:
 - `arena/proposal_planner.py` builds `proposal-plan/v0` candidates ordered by scorecard rank/`priorityScore`.
 - `docs/schemas/proposal-plan-v0.schema.json` allows no additional plan fields, so re-ranker metadata must live in a sidecar trace, not inside the plan.
 - `arena/llm_adapter.py` already provides an OpenAI-compatible chat client with temperature 0 support and model/provider metadata.
-- `arena/repo_goal_loop.py` currently joins `ranked proposals JSON` entries to `proposal plan JSON` candidates and selects from absolute `priorityScore`; the narrow emit pipeline can instead use the re-ranked plan rank 1 without changing emit.
+- `arena/repo_goal_loop.py` currently joins `ranked-proposals.json` entries to `proposal-plan.json` candidates and selects from absolute `priorityScore`; the narrow emit pipeline can instead use the re-ranked plan rank 1 without changing emit.
 
 Minimal module:
 
-- Add `./arena/proposal_pairwise_reranker.py`.
-- Add tests in `./tests/test_proposal_pairwise_reranker.py`.
+- Add `arena/proposal_pairwise_reranker.py`.
+- Add tests in `tests/test_proposal_pairwise_reranker.py`.
 - No schema version change.
 - No changes to `proposal_emit` or gates.
 
@@ -62,10 +62,10 @@ CLI shape:
 ```text
 uv run python -m arena.proposal_pairwise_reranker \
   --project <target-repo> \
-  --plan <proposal plan JSON> \
-  --graph <graph JSON or Project Model v1 JSON> \
-  --output-plan <reranked plan JSON> \
-  --trace <rerank trace JSON> \
+  --plan <proposal-plan.json> \
+  --graph <graph.json or project-model-v1.json> \
+  --output-plan <proposal-plan.reranked.json> \
+  --trace <proposal-rerank-trace.json> \
   --allow-live
 ```
 
@@ -74,13 +74,13 @@ No `--model`, no model list, no provider panel. Resolve one default judge from t
 ## Data flow
 
 ```text
-proposal plan JSON
+proposal-plan.json
   -> load + schema-shaped sanity checks
-  -> graph index from graph JSON/project-model-v1.projectGraph
+  -> graph index from graph.json/project-model-v1.projectGraph
   -> mechanical pre-filter
   -> pairwise tournament over survivors
   -> rewrite plan candidates with winner rank 1
-  -> write reranked plan JSON + rerank trace JSON
+  -> write proposal-plan.reranked.json + proposal-rerank-trace.json
   -> existing emit reads rank 1 unchanged
 ```
 
@@ -111,7 +111,7 @@ Check these candidate sources:
 - `evidence_refs[*].path` where present;
 - symbol-like backtick/code-span references in `intent` and `success_criterion`.
 
-Candidate `target_paths`/`target_path` are validated for specificity and safe relative path syntax, but they are exempt from graph-existence resolution. This is necessary because valid Build Arena proposals can create new files (`./docs/index.md`, `AGENTS.md`, `agent backlog doc`) that do not yet exist as graph nodes. Checked absence evidence for a target is a stronger grounding signal when present, but it is not required for survival because current candidate payloads do not consistently carry absence evidence for every creation target.
+Candidate `target_paths`/`target_path` are validated for specificity and safe relative path syntax, but they are exempt from graph-existence resolution. This is necessary because valid Build Arena proposals can create new files (`docs/index.md`, `AGENTS.md`, `docs/agent-backlog.md`) that do not yet exist as graph nodes. Checked absence evidence for a target is a stronger grounding signal when present, but it is not required for survival because current candidate payloads do not consistently carry absence evidence for every creation target.
 
 For text/reference extraction, first remove the candidate's own normalized target paths from the extracted reference set, then require every remaining path-like reference to resolve to `GraphIndex.paths`. This catches fabricated supporting references without dropping legitimate creation targets.
 
@@ -182,7 +182,7 @@ Required:
 - `target_paths` has at least one normalized relative path, or
 - `target_path` is a normalized relative path and can be promoted to `target_paths`.
 
-Reject directory-only vague locations (`docs/`, `src/`, `.`, `tests`) unless the candidate target has already been normalized to a concrete file such as `./docs/index.md`.
+Reject directory-only vague locations (`docs/`, `src/`, `.`, `tests`) unless the candidate target has already been normalized to a concrete file such as `docs/index.md`.
 
 Drop reasons:
 
@@ -263,9 +263,9 @@ Response must be JSON only:
 {
   "winner_slot": "A",
   "winner_finding_id": "code.component.untested.comp-auth",
-  "candidate_a_evidence_cited": ["target_path:./src/pkg/auth.py", "evidence:owned_surface:./src/pkg/auth.py", "evidence:provenance:prov:abc123"],
-  "candidate_b_evidence_cited": ["target_path:./docs/index.md", "evidence:absence:./docs/index.md"],
-  "reason": "Candidate A is more specific and more verifiable because it names ./src/pkg/auth.py and has a binding gate; Candidate B is grounded but lower leverage for this repo state."
+  "candidate_a_evidence_cited": ["target_path:src/pkg/auth.py", "evidence:owned_surface:src/pkg/auth.py", "evidence:provenance:prov:abc123"],
+  "candidate_b_evidence_cited": ["target_path:docs/index.md", "evidence:absence:docs/index.md"],
+  "reason": "Candidate A is more specific and more verifiable because it names src/pkg/auth.py and has a binding gate; Candidate B is grounded but lower leverage for this repo state."
 }
 ```
 
@@ -346,16 +346,16 @@ Call settings:
 
 ## Trace sidecar
 
-Write `rerank trace JSON` next to the output plan.
+Write `proposal-rerank-trace.json` next to the output plan.
 
 Recommended shape:
 
 ```json
 {
   "schemaVersion": "proposal-pairwise-rerank-trace/v0",
-  "sourcePlanPath": "proposal plan JSON",
+  "sourcePlanPath": "proposal-plan.json",
   "sourcePlanId": "...",
-  "graphPath": "graph JSON",
+  "graphPath": "graph.json",
   "model": {"provider": "xai", "requested_model": "...", "served_model": "...", "temperature": 0},
   "preFilter": {
     "inputCandidateCount": 10,
@@ -405,7 +405,7 @@ No new fields. No schema version change.
 
 ## Tests to write
 
-Add `./tests/test_proposal_pairwise_reranker.py`.
+Add `tests/test_proposal_pairwise_reranker.py`.
 
 Required tests:
 
@@ -431,10 +431,10 @@ Use fake judge/client injection in tests. Do not make live calls in tests.
 
 ### Task 1: Add graph/candidate loaders
 
-Create `./arena/proposal_pairwise_reranker.py` with:
+Create `arena/proposal_pairwise_reranker.py` with:
 
 - `load_plan(path) -> dict[str, Any]`;
-- `load_graph(path) -> dict[str, Any]` supporting raw `graph JSON` and `Project Model v1 JSON` with `projectGraph`;
+- `load_graph(path) -> dict[str, Any]` supporting raw `graph.json` and `project-model-v1.json` with `projectGraph`;
 - `GraphIndex.from_graph(graph)`;
 - `candidate_key(candidate)` stable helper.
 
@@ -527,7 +527,7 @@ For `repo_goal_loop`, do not mix this into the first implementation unless expli
 - Winner becomes rank 1 in a schema-valid `proposal-plan/v0` output.
 - Trace records all pre-filter drops, both call results, consistency, winner, and cited reasons.
 - Candidate payload sent to judge does not contain `priority_score` or original `rank`.
-- Full tests pass: `uv run pytest ./tests/test_proposal_pairwise_reranker.py -q`, `uv run ruff check .`, `uv run pyright`.
+- Full tests pass: `uv run pytest tests/test_proposal_pairwise_reranker.py -q`, `uv run ruff check .`, `uv run pyright`.
 
 ## Known limitation kept intentionally
 

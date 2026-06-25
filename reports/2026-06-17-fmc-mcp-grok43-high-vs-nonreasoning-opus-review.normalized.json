@@ -1,0 +1,43 @@
+{
+  "blockers_before_intake": [
+    "High-reasoning fails the deterministic cross_cutting_concerns gate (3 errors) \u2014 fail-closed, cannot enter intake until universal concerns anti_fabrication, determinism, no_live_paid_api_acceptance, provenance are present and cover all components.",
+    "High-reasoning emitted 0 raw_contracts and only 1 raw_observable_check; runtimeContracts dropped from 43 to 23 \u2014 verification surface may be too thin for downstream scorecard/proposal even after gate is fixed.",
+    "Colon component ids (comp:client) plus undercovering universal concerns are what tripped the gate; confirm the id scheme / concern-coverage mapping is correct, not a serialization artifact."
+  ],
+  "comparison": [
+    "Gate is the deciding axis: previous PASSED, high-reasoning FAILED \u2014 a stronger ranking does not override a fail-closed gate.",
+    "High-reasoning fixed the single biggest semantic flaw of the previous run (comp-tests rank-1) but regressed on completeness and gate compliance.",
+    "High-reasoning is smaller and pricier; reasoning effort bought better component shape, not better coverage or a passing artifact.",
+    "Neither produced intake/scorecard/proposal artifacts \u2014 expected and not penalized under decomposition-only scope.",
+    "Ideal next artifact = previous run's gate-passing richness + high-reasoning's component ranking."
+  ],
+  "high_reasoning_strengths": [
+    "Best production-component priority shape: comp:client rank 1, no comp-tests distortion in the top component.",
+    "Test file correctly excluded as a top-ranked component (6 profiles vs 7, tests dropped).",
+    "Reasoning budget spent (7897 reasoning tokens) and served model matches requested grok-4.3 with finish_reason stop.",
+    "Open questions, priority backlog, and product invariants remain coherent and component-scoped."
+  ],
+  "high_reasoning_weaknesses": [
+    "Hard gate failure (3 cross_cutting_concerns errors) \u2014 fail-closed, not promotable.",
+    "Materially thinner output: -20 runtimeContracts, -4 raw_contracts (to 0), -5 raw_observable_checks (to 1), -2 externalSurfaces.",
+    "Costs more (~$0.033 vs ~$0.019) and uses more tokens while producing a weaker, non-passing artifact.",
+    "Dropped a qualityGate (3 vs 4); lost the pyright check-typing entry present in the previous run."
+  ],
+  "previous_non_reasoning_strengths": [
+    "Passes the deterministic gate with 0 violations \u2014 the only promotable artifact of the two.",
+    "Richer enrichment: 43 runtimeContracts, 4 raw_contracts, 6 observable checks, 30 externalSurfaces, 4 qualityGates.",
+    "Cheaper and lower token cost.",
+    "Identical, coherent open-questions/backlog/invariants."
+  ],
+  "previous_non_reasoning_weaknesses": [
+    "Ranking distortion: comp-tests ranked #1 high-risk (risk score 55) above the production comp-client \u2014 inflates a test-only surface into the top priority.",
+    "Carries a 7th test component that pollutes priority backlog componentIds.",
+    "Summaries are formulaic / templated ('Coordinate ... with source-backed behavior in ...')."
+  ],
+  "recommended_next_step": "Do not feed high-reasoning into intake as-is. Either (a) re-run Grok 4.3 high-reasoning with the universal cross_cutting_concerns (anti_fabrication, determinism, no_live_paid_api_acceptance, provenance) required and component-covered so it passes the gate, then re-compare; or (b) proceed to intake with the previous non-reasoning artifact while manually correcting the comp-tests rank-1 distortion. Confirm whether the colon id scheme is the gate-coverage trigger before re-running.",
+  "review_verdict": "MIXED",
+  "run_verdict_high_reasoning": "FAIL_CLOSED: gate failed with 3 cross_cutting_concerns errors (missing universal concerns anti_fabrication/determinism/no_live_paid_api_acceptance/provenance, and anti_fabrication + provenance not covering any of the 6 components). Component ranking is the best of the two (comp:client rank 1, no test-file component polluting the top), but the artifact is materially thinner and is not promotable as-is.",
+  "run_verdict_previous_non_reasoning": "PASS: gate passed with 0 violations and richer surfaces (43 runtimeContracts, 4 raw_contracts, 6 observable checks). Promotable, but ranking is distorted \u2014 comp-tests ranked #1/high-risk above the production client, and summaries are formulaic.",
+  "summary": "High-reasoning Grok 4.3 produced the better component ranking (production client at rank 1, no test-component distortion) but FAILED the deterministic cross_cutting_concerns gate with 3 errors and shipped a materially thinner, more expensive artifact (runtimeContracts 23 vs 43, 0 raw_contracts, 1 observable check). The previous non-reasoning run passed the gate cleanly and is richer, but ranks comp-tests #1 above the real client. Because the gate is fail-closed, the previous non-reasoning run is the only intake-ready artifact today; high-reasoning is the better model output but must be re-run to clear the gate before it can be promoted.",
+  "which_is_better_for_next_intake": "previous_non_reasoning"
+}

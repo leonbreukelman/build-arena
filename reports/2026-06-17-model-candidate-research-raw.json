@@ -1,0 +1,4875 @@
+{
+  "hf_searches": {
+    "CodeLlama": [
+      {
+        "downloads": 188331,
+        "id": "codellama/CodeLlama-7b-hf",
+        "lastModified": null,
+        "likes": 377,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "llama-2",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "deploy:azure"
+        ]
+      },
+      {
+        "downloads": 14114,
+        "id": "codellama/CodeLlama-7b-Instruct-hf",
+        "lastModified": null,
+        "likes": 258,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "llama-2",
+          "conversational",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "text-generation-inference",
+          "endpoints_compatible"
+        ]
+      },
+      {
+        "downloads": 11526,
+        "id": "codellama/CodeLlama-34b-Instruct-hf",
+        "lastModified": null,
+        "likes": 304,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "llama-2",
+          "conversational",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "text-generation-inference",
+          "endpoints_compatible"
+        ]
+      },
+      {
+        "downloads": 10313,
+        "id": "TheBloke/CodeLlama-7B-Instruct-GGUF",
+        "lastModified": null,
+        "likes": 148,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "llama",
+          "llama-2",
+          "text-generation",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 5133,
+        "id": "TheBloke/CodeLlama-7B-GGUF",
+        "lastModified": null,
+        "likes": 133,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "llama",
+          "llama-2",
+          "text-generation",
+          "code",
+          "arxiv:2308.12950",
+          "base_model:codellama/CodeLlama-7b-hf",
+          "base_model:quantized:codellama/CodeLlama-7b-hf",
+          "license:llama2",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 4187,
+        "id": "TheBloke/CodeLlama-13B-Instruct-GGUF",
+        "lastModified": null,
+        "likes": 131,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "llama",
+          "llama-2",
+          "text-generation",
+          "code",
+          "arxiv:2308.12950",
+          "base_model:codellama/CodeLlama-13b-Instruct-hf",
+          "base_model:quantized:codellama/CodeLlama-13b-Instruct-hf",
+          "license:llama2",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 3705,
+        "id": "codellama/CodeLlama-7b-Python-hf",
+        "lastModified": null,
+        "likes": 146,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "llama-2",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "deploy:azure"
+        ]
+      },
+      {
+        "downloads": 3264,
+        "id": "meta-llama/CodeLlama-7b-hf",
+        "lastModified": null,
+        "likes": 125,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "facebook",
+          "meta",
+          "llama-2",
+          "code",
+          "arxiv:2308.12950",
+          "license:llama2",
+          "text-generation-inference"
+        ]
+      },
+      {
+        "downloads": 2865,
+        "id": "TheBloke/Phind-CodeLlama-34B-v2-GGUF",
+        "lastModified": null,
+        "likes": 171,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "llama",
+          "code llama",
+          "base_model:Phind/Phind-CodeLlama-34B-v2",
+          "base_model:quantized:Phind/Phind-CodeLlama-34B-v2",
+          "license:llama2",
+          "model-index",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 2611,
+        "id": "philschmid/code-llama-3-1-8b-text-to-sql-lora",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": null,
+        "tags": [
+          "peft",
+          "tensorboard",
+          "safetensors",
+          "trl",
+          "sft",
+          "generated_from_trainer",
+          "dataset:generator",
+          "base_model:meta-llama/Llama-3.1-8B",
+          "base_model:adapter:meta-llama/Llama-3.1-8B",
+          "license:llama3.1",
+          "region:us"
+        ]
+      }
+    ],
+    "Codestral": [
+      {
+        "downloads": 33240,
+        "id": "mistralai/Mamba-Codestral-7B-v0.1",
+        "lastModified": null,
+        "likes": 616,
+        "pipeline_tag": null,
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral-common",
+          "license:apache-2.0",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 7997,
+        "id": "mistralai/Codestral-22B-v0.1",
+        "lastModified": null,
+        "likes": 1333,
+        "pipeline_tag": null,
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral",
+          "code",
+          "mistral-common",
+          "license:other",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 6889,
+        "id": "lmstudio-community/Codestral-22B-v0.1-GGUF",
+        "lastModified": null,
+        "likes": 29,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "code",
+          "text-generation",
+          "base_model:mistralai/Codestral-22B-v0.1",
+          "base_model:quantized:mistralai/Codestral-22B-v0.1",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix"
+        ]
+      },
+      {
+        "downloads": 6142,
+        "id": "failspy/Codestral-22B-v0.1-abliterated-v3",
+        "lastModified": null,
+        "likes": 12,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "mistral",
+          "text-generation",
+          "code",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 3286,
+        "id": "bartowski/Codestral-22B-v0.1-GGUF",
+        "lastModified": null,
+        "likes": 193,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "code",
+          "text-generation",
+          "base_model:mistralai/Codestral-22B-v0.1",
+          "base_model:quantized:mistralai/Codestral-22B-v0.1",
+          "license:other",
+          "region:us",
+          "imatrix"
+        ]
+      },
+      {
+        "downloads": 2196,
+        "id": "SanctumAI/Codestral-22B-v0.1-GGUF",
+        "lastModified": null,
+        "likes": 10,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "mistral",
+          "code",
+          "base_model:mistralai/Codestral-22B-v0.1",
+          "base_model:quantized:mistralai/Codestral-22B-v0.1",
+          "license:other",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 1612,
+        "id": "Agnuxo/Mamba-Codestral-7B-v0.1-instruct-python_coding_assistant-GGUF_4bit",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "mistral",
+          "p2pclaw",
+          "cajal",
+          "code-generation-assistant",
+          "local-ai",
+          "text-generation",
+          "scientific-research",
+          "en",
+          "es",
+          "arxiv:2604.19792",
+          "license:apache-2.0"
+        ]
+      },
+      {
+        "downloads": 899,
+        "id": "bartowski/Trinity-2-Codestral-22B-v0.2-GGUF",
+        "lastModified": null,
+        "likes": 6,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "generated_from_trainer",
+          "text-generation",
+          "base_model:migtissera/Trinity-2-Codestral-22B-v0.2",
+          "base_model:quantized:migtissera/Trinity-2-Codestral-22B-v0.2",
+          "license:other",
+          "endpoints_compatible",
+          "region:us",
+          "conversational"
+        ]
+      },
+      {
+        "downloads": 838,
+        "id": "mlx-community/Codestral-22B-v0.1-4bit",
+        "lastModified": null,
+        "likes": 13,
+        "pipeline_tag": null,
+        "tags": [
+          "mlx",
+          "safetensors",
+          "mistral",
+          "code",
+          "license:other",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 710,
+        "id": "mradermacher/Codestral-22B-v0.1-OBLITERATED-i1-GGUF",
+        "lastModified": null,
+        "likes": 1,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "obliteratus",
+          "abliteration",
+          "uncensored",
+          "obliterate",
+          "en",
+          "base_model:Johnblick187/Codestral-22B-v0.1-OBLITERATED",
+          "base_model:quantized:Johnblick187/Codestral-22B-v0.1-OBLITERATED",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix"
+        ]
+      }
+    ],
+    "DeepSeek Coder": [
+      {
+        "downloads": 878601,
+        "id": "deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+        "lastModified": null,
+        "likes": 612,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "deepseek_v2",
+          "text-generation",
+          "conversational",
+          "custom_code",
+          "arxiv:2401.06066",
+          "license:other",
+          "eval-results",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 415988,
+        "id": "deepseek-ai/deepseek-coder-7b-instruct-v1.5",
+        "lastModified": null,
+        "likes": 156,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "conversational",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 149042,
+        "id": "deepseek-ai/deepseek-coder-6.7b-instruct",
+        "lastModified": null,
+        "likes": 497,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "conversational",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 137012,
+        "id": "RedHatAI/DeepSeek-Coder-V2-Lite-Instruct-FP8",
+        "lastModified": null,
+        "likes": 14,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "deepseek_v2",
+          "text-generation",
+          "fp8",
+          "vllm",
+          "conversational",
+          "custom_code",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 40677,
+        "id": "TheBloke/deepseek-coder-6.7B-instruct-GGUF",
+        "lastModified": null,
+        "likes": 247,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "deepseek",
+          "base_model:deepseek-ai/deepseek-coder-6.7b-instruct",
+          "base_model:quantized:deepseek-ai/deepseek-coder-6.7b-instruct",
+          "license:other",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 40307,
+        "id": "deepseek-ai/deepseek-coder-6.7b-base",
+        "lastModified": null,
+        "likes": 124,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 37105,
+        "id": "bartowski/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
+        "lastModified": null,
+        "likes": 162,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "text-generation",
+          "license:other",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix",
+          "conversational"
+        ]
+      },
+      {
+        "downloads": 35825,
+        "id": "deepseek-ai/deepseek-coder-1.3b-instruct",
+        "lastModified": null,
+        "likes": 167,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "pytorch",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "conversational",
+          "license:other",
+          "text-generation-inference",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 21084,
+        "id": "lmstudio-community/DeepSeek-Coder-V2-Lite-Instruct-GGUF",
+        "lastModified": null,
+        "likes": 81,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "text-generation",
+          "base_model:deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+          "base_model:quantized:deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+          "license:other",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix",
+          "conversational"
+        ]
+      },
+      {
+        "downloads": 13077,
+        "id": "TheBloke/deepseek-coder-33B-instruct-GGUF",
+        "lastModified": null,
+        "likes": 196,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "deepseek",
+          "base_model:deepseek-ai/deepseek-coder-33b-instruct",
+          "base_model:quantized:deepseek-ai/deepseek-coder-33b-instruct",
+          "license:other",
+          "region:us"
+        ]
+      }
+    ],
+    "Devstral": [
+      {
+        "downloads": 217359,
+        "id": "mistralai/Devstral-Small-2-24B-Instruct-2512",
+        "lastModified": null,
+        "likes": 615,
+        "pipeline_tag": null,
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral3",
+          "mistral-common",
+          "arxiv:2501.19399",
+          "base_model:mistralai/Mistral-Small-3.1-24B-Base-2503",
+          "base_model:quantized:mistralai/Mistral-Small-3.1-24B-Base-2503",
+          "license:apache-2.0",
+          "fp8",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 119635,
+        "id": "mlx-community/Devstral-Small-2505-4bit",
+        "lastModified": null,
+        "likes": 2,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "mlx",
+          "safetensors",
+          "mistral",
+          "text-generation",
+          "conversational",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it",
+          "ja"
+        ]
+      },
+      {
+        "downloads": 105928,
+        "id": "mlx-community/Devstral-Small-2-24B-Instruct-2512-4bit",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": null,
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral3",
+          "mistral-common",
+          "mlx",
+          "base_model:mistralai/Mistral-Small-3.1-24B-Base-2503",
+          "base_model:quantized:mistralai/Mistral-Small-3.1-24B-Base-2503",
+          "license:apache-2.0",
+          "4-bit",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 34072,
+        "id": "unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF",
+        "lastModified": null,
+        "likes": 148,
+        "pipeline_tag": null,
+        "tags": [
+          "gguf",
+          "mistral3",
+          "mistral-common",
+          "unsloth",
+          "mistral",
+          "arxiv:2501.19399",
+          "base_model:mistralai/Devstral-Small-2-24B-Instruct-2512",
+          "base_model:quantized:mistralai/Devstral-Small-2-24B-Instruct-2512",
+          "license:other",
+          "endpoints_compatible",
+          "fp8",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 20200,
+        "id": "lmstudio-community/Devstral-Small-2-24B-Instruct-2512-GGUF",
+        "lastModified": null,
+        "likes": 6,
+        "pipeline_tag": null,
+        "tags": [
+          "gguf",
+          "base_model:mistralai/Devstral-Small-2-24B-Instruct-2512",
+          "base_model:quantized:mistralai/Devstral-Small-2-24B-Instruct-2512",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "region:us",
+          "conversational"
+        ]
+      },
+      {
+        "downloads": 15202,
+        "id": "unsloth/Devstral-Small-2505-GGUF",
+        "lastModified": null,
+        "likes": 117,
+        "pipeline_tag": null,
+        "tags": [
+          "gguf",
+          "mistral",
+          "unsloth",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it",
+          "ja",
+          "ko",
+          "ru"
+        ]
+      },
+      {
+        "downloads": 14872,
+        "id": "mistralai/Devstral-Small-2507",
+        "lastModified": null,
+        "likes": 366,
+        "pipeline_tag": null,
+        "tags": [
+          "mistral-common",
+          "safetensors",
+          "vllm",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it",
+          "ja",
+          "ko",
+          "ru"
+        ]
+      },
+      {
+        "downloads": 14770,
+        "id": "lmstudio-community/Devstral-Small-2507-MLX-8bit",
+        "lastModified": null,
+        "likes": 1,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral",
+          "mlx",
+          "text2text-generation",
+          "conversational",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it"
+        ]
+      },
+      {
+        "downloads": 14233,
+        "id": "lmstudio-community/Devstral-Small-2507-MLX-4bit",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral",
+          "mlx",
+          "text2text-generation",
+          "conversational",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it"
+        ]
+      },
+      {
+        "downloads": 14116,
+        "id": "lmstudio-community/Devstral-Small-2507-MLX-6bit",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "vllm",
+          "safetensors",
+          "mistral",
+          "mlx",
+          "text2text-generation",
+          "conversational",
+          "en",
+          "fr",
+          "de",
+          "es",
+          "pt",
+          "it"
+        ]
+      }
+    ],
+    "Granite Code": [
+      {
+        "downloads": 4283,
+        "id": "ibm-granite/granite-8b-code-instruct-4k-GGUF",
+        "lastModified": null,
+        "likes": 13,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "code",
+          "granite",
+          "text-generation",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2",
+          "dataset:bugdaryan/sql-create-context-instruction",
+          "dataset:garage-bAInd/Open-Platypus"
+        ]
+      },
+      {
+        "downloads": 4118,
+        "id": "ibm-granite/granite-3b-code-base-2k",
+        "lastModified": null,
+        "likes": 38,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "code",
+          "granite",
+          "dataset:codeparrot/github-code-clean",
+          "dataset:bigcode/starcoderdata",
+          "dataset:open-web-math/open-web-math",
+          "dataset:math-ai/StackMathQA",
+          "arxiv:2405.04324",
+          "license:apache-2.0"
+        ]
+      },
+      {
+        "downloads": 3197,
+        "id": "ibm-granite/granite-3b-code-instruct-2k",
+        "lastModified": null,
+        "likes": 40,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "code",
+          "granite",
+          "conversational",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2"
+        ]
+      },
+      {
+        "downloads": 2442,
+        "id": "ibm-granite/granite-20b-code-instruct-8k",
+        "lastModified": null,
+        "likes": 43,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "gpt_bigcode",
+          "text-generation",
+          "code",
+          "granite",
+          "conversational",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2"
+        ]
+      },
+      {
+        "downloads": 2428,
+        "id": "ibm-granite/granite-8b-code-instruct-128k",
+        "lastModified": null,
+        "likes": 25,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "code",
+          "granite",
+          "conversational",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2"
+        ]
+      },
+      {
+        "downloads": 1890,
+        "id": "bartowski/granite-20b-code-instruct-GGUF",
+        "lastModified": null,
+        "likes": 7,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "code",
+          "granite",
+          "text-generation",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2",
+          "dataset:bugdaryan/sql-create-context-instruction",
+          "dataset:garage-bAInd/Open-Platypus"
+        ]
+      },
+      {
+        "downloads": 1547,
+        "id": "mradermacher/granite-8b-code-base-i1-GGUF",
+        "lastModified": null,
+        "likes": 1,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "code",
+          "granite",
+          "en",
+          "dataset:codeparrot/github-code-clean",
+          "dataset:bigcode/starcoderdata",
+          "dataset:open-web-math/open-web-math",
+          "dataset:math-ai/StackMathQA",
+          "base_model:ibm-granite/granite-8b-code-base-4k",
+          "base_model:quantized:ibm-granite/granite-8b-code-base-4k",
+          "license:apache-2.0"
+        ]
+      },
+      {
+        "downloads": 1200,
+        "id": "mradermacher/granite-3b-code-base-2k-i1-GGUF",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "code",
+          "granite",
+          "en",
+          "dataset:codeparrot/github-code-clean",
+          "dataset:bigcode/starcoderdata",
+          "dataset:open-web-math/open-web-math",
+          "dataset:math-ai/StackMathQA",
+          "base_model:ibm-granite/granite-3b-code-base-2k",
+          "base_model:quantized:ibm-granite/granite-3b-code-base-2k",
+          "license:apache-2.0"
+        ]
+      },
+      {
+        "downloads": 1100,
+        "id": "ibm-granite/granite-8b-code-instruct-4k",
+        "lastModified": null,
+        "likes": 115,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "llama",
+          "text-generation",
+          "code",
+          "granite",
+          "conversational",
+          "dataset:bigcode/commitpackft",
+          "dataset:TIGER-Lab/MathInstruct",
+          "dataset:meta-math/MetaMathQA",
+          "dataset:glaiveai/glaive-code-assistant-v3",
+          "dataset:glaive-function-calling-v2"
+        ]
+      },
+      {
+        "downloads": 1031,
+        "id": "ibm-granite/granite-20b-code-base-8k",
+        "lastModified": null,
+        "likes": 14,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "gpt_bigcode",
+          "text-generation",
+          "code",
+          "granite",
+          "dataset:codeparrot/github-code-clean",
+          "dataset:bigcode/starcoderdata",
+          "dataset:open-web-math/open-web-math",
+          "dataset:math-ai/StackMathQA",
+          "arxiv:2405.04324",
+          "license:apache-2.0"
+        ]
+      }
+    ],
+    "Kimi K2 Code": [
+      {
+        "downloads": 172727,
+        "id": "moonshotai/Kimi-K2.7-Code",
+        "lastModified": null,
+        "likes": 844,
+        "pipeline_tag": "image-text-to-text",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "kimi_k25",
+          "image-feature-extraction",
+          "compressed-tensors",
+          "image-text-to-text",
+          "conversational",
+          "custom_code",
+          "license:other",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 23956,
+        "id": "unsloth/Kimi-K2.7-Code-GGUF",
+        "lastModified": null,
+        "likes": 126,
+        "pipeline_tag": "image-text-to-text",
+        "tags": [
+          "transformers",
+          "gguf",
+          "kimi_k25",
+          "image-feature-extraction",
+          "compressed-tensors",
+          "unsloth",
+          "image-text-to-text",
+          "custom_code",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:quantized:moonshotai/Kimi-K2.7-Code",
+          "license:other",
+          "endpoints_compatible"
+        ]
+      },
+      {
+        "downloads": 4308,
+        "id": "freakyskittle/kimi-k2.7-code-GGUF",
+        "lastModified": null,
+        "likes": 5,
+        "pipeline_tag": null,
+        "tags": [
+          "gguf",
+          "llama.cpp",
+          "kimi",
+          "kimi-k2.7-code",
+          "bf16",
+          "quantized",
+          "tq1_0",
+          "tq2_0",
+          "q4_k_m",
+          "q8_0",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:quantized:moonshotai/Kimi-K2.7-Code"
+        ]
+      },
+      {
+        "downloads": 3610,
+        "id": "mlx-community/Kimi-K2.7-Code-4bit",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "mlx",
+          "safetensors",
+          "kimi_k25",
+          "text-generation",
+          "conversational",
+          "custom_code",
+          "en",
+          "4-bit",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 2324,
+        "id": "inferencerlabs/Kimi-K2.7-Code-MLX-3.5bit-INF",
+        "lastModified": null,
+        "likes": 4,
+        "pipeline_tag": "image-text-to-text",
+        "tags": [
+          "mlx",
+          "kimi_k25",
+          "quantized",
+          "image-text-to-text",
+          "conversational",
+          "custom_code",
+          "en",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:quantized:moonshotai/Kimi-K2.7-Code",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 2253,
+        "id": "DevQuasar/moonshotai.Kimi-K2.7-Code-GGUF",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": "image-text-to-text",
+        "tags": [
+          "gguf",
+          "image-text-to-text",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:quantized:moonshotai/Kimi-K2.7-Code",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix",
+          "conversational"
+        ]
+      },
+      {
+        "downloads": 2091,
+        "id": "meshllm/Kimi-K2.7-Code-UD-Q4_K_XL-layers",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "mesh-llm",
+          "gguf",
+          "layer-package",
+          "skippy",
+          "distributed-inference",
+          "local-inference",
+          "openai-compatible",
+          "text-generation",
+          "base_model:unsloth/Kimi-K2.7-Code-GGUF",
+          "base_model:quantized:unsloth/Kimi-K2.7-Code-GGUF",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 2050,
+        "id": "Edmon02/Kimi-K2.7-Code-GGUF",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": "image-text-to-text",
+        "tags": [
+          "gguf",
+          "kimi_k25",
+          "kimi",
+          "kimi-k2",
+          "code",
+          "agent",
+          "moe",
+          "multimodal",
+          "vision",
+          "llama-cpp",
+          "image-text-to-text",
+          "custom_code"
+        ]
+      },
+      {
+        "downloads": 1776,
+        "id": "aidiffuser/Kimi-K2.7-Code-vision",
+        "lastModified": null,
+        "likes": 1,
+        "pipeline_tag": null,
+        "tags": [
+          "mlx",
+          "vision",
+          "kimi",
+          "exo",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:finetune:moonshotai/Kimi-K2.7-Code",
+          "license:other",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 1490,
+        "id": "spicyneuron/Kimi-K2.7-Code-MLX-3.6bit",
+        "lastModified": null,
+        "likes": 5,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "mlx",
+          "safetensors",
+          "kimi_k25",
+          "text-generation",
+          "conversational",
+          "custom_code",
+          "en",
+          "base_model:moonshotai/Kimi-K2.7-Code",
+          "base_model:quantized:moonshotai/Kimi-K2.7-Code",
+          "4-bit",
+          "region:us"
+        ]
+      }
+    ],
+    "Qwen2.5-Coder": [
+      {
+        "downloads": 3116385,
+        "id": "Qwen/Qwen2.5-Coder-14B-Instruct",
+        "lastModified": null,
+        "likes": 164,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 1700381,
+        "id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+        "lastModified": null,
+        "likes": 733,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 1370811,
+        "id": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "lastModified": null,
+        "likes": 2045,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 977738,
+        "id": "Qwen/Qwen2.5-Coder-32B-Instruct-AWQ",
+        "lastModified": null,
+        "likes": 37,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 773648,
+        "id": "Qwen/Qwen2.5-Coder-14B-Instruct-AWQ",
+        "lastModified": null,
+        "likes": 21,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 585668,
+        "id": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+        "lastModified": null,
+        "likes": 128,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 515275,
+        "id": "Qwen/Qwen2.5-Coder-3B",
+        "lastModified": null,
+        "likes": 52,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "qwen",
+          "qwen-coder",
+          "codeqwen",
+          "conversational",
+          "en",
+          "arxiv:2409.12186",
+          "arxiv:2407.10671"
+        ]
+      },
+      {
+        "downloads": 356531,
+        "id": "Qwen/Qwen2.5-Coder-7B-Instruct-GPTQ-Int4",
+        "lastModified": null,
+        "likes": 14,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 267434,
+        "id": "Qwen/Qwen2.5-Coder-7B-Instruct-AWQ",
+        "lastModified": null,
+        "likes": 25,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "codeqwen",
+          "chat",
+          "qwen",
+          "qwen-coder",
+          "conversational",
+          "en",
+          "arxiv:2409.12186"
+        ]
+      },
+      {
+        "downloads": 265944,
+        "id": "Qwen/Qwen2.5-Coder-7B",
+        "lastModified": null,
+        "likes": 149,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen2",
+          "text-generation",
+          "code",
+          "qwen",
+          "qwen-coder",
+          "codeqwen",
+          "conversational",
+          "en",
+          "arxiv:2409.12186",
+          "arxiv:2309.00071"
+        ]
+      }
+    ],
+    "Qwen3-Coder": [
+      {
+        "downloads": 1459520,
+        "id": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "lastModified": null,
+        "likes": 1113,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen3_moe",
+          "text-generation",
+          "conversational",
+          "arxiv:2505.09388",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 964108,
+        "id": "Qwen/Qwen3-Coder-Next-FP8",
+        "lastModified": null,
+        "likes": 151,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen3_next",
+          "text-generation",
+          "conversational",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "fp8",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 779803,
+        "id": "Qwen/Qwen3-Coder-Next",
+        "lastModified": null,
+        "likes": 1457,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen3_next",
+          "text-generation",
+          "conversational",
+          "license:apache-2.0",
+          "eval-results",
+          "endpoints_compatible",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 687359,
+        "id": "Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8",
+        "lastModified": null,
+        "likes": 184,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen3_moe",
+          "text-generation",
+          "conversational",
+          "arxiv:2505.09388",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "fp8",
+          "deploy:azure",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 326729,
+        "id": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+        "lastModified": null,
+        "likes": 8,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "qwen3_moe",
+          "text-generation",
+          "AWQ",
+          "\u91cf\u5316\u4fee\u590d",
+          "vLLM",
+          "conversational",
+          "arxiv:2505.09388",
+          "base_model:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "base_model:quantized:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "license:apache-2.0"
+        ]
+      },
+      {
+        "downloads": 271310,
+        "id": "unsloth/Qwen3-Coder-Next-GGUF",
+        "lastModified": null,
+        "likes": 708,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "gguf",
+          "qwen3_next",
+          "unsloth",
+          "qwen",
+          "qwen3",
+          "text-generation",
+          "base_model:Qwen/Qwen3-Coder-Next",
+          "base_model:quantized:Qwen/Qwen3-Coder-Next",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "region:us",
+          "imatrix"
+        ]
+      },
+      {
+        "downloads": 203530,
+        "id": "NexVeridian/Qwen3-Coder-Next-8bit",
+        "lastModified": null,
+        "likes": 3,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "mlx",
+          "safetensors",
+          "qwen3_next",
+          "text-generation",
+          "conversational",
+          "base_model:Qwen/Qwen3-Coder-Next",
+          "base_model:quantized:Qwen/Qwen3-Coder-Next",
+          "license:apache-2.0",
+          "8-bit",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 182748,
+        "id": "lmstudio-community/Qwen3-Coder-Next-MLX-8bit",
+        "lastModified": null,
+        "likes": 14,
+        "pipeline_tag": null,
+        "tags": [
+          "mlx",
+          "safetensors",
+          "qwen3_next",
+          "base_model:Qwen/Qwen3-Coder-Next",
+          "base_model:quantized:Qwen/Qwen3-Coder-Next",
+          "license:apache-2.0",
+          "8-bit",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 172877,
+        "id": "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF",
+        "lastModified": null,
+        "likes": 732,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "unsloth",
+          "qwen3",
+          "qwen",
+          "text-generation",
+          "arxiv:2505.09388",
+          "base_model:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "base_model:quantized:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "license:apache-2.0",
+          "endpoints_compatible",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 158103,
+        "id": "lmstudio-community/Qwen3-Coder-Next-MLX-4bit",
+        "lastModified": null,
+        "likes": 23,
+        "pipeline_tag": null,
+        "tags": [
+          "mlx",
+          "safetensors",
+          "qwen3_next",
+          "base_model:Qwen/Qwen3-Coder-Next",
+          "base_model:quantized:Qwen/Qwen3-Coder-Next",
+          "license:apache-2.0",
+          "4-bit",
+          "region:us"
+        ]
+      }
+    ],
+    "StarCoder2": [
+      {
+        "downloads": 105310,
+        "id": "bigcode/starcoder2-3b",
+        "lastModified": null,
+        "likes": 220,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "dataset:bigcode/the-stack-v2-train",
+          "arxiv:2305.13245",
+          "arxiv:2205.14135",
+          "arxiv:2004.05150",
+          "arxiv:2207.14255",
+          "arxiv:2402.19173",
+          "license:bigcode-openrail-m"
+        ]
+      },
+      {
+        "downloads": 50464,
+        "id": "optimum-intel-internal-testing/tiny-random-Starcoder2ForCausalLM",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": null,
+        "tags": [
+          "safetensors",
+          "starcoder2",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 9293,
+        "id": "bigcode/starcoder2-7b",
+        "lastModified": null,
+        "likes": 216,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "dataset:bigcode/the-stack-v2-train",
+          "arxiv:2305.13245",
+          "arxiv:2205.14135",
+          "arxiv:2004.05150",
+          "arxiv:2207.14255",
+          "arxiv:2402.19173",
+          "license:bigcode-openrail-m"
+        ]
+      },
+      {
+        "downloads": 8320,
+        "id": "bigcode/starcoder2-15b",
+        "lastModified": null,
+        "likes": 673,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "dataset:bigcode/the-stack-v2-train",
+          "arxiv:2305.13245",
+          "arxiv:2205.14135",
+          "arxiv:2004.05150",
+          "arxiv:2207.14255",
+          "arxiv:2402.19173",
+          "license:bigcode-openrail-m"
+        ]
+      },
+      {
+        "downloads": 2228,
+        "id": "second-state/StarCoder2-7B-GGUF",
+        "lastModified": null,
+        "likes": 25,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "base_model:bigcode/starcoder2-7b",
+          "base_model:quantized:bigcode/starcoder2-7b",
+          "license:bigcode-openrail-m",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 1480,
+        "id": "second-state/StarCoder2-3B-GGUF",
+        "lastModified": null,
+        "likes": 20,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "base_model:bigcode/starcoder2-3b",
+          "base_model:quantized:bigcode/starcoder2-3b",
+          "license:bigcode-openrail-m",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 1418,
+        "id": "Johnblick187/starcoder2-15b",
+        "lastModified": null,
+        "likes": 0,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "conversational",
+          "dataset:bigcode/the-stack-v2-train",
+          "arxiv:2305.13245",
+          "arxiv:2205.14135",
+          "arxiv:2004.05150",
+          "arxiv:2207.14255",
+          "arxiv:2402.19173"
+        ]
+      },
+      {
+        "downloads": 1242,
+        "id": "second-state/StarCoder2-15B-GGUF",
+        "lastModified": null,
+        "likes": 31,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "gguf",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "base_model:bigcode/starcoder2-15b",
+          "base_model:quantized:bigcode/starcoder2-15b",
+          "license:bigcode-openrail-m",
+          "region:us"
+        ]
+      },
+      {
+        "downloads": 1220,
+        "id": "mradermacher/dolphincoder-starcoder2-15b-i1-GGUF",
+        "lastModified": null,
+        "likes": 2,
+        "pipeline_tag": null,
+        "tags": [
+          "transformers",
+          "gguf",
+          "en",
+          "dataset:cognitivecomputations/dolphin",
+          "dataset:jondurbin/airoboros-2.2.1",
+          "dataset:cognitivecomputations/dolphin-coder",
+          "dataset:teknium/openhermes",
+          "dataset:ise-uiuc/Magicoder-OSS-Instruct-75K",
+          "dataset:ise-uiuc/Magicoder-Evol-Instruct-110K",
+          "dataset:m-a-p/Code-Feedback",
+          "dataset:m-a-p/CodeFeedback-Filtered-Instruction",
+          "base_model:dphn/dolphincoder-starcoder2-15b"
+        ]
+      },
+      {
+        "downloads": 1164,
+        "id": "bigcode/starcoder2-15b-instruct-v0.1",
+        "lastModified": null,
+        "likes": 105,
+        "pipeline_tag": "text-generation",
+        "tags": [
+          "transformers",
+          "safetensors",
+          "starcoder2",
+          "text-generation",
+          "code",
+          "conversational",
+          "dataset:bigcode/self-oss-instruct-sc2-exec-filter-50k",
+          "arxiv:2410.24198",
+          "base_model:bigcode/starcoder2-15b",
+          "base_model:finetune:bigcode/starcoder2-15b",
+          "license:bigcode-openrail-m",
+          "model-index"
+        ]
+      }
+    ]
+  },
+  "openrouter_count": 336,
+  "openrouter_selected": [
+    {
+      "context_length": 1048576,
+      "description": "GLM 5.2 is a large-scale reasoning model from Z.ai. It supports text input and output with a 1M-token context window, and is suited for long-horizon agent workflows, project-level software engineering,...",
+      "id": "z-ai/glm-5.2",
+      "name": "Z.ai: GLM 5.2",
+      "pricing": {
+        "completion": "0.0000044",
+        "input_cache_read": "0.00000026",
+        "prompt": "0.0000014"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "MoonshotAI: Kimi K2.7 Code is a coding-focused model in Moonshot AI's Kimi K2 family, built to complete end-to-end programming tasks reliably over long contexts. It uses a native multimodal mixture-of-experts...",
+      "id": "moonshotai/kimi-k2.7-code",
+      "name": "MoonshotAI: Kimi K2.7 Code",
+      "pricing": {
+        "completion": "0.0000035",
+        "input_cache_read": "0.00000015",
+        "prompt": "0.00000074"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "This model always redirects to the latest model in the Claude Fable family.",
+      "id": "~anthropic/claude-fable-latest",
+      "name": "Anthropic: Claude Fable Latest",
+      "pricing": {
+        "completion": "0.00005",
+        "input_cache_read": "0.000001",
+        "input_cache_write": "0.0000125",
+        "prompt": "0.00001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Claude Fable 5 is a Mythos-class model from Anthropic, built for autonomous knowledge work and coding. It supports text, image, and file inputs with text output, with reasoning support and...",
+      "id": "anthropic/claude-fable-5",
+      "name": "Anthropic: Claude Fable 5",
+      "pricing": {
+        "completion": "0.00005",
+        "input_cache_read": "0.000001",
+        "input_cache_write": "0.0000125",
+        "prompt": "0.00001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "Step 3.7 Flash is StepFun's latest high-efficiency multimodal Mixture-of-Experts model. It pairs a 196B-parameter language backbone with a vision encoder for native image and video understanding, activating roughly 11B parameters...",
+      "id": "stepfun/step-3.7-flash",
+      "name": "StepFun: Step 3.7 Flash",
+      "pricing": {
+        "completion": "0.00000115",
+        "input_cache_read": "0.00000004",
+        "prompt": "0.0000002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Fast-mode variant of [Opus 4.8](/anthropic/claude-opus-4.8) - identical capabilities with higher output speed at 2x pricing relative to regular Opus 4.8.\n\nLearn more in Anthropic's docs: https://platform.claude.com/docs/en/build-with-claude/fast-mode",
+      "id": "anthropic/claude-opus-4.8-fast",
+      "name": "Anthropic: Claude Opus 4.8 (Fast)",
+      "pricing": {
+        "completion": "0.00005",
+        "input_cache_read": "0.000001",
+        "input_cache_write": "0.0000125",
+        "prompt": "0.00001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Claude Opus 4.8 is Anthropic's most capable generally available model in the Opus family. It supports text, image, and file inputs with text output, with reasoning support and a 1M-token...",
+      "id": "anthropic/claude-opus-4.8",
+      "name": "Anthropic: Claude Opus 4.8",
+      "pricing": {
+        "completion": "0.000025",
+        "input_cache_read": "0.0000005",
+        "input_cache_write": "0.00000625",
+        "prompt": "0.000005",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "Grok Build 0.1 is xAI\u2019s fast coding model trained specifically for agentic software engineering workflows. It supports text and image inputs with text output, and is optimized for interactive coding...",
+      "id": "x-ai/grok-build-0.1",
+      "name": "xAI: Grok Build 0.1",
+      "pricing": {
+        "completion": "0.000002",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.000001",
+        "web_search": "0.005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 3.5 Flash is Google's high-efficiency multimodal model, bringing near-Pro level coding and reasoning at Flash-tier cost and speed. It is highly optimized for coding proficiency and parallel agentic execution...",
+      "id": "google/gemini-3.5-flash",
+      "name": "Google: Gemini 3.5 Flash",
+      "pricing": {
+        "audio": "0.000003",
+        "completion": "0.000009",
+        "image": "0.0000015",
+        "input_cache_read": "0.00000015",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.000009",
+        "prompt": "0.0000015",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Fast-mode variant of [Opus 4.7](/anthropic/claude-opus-4.7) - identical capabilities with higher output speed at premium 6x pricing.\n\nLearn more in Anthropic's docs: https://platform.claude.com/docs/en/build-with-claude/fast-mode",
+      "id": "anthropic/claude-opus-4.7-fast",
+      "name": "Anthropic: Claude Opus 4.7 (Fast)",
+      "pricing": {
+        "completion": "0.00015",
+        "input_cache_read": "0.000003",
+        "input_cache_write": "0.0000375",
+        "prompt": "0.00003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 3.1 Flash Lite is Google\u2019s GA high-efficiency multimodal model optimized for low-latency, high-volume workloads. It supports text, image, video, audio, and PDF inputs, and is designed for lightweight agentic...",
+      "id": "google/gemini-3.1-flash-lite",
+      "name": "Google: Gemini 3.1 Flash Lite",
+      "pricing": {
+        "audio": "0.0000005",
+        "completion": "0.0000015",
+        "image": "0.00000025",
+        "input_cache_read": "0.000000025",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000015",
+        "prompt": "0.00000025",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Grok 4.3 is a reasoning model from xAI. It accepts text and image inputs with text output, and is suited for agentic workflows, instruction-following tasks, and applications requiring high factual...",
+      "id": "x-ai/grok-4.3",
+      "name": "xAI: Grok 4.3",
+      "pricing": {
+        "completion": "0.0000025",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.00000125",
+        "web_search": "0.005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Granite 4.1 8B is a dense, decoder-only 8-billion-parameter language model from IBM, part of the Granite 4.1 family. It supports a 131K-token context window and is designed for enterprise tasks...",
+      "id": "ibm-granite/granite-4.1-8b",
+      "name": "IBM: Granite 4.1 8B",
+      "pricing": {
+        "completion": "0.0000001",
+        "input_cache_read": "0.00000005",
+        "prompt": "0.00000005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048756,
+      "description": "Owl Alpha is a high-performance foundation model designed for agentic workloads. Natively supports tool use, and long-context tasks, with strong performance in code generation, automated workflows, and complex instruction execution....",
+      "id": "openrouter/owl-alpha",
+      "name": "Owl Alpha",
+      "pricing": {
+        "completion": "0",
+        "prompt": "0"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "This model always redirects to the latest model in the Anthropic Claude Haiku family.",
+      "id": "~anthropic/claude-haiku-latest",
+      "name": "Anthropic Claude Haiku Latest",
+      "pricing": {
+        "completion": "0.000005",
+        "input_cache_read": "0.0000001",
+        "input_cache_write": "0.00000125",
+        "prompt": "0.000001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "This model always redirects to the latest model in the Google Gemini Pro family.",
+      "id": "~google/gemini-pro-latest",
+      "name": "Google Gemini Pro Latest",
+      "pricing": {
+        "audio": "0.000002",
+        "completion": "0.000012",
+        "image": "0.000002",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.000012",
+        "prompt": "0.000002",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "This model always redirects to the latest model in the MoonshotAI Kimi family.",
+      "id": "~moonshotai/kimi-latest",
+      "name": "MoonshotAI Kimi Latest",
+      "pricing": {
+        "completion": "0.00000341",
+        "input_cache_read": "0.00000034",
+        "prompt": "0.00000068"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "parallel_tool_calls",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "This model always redirects to the latest model in the Google Gemini Flash family.",
+      "id": "~google/gemini-flash-latest",
+      "name": "Google Gemini Flash Latest",
+      "pricing": {
+        "audio": "0.000003",
+        "completion": "0.000009",
+        "image": "0.0000015",
+        "input_cache_read": "0.00000015",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.000009",
+        "prompt": "0.0000015",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "This model always redirects to the latest model in the Anthropic Claude Sonnet family.",
+      "id": "~anthropic/claude-sonnet-latest",
+      "name": "Anthropic Claude Sonnet Latest",
+      "pricing": {
+        "completion": "0.000015",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.00000375",
+        "prompt": "0.000003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "DeepSeek V4 Pro is a large-scale Mixture-of-Experts model from DeepSeek with 1.6T total parameters and 49B activated parameters, supporting a 1M-token context window. It is designed for advanced reasoning, coding,...",
+      "id": "deepseek/deepseek-v4-pro",
+      "name": "DeepSeek: DeepSeek V4 Pro",
+      "pricing": {
+        "completion": "0.00000087",
+        "input_cache_read": "0.000000003625",
+        "prompt": "0.000000435"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "DeepSeek V4 Flash is an efficiency-optimized Mixture-of-Experts model from DeepSeek with 284B total parameters and 13B activated parameters, supporting a 1M-token context window. It is designed for fast inference and...",
+      "id": "deepseek/deepseek-v4-flash",
+      "name": "DeepSeek: DeepSeek V4 Flash",
+      "pricing": {
+        "completion": "0.00000018",
+        "input_cache_read": "0.00000002",
+        "prompt": "0.00000009"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "This model always redirects to the latest model in the Claude Opus family.",
+      "id": "~anthropic/claude-opus-latest",
+      "name": "Anthropic: Claude Opus Latest",
+      "pricing": {
+        "completion": "0.000025",
+        "input_cache_read": "0.0000005",
+        "input_cache_write": "0.00000625",
+        "prompt": "0.000005",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 2000000,
+      "description": "The Pareto Router maintains a tiered shortlist of strong coding models, ranked by [Artificial Analysis](https://artificialanalysis.ai/) coding percentiles. Set min_coding_score between 0 and 1 on the [pareto-router plugin](https://openrouter.ai/docs/guides/routing/routers/pareto-router#the-min_coding_score-parameter) to control how...",
+      "id": "openrouter/pareto-code",
+      "name": "Pareto Code Router",
+      "pricing": {
+        "completion": "-1",
+        "prompt": "-1"
+      },
+      "supported_parameters": []
+    },
+    {
+      "context_length": 262144,
+      "description": "Kimi K2.6 is Moonshot AI's next-generation multimodal model, designed for long-horizon coding, coding-driven UI/UX generation, and multi-agent orchestration. It handles complex end-to-end coding tasks across Python, Rust, and Go, and...",
+      "id": "moonshotai/kimi-k2.6",
+      "name": "MoonshotAI: Kimi K2.6",
+      "pricing": {
+        "completion": "0.00000341",
+        "input_cache_read": "0.00000034",
+        "prompt": "0.00000068"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "parallel_tool_calls",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Opus 4.7 is the next generation of Anthropic's Opus family, built for long-running, asynchronous agents. Building on the coding and agentic strengths of Opus 4.6, it delivers stronger performance on...",
+      "id": "anthropic/claude-opus-4.7",
+      "name": "Anthropic: Claude Opus 4.7",
+      "pricing": {
+        "completion": "0.000025",
+        "input_cache_read": "0.0000005",
+        "input_cache_write": "0.00000625",
+        "prompt": "0.000005",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "tool_choice",
+        "tools",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Fast-mode variant of [Opus 4.6](/anthropic/claude-opus-4.6) - identical capabilities with higher output speed at premium 6x pricing.\n\nLearn more in Anthropic's docs: https://platform.claude.com/docs/en/build-with-claude/fast-mode",
+      "id": "anthropic/claude-opus-4.6-fast",
+      "name": "Anthropic: Claude Opus 4.6 (Fast)",
+      "pricing": {
+        "completion": "0.00015",
+        "input_cache_read": "0.000003",
+        "input_cache_write": "0.0000375",
+        "prompt": "0.00003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 202752,
+      "description": "GLM-5.1 delivers a major leap in coding capability, with particularly significant gains in handling long-horizon tasks. Unlike previous models built around minute-level interactions, GLM-5.1 can work independently and continuously on...",
+      "id": "z-ai/glm-5.1",
+      "name": "Z.ai: GLM 5.1",
+      "pricing": {
+        "completion": "0.00000308",
+        "input_cache_read": "0.000000182",
+        "prompt": "0.00000098"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "parallel_tool_calls",
+        "presence_penalty",
+        "reasoning",
+        "reasoning_effort",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 2000000,
+      "description": "Grok 4.20 Multi-Agent is a variant of xAI\u2019s Grok 4.20 designed for collaborative, agent-based workflows. Multiple agents operate in parallel to conduct deep research, coordinate tool use, and synthesize information...",
+      "id": "x-ai/grok-4.20-multi-agent",
+      "name": "xAI: Grok 4.20 Multi-Agent",
+      "pricing": {
+        "completion": "0.0000025",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.00000125",
+        "web_search": "0.005"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "logprobs",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "temperature",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 2000000,
+      "description": "Grok 4.20 is a reasoning model from xAI with industry-leading speed and agentic tool calling capabilities. It combines the lowest hallucination rate on the market with strict prompt adherance, delivering...",
+      "id": "x-ai/grok-4.20",
+      "name": "xAI: Grok 4.20",
+      "pricing": {
+        "completion": "0.0000025",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.00000125",
+        "web_search": "0.005"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "logprobs",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Full-length songs are priced at $0.08 per song. Lyria 3 is Google's family of music generation models, available through the Gemini API. With Lyria 3, you can generate high-quality, 48kHz...",
+      "id": "google/lyria-3-pro-preview",
+      "name": "Google: Lyria 3 Pro Preview",
+      "pricing": {
+        "completion": "0",
+        "prompt": "0"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "response_format",
+        "seed",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "30 second duration clips are priced at $0.04 per clip. Lyria 3 is Google's family of music generation models, available through the Gemini API. With Lyria 3, you can generate...",
+      "id": "google/lyria-3-clip-preview",
+      "name": "Google: Lyria 3 Clip Preview",
+      "pricing": {
+        "completion": "0",
+        "prompt": "0"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "response_format",
+        "seed",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "KAT-Coder-Pro V2 is the latest high-performance model in KwaiKAT\u2019s KAT-Coder series, designed for complex enterprise-grade software engineering and SaaS integration. It builds on the agentic coding strengths of earlier versions,...",
+      "id": "kwaipilot/kat-coder-pro-v2",
+      "name": "Kwaipilot: KAT-Coder-Pro V2",
+      "pricing": {
+        "completion": "0.0000012",
+        "input_cache_read": "0.00000006",
+        "prompt": "0.0000003"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "GLM-5 Turbo is a new model from Z.ai designed for fast inference and strong performance in agent-driven environments such as OpenClaw scenarios. It is deeply optimized for real-world agent workflows...",
+      "id": "z-ai/glm-5-turbo",
+      "name": "Z.ai: GLM 5 Turbo",
+      "pricing": {
+        "completion": "0.000004",
+        "input_cache_read": "0.00000024",
+        "prompt": "0.0000012"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1050000,
+      "description": "GPT-5.4 is OpenAI\u2019s latest frontier model, unifying the Codex and GPT lines into a single system. It features a 1M+ token context window (922K input, 128K output) with support for...",
+      "id": "openai/gpt-5.4",
+      "name": "OpenAI: GPT-5.4",
+      "pricing": {
+        "completion": "0.000015",
+        "input_cache_read": "0.00000025",
+        "prompt": "0.0000025",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 3.1 Flash Lite Preview is Google's high-efficiency model optimized for high-volume use cases. It outperforms Gemini 2.5 Flash Lite on overall quality and approaches Gemini 2.5 Flash performance across...",
+      "id": "google/gemini-3.1-flash-lite-preview",
+      "name": "Google: Gemini 3.1 Flash Lite Preview",
+      "pricing": {
+        "audio": "0.0000005",
+        "completion": "0.0000015",
+        "image": "0.00000025",
+        "input_cache_read": "0.000000025",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000015",
+        "prompt": "0.00000025",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Gemini 3.1 Flash Image Preview, a.k.a. \"Nano Banana 2,\" is Google\u2019s latest state of the art image generation and editing model, delivering Pro-level visual quality at Flash speed. It combines...",
+      "id": "google/gemini-3.1-flash-image-preview",
+      "name": "Google: Nano Banana 2 (Gemini 3.1 Flash Image Preview)",
+      "pricing": {
+        "completion": "0.000003",
+        "prompt": "0.0000005",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048756,
+      "description": "Gemini 3.1 Pro Preview Custom Tools is a variant of Gemini 3.1 Pro that improves tool selection behavior by preventing overuse of a general bash tool when more efficient third-party...",
+      "id": "google/gemini-3.1-pro-preview-customtools",
+      "name": "Google: Gemini 3.1 Pro Preview Custom Tools",
+      "pricing": {
+        "audio": "0.000002",
+        "completion": "0.000012",
+        "image": "0.000002",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.000012",
+        "prompt": "0.000002",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5.3-Codex is OpenAI\u2019s most advanced agentic coding model, combining the frontier software engineering performance of GPT-5.2-Codex with the broader reasoning and professional knowledge capabilities of GPT-5.2. It achieves state-of-the-art results...",
+      "id": "openai/gpt-5.3-codex",
+      "name": "OpenAI: GPT-5.3-Codex",
+      "pricing": {
+        "completion": "0.000014",
+        "input_cache_read": "0.000000175",
+        "prompt": "0.00000175",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Aion-2.0 is a variant of DeepSeek V3.2 optimized for immersive roleplaying and storytelling. It is particularly strong at introducing tension, crises, and conflict into stories, making narratives feel more engaging....",
+      "id": "aion-labs/aion-2.0",
+      "name": "AionLabs: Aion-2.0",
+      "pricing": {
+        "completion": "0.0000016",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.0000008"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 3.1 Pro Preview is Google\u2019s frontier reasoning model, delivering enhanced software engineering performance, improved agentic reliability, and more efficient token usage across complex workflows. Building on the multimodal foundation...",
+      "id": "google/gemini-3.1-pro-preview",
+      "name": "Google: Gemini 3.1 Pro Preview",
+      "pricing": {
+        "audio": "0.000002",
+        "completion": "0.000012",
+        "image": "0.000002",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.000012",
+        "prompt": "0.000002",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Sonnet 4.6 is Anthropic's most capable Sonnet-class model yet, with frontier performance across coding, agents, and professional work. It excels at iterative development, complex codebase navigation, end-to-end project management with...",
+      "id": "anthropic/claude-sonnet-4.6",
+      "name": "Anthropic: Claude Sonnet 4.6",
+      "pricing": {
+        "completion": "0.000015",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.00000375",
+        "prompt": "0.000003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 202752,
+      "description": "GLM-5 is Z.ai\u2019s flagship open-source foundation model engineered for complex systems design and long-horizon agent workflows. Built for expert developers, it delivers production-grade performance on large-scale programming tasks, rivaling leading...",
+      "id": "z-ai/glm-5",
+      "name": "Z.ai: GLM 5",
+      "pricing": {
+        "completion": "0.00000192",
+        "input_cache_read": "0.00000012",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Opus 4.6 is Anthropic\u2019s strongest model for coding and long-running professional tasks. It is built for agents that operate across entire workflows rather than single prompts, making it especially effective...",
+      "id": "anthropic/claude-opus-4.6",
+      "name": "Anthropic: Claude Opus 4.6",
+      "pricing": {
+        "completion": "0.000025",
+        "input_cache_read": "0.0000005",
+        "input_cache_write": "0.00000625",
+        "prompt": "0.000005",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Qwen3-Coder-Next is an open-weight causal language model optimized for coding agents and local development workflows. It uses a sparse MoE design with 80B total parameters and only 3B activated per...",
+      "id": "qwen/qwen3-coder-next",
+      "name": "Qwen: Qwen3 Coder Next",
+      "pricing": {
+        "completion": "0.0000008",
+        "input_cache_read": "0.00000007",
+        "prompt": "0.00000011"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Kimi K2.5 is Moonshot AI's native multimodal model, delivering state-of-the-art visual coding capability and a self-directed agent swarm paradigm. Built on Kimi K2 with continued pretraining over approximately 15T mixed...",
+      "id": "moonshotai/kimi-k2.5",
+      "name": "MoonshotAI: Kimi K2.5",
+      "pricing": {
+        "completion": "0.000002025",
+        "prompt": "0.000000375"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "The gpt-audio model is OpenAI's first generally available audio model. The new snapshot features an upgraded decoder for more natural sounding voices and maintains better voice consistency. Audio is priced...",
+      "id": "openai/gpt-audio",
+      "name": "OpenAI: GPT Audio",
+      "pricing": {
+        "audio": "0.000032",
+        "completion": "0.00001",
+        "prompt": "0.0000025"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "A cost-efficient version of GPT Audio. The new snapshot features an upgraded decoder for more natural sounding voices and maintains better voice consistency. Input is priced at $0.60 per million...",
+      "id": "openai/gpt-audio-mini",
+      "name": "OpenAI: GPT Audio Mini",
+      "pricing": {
+        "audio": "0.0000006",
+        "completion": "0.0000024",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 202752,
+      "description": "As a 30B-class SOTA model, GLM-4.7-Flash offers a new option that balances performance and efficiency. It is further optimized for agentic coding use cases, strengthening coding capabilities, long-horizon task planning,...",
+      "id": "z-ai/glm-4.7-flash",
+      "name": "Z.ai: GLM 4.7 Flash",
+      "pricing": {
+        "completion": "0.0000004",
+        "input_cache_read": "0.00000001",
+        "prompt": "0.00000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5.2-Codex is an upgraded version of GPT-5.1-Codex optimized for software engineering and coding workflows. It is designed for both interactive development sessions and long, independent execution of complex engineering tasks....",
+      "id": "openai/gpt-5.2-codex",
+      "name": "OpenAI: GPT-5.2-Codex",
+      "pricing": {
+        "completion": "0.000014",
+        "input_cache_read": "0.000000175",
+        "prompt": "0.00000175",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 202752,
+      "description": "GLM-4.7 is Z.ai\u2019s latest flagship model, featuring upgrades in two key areas: enhanced programming capabilities and more stable multi-step reasoning/execution. It demonstrates significant improvements in executing complex agent tasks while...",
+      "id": "z-ai/glm-4.7",
+      "name": "Z.ai: GLM 4.7",
+      "pricing": {
+        "completion": "0.00000175",
+        "input_cache_read": "0.00000008",
+        "prompt": "0.0000004"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 3 Flash Preview is a high speed, high value thinking model designed for agentic workflows, multi turn chat, and coding assistance. It delivers near Pro level reasoning and tool...",
+      "id": "google/gemini-3-flash-preview",
+      "name": "Google: Gemini 3 Flash Preview",
+      "pricing": {
+        "audio": "0.000001",
+        "completion": "0.000003",
+        "image": "0.0000005",
+        "input_cache_read": "0.00000005",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.000003",
+        "prompt": "0.0000005",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Devstral 2 is a state-of-the-art open-source model by Mistral AI specializing in agentic coding. It is a 123B-parameter dense transformer model supporting a 256K context window. Devstral 2 supports exploring...",
+      "id": "mistralai/devstral-2512",
+      "name": "Mistral: Devstral 2 2512",
+      "pricing": {
+        "completion": "0.000002",
+        "input_cache_read": "0.00000004",
+        "prompt": "0.0000004"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "The relace-search model uses 4-12 `view_file` and `grep` tools in parallel to explore a codebase and return relevant files to the user request. In contrast to RAG, relace-search performs agentic...",
+      "id": "relace/relace-search",
+      "name": "Relace: Relace Search",
+      "pricing": {
+        "completion": "0.000003",
+        "prompt": "0.000001"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "GLM-4.6V is a large multimodal model designed for high-fidelity visual understanding and long-context reasoning across images, documents, and mixed media. It supports up to 128K tokens, processes complex page layouts...",
+      "id": "z-ai/glm-4.6v",
+      "name": "Z.ai: GLM 4.6V",
+      "pricing": {
+        "completion": "0.0000009",
+        "input_cache_read": "0.000000055",
+        "prompt": "0.0000003"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5.1-Codex-Max is OpenAI\u2019s latest agentic coding model, designed for long-running, high-context software development tasks. It is based on an updated version of the 5.1 reasoning stack and trained on agentic...",
+      "id": "openai/gpt-5.1-codex-max",
+      "name": "OpenAI: GPT-5.1-Codex-Max",
+      "pricing": {
+        "completion": "0.00001",
+        "input_cache_read": "0.000000125",
+        "prompt": "0.00000125",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "DeepSeek-V3.2 is a large language model designed to harmonize high computational efficiency with strong reasoning and agentic tool-use performance. It introduces DeepSeek Sparse Attention (DSA), a fine-grained sparse attention mechanism...",
+      "id": "deepseek/deepseek-v3.2",
+      "name": "DeepSeek: DeepSeek V3.2",
+      "pricing": {
+        "completion": "0.0000003432",
+        "prompt": "0.0000002288"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "INTELLECT-3 is a 106B-parameter Mixture-of-Experts model (12B active) post-trained from GLM-4.5-Air-Base using supervised fine-tuning (SFT) followed by large-scale reinforcement learning (RL). It offers state-of-the-art performance for its size across math,...",
+      "id": "prime-intellect/intellect-3",
+      "name": "Prime Intellect: INTELLECT-3",
+      "pricing": {
+        "completion": "0.0000011",
+        "prompt": "0.0000002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude Opus 4.5 is Anthropic\u2019s frontier reasoning model optimized for complex software engineering, agentic workflows, and long-horizon computer use. It offers strong multimodal capabilities, competitive performance across real-world coding and...",
+      "id": "anthropic/claude-opus-4.5",
+      "name": "Anthropic: Claude Opus 4.5",
+      "pricing": {
+        "completion": "0.000025",
+        "input_cache_read": "0.0000005",
+        "input_cache_write": "0.00000625",
+        "prompt": "0.000005",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "verbosity"
+      ]
+    },
+    {
+      "context_length": 65536,
+      "description": "Nano Banana Pro is Google\u2019s most advanced image-generation and editing model, built on Gemini 3 Pro. It extends the original Nano Banana with significantly improved multimodal reasoning, real-world grounding, and...",
+      "id": "google/gemini-3-pro-image-preview",
+      "name": "Google: Nano Banana Pro (Gemini 3 Pro Image Preview)",
+      "pricing": {
+        "audio": "0.000002",
+        "completion": "0.000012",
+        "image": "0.000002",
+        "input_cache_read": "0.0000002",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.000012",
+        "prompt": "0.000002",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5.1-Codex is a specialized version of GPT-5.1 optimized for software engineering and coding workflows. It is designed for both interactive development sessions and long, independent execution of complex engineering tasks....",
+      "id": "openai/gpt-5.1-codex",
+      "name": "OpenAI: GPT-5.1-Codex",
+      "pricing": {
+        "completion": "0.00001",
+        "input_cache_read": "0.00000013",
+        "prompt": "0.00000125",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5.1-Codex-Mini is a smaller and faster version of GPT-5.1-Codex",
+      "id": "openai/gpt-5.1-codex-mini",
+      "name": "OpenAI: GPT-5.1-Codex-Mini",
+      "pricing": {
+        "completion": "0.000002",
+        "input_cache_read": "0.000000025",
+        "prompt": "0.00000025",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Kimi K2 Thinking is Moonshot AI\u2019s most advanced open reasoning model to date, extending the K2 series into agentic, long-horizon reasoning. Built on the trillion-parameter Mixture-of-Experts (MoE) architecture introduced in...",
+      "id": "moonshotai/kimi-k2-thinking",
+      "name": "MoonshotAI: Kimi K2 Thinking",
+      "pricing": {
+        "completion": "0.0000025",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude Haiku 4.5 is Anthropic\u2019s fastest and most efficient model, delivering near-frontier intelligence at a fraction of the cost and latency of larger Claude models. Matching Claude Sonnet 4\u2019s performance...",
+      "id": "anthropic/claude-haiku-4.5",
+      "name": "Anthropic: Claude Haiku 4.5",
+      "pricing": {
+        "completion": "0.000005",
+        "input_cache_read": "0.0000001",
+        "input_cache_write": "0.00000125",
+        "prompt": "0.000001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "[GPT-5](https://openrouter.ai/openai/gpt-5) Image combines OpenAI's GPT-5 model with state-of-the-art image generation capabilities. It offers major improvements in reasoning, code quality, and user experience while incorporating GPT Image 1's superior instruction following,...",
+      "id": "openai/gpt-5-image",
+      "name": "OpenAI: GPT-5 Image",
+      "pricing": {
+        "completion": "0.00001",
+        "input_cache_read": "0.00000125",
+        "prompt": "0.00001",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Llama-3.3-Nemotron-Super-49B-v1.5 is a 49B-parameter, English-centric reasoning/chat model derived from Meta\u2019s Llama-3.3-70B-Instruct with a 128K context. It\u2019s post-trained for agentic workflows (RAG, tool calling) via SFT across math, code, science, and...",
+      "id": "nvidia/llama-3.3-nemotron-super-49b-v1.5",
+      "name": "NVIDIA: Llama 3.3 Nemotron Super 49B V1.5",
+      "pricing": {
+        "completion": "0.0000004",
+        "prompt": "0.0000004"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 32768,
+      "description": "Gemini 2.5 Flash Image, a.k.a. \"Nano Banana,\" is now generally available. It is a state of the art image generation model with contextual understanding. It is capable of image generation,...",
+      "id": "google/gemini-2.5-flash-image",
+      "name": "Google: Nano Banana (Gemini 2.5 Flash Image)",
+      "pricing": {
+        "audio": "0.000001",
+        "completion": "0.0000025",
+        "image": "0.0000003",
+        "input_cache_read": "0.00000003",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000025",
+        "prompt": "0.0000003",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5 Pro is OpenAI\u2019s most advanced model, offering major improvements in reasoning, code quality, and user experience. It is optimized for complex tasks that require step-by-step reasoning, instruction following, and...",
+      "id": "openai/gpt-5-pro",
+      "name": "OpenAI: GPT-5 Pro",
+      "pricing": {
+        "completion": "0.00012",
+        "prompt": "0.000015",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 202752,
+      "description": "Compared with GLM-4.5, this generation brings several key improvements: Longer context window: The context window has been expanded from 128K to 200K tokens, enabling the model to handle more complex...",
+      "id": "z-ai/glm-4.6",
+      "name": "Z.ai: GLM 4.6",
+      "pricing": {
+        "completion": "0.00000174",
+        "input_cache_read": "0.00000008",
+        "prompt": "0.00000043"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Claude Sonnet 4.5 is Anthropic\u2019s most advanced Sonnet model to date, optimized for real-world agents and coding workflows. It delivers state-of-the-art performance on coding benchmarks such as SWE-bench Verified, with...",
+      "id": "anthropic/claude-sonnet-4.5",
+      "name": "Anthropic: Claude Sonnet 4.5",
+      "pricing": {
+        "completion": "0.000015",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.00000375",
+        "prompt": "0.000003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "DeepSeek-V3.2-Exp is an experimental large language model released by DeepSeek as an intermediate step between V3.1 and future architectures. It introduces DeepSeek Sparse Attention (DSA), a fine-grained sparse attention mechanism...",
+      "id": "deepseek/deepseek-v3.2-exp",
+      "name": "DeepSeek: DeepSeek V3.2 Exp",
+      "pricing": {
+        "completion": "0.00000041",
+        "prompt": "0.00000027"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "Relace Apply 3 is a specialized code-patching LLM that merges AI-suggested edits straight into your source files. It can apply updates from GPT-4o, Claude, and others into your files at...",
+      "id": "relace/relace-apply-3",
+      "name": "Relace: Relace Apply 3",
+      "pricing": {
+        "completion": "0.00000125",
+        "prompt": "0.00000085"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "seed",
+        "stop"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Flash-Lite is a lightweight reasoning model in the Gemini 2.5 family, optimized for ultra-low latency and cost efficiency. It offers improved throughput, faster token generation, and better performance...",
+      "id": "google/gemini-2.5-flash-lite-preview-09-2025",
+      "name": "Google: Gemini 2.5 Flash Lite Preview 09-2025",
+      "pricing": {
+        "audio": "0.0000003",
+        "completion": "0.0000004",
+        "image": "0.0000001",
+        "input_cache_read": "0.00000001",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000004",
+        "prompt": "0.0000001",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Qwen3 Coder Plus is Alibaba's proprietary version of the Open Source Qwen3 Coder 480B A35B. It is a powerful coding agent model specializing in autonomous programming via tool calling and...",
+      "id": "qwen/qwen3-coder-plus",
+      "name": "Qwen: Qwen3 Coder Plus",
+      "pricing": {
+        "completion": "0.00000325",
+        "input_cache_read": "0.00000013",
+        "input_cache_write": "0.0000008125",
+        "prompt": "0.00000065"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5-Codex is a specialized version of GPT-5 optimized for software engineering and coding workflows. It is designed for both interactive development sessions and long, independent execution of complex engineering tasks....",
+      "id": "openai/gpt-5-codex",
+      "name": "OpenAI: GPT-5 Codex",
+      "pricing": {
+        "completion": "0.00001",
+        "input_cache_read": "0.000000125",
+        "prompt": "0.00000125",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "DeepSeek-V3.1 Terminus is an update to [DeepSeek V3.1](/deepseek/deepseek-chat-v3.1) that maintains the model's original capabilities while addressing issues reported by users, including language consistency and agent capabilities, further optimizing the model's...",
+      "id": "deepseek/deepseek-v3.1-terminus",
+      "name": "DeepSeek: DeepSeek V3.1 Terminus",
+      "pricing": {
+        "completion": "0.00000095",
+        "input_cache_read": "0.00000013",
+        "prompt": "0.00000027"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Qwen3 Coder Flash is Alibaba's fast and cost efficient version of their proprietary Qwen3 Coder Plus. It is a powerful coding agent model specializing in autonomous programming via tool calling...",
+      "id": "qwen/qwen3-coder-flash",
+      "name": "Qwen: Qwen3 Coder Flash",
+      "pricing": {
+        "completion": "0.000000975",
+        "input_cache_read": "0.000000039",
+        "input_cache_write": "0.00000024375",
+        "prompt": "0.000000195"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Qwen3-Next-80B-A3B-Thinking is a reasoning-first chat model in the Qwen3-Next line that outputs structured \u201cthinking\u201d traces by default. It\u2019s designed for hard multi-step problems; math proofs, code synthesis/debugging, logic, and agentic...",
+      "id": "qwen/qwen3-next-80b-a3b-thinking",
+      "name": "Qwen: Qwen3 Next 80B A3B Thinking",
+      "pricing": {
+        "completion": "0.00000078",
+        "prompt": "0.0000000975"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without \u201cthinking\u201d traces. It targets complex tasks across reasoning, code generation, knowledge QA, and multilingual...",
+      "id": "qwen/qwen3-next-80b-a3b-instruct:free",
+      "name": "Qwen: Qwen3 Next 80B A3B Instruct (free)",
+      "pricing": {
+        "completion": "0",
+        "prompt": "0"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Qwen3-Next-80B-A3B-Instruct is an instruction-tuned chat model in the Qwen3-Next series optimized for fast, stable responses without \u201cthinking\u201d traces. It targets complex tasks across reasoning, code generation, knowledge QA, and multilingual...",
+      "id": "qwen/qwen3-next-80b-a3b-instruct",
+      "name": "Qwen: Qwen3 Next 80B A3B Instruct",
+      "pricing": {
+        "completion": "0.0000011",
+        "prompt": "0.00000009"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Kimi K2 0905 is the September update of [Kimi K2 0711](moonshotai/kimi-k2). It is a large-scale Mixture-of-Experts (MoE) language model developed by Moonshot AI, featuring 1 trillion total parameters with 32...",
+      "id": "moonshotai/kimi-k2-0905",
+      "name": "MoonshotAI: Kimi K2 0905",
+      "pricing": {
+        "completion": "0.0000025",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "DeepSeek-V3.1 is a large hybrid reasoning model (671B parameters, 37B active) that supports both thinking and non-thinking modes via prompt templates. It extends the DeepSeek-V3 base with a two-phase long-context...",
+      "id": "deepseek/deepseek-chat-v3.1",
+      "name": "DeepSeek: DeepSeek V3.1",
+      "pricing": {
+        "completion": "0.00000079",
+        "input_cache_read": "0.00000013",
+        "prompt": "0.00000021"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 65536,
+      "description": "GLM-4.5V is a vision-language foundation model for multimodal agent applications. Built on a Mixture-of-Experts (MoE) architecture with 106B parameters and 12B activated parameters, it achieves state-of-the-art results in video understanding,...",
+      "id": "z-ai/glm-4.5v",
+      "name": "Z.ai: GLM 4.5V",
+      "pricing": {
+        "completion": "0.0000018",
+        "input_cache_read": "0.00000011",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 400000,
+      "description": "GPT-5 is OpenAI\u2019s most advanced model, offering major improvements in reasoning, code quality, and user experience. It is optimized for complex tasks that require step-by-step reasoning, instruction following, and accuracy...",
+      "id": "openai/gpt-5",
+      "name": "OpenAI: GPT-5",
+      "pricing": {
+        "completion": "0.00001",
+        "input_cache_read": "0.000000125",
+        "prompt": "0.00000125",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "structured_outputs",
+        "tool_choice",
+        "tools"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude Opus 4.1 is an updated version of Anthropic\u2019s flagship model, offering improved performance in coding, reasoning, and agentic tasks. It achieves 74.5% on SWE-bench Verified and shows notable gains...",
+      "id": "anthropic/claude-opus-4.1",
+      "name": "Anthropic: Claude Opus 4.1",
+      "pricing": {
+        "completion": "0.000075",
+        "input_cache_read": "0.0000015",
+        "input_cache_write": "0.00001875",
+        "prompt": "0.000015",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 256000,
+      "description": "Mistral's cutting-edge language model for coding released end of July 2025. Codestral specializes in low-latency, high-frequency tasks such as fill-in-the-middle (FIM), code correction and test generation.\n\n[Blog Post](https://mistral.ai/news/codestral-25-08)",
+      "id": "mistralai/codestral-2508",
+      "name": "Mistral: Codestral 2508",
+      "pricing": {
+        "completion": "0.0000009",
+        "input_cache_read": "0.00000003",
+        "prompt": "0.0000003"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 160000,
+      "description": "Qwen3-Coder-30B-A3B-Instruct is a 30.5B parameter Mixture-of-Experts (MoE) model with 128 experts (8 active per forward pass), designed for advanced code generation, repository-scale understanding, and agentic tool use. Built on the...",
+      "id": "qwen/qwen3-coder-30b-a3b-instruct",
+      "name": "Qwen: Qwen3 Coder 30B A3B Instruct",
+      "pricing": {
+        "completion": "0.00000027",
+        "prompt": "0.00000007"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "GLM-4.5 is our latest flagship foundation model, purpose-built for agent-based applications. It leverages a Mixture-of-Experts (MoE) architecture and supports a context length of up to 128k tokens. GLM-4.5 delivers significantly...",
+      "id": "z-ai/glm-4.5",
+      "name": "Z.ai: GLM 4.5",
+      "pricing": {
+        "completion": "0.0000022",
+        "input_cache_read": "0.00000011",
+        "prompt": "0.0000006"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "GLM-4.5-Air is the lightweight variant of our latest flagship model family, also purpose-built for agent-centric applications. Like GLM-4.5, it adopts the Mixture-of-Experts (MoE) architecture but with a more compact parameter...",
+      "id": "z-ai/glm-4.5-air",
+      "name": "Z.ai: GLM 4.5 Air",
+      "pricing": {
+        "completion": "0.00000085",
+        "input_cache_read": "0.000000025",
+        "prompt": "0.00000013"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team. It is optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over...",
+      "id": "qwen/qwen3-coder:free",
+      "name": "Qwen: Qwen3 Coder 480B A35B (free)",
+      "pricing": {
+        "completion": "0",
+        "prompt": "0"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Qwen3-Coder-480B-A35B-Instruct is a Mixture-of-Experts (MoE) code generation model developed by the Qwen team. It is optimized for agentic coding tasks such as function calling, tool use, and long-context reasoning over...",
+      "id": "qwen/qwen3-coder",
+      "name": "Qwen: Qwen3 Coder 480B A35B",
+      "pricing": {
+        "completion": "0.0000018",
+        "prompt": "0.00000022"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Flash-Lite is a lightweight reasoning model in the Gemini 2.5 family, optimized for ultra-low latency and cost efficiency. It offers improved throughput, faster token generation, and better performance...",
+      "id": "google/gemini-2.5-flash-lite",
+      "name": "Google: Gemini 2.5 Flash Lite",
+      "pricing": {
+        "audio": "0.0000003",
+        "completion": "0.0000004",
+        "image": "0.0000001",
+        "input_cache_read": "0.00000001",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000004",
+        "prompt": "0.0000001",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Kimi K2 Instruct is a large-scale Mixture-of-Experts (MoE) language model developed by Moonshot AI, featuring 1 trillion total parameters with 32 billion active per forward pass. It is optimized for...",
+      "id": "moonshotai/kimi-k2",
+      "name": "MoonshotAI: Kimi K2 0711",
+      "pricing": {
+        "completion": "0.0000023",
+        "prompt": "0.00000057"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "repetition_penalty",
+        "seed",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 262144,
+      "description": "Morph's high-accuracy apply model for complex code edits. ~4,500 tokens/sec with 98% accuracy for precise code transformations. The model requires the prompt to be in the following format: <instruction>{instruction}</instruction> <code>{initial_code}</code>...",
+      "id": "morph/morph-v3-large",
+      "name": "Morph: Morph V3 Large",
+      "pricing": {
+        "completion": "0.0000019",
+        "prompt": "0.0000009"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "stop",
+        "temperature"
+      ]
+    },
+    {
+      "context_length": 81920,
+      "description": "Morph's fastest apply model for code edits. ~10,500 tokens/sec with 96% accuracy for rapid code transformations. The model requires the prompt to be in the following format: <instruction>{instruction}</instruction> <code>{initial_code}</code> <update>{edit_snippet}</update>...",
+      "id": "morph/morph-v3-fast",
+      "name": "Morph: Morph V3 Fast",
+      "pricing": {
+        "completion": "0.0000012",
+        "prompt": "0.0000008"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "stop",
+        "temperature"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Flash is Google's state-of-the-art workhorse model, specifically designed for advanced reasoning, coding, mathematics, and scientific tasks. It includes built-in \"thinking\" capabilities, enabling it to provide responses with greater...",
+      "id": "google/gemini-2.5-flash",
+      "name": "Google: Gemini 2.5 Flash",
+      "pricing": {
+        "audio": "0.000001",
+        "completion": "0.0000025",
+        "image": "0.0000003",
+        "input_cache_read": "0.00000003",
+        "input_cache_write": "0.00000008333333333333334",
+        "internal_reasoning": "0.0000025",
+        "prompt": "0.0000003",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Pro is Google\u2019s state-of-the-art AI model designed for advanced reasoning, coding, mathematics, and scientific tasks. It employs \u201cthinking\u201d capabilities, enabling it to reason through responses with enhanced accuracy...",
+      "id": "google/gemini-2.5-pro",
+      "name": "Google: Gemini 2.5 Pro",
+      "pricing": {
+        "audio": "0.00000125",
+        "completion": "0.00001",
+        "image": "0.00000125",
+        "input_cache_read": "0.000000125",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.00001",
+        "prompt": "0.00000125",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Pro is Google\u2019s state-of-the-art AI model designed for advanced reasoning, coding, mathematics, and scientific tasks. It employs \u201cthinking\u201d capabilities, enabling it to reason through responses with enhanced accuracy...",
+      "id": "google/gemini-2.5-pro-preview",
+      "name": "Google: Gemini 2.5 Pro Preview 06-05",
+      "pricing": {
+        "audio": "0.00000125",
+        "completion": "0.00001",
+        "image": "0.00000125",
+        "input_cache_read": "0.000000125",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.00001",
+        "prompt": "0.00000125",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "May 28th update to the [original DeepSeek R1](/deepseek/deepseek-r1) Performance on par with [OpenAI o1](/openai/o1), but open-sourced and with fully open reasoning tokens. It's 671B parameters in size, with 37B active...",
+      "id": "deepseek/deepseek-r1-0528",
+      "name": "DeepSeek: R1 0528",
+      "pricing": {
+        "completion": "0.00000215",
+        "input_cache_read": "0.00000035",
+        "prompt": "0.0000005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude Opus 4 is benchmarked as the world\u2019s best coding model, at time of release, bringing sustained performance on complex, long-running tasks and agent workflows. It sets new benchmarks in...",
+      "id": "anthropic/claude-opus-4",
+      "name": "Anthropic: Claude Opus 4",
+      "pricing": {
+        "completion": "0.000075",
+        "input_cache_read": "0.0000015",
+        "input_cache_write": "0.00001875",
+        "prompt": "0.000015",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1000000,
+      "description": "Claude Sonnet 4 significantly enhances the capabilities of its predecessor, Sonnet 3.7, excelling in both coding and reasoning tasks with improved precision and controllability. Achieving state-of-the-art performance on SWE-bench (72.7%),...",
+      "id": "anthropic/claude-sonnet-4",
+      "name": "Anthropic: Claude Sonnet 4",
+      "pricing": {
+        "completion": "0.000015",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.00000375",
+        "prompt": "0.000003",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 1048576,
+      "description": "Gemini 2.5 Pro is Google\u2019s state-of-the-art AI model designed for advanced reasoning, coding, mathematics, and scientific tasks. It employs \u201cthinking\u201d capabilities, enabling it to reason through responses with enhanced accuracy...",
+      "id": "google/gemini-2.5-pro-preview-05-06",
+      "name": "Google: Gemini 2.5 Pro Preview 05-06",
+      "pricing": {
+        "audio": "0.00000125",
+        "completion": "0.00001",
+        "image": "0.00000125",
+        "input_cache_read": "0.000000125",
+        "input_cache_write": "0.000000375",
+        "internal_reasoning": "0.00001",
+        "prompt": "0.00000125",
+        "web_search": "0.014"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 32768,
+      "description": "Coder\u2011Large is a 32 B\u2011parameter offspring of Qwen 2.5\u2011Instruct that has been further trained on permissively\u2011licensed GitHub, CodeSearchNet and synthetic bug\u2011fix corpora. It supports a 32k context window, enabling multi\u2011file...",
+      "id": "arcee-ai/coder-large",
+      "name": "Arcee AI: Coder Large",
+      "pricing": {
+        "completion": "0.0000008",
+        "prompt": "0.0000005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "stop",
+        "temperature",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "DeepSeek V3, a 685B-parameter, mixture-of-experts model, is the latest iteration of the flagship chat model family from the DeepSeek team. It succeeds the [DeepSeek V3](/deepseek/deepseek-chat-v3) model and performs really well...",
+      "id": "deepseek/deepseek-chat-v3-0324",
+      "name": "DeepSeek: DeepSeek V3 0324",
+      "pricing": {
+        "completion": "0.00000077",
+        "input_cache_read": "0.000000135",
+        "prompt": "0.0000002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "Note: Sonar Pro pricing includes Perplexity search pricing. See [details here](https://docs.perplexity.ai/guides/pricing#detailed-pricing-breakdown-for-sonar-reasoning-pro-and-sonar-pro) Sonar Reasoning Pro is a premier reasoning model powered by DeepSeek R1 with Chain of Thought (CoT). Designed for...",
+      "id": "perplexity/sonar-reasoning-pro",
+      "name": "Perplexity: Sonar Reasoning Pro",
+      "pricing": {
+        "completion": "0.000008",
+        "prompt": "0.000002",
+        "web_search": "0.005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "temperature",
+        "top_k",
+        "top_p",
+        "web_search_options"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Aion-1.0 is a multi-model system designed for high performance across various tasks, including reasoning and coding. It is built on DeepSeek-R1, augmented with additional models and techniques such as Tree...",
+      "id": "aion-labs/aion-1.0",
+      "name": "AionLabs: Aion-1.0",
+      "pricing": {
+        "completion": "0.000008",
+        "prompt": "0.000004"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "Aion-1.0-Mini 32B parameter model is a distilled version of the DeepSeek-R1 model, designed for strong performance in reasoning domains such as mathematics, coding, and logic. It is a modified variant...",
+      "id": "aion-labs/aion-1.0-mini",
+      "name": "AionLabs: Aion-1.0-Mini",
+      "pricing": {
+        "completion": "0.0000014",
+        "prompt": "0.0000007"
+      },
+      "supported_parameters": [
+        "include_reasoning",
+        "max_tokens",
+        "reasoning",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "DeepSeek R1 Distill Llama 70B is a distilled large language model based on [Llama-3.3-70B-Instruct](/meta-llama/llama-3.3-70b-instruct), using outputs from [DeepSeek R1](/deepseek/deepseek-r1). The model combines advanced distillation techniques to achieve high performance across...",
+      "id": "deepseek/deepseek-r1-distill-llama-70b",
+      "name": "DeepSeek: R1 Distill Llama 70B",
+      "pricing": {
+        "completion": "0.0000008",
+        "prompt": "0.0000008"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "seed",
+        "stop",
+        "temperature",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 163840,
+      "description": "DeepSeek R1 is here: Performance on par with [OpenAI o1](/openai/o1), but open-sourced and with fully open reasoning tokens. It's 671B parameters in size, with 37B active in an inference pass....",
+      "id": "deepseek/deepseek-r1",
+      "name": "DeepSeek: R1",
+      "pricing": {
+        "completion": "0.0000025",
+        "prompt": "0.0000007"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "include_reasoning",
+        "max_completion_tokens",
+        "max_tokens",
+        "presence_penalty",
+        "reasoning",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "DeepSeek-V3 is the latest model from the DeepSeek team, building upon the instruction following and coding abilities of the previous versions. Pre-trained on nearly 15 trillion tokens, the reported evaluations...",
+      "id": "deepseek/deepseek-chat",
+      "name": "DeepSeek: DeepSeek V3",
+      "pricing": {
+        "completion": "0.0000008001",
+        "prompt": "0.0000002002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 131072,
+      "description": "This is Mistral AI's flagship model, Mistral Large 2 (version mistral-large-2407). It's a proprietary weights-available model and excels at reasoning, code, JSON, chat, and more. Read the launch announcement [here](https://mistral.ai/news/mistral-large-2407/)....",
+      "id": "mistralai/mistral-large-2407",
+      "name": "Mistral Large 2407",
+      "pricing": {
+        "completion": "0.000006",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.000002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "Qwen2.5-Coder is the latest series of Code-Specific Qwen large language models (formerly known as CodeQwen). Qwen2.5-Coder brings the following improvements upon CodeQwen1.5: - Significantly improvements in **code generation**, **code reasoning**...",
+      "id": "qwen/qwen-2.5-coder-32b-instruct",
+      "name": "Qwen2.5 Coder 32B Instruct",
+      "pricing": {
+        "completion": "0.000001",
+        "prompt": "0.00000066"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "seed",
+        "stop",
+        "temperature",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude 3.5 Haiku features offers enhanced capabilities in speed, coding accuracy, and tool use. Engineered to excel in real-time applications, it delivers quick response times that are essential for dynamic...",
+      "id": "anthropic/claude-3.5-haiku",
+      "name": "Anthropic: Claude 3.5 Haiku",
+      "pricing": {
+        "completion": "0.000004",
+        "input_cache_read": "0.00000008",
+        "input_cache_write": "0.000001",
+        "prompt": "0.0000008",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 32768,
+      "description": "This is a series of models designed to replicate the prose quality of the Claude 3 models, specifically Sonnet(https://openrouter.ai/anthropic/claude-3.5-sonnet) and Opus(https://openrouter.ai/anthropic/claude-3-opus).\n\nThe model is fine-tuned on top of [Qwen2.5 72B](https://openrouter.ai/qwen/qwen-2.5-72b-instruct).",
+      "id": "anthracite-org/magnum-v4-72b",
+      "name": "Magnum v4 72B",
+      "pricing": {
+        "completion": "0.000005",
+        "prompt": "0.000003"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "top_a",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "command-r-08-2024 is an update of the [Command R](/models/cohere/command-r) with improved performance for multilingual retrieval-augmented generation (RAG) and tool use. More broadly, it is better at math, code and reasoning and...",
+      "id": "cohere/command-r-08-2024",
+      "name": "Cohere: Command R (08-2024)",
+      "pricing": {
+        "completion": "0.0000006",
+        "prompt": "0.00000015"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 8192,
+      "description": "Gemma 2 27B by Google is an open model built from the same research and technology used to create the [Gemini models](/models?q=gemini). Gemma models are well-suited for a variety of...",
+      "id": "google/gemma-2-27b-it",
+      "name": "Google: Gemma 2 27B",
+      "pricing": {
+        "completion": "0.00000065",
+        "prompt": "0.00000065"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 200000,
+      "description": "Claude 3 Haiku is Anthropic's fastest and most compact model for\nnear-instant responsiveness. Quick and accurate targeted performance.\n\nSee the launch announcement and benchmark results [here](https://www.anthropic.com/news/claude-3-haiku)\n\n#multimodal",
+      "id": "anthropic/claude-3-haiku",
+      "name": "Anthropic: Claude 3 Haiku",
+      "pricing": {
+        "completion": "0.00000125",
+        "input_cache_read": "0.00000003",
+        "input_cache_write": "0.0000003",
+        "prompt": "0.00000025",
+        "web_search": "0.01"
+      },
+      "supported_parameters": [
+        "max_tokens",
+        "stop",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_k",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 128000,
+      "description": "This is Mistral AI's flagship model, Mistral Large 2 (version `mistral-large-2407`). It's a proprietary weights-available model and excels at reasoning, code, JSON, chat, and more. Read the launch announcement [here](https://mistral.ai/news/mistral-large-2407/)....",
+      "id": "mistralai/mistral-large",
+      "name": "Mistral Large",
+      "pricing": {
+        "completion": "0.000006",
+        "input_cache_read": "0.0000002",
+        "prompt": "0.000002"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 4095,
+      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
+      "id": "openai/gpt-3.5-turbo-0613",
+      "name": "OpenAI: GPT-3.5 Turbo (older v0613)",
+      "pricing": {
+        "completion": "0.000002",
+        "prompt": "0.000001"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_completion_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 8000,
+      "description": "An attempt to recreate Claude-style verbosity, but don't expect the same level of coherence or memory. Meant for use in roleplay/narrative situations.",
+      "id": "mancer/weaver",
+      "name": "Mancer: Weaver (alpha)",
+      "pricing": {
+        "completion": "0.000001",
+        "prompt": "0.00000075"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "min_p",
+        "presence_penalty",
+        "repetition_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "temperature",
+        "top_a",
+        "top_k",
+        "top_logprobs",
+        "top_p"
+      ]
+    },
+    {
+      "context_length": 16385,
+      "description": "GPT-3.5 Turbo is OpenAI's fastest model. It can understand and generate natural language or code, and is optimized for chat and traditional completion tasks.\n\nTraining data up to Sep 2021.",
+      "id": "openai/gpt-3.5-turbo",
+      "name": "OpenAI: GPT-3.5 Turbo",
+      "pricing": {
+        "completion": "0.0000015",
+        "prompt": "0.0000005"
+      },
+      "supported_parameters": [
+        "frequency_penalty",
+        "logit_bias",
+        "logprobs",
+        "max_tokens",
+        "presence_penalty",
+        "response_format",
+        "seed",
+        "stop",
+        "structured_outputs",
+        "temperature",
+        "tool_choice",
+        "tools",
+        "top_logprobs",
+        "top_p"
+      ]
+    }
+  ]
+}

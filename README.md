@@ -109,31 +109,19 @@ uv run python -m arena.project_model_cli gate --snapshot /tmp/build-arena-snapsh
 
 The AI-first snapshot command emits `project-model-v1.json` as the Project Model v1 primary artifact and `project-model-v0.json` for compatibility. Live mode is only for bounded read-only smoke under the readiness ladder; Build Arena remains not ready for broad autonomous live loops.
 
-## End-to-end proposal run
+## Advisory dream proposer lane
 
-`arena.proposal_run` chains the five stage CLIs — decompose → intake → propose → pairwise re-rank → emit — into a single command that produces one ticket-ready `proposal.md` for a target repository. It is a thin sequential driver: each stage runs as an isolated subprocess through its existing CLI, and the orchestrator only wires them. It does not re-implement, edit, or trust any stage's internals; after each stage the expected artifact must exist and the exit must be zero, otherwise the run stops, writes no `proposal.md`, and preserves the workdir so the partial artifacts are inspectable.
+`arena.dream_run` is a separate tier-3 advisory lane for architectural hypotheses that do not fit the single-file deterministic proposal contract. It chains snapshot/decompose → intake → capability lift → operator review gate → dream generation → dream research → premise gate → emit, and writes `dream.md` only. It never writes `proposal.md` and never applies or promotes a change.
 
 ```bash
-uv run python -m arena.proposal_run run /path/to/target-repo \
+uv run python -m arena.dream_run run /path/to/target-repo \
   --live-model <explicit-model> \
   --live-api-key-env XAI_API_KEY \
-  --output proposal.md
+  --output dream.md
 ```
 
-`run` accepts a local directory (used in place) or a git URL (shallow-cloned into a scratch workdir). Decomposition defaults to deterministic fixture mode; pass `--decompose-live` to use the live AI decomposer. The pairwise re-ranker's judge is an unavoidable live model call, so `--live-model` is required and the run fails closed before doing any work if it is missing or if the key named by `--live-api-key-env` cannot be resolved from the environment or `~/.hermes/.env`. Provider selection is threaded to the judge via the `BUILD_ARENA_LLM_*` environment contract; the judge is xAI-only, so `--live-provider`/`--live-base-url` affect live decomposition while the judge stays on xAI. Credentials are never written to any artifact this command produces, nor to `proposal.md` — only the key env-var name is passed; the value is resolved by the stages.
+The capability map is the intent-anchoring artifact. `arena.capability_lift` writes `capability-map.json` with `review.reviewed: false`; `dream_run` stops with exit `4` until the operator reviews/edits that map. To continue from a reviewed map, pass `--capability-map <path>`.
 
-Intermediate artifacts go in a scratch workdir (a `mkdtemp` by default, or `--workdir <dir>`). The temp workdir is removed on success and retained on failure; pass `--keep-workdir` to retain it on success, or `--workdir` to choose an explicit (never auto-deleted) location. Other knobs: `--profile` (intake profile, default `new-project`) and `--max-candidates` (planner cap, default 10).
+The deterministic boundary is the gated `dream/v0` artifact. Generation and research are live model stages and require an explicit `--live-model`; `arena.dream_gate` then kills any dream whose cited anchors or target capabilities do not resolve against the real Project Model v1 and reviewed capability map, stamps gate provenance, and rejects capability maps whose graph hash no longer matches the model. `arena.dream_emit` renders only gate-marked `premiseConfidence == all_resolved` dreams, with premise confidence and speculative conclusion confidence shown separately.
 
-Exit codes: `0` success (`proposal.md` written); `1` a stage failed (workdir preserved, no proposal); `2` no proposal met the bar — the re-ranker's pre-filter dropped every candidate, so the run prints a one-line explanation pointing at the re-rank trace and writes no `proposal.md`; `3` a usage/preflight error (missing `--live-model` or unresolvable key).
-
-The emit stage can also be run on its own against an existing reranked `proposal-plan/v0` artifact:
-
-```bash
-uv run python -m arena.proposal_emit --reranked-plan /tmp/reranked-plan.json --output proposal.md
-```
-
-Emit renders only the rank-1 candidate the re-ranker already chose. It is deterministic and faithful: identical input renders byte-identical output, with no timestamps, host paths, or randomness, and no model or network call. It renders only human-meaningful fields (intent, target files, success criterion, verbatim verification commands, constraints, grounded source references, and a provenance footer); the re-ranker's internal scoring/registry/prompt fields are read but never rendered, so a discarded priority score can never mislead a downstream reader.
-
-### Reproducibility expectations
-
-Emit is reproducible: for a fixed reranked plan the rendered `proposal.md` is byte-identical across runs. A full `proposal run` is **not** byte-reproducible, because the pairwise re-ranker's judge is a live model call — across runs it may pick a different winner or drop a different set of candidates, so both the selected proposal and the no-proposal outcome can change. The deterministic boundary is the reranked plan: pin or record that artifact (e.g. via `--workdir`) when a reproducible `proposal.md` is required.
+Exit codes: `0` success (`dream.md` written); `1` stage failure; `2` no dream survived the premise gate; `3` usage/preflight error; `4` capability map not reviewed.

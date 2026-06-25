@@ -1,0 +1,29 @@
+{
+  "content_hash": "6d160fff74b6c0c19b7d52a992b4d2d277977f90b48f3f546e0a9d36f973008b",
+  "content_preview": "{\"ready\": true}",
+  "finish_reason": "stop",
+  "reasoning_effort": "high",
+  "requested_model": "grok-4.3",
+  "served_model": "grok-4.3",
+  "served_model_matches_requested": true,
+  "status_code": 200,
+  "usage": {
+    "completion_tokens": 5,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": 0,
+      "audio_tokens": 0,
+      "reasoning_tokens": 263,
+      "rejected_prediction_tokens": 0
+    },
+    "cost_in_usd_ticks": 8003000,
+    "num_sources_used": 0,
+    "prompt_tokens": 158,
+    "prompt_tokens_details": {
+      "audio_tokens": 0,
+      "cached_tokens": 64,
+      "image_tokens": 0,
+      "text_tokens": 158
+    },
+    "total_tokens": 426
+  }
+}

@@ -1,0 +1,453 @@
+{
+  "artifact_paths": {
+    "gate_report": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b/gate-report.json",
+    "manifest": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b/manifest.json",
+    "project_model_v1": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b/project-model-v1.json",
+    "prompt": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b/prompts/decomposer-prompt.txt",
+    "raw_model_output": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b/model-outputs/decomposer.raw.json"
+  },
+  "component_profiles": [
+    {
+      "behavioralTags": [
+        "auth",
+        "concurrency",
+        "configuration",
+        "entrypoint",
+        "external_http",
+        "injection",
+        "pagination",
+        "rate_limit",
+        "read_only",
+        "resource_handlers",
+        "tool_handlers"
+      ],
+      "componentId": "comp-tests",
+      "keySymbols_sample": [
+        "TestFMCClient",
+        "TestRateLimiter",
+        "TestResources",
+        "TestTools",
+        "fmc_client",
+        "fmc_settings",
+        "get_client",
+        "get_deployment_status",
+        "get_system_info",
+        "initialized_client",
+        "list_devices",
+        "list_network_objects",
+        "mock_auth_response",
+        "mock_deployable_devices",
+        "mock_devices",
+        "mock_host_objects",
+        "mock_network_objects",
+        "mock_server_version",
+        "run_live_tests",
+        "set_client"
+      ],
+      "priorityRank": 1,
+      "responsibilitySummary": "Coordinate authentication/session lifecycle, concurrency back-pressure, configuration/secrets, runtime entrypoint, external HTTP access, client injection via TestFMCClient, TestRateLimiter, TestResources, TestTools, fmc_client with source-backed behavior in `tests.test_client.test_context_manager`.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "auth",
+        "concurrency",
+        "configuration",
+        "external_http",
+        "injection",
+        "pagination",
+        "rate_limit",
+        "read_only",
+        "tool_handlers"
+      ],
+      "componentId": "comp-client",
+      "keySymbols_sample": [
+        "FMCClient",
+        "RateLimiter",
+        "__aenter__",
+        "__aexit__",
+        "__init__",
+        "_authenticate",
+        "_refill",
+        "_refresh_auth_token",
+        "_request",
+        "acquire",
+        "base_url",
+        "close",
+        "connect",
+        "domain_uuid",
+        "get",
+        "get_all_items",
+        "get_deployable_devices",
+        "get_devices",
+        "get_domain_info",
+        "get_host_objects"
+      ],
+      "priorityRank": 2,
+      "responsibilitySummary": "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "concurrency",
+        "entrypoint",
+        "injection",
+        "mcp_server",
+        "read_only",
+        "resource_handlers",
+        "tool_handlers"
+      ],
+      "componentId": "comp-server",
+      "keySymbols_sample": [
+        "deployment_status_resource",
+        "devices_list_resource",
+        "get_deployment_status",
+        "lifespan",
+        "main",
+        "network_objects_resource",
+        "search_object_by_ip",
+        "system_info_resource"
+      ],
+      "priorityRank": 3,
+      "responsibilitySummary": "Coordinate concurrency back-pressure, runtime entrypoint, client injection, MCP server registration, read-only external operations, resource handlers via deployment_status_resource, devices_list_resource, get_deployment_status, lifespan, main with source-backed behavior in `fmc_mcp.server`.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "concurrency",
+        "configuration",
+        "pagination",
+        "rate_limit"
+      ],
+      "componentId": "comp-config",
+      "keySymbols_sample": [
+        "FMCSettings",
+        "get_settings",
+        "log_config"
+      ],
+      "priorityRank": 4,
+      "responsibilitySummary": "Coordinate concurrency back-pressure, configuration/secrets, pagination, rate limiting via FMCSettings, get_settings, log_config with source-backed behavior in `fmc_mcp.config`.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "concurrency",
+        "injection",
+        "read_only",
+        "tool_handlers"
+      ],
+      "componentId": "comp-tools",
+      "keySymbols_sample": [
+        "check_deployment_status",
+        "search_object_by_ip"
+      ],
+      "priorityRank": 5,
+      "responsibilitySummary": "Coordinate concurrency back-pressure, client injection, read-only external operations, tool handlers via check_deployment_status, search_object_by_ip with source-backed behavior in `fmc_mcp.tools`.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "injection",
+        "read_only",
+        "resource_handlers",
+        "tool_handlers"
+      ],
+      "componentId": "comp-resources",
+      "keySymbols_sample": [
+        "get_client",
+        "get_deployment_status",
+        "get_system_info",
+        "list_devices",
+        "list_network_objects",
+        "set_client"
+      ],
+      "priorityRank": 6,
+      "responsibilitySummary": "Coordinate client injection, read-only external operations, resource handlers, tool handlers via get_client, get_deployment_status, get_system_info, list_devices, list_network_objects with source-backed behavior in `fmc_mcp.resources`.",
+      "riskLevel": "high"
+    },
+    {
+      "behavioralTags": [
+        "entrypoint"
+      ],
+      "componentId": "comp-entry",
+      "keySymbols_sample": [],
+      "priorityRank": 7,
+      "responsibilitySummary": "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp`.",
+      "riskLevel": "low"
+    }
+  ],
+  "counts": {
+    "componentProfiles": 7,
+    "externalSurfaces": 30,
+    "openQuestions": 5,
+    "priorityBacklog": 5,
+    "productInvariants": 6,
+    "qualityGates": 4,
+    "raw_components": 7,
+    "raw_contracts": 4,
+    "raw_observable_checks": 6,
+    "raw_verification_gaps": 2,
+    "runtimeContracts": 43
+  },
+  "exit_code": "0",
+  "expectation_checks": {
+    "client_mentions_auth": true,
+    "client_mentions_pagination": true,
+    "client_mentions_rate_limit": true,
+    "client_ranked_ahead_of_entry": true,
+    "gate_passed_zero_violations": true,
+    "invariant_concurrency": true,
+    "invariant_rate_limit": true,
+    "invariant_read_only": true,
+    "invariant_secret_safety": true,
+    "iteration_readiness_present": true,
+    "project_model_v1_primary": true,
+    "provider_served_model_matches_requested": true,
+    "quality_mypy_or_pyright": true,
+    "quality_pytest": true,
+    "quality_ruff": true,
+    "runtime_constructs_server_client": true,
+    "runtime_delegates_server_tools": true,
+    "runtime_injects_server_resources": true,
+    "runtime_modes_surfaced": true,
+    "runtime_registers_resource_server": true,
+    "runtime_registers_tool_server": true,
+    "surface_console_script": true,
+    "surface_deployment_status": true,
+    "surface_devices_list": true,
+    "surface_fastmcp": true,
+    "surface_httpx": true,
+    "surface_objects_network": true,
+    "surface_system_info": true
+  },
+  "gate": {
+    "passed": true,
+    "violations": []
+  },
+  "open_questions": [
+    {
+      "id": "question.client-boundary",
+      "question": "Should the stateful client remain one component, or should auth, retry, rate limiting, pagination, and endpoint wrappers become helpers/subcomponents?",
+      "trigger": "high-risk client profile has multiple behavioral tags"
+    },
+    {
+      "id": "question.live-test-boundary",
+      "question": "Is `test_live.py` intentionally manual-only, or should it become a credential-gated live smoke profile?",
+      "trigger": "live test file exists without a safe default live acceptance gate"
+    },
+    {
+      "id": "question.quality-default",
+      "question": "Should default acceptance become pytest plus configured lint/type checks, or should lint/typecheck remain advisory?",
+      "trigger": "configured lint/typecheck commands detected"
+    },
+    {
+      "id": "question.server-tools-indirection",
+      "question": "Is the server wrapper around tools-module functions intentional registration indirection, or should it be consolidated?",
+      "trigger": "server-to-tools delegation detected"
+    },
+    {
+      "id": "question.test-connection-name",
+      "question": "Should production `test_connection` keep its `test_` prefix, or be renamed/documented to avoid tool and human confusion?",
+      "trigger": "production source exposes a `test_connection` symbol"
+    }
+  ],
+  "priority_backlog": [
+    {
+      "componentIds": [
+        "comp-client",
+        "comp-config",
+        "comp-resources",
+        "comp-server",
+        "comp-tests",
+        "comp-tools"
+      ],
+      "id": "backlog.verify-read-only-external-behavior",
+      "rank": 1,
+      "rationale": "Add or run checks proving domain FMC operations stay read-only while auth token POST remains allowed.",
+      "suggestedVerification": "Static scan or mocked client test for HTTP methods.",
+      "title": "Verify read-only external behavior"
+    },
+    {
+      "componentIds": [
+        "comp-client",
+        "comp-entry",
+        "comp-resources",
+        "comp-server",
+        "comp-tests",
+        "comp-tools"
+      ],
+      "id": "backlog.verify-server-resources-tools-wiring",
+      "rank": 2,
+      "rationale": "Exercise runtime construction, client injection, and delegation through resource/tool handlers.",
+      "suggestedVerification": "Mocked server lifespan/resource/tool wiring test.",
+      "title": "Verify server/resources/tools wiring"
+    },
+    {
+      "componentIds": [
+        "comp-client",
+        "comp-config",
+        "comp-entry",
+        "comp-resources",
+        "comp-server",
+        "comp-tests",
+        "comp-tools"
+      ],
+      "id": "backlog.run-configured-lint-and-type-checks",
+      "rank": 3,
+      "rationale": "Configured quality commands are now visible and should be part of improvement verification.",
+      "suggestedVerification": "Run ruff and mypy/pyright commands reported in qualityGates, respecting advisory flags.",
+      "title": "Run configured lint and type checks"
+    },
+    {
+      "componentIds": [
+        "comp-client"
+      ],
+      "id": "backlog.document-or-split-high-risk-client-responsibilities",
+      "rank": 4,
+      "rationale": "High-risk stateful client code combines auth, retry, rate limiting, pagination, and endpoint wrappers.",
+      "suggestedVerification": "Targeted unit tests for each client sub-responsibility.",
+      "title": "Document or split high-risk client responsibilities"
+    },
+    {
+      "componentIds": [
+        "comp-client"
+      ],
+      "id": "backlog.review-production-test-connection-naming",
+      "rank": 5,
+      "rationale": "A production method with a `test_` prefix can confuse humans and tools even when pytest collection is currently scoped.",
+      "suggestedVerification": "Decide whether to rename or document the method.",
+      "title": "Review production `test_connection` naming"
+    }
+  ],
+  "product_invariants": [
+    {
+      "category": "concurrency_limit",
+      "description": "Concurrent external FMC requests are bounded by source-modeled back-pressure. Source settings define 10 concurrent connections.",
+      "enforcement": "modeled",
+      "id": "invariant.concurrency-limit"
+    },
+    {
+      "category": "live_test_boundary",
+      "description": "Credentialed live tests are present or implied and must remain outside default local acceptance unless explicitly enabled.",
+      "enforcement": "gap",
+      "id": "invariant.live-test-boundary"
+    },
+    {
+      "category": "public_mcp_contract",
+      "description": "Public MCP resources and tools are externally meaningful contract surfaces.",
+      "enforcement": "modeled",
+      "id": "invariant.public-mcp-contract"
+    },
+    {
+      "category": "rate_limit",
+      "description": "Rate limiting behavior is a product invariant for external FMC API access. Source settings define 120 requests per minute.",
+      "enforcement": "modeled",
+      "id": "invariant.rate-limit"
+    },
+    {
+      "category": "read_only_external_operations",
+      "description": "FMC domain operations are modeled as read-oriented external calls; auth-token POSTs are separate from domain mutation behavior.",
+      "enforcement": "modeled",
+      "id": "invariant.read-only-external-operations"
+    },
+    {
+      "category": "secret_safety",
+      "description": "Secret-bearing settings and credentials must remain redacted and must not be logged or exposed in model artifacts.",
+      "enforcement": "modeled",
+      "id": "invariant.secret-safety"
+    }
+  ],
+  "provider_metadata": {
+    "api_key_source": "environment",
+    "api_mode": "openai_chat_completions",
+    "base_url": "https://api.x.ai/v1",
+    "content_hash": "60f19cacd40168ef578d404c036777d3021e6ffb3203f30115274fc35f609f72",
+    "finish_reason": "stop",
+    "model": "grok-4.20-0309-non-reasoning",
+    "prompt_hash": "9fbe11f332489604345f046cc870e9fd5720af44f59df19ef8c90a0ced08de7b",
+    "provider": "xai",
+    "requested_model": "grok-4.20-0309-non-reasoning",
+    "requested_model_source": "argument",
+    "served_model_matches_requested": true,
+    "status_code": 200,
+    "usage": {
+      "completion_tokens": 3820,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": 0,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": 0
+      },
+      "cost_in_usd_ticks": 189303000,
+      "num_sources_used": 0,
+      "prompt_tokens": 7558,
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cached_tokens": 64,
+        "image_tokens": 0,
+        "text_tokens": 7558
+      },
+      "total_tokens": 11378
+    }
+  },
+  "quality_gates": [
+    {
+      "command": "pyright src/fmc_mcp",
+      "id": "check-typing",
+      "includedInAcceptance": false,
+      "mode": "typecheck",
+      "provenanceRefs": [
+        "prov:aeec7a1dae758e4e"
+      ],
+      "safeToRunByDefault": true,
+      "source": "detected_pyproject"
+    },
+    {
+      "command": "uv run --extra dev mypy src/fmc_mcp",
+      "id": "quality.mypy",
+      "includedInAcceptance": false,
+      "mode": "typecheck",
+      "provenanceRefs": [
+        "prov:e3613801121c5bb2"
+      ],
+      "safeToRunByDefault": false,
+      "source": "detected_pyproject_advisory"
+    },
+    {
+      "command": "uv run --extra dev python -m pytest -q",
+      "id": "quality.pytest",
+      "includedInAcceptance": true,
+      "mode": "test",
+      "provenanceRefs": [
+        "prov:de169aac696fc2e0"
+      ],
+      "safeToRunByDefault": true,
+      "source": "snapshot_observable_check"
+    },
+    {
+      "command": "uv run --extra dev ruff check .",
+      "id": "quality.ruff",
+      "includedInAcceptance": true,
+      "mode": "lint",
+      "provenanceRefs": [
+        "prov:e3613801121c5bb2"
+      ],
+      "safeToRunByDefault": true,
+      "source": "detected_pyproject"
+    }
+  ],
+  "run_root": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z",
+  "runtime_contract_kind_counts": {
+    "constructs": 2,
+    "delegates_to": 4,
+    "exposes_runtime_mode": 1,
+    "imports": 31,
+    "injects": 2,
+    "registers_resource": 2,
+    "registers_tool": 1
+  },
+  "snapshot_dir": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b",
+  "snapshot_id": "snapshot-ddb951deca8d5c7b",
+  "target_dirty": false,
+  "target_head": "25f445806d5221f21d7ac675799db5c30499f1b7"
+}
