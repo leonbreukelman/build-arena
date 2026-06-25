@@ -1,14 +1,18 @@
 # Dream Proposer Failure Modes — 2026-06-23
 
+> **Correction (2026-06-25):** the mandatory mid-run operator review gate is removed.
+> The lane now emits advisory experiment proposals autonomously from the auto-generated
+> capability map and labels unreviewed-map provenance in the output.
+
 ## Why this page exists
 
-The dream proposer is allowed to invent advisory architecture hypotheses, so its failure mode is not merely bad code. The dangerous failure is laundering speculation as grounded deterministic work. Future agents must preserve the lane boundary and the kill gate.
+The dream proposer is allowed to invent advisory architecture hypotheses, so its failure mode is not merely bad code. The dangerous failure is laundering speculation as grounded deterministic work. Future agents must preserve the lane boundary (advisory-only; no target mutation; never `proposal.md`) and the **mechanical premise gate**. The lane emits autonomously: there is no mid-run human review gate.
 
 ## New lane rules
 
-1. `dream.md` is advisory only. It never authorizes mutation, promotion, or a patch.
-2. `dream_emit` must not write `proposal.md`. A dream is not a proposal candidate.
-3. `capability-map/v0` is operator-reviewed intent. `review.reviewed: true` is required before generation/research/gate can produce an emitted dream.
+1. `experiment.md` is advisory only. It never authorizes mutation, promotion, or a patch.
+2. `dream_emit` must not write `proposal.md`. A dream-lane experiment is not a proposal candidate.
+3. `capability-map/v0` is auto-generated interpretive intent. It is **used as-is**; `review.reviewed` is an honest provenance label, never a precondition for generation/research/gate/emit.
 4. `dream_gate` is the trust boundary. It kills dreams whose cited anchors, target capabilities, content hashes, mode, or validation recipe do not resolve.
 5. `dream_gate` stamps gate provenance, and `dream_emit` refuses artifacts lacking that marker. Do not let emit trust a model-authored `premiseConfidence: all_resolved` field by itself.
 6. `conclusionConfidence` is soft and capped. It is not a pre-emission proof of benefit.
@@ -31,13 +35,13 @@ Guard: keep the novelty-floor test. The generator path must be able to produce a
 
 Problem: the capability lift guesses intent incorrectly, and every dream optimizes that wrong map.
 
-Guard: the capability map is never truth until operator review. The gate checks coherence given the reviewed map; it does not retire the review gate and does not prove the map is semantically right.
+Guard: the capability map is never truth until **validated downstream** (attempt → measure → verdict). The gate checks coherence given the map; judgment of whether the reading is right happens at the output or in evaluation, **not** via a mandatory mid-run human review. The emitted document labels an unreviewed map so the reader knows to judge it.
 
 ### F-false: confident nonsense from fabricated premises
 
 Problem: a dream cites an anchor that does not exist or whose content changed.
 
-Guard: maintain the planted-fabrication test. A fabricated `citedEvidence.anchorId` must be killed by `dream_gate`, with no `dream.md` written by the orchestrator for that survivor set.
+Guard: maintain the planted-fabrication test. A fabricated `citedEvidence.anchorId` must be killed by `dream_gate`, with no `experiment.md` written by the orchestrator for that survivor set.
 
 Defense-in-depth: `dream_gate` must reject capability maps whose `sourceModel.graphHash` does not match the Project Model v1 graph hash, and `dream_emit` must require `provenance.gatedBy: arena.dream_gate` plus the gate prompt hash marker.
 

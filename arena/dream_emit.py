@@ -1,4 +1,4 @@
-"""Render gated ``dream/v0`` advisory hypotheses to ``dream.md``.
+"""Render gated ``dream/v0`` advisory hypotheses to ``experiment.md``.
 
 Emit is deterministic and faithful. It does not call a model, does not re-rank via
 soft judgment, and refuses any input containing unresolved/partial dreams. The
@@ -79,10 +79,23 @@ def select_renderable_dreams(document: dict[str, Any]) -> list[dict[str, Any]]:
 def render_dream_markdown(document: dict[str, Any]) -> str:
     require_gate_marker(document)
     dreams = select_renderable_dreams(document)
+    cap_map = document.get("capabilityMap")
+    reviewed = bool(cap_map.get("reviewed")) if isinstance(cap_map, dict) else False
+    provenance_line = (
+        "Premised on an operator-reviewed capability map."
+        if reviewed
+        else (
+            "Premised on an auto-generated, operator-unreviewed capability map. "
+            "Judge these at output or in downstream evaluation; the in-lane gate proves "
+            "only that cited premises resolve, not that the capability reading is correct."
+        )
+    )
     lines: list[str] = [
-        "# Dream Proposals",
+        "# Experiment Proposals",
         "",
-        "Advisory tier-3 hypotheses only. These are not deterministic changes and do not authorize mutation.",
+        "Advisory tier-3 experiment proposals. These are not deterministic changes and do not authorize mutation.",
+        "",
+        provenance_line,
         "",
     ]
     for index, dream in enumerate(dreams, start=1):
@@ -92,10 +105,10 @@ def render_dream_markdown(document: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def emit_dream(dream_path: str | Path, output_path: str | Path = "dream.md") -> Path:
+def emit_dream(dream_path: str | Path, output_path: str | Path = "experiment.md") -> Path:
     output = Path(output_path)
     if output.name.lower() == "proposal.md":
-        raise DreamEmitError("dream_emit refuses to write proposal.md; use dream.md for the advisory lane")
+        raise DreamEmitError("dream_emit refuses to write proposal.md; use experiment.md for the advisory lane")
     document = load_gated_dreams(dream_path)
     markdown = render_dream_markdown(document)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -182,7 +195,7 @@ def _footer(document: dict[str, Any]) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m arena.dream_emit")
     parser.add_argument("--dreams", required=True)
-    parser.add_argument("--output", default="dream.md")
+    parser.add_argument("--output", default="experiment.md")
     args = parser.parse_args(argv)
     try:
         output = emit_dream(args.dreams, args.output)

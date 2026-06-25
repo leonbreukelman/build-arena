@@ -46,8 +46,6 @@ def research_dreams(
     project_model = _load_json_object(model_path)
     capability_map = _load_json_object(cap_path)
     raw_doc = _load_json_object(raw_path)
-    if capability_map.get("review", {}).get("reviewed") is not True:
-        raise DreamResearchError("capability map must be operator-reviewed before dream research")
 
     prompt = _research_prompt(project_model, capability_map, raw_doc)
     if model is None:
@@ -83,7 +81,7 @@ def research_dreams(
         "schemaVersion": SCHEMA_VERSION,
         "projectId": _project_id(project_model, capability_map, raw_doc),
         "sourceModel": {"projectModelV1Path": str(model_path), "graphHash": _graph_hash(project_model)},
-        "capabilityMap": {"path": str(cap_path), "reviewed": True},
+        "capabilityMap": {"path": str(cap_path), "reviewed": capability_map.get("review", {}).get("reviewed") is True},
         "dreams": dreams,
         "provenance": _provenance(raw_doc, prompt, model_id, model_path, cap_path, raw_path),
     }

@@ -57,6 +57,27 @@ A deterministic intake → proposal → loop pipeline is implemented downstream 
 
 Status: the proposal component is **no longer documentation-only** — it produces and verifies real code-quality changes alongside documentation, ranks them cross-domain, and can run them in a closed dry-run loop. Promotion (baseline mutation) remains operator-gated and fail-closed; the default loop path is dry-run, deterministic, and offline (no live model). The pre-live readiness register remains the authority on broad live autonomy.
 
+## Experiment proposer lane (advisory; autonomous emit; no mid-run human gate)
+
+The tier-3 experiment lane (`arena.dream_run`; modules currently named `arena.dream_*`
+pending a rename) generates advisory experiment proposals autonomously and writes
+`experiment.md`. Hard constraints:
+
+1. No human is a mid-run gate. The capability map is auto-generated and used as-is; there
+   is no `review.reviewed` precondition for generation, research, the gate, or emit.
+   `review.reviewed` is an honest provenance label only, never a blocker.
+2. The lane is advisory-only: it never applies, promotes, or mutates a target repo, and
+   `dream_emit` never writes `proposal.md`.
+3. The only in-lane kill gate is `arena.dream_gate`'s mechanical premise resolution
+   (anchors/contentHash/mode/recipe resolve; graphHash matches). It judges coherence, not
+   usefulness, and not human-review state.
+4. Trust that a proposal is worth acting on comes from the mechanical gate plus the
+   downstream evaluation loop (attempt → measure the declared observable → verdict), not
+   from a human reviewing the capability map. Judgment happens at the output or in
+   evaluation, never as a mandatory mid-run stop.
+5. Do not reintroduce a mid-run human review gate in this lane. If a future change needs
+   operator review, it must be opt-in (default off) and must not block the default run.
+
 ## Commands
 
 - `make generated` — regenerate LinkML artifacts.

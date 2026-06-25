@@ -122,15 +122,17 @@ def test_generate_writes_output_file(tmp_path: Path) -> None:
     assert json.loads(output.read_text(encoding="utf-8"))["dreams"][0]["id"] == "dream.carrier"
 
 
-def test_generate_requires_reviewed_capability_map(tmp_path: Path) -> None:
+def test_generate_runs_on_unreviewed_map(tmp_path: Path) -> None:
     model_path, cap_path, scorecard, capability_id = _write_inputs(tmp_path, reviewed=False)
-    with pytest.raises(DreamGenerateError, match="operator-reviewed"):
-        generate_dreams(
-            project_model_path=model_path,
-            capability_map_path=cap_path,
-            scorecard_path=scorecard,
-            model=_fake_model(capability_id),
-        )
+    document = generate_dreams(
+        project_model_path=model_path,
+        capability_map_path=cap_path,
+        scorecard_path=scorecard,
+        model=_fake_model(capability_id),
+    )
+
+    assert document["capabilityMap"]["reviewed"] is False
+    assert {dream["mode"] for dream in document["dreams"]} == {"carrier_swap", "function_remap"}
 
 
 def test_generate_drops_ungrounded_model_items_and_fails_if_none_remain(tmp_path: Path) -> None:
