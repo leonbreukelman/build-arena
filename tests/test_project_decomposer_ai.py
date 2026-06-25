@@ -4,7 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
-from arena.project_decomposer_ai import build_project_model_snapshot
+from arena.project_decomposer_ai import _decomposer_prompt, build_project_model_snapshot
 from arena.project_graph import build_project_graph, graph_to_dict
 from arena.project_model_gate import close_import_contracts_for_gate, run_project_model_gate
 from arena.project_snapshot import Component, ProjectModelSnapshot, snapshot_to_dict
@@ -175,6 +175,132 @@ def test_recorded_model_output_uses_same_ingestion_path_and_bad_bucket_is_reject
     rejected = build_project_model_snapshot(repo, artifacts, project_id="api-project", llm_mode="recorded", model_output_path=bad_path, overwrite=True)
     assert rejected.gate_report.passed is False
     assert any(v.gate == "component_measurability" for v in rejected.gate_report.violations)
+
+
+def test_recorded_model_output_repairs_universal_concern_category_from_exact_id(
+    tmp_path: Path,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo(repo)
+    artifacts = tmp_path / "artifacts"
+    fixture = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="api-project",
+        llm_mode="fixture",
+        overwrite=True,
+    )
+    raw = json.loads(
+        (fixture.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    thematic_categories = {
+        "anti_fabrication": "integrity",
+        "determinism": "reliability",
+        "provenance": "traceability",
+        "no_live_paid_api_acceptance": "compliance",
+    }
+    for concern in raw["cross_cutting_concerns"]:
+        canonical = concern["category"]
+        if canonical in thematic_categories:
+            concern["id"] = canonical
+            concern["category"] = thematic_categories[canonical]
+    raw["model_id"] = "recorded-universal-concern-id-category-drift"
+    recorded_path = tmp_path / "recorded-concern-drift.json"
+    recorded_path.write_text(json.dumps(raw, indent=2), encoding="utf-8")
+
+    result = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="api-project",
+        llm_mode="recorded",
+        model_output_path=recorded_path,
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is True
+    categories = {concern.category for concern in result.snapshot.cross_cutting_concerns}
+    assert set(thematic_categories) <= categories
+    assert categories.isdisjoint(thematic_categories.values())
+    persisted_raw = json.loads(
+        (result.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    persisted_themes = {
+        concern["category"]
+        for concern in persisted_raw["cross_cutting_concerns"]
+        if concern["id"] in thematic_categories
+    }
+    assert persisted_themes == set(thematic_categories.values())
+
+
+def test_recorded_model_output_does_not_repair_unknown_concern_category(
+    tmp_path: Path,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo(repo)
+    artifacts = tmp_path / "artifacts"
+    fixture = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="api-project",
+        llm_mode="fixture",
+        overwrite=True,
+    )
+    raw = json.loads(
+        (fixture.snapshot_dir / "model-outputs" / "decomposer.raw.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    for concern in raw["cross_cutting_concerns"]:
+        if concern["category"] == "anti_fabrication":
+            concern["id"] = "integrity-envelope"
+            concern["category"] = "integrity"
+            break
+    raw["model_id"] = "recorded-unknown-concern-category"
+    recorded_path = tmp_path / "recorded-unknown-concern.json"
+    recorded_path.write_text(json.dumps(raw, indent=2), encoding="utf-8")
+
+    result = build_project_model_snapshot(
+        repo,
+        artifacts,
+        project_id="api-project",
+        llm_mode="recorded",
+        model_output_path=recorded_path,
+        overwrite=True,
+    )
+
+    assert result.gate_report.passed is False
+    assert any(
+        violation.gate == "cross_cutting_concerns"
+        and "Missing universal concerns" in violation.message
+        and "anti_fabrication" in violation.message
+        for violation in result.gate_report.violations
+    )
+
+
+def test_live_decomposer_prompt_makes_universal_concern_categories_non_negotiable(
+    tmp_path: Path,
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _write_repo(repo)
+    graph = build_project_graph(repo)
+
+    prompt = _decomposer_prompt(
+        project_id="api-project",
+        goal="decompose this repository into responsibility-bearing components",
+        non_goals=["do not treat file buckets as final components"],
+        graph=graph,
+    )
+
+    assert "category MUST be exactly one of" in prompt
+    assert '"category": "anti_fabrication"' in prompt
+    assert "Do not use thematic labels such as integrity" in prompt
 
 
 def test_fixture_decomposer_handles_javascript_import_contracts(tmp_path: Path) -> None:

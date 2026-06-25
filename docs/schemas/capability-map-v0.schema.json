@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arena.local/schemas/capability-map-v0.schema.json",
+  "title": "Capability Map v0",
+  "description": "Agnostic function/capability overlay over a Project Model v1 structural model. Interpretive, advisory, operator-reviewed. Not produced by the deterministic decomposer.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "sourceModel", "capabilities", "review", "provenance"],
+  "properties": {
+    "schemaVersion": { "const": "capability-map/v0" },
+    "projectId": { "type": "string", "minLength": 1 },
+    "sourceModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectModelV1Path", "graphHash"],
+      "properties": {
+        "projectModelV1Path": { "type": "string", "minLength": 1 },
+        "graphHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "capability", "realizedByComponentIds", "currentCarrier", "provenanceRefs"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "capability": {
+            "type": "string", "minLength": 1,
+            "description": "Carrier-agnostic role, e.g. 'durable analytical storage', 'event-triggered worker', 'cross-domain ranking'."
+          },
+          "realizedByComponentIds": {
+            "type": "array", "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "description": "Each MUST equal a snapshot.components[].id in the source Project Model v1."
+          },
+          "currentCarrier": {
+            "type": "string", "minLength": 1,
+            "description": "What concretely fills the role today, e.g. 'AST walk in arena.decomposer', 'ruff subprocess'."
+          },
+          "supportingNodeIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "behavioralTags": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "provenanceRefs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewed"],
+      "properties": {
+        "reviewed": { "type": "boolean" },
+        "reviewedBy": { "type": ["string", "null"] },
+        "reviewedAtUtc": { "type": ["string", "null"] },
+        "editedFromGenerated": { "type": "boolean" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["generatedBy", "promptHash", "modelId", "inputHashes"],
+      "properties": {
+        "generatedBy": { "type": "string", "minLength": 1 },
+        "promptHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "modelId": { "type": "string", "minLength": 1 },
+        "inputHashes": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+      }
+    }
+  }
+}

@@ -14,6 +14,7 @@ Future implementation should make this more than prose: the proposal registry, l
 
 - `2026-06-15-fmc-mcp-production-pass-lessons.md` — safe failed live run, full-autonomy deviations, and proposal-registry lesson.
 - `2026-06-15-proposal-registry-lineage-and-repair-loop.md` — implemented registry/lineage, candidate-skip observability, repair retry, and multi-target proposal mechanics.
+- `2026-06-23-dream-proposer-failure-modes.md` — tier-3 dream proposer lane boundaries, capability-map review gate, premise-kill gate, novelty floor, and acceptance-rate failure modes.
 
 ## Minimum wiki sections to grow
 

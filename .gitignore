@@ -9,6 +9,11 @@ coverage.json
 htmlcov/
 .venv/
 
+# Local secrets
+.env
+.env.*
+!.env.example
+
 # Arena runtime state (source fixtures under .arena/calibration stay tracked)
 .arena/arena.lock
 .arena/runs/

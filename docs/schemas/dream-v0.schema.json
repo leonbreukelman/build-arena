@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arena.local/schemas/dream-v0.schema.json",
+  "title": "Dream Proposals v0",
+  "description": "Advisory architectural hypotheses (tier 3). Speculative invention grounded in cited current-state evidence; never a deterministic change.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "sourceModel", "capabilityMap", "dreams", "provenance"],
+  "properties": {
+    "schemaVersion": { "const": "dream/v0" },
+    "projectId": { "type": "string", "minLength": 1 },
+    "sourceModel": {
+      "type": "object", "additionalProperties": false,
+      "required": ["projectModelV1Path", "graphHash"],
+      "properties": {
+        "projectModelV1Path": { "type": "string", "minLength": 1 },
+        "graphHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "capabilityMap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "reviewed"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "reviewed": { "const": true }
+      }
+    },
+    "dreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "mode", "idea", "targetCapabilityIds", "citedEvidence",
+          "rationale", "premiseConfidence", "conclusionConfidence", "validationRecipe"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "mode": {
+            "enum": ["carrier_swap", "function_remap"],
+            "description": "carrier_swap = same capability, different realization (cheaper to ground; may map to a known near_neighbor_alternative). function_remap = redraw the capability map (merge/split roles; wilder; harder to ground)."
+          },
+          "idea": { "type": "string", "minLength": 1, "description": "The hypothesis as 'consider X'." },
+          "targetCapabilityIds": {
+            "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 },
+            "description": "Each MUST equal a capabilities[].id in the reviewed capability map."
+          },
+          "citedEvidence": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["anchorKind", "anchorId", "contentHash"],
+              "properties": {
+                "anchorKind": { "enum": ["graphNode", "graphEdge", "component", "contract", "capability", "verificationGap", "nearNeighborAlternative"] },
+                "anchorId": { "type": "string", "minLength": 1, "description": "MUST resolve to a real id of the named kind in the source model / capability map." },
+                "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                "claim": { "type": "string", "minLength": 1, "description": "The current-state fact this anchor is asserted to support." }
+              }
+            }
+          },
+          "rationale": {
+            "type": "string", "minLength": 1,
+            "description": "Why the idea follows from the cited evidence. MUST be hard-to-vary: it should specifically support THIS idea over the capability's near-neighbor alternatives, not justify any change."
+          },
+          "premiseConfidence": {
+            "enum": ["all_resolved", "partial", "unresolved"],
+            "description": "MECHANICAL. Set by the gate: all_resolved iff every citedEvidence anchor resolves. dream_emit renders only all_resolved."
+          },
+          "conclusionConfidence": {
+            "type": "object", "additionalProperties": false,
+            "required": ["band", "value"],
+            "properties": {
+              "band": { "enum": ["low", "medium"], "description": "SOFT and CAPPED. 'high' is forbidden pre-emission: benefit is structurally unverifiable before the repo agent tries it." },
+              "value": { "type": "number", "minimum": 0, "maximum": 0.7 }
+            }
+          },
+          "validationRecipe": {
+            "type": "object", "additionalProperties": false,
+            "required": ["action", "observable", "expectedDirection"],
+            "properties": {
+              "action": { "type": "string", "minLength": 1, "description": "What the repo agent should TRY, e.g. 'replace the ruff subprocess carrier with a libcst pass behind the same gate interface'." },
+              "observable": { "type": "string", "minLength": 1, "description": "What to MEASURE, e.g. 'import-cycle count', 'gate wall-clock', 'lines of glue in arena.proposal_run'." },
+              "expectedDirection": { "enum": ["decrease", "increase", "unchanged", "tests_pass"] }
+            }
+          },
+          "neighborAlternativeId": { "type": ["string", "null"], "description": "For carrier_swap: the snapshot.near_neighbor_alternatives[].id this swap corresponds to, if any. Raises rank (cheaper to validate)." }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generatedBy", "researchedBy", "promptHashes", "modelId", "inputHashes"],
+      "properties": {
+        "generatedBy": { "type": "string", "minLength": 1 },
+        "researchedBy": { "type": "string", "minLength": 1 },
+        "gatedBy": { "type": "string", "minLength": 1 },
+        "promptHashes": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+        "modelId": { "type": "string", "minLength": 1 },
+        "inputHashes": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+      }
+    }
+  }
+}

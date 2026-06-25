@@ -1,0 +1,747 @@
+{
+  "new_high_violation_count": 0,
+  "new_violations": [],
+  "old_high_violation_count": 3,
+  "removed_violations": [
+    {
+      "gate": "cross_cutting_concerns",
+      "message": "Missing universal concerns: anti_fabrication, determinism, no_live_paid_api_acceptance, provenance."
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "message": "Universal concern anti_fabrication does not cover components: comp:client, comp:config, comp:entry, comp:resources, comp:server, comp:tools."
+    },
+    {
+      "gate": "cross_cutting_concerns",
+      "message": "Universal concern provenance does not cover components: comp:client, comp:config, comp:entry, comp:resources, comp:server, comp:tools."
+    }
+  ],
+  "runs": [
+    {
+      "counts": {
+        "component_profiles": 7,
+        "external_surfaces": 30,
+        "open_questions": 5,
+        "priority_backlog": 5,
+        "product_invariants": 6,
+        "quality_gates": 4,
+        "raw_components": 7,
+        "raw_contracts": 4,
+        "raw_cross_cutting_concerns": 6,
+        "raw_observable_checks": 6,
+        "raw_verification_gaps": 2,
+        "runtime_contracts": 43,
+        "snapshot_components": 7,
+        "snapshot_contracts": 31
+      },
+      "gate_passed": true,
+      "gate_violations": [],
+      "intake_artifact_check": {
+        "intake_files": [],
+        "proposal_files": [],
+        "scorecard_files": []
+      },
+      "label": "previous_non_reasoning",
+      "provider": "xai",
+      "ranks": [
+        [
+          1,
+          "comp-tests",
+          "high"
+        ],
+        [
+          2,
+          "comp-client",
+          "high"
+        ],
+        [
+          3,
+          "comp-server",
+          "high"
+        ],
+        [
+          4,
+          "comp-config",
+          "high"
+        ],
+        [
+          5,
+          "comp-tools",
+          "high"
+        ],
+        [
+          6,
+          "comp-resources",
+          "high"
+        ],
+        [
+          7,
+          "comp-entry",
+          "low"
+        ]
+      ],
+      "raw_concerns": [
+        {
+          "category": "anti_fabrication",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-anti-fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "determinism",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-determinism",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "provenance",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-provenance",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "no_live_paid_api_acceptance",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-no-live-paid",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "protected_surface_integrity",
+          "component_ids": [
+            "comp-client",
+            "comp-server"
+          ],
+          "contract_ids": [],
+          "id": "ccc-protected-surface",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "generated_artifact_integrity",
+          "component_ids": [
+            "comp-server",
+            "comp-entry"
+          ],
+          "contract_ids": [],
+          "id": "ccc-generated-integrity",
+          "provenance_refs": [
+            "prov:d10dbb159e6fb524"
+          ]
+        }
+      ],
+      "reasoning_effort": null,
+      "requested_model": "grok-4.20-0309-non-reasoning",
+      "served_model": null,
+      "snapshot_concerns": [
+        {
+          "category": "anti_fabrication",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-anti-fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "determinism",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-determinism",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "provenance",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-provenance",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "no_live_paid_api_acceptance",
+          "component_ids": [
+            "comp-config",
+            "comp-client",
+            "comp-resources",
+            "comp-server",
+            "comp-tools",
+            "comp-entry",
+            "comp-tests"
+          ],
+          "contract_ids": [],
+          "id": "ccc-no-live-paid",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "protected_surface_integrity",
+          "component_ids": [
+            "comp-client",
+            "comp-server"
+          ],
+          "contract_ids": [],
+          "id": "ccc-protected-surface",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "generated_artifact_integrity",
+          "component_ids": [
+            "comp-server",
+            "comp-entry"
+          ],
+          "contract_ids": [],
+          "id": "ccc-generated-integrity",
+          "provenance_refs": [
+            "prov:d10dbb159e6fb524"
+          ]
+        }
+      ],
+      "snapshot_dir": "<repo>/.arena/runs/fmc-mcp-decomposition-20260617T195758Z/snapshot-ddb951deca8d5c7b",
+      "snapshot_id": "snapshot-ddb951deca8d5c7b",
+      "usage": {
+        "completion_tokens": 3820,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "cost_in_usd_ticks": 189303000,
+        "num_sources_used": 0,
+        "prompt_tokens": 7558,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 64,
+          "image_tokens": 0,
+          "text_tokens": 7558
+        },
+        "total_tokens": 11378
+      }
+    },
+    {
+      "counts": {
+        "component_profiles": 6,
+        "external_surfaces": 28,
+        "open_questions": 5,
+        "priority_backlog": 5,
+        "product_invariants": 6,
+        "quality_gates": 3,
+        "raw_components": 6,
+        "raw_contracts": 0,
+        "raw_cross_cutting_concerns": 4,
+        "raw_observable_checks": 1,
+        "raw_verification_gaps": 1,
+        "runtime_contracts": 23,
+        "snapshot_components": 6,
+        "snapshot_contracts": 16
+      },
+      "gate_passed": false,
+      "gate_violations": [
+        {
+          "gate": "cross_cutting_concerns",
+          "location": "cross_cutting_concerns",
+          "message": "Missing universal concerns: anti_fabrication, determinism, no_live_paid_api_acceptance, provenance.",
+          "severity": "error"
+        },
+        {
+          "gate": "cross_cutting_concerns",
+          "location": "cross_cutting_concerns",
+          "message": "Universal concern anti_fabrication does not cover components: comp:client, comp:config, comp:entry, comp:resources, comp:server, comp:tools.",
+          "severity": "error"
+        },
+        {
+          "gate": "cross_cutting_concerns",
+          "location": "cross_cutting_concerns",
+          "message": "Universal concern provenance does not cover components: comp:client, comp:config, comp:entry, comp:resources, comp:server, comp:tools.",
+          "severity": "error"
+        }
+      ],
+      "intake_artifact_check": {
+        "intake_files": [],
+        "proposal_files": [],
+        "scorecard_files": []
+      },
+      "label": "previous_high_reasoning_fail",
+      "provider": "xai",
+      "ranks": [
+        [
+          1,
+          "comp:client",
+          "high"
+        ],
+        [
+          2,
+          "comp:server",
+          "high"
+        ],
+        [
+          3,
+          "comp:config",
+          "high"
+        ],
+        [
+          4,
+          "comp:tools",
+          "high"
+        ],
+        [
+          5,
+          "comp:resources",
+          "high"
+        ],
+        [
+          6,
+          "comp:entry",
+          "low"
+        ]
+      ],
+      "raw_concerns": [
+        {
+          "category": "integrity",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "anti_fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "reliability",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "determinism",
+          "provenance_refs": [
+            "prov:b380701c2879efce"
+          ]
+        },
+        {
+          "category": "traceability",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "provenance",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "compliance",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "no_live_paid_api_acceptance",
+          "provenance_refs": [
+            "prov:4e62ae79d2c07a9c"
+          ]
+        }
+      ],
+      "reasoning_effort": "high",
+      "requested_model": "grok-4.3",
+      "served_model": null,
+      "snapshot_concerns": [
+        {
+          "category": "integrity",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "anti_fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "reliability",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "determinism",
+          "provenance_refs": [
+            "prov:b380701c2879efce"
+          ]
+        },
+        {
+          "category": "traceability",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "provenance",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "compliance",
+          "component_ids": [
+            "comp:config",
+            "comp:client",
+            "comp:resources",
+            "comp:tools",
+            "comp:server",
+            "comp:entry"
+          ],
+          "contract_ids": [],
+          "id": "no_live_paid_api_acceptance",
+          "provenance_refs": [
+            "prov:4e62ae79d2c07a9c"
+          ]
+        }
+      ],
+      "snapshot_dir": "<repo>/.arena/runs/fmc-mcp-decomposition-grok43-high-reasoning-20260617T205352Z/snapshot-a623425c6db6a181",
+      "snapshot_id": "snapshot-a623425c6db6a181",
+      "usage": {
+        "completion_tokens": 1417,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 7897,
+          "rejected_prediction_tokens": 0
+        },
+        "cost_in_usd_ticks": 326678000,
+        "num_sources_used": 0,
+        "prompt_tokens": 7560,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 64,
+          "image_tokens": 0,
+          "text_tokens": 7560
+        },
+        "total_tokens": 16874
+      }
+    },
+    {
+      "counts": {
+        "component_profiles": 6,
+        "external_surfaces": 28,
+        "open_questions": 5,
+        "priority_backlog": 5,
+        "product_invariants": 6,
+        "quality_gates": 3,
+        "raw_components": 6,
+        "raw_contracts": 7,
+        "raw_cross_cutting_concerns": 4,
+        "raw_observable_checks": 1,
+        "raw_verification_gaps": 1,
+        "runtime_contracts": 21,
+        "snapshot_components": 6,
+        "snapshot_contracts": 14
+      },
+      "gate_passed": true,
+      "gate_violations": [],
+      "intake_artifact_check": {
+        "intake_files": [],
+        "proposal_files": [],
+        "scorecard_files": []
+      },
+      "label": "new_high_reasoning_schema_fix",
+      "provider": "xai",
+      "ranks": [
+        [
+          1,
+          "component.client",
+          "high"
+        ],
+        [
+          2,
+          "component.server",
+          "high"
+        ],
+        [
+          3,
+          "component.config",
+          "high"
+        ],
+        [
+          4,
+          "component.tools",
+          "high"
+        ],
+        [
+          5,
+          "component.resources",
+          "high"
+        ],
+        [
+          6,
+          "component.entry",
+          "low"
+        ]
+      ],
+      "raw_concerns": [
+        {
+          "category": "anti_fabrication",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.anti-fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "determinism",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.determinism",
+          "provenance_refs": [
+            "prov:b380701c2879efce"
+          ]
+        },
+        {
+          "category": "provenance",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.provenance",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "no_live_paid_api_acceptance",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.no-live-paid-api-acceptance",
+          "provenance_refs": [
+            "prov:4e62ae79d2c07a9c"
+          ]
+        }
+      ],
+      "reasoning_effort": "high",
+      "requested_model": "grok-4.3",
+      "served_model": null,
+      "snapshot_concerns": [
+        {
+          "category": "anti_fabrication",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.anti-fabrication",
+          "provenance_refs": [
+            "prov:aeec7a1dae758e4e"
+          ]
+        },
+        {
+          "category": "determinism",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.determinism",
+          "provenance_refs": [
+            "prov:b380701c2879efce"
+          ]
+        },
+        {
+          "category": "provenance",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.provenance",
+          "provenance_refs": [
+            "prov:bcfd8e782d7fe500"
+          ]
+        },
+        {
+          "category": "no_live_paid_api_acceptance",
+          "component_ids": [
+            "component.config",
+            "component.client",
+            "component.resources",
+            "component.tools",
+            "component.server",
+            "component.entry"
+          ],
+          "contract_ids": [],
+          "id": "concern.no-live-paid-api-acceptance",
+          "provenance_refs": [
+            "prov:4e62ae79d2c07a9c"
+          ]
+        }
+      ],
+      "snapshot_dir": "<repo>/.arena/runs/fmc-mcp-decomposition-grok43-high-reasoning-schema-fix-20260617T221237Z/snapshot-3e9b19da00478bf8",
+      "snapshot_id": "snapshot-3e9b19da00478bf8",
+      "usage": {
+        "completion_tokens": 1874,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 8255,
+          "rejected_prediction_tokens": 0
+        },
+        "cost_in_usd_ticks": 348540500,
+        "num_sources_used": 0,
+        "prompt_tokens": 7679,
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 64,
+          "image_tokens": 0,
+          "text_tokens": 7679
+        },
+        "total_tokens": 17808
+      }
+    }
+  ],
+  "schema_issue_resolved": true
+}
