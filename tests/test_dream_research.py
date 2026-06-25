@@ -137,15 +137,17 @@ def test_research_writes_output_file(tmp_path: Path) -> None:
     assert json.loads(output.read_text(encoding="utf-8"))["dreams"][0]["id"] == "dream.researched"
 
 
-def test_research_requires_reviewed_capability_map(tmp_path: Path) -> None:
+def test_research_runs_on_unreviewed_map(tmp_path: Path) -> None:
     model_path, cap_path, raw_path, capability_id = _write_inputs(tmp_path, reviewed=False)
-    with pytest.raises(DreamResearchError, match="operator-reviewed"):
-        research_dreams(
-            project_model_path=model_path,
-            capability_map_path=cap_path,
-            dreams_path=raw_path,
-            model=_fake_research(capability_id),
-        )
+    document = research_dreams(
+        project_model_path=model_path,
+        capability_map_path=cap_path,
+        dreams_path=raw_path,
+        model=_fake_research(capability_id),
+    )
+
+    assert document["capabilityMap"]["reviewed"] is False
+    assert document["dreams"][0]["id"] == "dream.researched"
 
 
 def test_research_fails_if_model_returns_no_researchable_dreams(tmp_path: Path) -> None:

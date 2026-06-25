@@ -1,5 +1,12 @@
 # Dream Proposer (Tier 3) — Design Record
 
+> **Superseded in part (2026-06-25):** the operator review gate described below
+> (`operator review gate`, `review.reviewed true required`, exit `4`) is removed.
+> The lane now emits autonomously; the capability map is auto-generated and used
+> as-is, with an honest provenance label on the output. See
+> `docs/specs/2026-06-25-experiment-lane-autonomous-emit.md`. Body retained as the
+> historical record.
+
 Date: 2026-06-23
 Status: implemented locally in this checkout; offline acceptance added.
 

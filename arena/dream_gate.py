@@ -2,8 +2,8 @@
 
 The gate is the trust boundary for the dream lane. It does not judge whether a
 dream is useful. It only proves that every cited current-state premise resolves
-against the real Project Model v1 / reviewed capability map and that the dream
-carries a validation recipe. Dreams that fail this check are killed before emit.
+against the real Project Model v1 / capability map and that the dream carries a
+validation recipe. Dreams that fail this check are killed before emit.
 """
 
 from __future__ import annotations
@@ -70,8 +70,6 @@ def gate_dreams(
     capability_map = _load_json_object(cap_path)
     dreams_doc = _load_json_object(source_path)
 
-    if capability_map.get("review", {}).get("reviewed") is not True:
-        raise DreamGateError("capability map is not operator-reviewed")
     cap_source = capability_map.get("sourceModel") if isinstance(capability_map.get("sourceModel"), dict) else {}
     cap_graph_hash = _clean(cap_source.get("graphHash")) if isinstance(cap_source, dict) else ""
     model_graph_hash = _graph_hash(model)
@@ -118,7 +116,7 @@ def gate_dreams(
         },
         "capabilityMap": {
             "path": str(cap_path),
-            "reviewed": True,
+            "reviewed": capability_map.get("review", {}).get("reviewed") is True,
         },
         "dreams": accepted,
         "provenance": _provenance(dreams_doc, model_path, cap_path, source_path),

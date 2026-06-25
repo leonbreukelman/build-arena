@@ -47,8 +47,6 @@ def generate_dreams(
     project_model = _load_json_object(model_path)
     capability_map = _load_json_object(cap_path)
     scorecard_doc = _load_json_object(scorecard)
-    if capability_map.get("review", {}).get("reviewed") is not True:
-        raise DreamGenerateError("capability map must be operator-reviewed before dream generation")
 
     prompt = _generation_prompt(project_model, capability_map, scorecard_doc)
     if model is None:
@@ -84,7 +82,7 @@ def generate_dreams(
         "schemaVersion": SCHEMA_VERSION,
         "projectId": _project_id(project_model, capability_map),
         "sourceModel": {"projectModelV1Path": str(model_path), "graphHash": _graph_hash(project_model)},
-        "capabilityMap": {"path": str(cap_path), "reviewed": True},
+        "capabilityMap": {"path": str(cap_path), "reviewed": capability_map.get("review", {}).get("reviewed") is True},
         "dreams": dreams,
         "provenance": {
             "generatedBy": GENERATED_BY,

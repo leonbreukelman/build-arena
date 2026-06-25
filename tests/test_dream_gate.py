@@ -184,13 +184,16 @@ def test_invalid_mode_is_killed(tmp_path: Path) -> None:
     assert any("mode" in reason for reason in result.trace["killedDreams"][0]["reasons"])
 
 
-def test_unreviewed_capability_map_fails_closed(tmp_path: Path) -> None:
+def test_unreviewed_capability_map_is_gated_and_labeled_unreviewed(tmp_path: Path) -> None:
     model_path, cap_path, model, cap_map = _write_inputs(tmp_path)
     cap_map["review"]["reviewed"] = False
     cap_path.write_text(json.dumps(cap_map), encoding="utf-8")
 
-    with pytest.raises(DreamGateError, match="not operator-reviewed"):
-        gate_dreams(project_model_path=model_path, capability_map_path=cap_path, dreams_path=_write_dreams(tmp_path, [_dream(model, cap_map)]))
+    result = gate_dreams(project_model_path=model_path, capability_map_path=cap_path, dreams_path=_write_dreams(tmp_path, [_dream(model, cap_map)]))
+
+    assert result.accepted_count == 1
+    assert result.killed_count == 0
+    assert result.document["capabilityMap"]["reviewed"] is False
 
 
 def test_capability_map_graph_hash_must_match_source_model(tmp_path: Path) -> None:

@@ -14,7 +14,6 @@ from arena.dream_run import (
     EXIT_NO_DREAM,
     EXIT_OK,
     EXIT_STAGE_FAILURE,
-    EXIT_UNREVIEWED_CAPABILITY_MAP,
     EXIT_USAGE,
     DreamRunError,
     RunConfig,
@@ -209,7 +208,7 @@ def test_happy_path_writes_dream_and_cleans_temp_workdir(tmp_path: Path, repo_di
         return str(temp_workdir)
 
     monkeypatch.setattr(dream_run.tempfile, "mkdtemp", _mkdtemp)
-    output = tmp_path / "out" / "dream.md"
+    output = tmp_path / "out" / "experiment.md"
     stages = FakeStages()
 
     rc = run(_config(repo_dir, output), stage_runner=stages.run, git_runner=_fake_git([]))
@@ -223,7 +222,7 @@ def test_happy_path_writes_dream_and_cleans_temp_workdir(tmp_path: Path, repo_di
 def test_stage_order_and_manifest_driven_v1_resolution(tmp_path: Path, repo_dir: Path) -> None:
     workdir = tmp_path / "wd"
     stages = FakeStages()
-    rc = run(_config(repo_dir, tmp_path / "dream.md", workdir=workdir), stage_runner=stages.run, git_runner=_fake_git([]))
+    rc = run(_config(repo_dir, tmp_path / "experiment.md", workdir=workdir), stage_runner=stages.run, git_runner=_fake_git([]))
 
     assert rc == EXIT_OK
     assert [module for module, _args in stages.calls] == [
@@ -243,7 +242,7 @@ def test_stage_order_and_manifest_driven_v1_resolution(tmp_path: Path, repo_dir:
 
 def test_fail_closed_on_stage_failure_preserves_workdir(tmp_path: Path, repo_dir: Path) -> None:
     workdir = tmp_path / "wd"
-    output = tmp_path / "dream.md"
+    output = tmp_path / "experiment.md"
     stages = FakeStages(fail={dream_run._RESEARCH_MODULE})
     with pytest.raises(DreamRunError) as excinfo:
         run(_config(repo_dir, output, workdir=workdir), stage_runner=stages.run, git_runner=_fake_git([]))
@@ -254,20 +253,32 @@ def test_fail_closed_on_stage_failure_preserves_workdir(tmp_path: Path, repo_dir
     assert dream_run._GATE_MODULE not in [module for module, _args in stages.calls]
 
 
-def test_unreviewed_capability_map_exits_four_and_skips_later_stages(tmp_path: Path, repo_dir: Path) -> None:
+def test_unreviewed_capability_map_runs_to_output(tmp_path: Path, repo_dir: Path) -> None:
+    output = tmp_path / "experiment.md"
     stages = FakeStages(reviewed=False)
-    with pytest.raises(DreamRunError) as excinfo:
-        run(_config(repo_dir, tmp_path / "dream.md", workdir=tmp_path / "wd"), stage_runner=stages.run, git_runner=_fake_git([]))
+    rc = run(_config(repo_dir, output, workdir=tmp_path / "wd"), stage_runner=stages.run, git_runner=_fake_git([]))
 
-    assert excinfo.value.exit_code == EXIT_UNREVIEWED_CAPABILITY_MAP
+    assert rc == EXIT_OK
+    assert output.is_file()
+    text = output.read_text(encoding="utf-8")
+    assert text.strip()
+    assert text.startswith("# Experiment Proposals")
+    assert "auto-generated, operator-unreviewed capability map" in text
     modules = [module for module, _args in stages.calls]
-    assert dream_run._CAPABILITY_MODULE in modules
-    assert dream_run._GENERATE_MODULE not in modules
+    assert modules == [
+        dream_run._DECOMPOSE_MODULE,
+        dream_run._INTAKE_MODULE,
+        dream_run._CAPABILITY_MODULE,
+        dream_run._GENERATE_MODULE,
+        dream_run._RESEARCH_MODULE,
+        dream_run._GATE_MODULE,
+        dream_run._EMIT_MODULE,
+    ]
 
 
 def test_no_dream_survived_gate_exits_two(tmp_path: Path, repo_dir: Path, capsys: pytest.CaptureFixture[str]) -> None:
     stages = FakeStages(gate_mode="no_survivors")
-    output = tmp_path / "dream.md"
+    output = tmp_path / "experiment.md"
     with pytest.raises(DreamRunError) as excinfo:
         run(_config(repo_dir, output, workdir=tmp_path / "wd"), stage_runner=stages.run, git_runner=_fake_git([]))
 
@@ -281,7 +292,7 @@ def test_no_dream_survived_gate_exits_two(tmp_path: Path, repo_dir: Path, capsys
 def test_preflight_requires_live_model(tmp_path: Path, repo_dir: Path) -> None:
     stages = FakeStages()
     with pytest.raises(DreamRunError) as excinfo:
-        run(_config(repo_dir, tmp_path / "dream.md", live_model=None), stage_runner=stages.run, git_runner=_fake_git([]))
+        run(_config(repo_dir, tmp_path / "experiment.md", live_model=None), stage_runner=stages.run, git_runner=_fake_git([]))
 
     assert excinfo.value.exit_code == EXIT_USAGE
     assert stages.calls == []
@@ -294,7 +305,7 @@ def test_preflight_missing_key_is_usage_error(tmp_path: Path, repo_dir: Path, mo
     monkeypatch.setattr(dream_run, "resolve_api_key_with_source", _raise)
     stages = FakeStages()
     with pytest.raises(DreamRunError) as excinfo:
-        run(_config(repo_dir, tmp_path / "dream.md"), stage_runner=stages.run, git_runner=_fake_git([]))
+        run(_config(repo_dir, tmp_path / "experiment.md"), stage_runner=stages.run, git_runner=_fake_git([]))
 
     assert excinfo.value.exit_code == EXIT_USAGE
     assert stages.calls == []
@@ -304,7 +315,7 @@ def test_subprocess_env_threads_live_model_settings() -> None:
     env = _subprocess_env(
         RunConfig(
             repo="/tmp/repo",
-            output=Path("/tmp/dream.md"),
+            output=Path("/tmp/experiment.md"),
             live_model="grok-x",
             live_base_url="https://api.example/v1",
             live_api_key_env="MY_KEY",

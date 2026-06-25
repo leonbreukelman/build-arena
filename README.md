@@ -109,19 +109,19 @@ uv run python -m arena.project_model_cli gate --snapshot /tmp/build-arena-snapsh
 
 The AI-first snapshot command emits `project-model-v1.json` as the Project Model v1 primary artifact and `project-model-v0.json` for compatibility. Live mode is only for bounded read-only smoke under the readiness ladder; Build Arena remains not ready for broad autonomous live loops.
 
-## Advisory dream proposer lane
+## Experiment proposer lane
 
-`arena.dream_run` is a separate tier-3 advisory lane for architectural hypotheses that do not fit the single-file deterministic proposal contract. It chains snapshot/decompose → intake → capability lift → operator review gate → dream generation → dream research → premise gate → emit, and writes `dream.md` only. It never writes `proposal.md` and never applies or promotes a change.
+`arena.dream_run` is a separate tier-3 advisory lane for experiment proposals that do not fit the single-file deterministic proposal contract. The code modules are still named `arena.dream_*` pending a dedicated rename pass. The lane chains snapshot/decompose → intake → capability lift → dream generation → dream research → premise gate → emit, runs end-to-end with no mid-run human review gate, and writes `experiment.md` only. It never writes `proposal.md` and never applies or promotes a change.
 
 ```bash
 uv run python -m arena.dream_run run /path/to/target-repo \
   --live-model <explicit-model> \
   --live-api-key-env XAI_API_KEY \
-  --output dream.md
+  --output experiment.md
 ```
 
-The capability map is the intent-anchoring artifact. `arena.capability_lift` writes `capability-map.json` with `review.reviewed: false`; `dream_run` stops with exit `4` until the operator reviews/edits that map. To continue from a reviewed map, pass `--capability-map <path>`.
+The capability map is the intent-anchoring artifact. `arena.capability_lift` writes `capability-map.json` with `review.reviewed: false`; `dream_run` uses that auto-generated map as-is. `review.reviewed` is an honest provenance label carried into the output, not a blocker.
 
-The deterministic boundary is the gated `dream/v0` artifact. Generation and research are live model stages and require an explicit `--live-model`; `arena.dream_gate` then kills any dream whose cited anchors or target capabilities do not resolve against the real Project Model v1 and reviewed capability map, stamps gate provenance, and rejects capability maps whose graph hash no longer matches the model. `arena.dream_emit` renders only gate-marked `premiseConfidence == all_resolved` dreams, with premise confidence and speculative conclusion confidence shown separately.
+The deterministic boundary is the gated `dream/v0` artifact. Generation and research are live model stages and require an explicit `--live-model`; `arena.dream_gate` then kills any experiment proposal whose cited anchors or target capabilities do not resolve against the real Project Model v1 and capability map, stamps gate provenance, and rejects capability maps whose graph hash no longer matches the model. `arena.dream_emit` renders only gate-marked `premiseConfidence == all_resolved` proposals, with premise confidence, speculative conclusion confidence, validation recipe, and the capability-map provenance label shown separately.
 
-Exit codes: `0` success (`dream.md` written); `1` stage failure; `2` no dream survived the premise gate; `3` usage/preflight error; `4` capability map not reviewed.
+Exit codes: `0` success (`experiment.md` written); `1` stage failure; `2` no proposal survived the premise gate; `3` usage/preflight error.

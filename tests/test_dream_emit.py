@@ -42,12 +42,12 @@ def _dream(**overrides: Any) -> dict[str, Any]:
     return dream
 
 
-def _doc(dreams: list[dict[str, Any]]) -> dict[str, Any]:
+def _doc(dreams: list[dict[str, Any]], *, reviewed: bool = True) -> dict[str, Any]:
     return {
         "schemaVersion": "dream/v0",
         "projectId": "fixture-project",
         "sourceModel": {"projectModelV1Path": "/tmp/project-model-v1.json", "graphHash": GRAPH_HASH},
-        "capabilityMap": {"path": "/tmp/capability-map.json", "reviewed": True},
+        "capabilityMap": {"path": "/tmp/capability-map.json", "reviewed": reviewed},
         "dreams": dreams,
         "provenance": {
             "generatedBy": "arena.dream_generate",
@@ -67,11 +67,12 @@ def _write(tmp_path: Path, document: dict[str, Any], name: str = "gated-dreams.j
 
 
 def test_all_resolved_dream_renders_readable_sections(tmp_path: Path) -> None:
-    output = emit_dream(_write(tmp_path, _doc([_dream()])), tmp_path / "dream.md")
+    output = emit_dream(_write(tmp_path, _doc([_dream()])), tmp_path / "experiment.md")
     text = output.read_text(encoding="utf-8")
 
-    assert text.startswith("# Dream Proposals")
-    assert "Advisory tier-3 hypotheses" in text
+    assert text.startswith("# Experiment Proposals")
+    assert "Advisory tier-3 experiment proposals" in text
+    assert "Premised on an operator-reviewed capability map." in text
     assert "component `comp.runner` — The runner component owns stage orchestration." in text
     assert "Premise confidence (mechanical): `all_resolved`" in text
     assert "Conclusion confidence (speculative/capped): `medium` (0.6)" in text
@@ -86,7 +87,7 @@ def test_byte_identical_repeat(tmp_path: Path) -> None:
 
 
 def test_internal_hashes_do_not_leak_into_body(tmp_path: Path) -> None:
-    text = emit_dream(_write(tmp_path, _doc([_dream()])), tmp_path / "dream.md").read_text("utf-8")
+    text = emit_dream(_write(tmp_path, _doc([_dream()])), tmp_path / "experiment.md").read_text("utf-8")
     body = text.split("---", 1)[0]
 
     assert CONTENT_HASH not in text
@@ -96,9 +97,9 @@ def test_internal_hashes_do_not_leak_into_body(tmp_path: Path) -> None:
     assert PROMPT_HASH not in body  # prompt hashes are footer-only provenance
 
 
-def test_partial_dream_never_reaches_dream_md(tmp_path: Path) -> None:
+def test_partial_dream_never_reaches_experiment_md(tmp_path: Path) -> None:
     path = _write(tmp_path, _doc([_dream(premiseConfidence="partial")]))
-    output = tmp_path / "dream.md"
+    output = tmp_path / "experiment.md"
 
     with pytest.raises(DreamEmitError, match="non-all_resolved"):
         emit_dream(path, output)
@@ -108,7 +109,7 @@ def test_partial_dream_never_reaches_dream_md(tmp_path: Path) -> None:
 def test_no_dreams_fails_closed(tmp_path: Path) -> None:
     path = _write(tmp_path, _doc([]))
     with pytest.raises(DreamEmitError, match="no all_resolved"):
-        emit_dream(path, tmp_path / "dream.md")
+        emit_dream(path, tmp_path / "experiment.md")
 
 
 def test_fail_closed_bad_schema_version(tmp_path: Path) -> None:
@@ -137,7 +138,26 @@ def test_emit_requires_gate_marker(tmp_path: Path) -> None:
     path = _write(tmp_path, doc)
 
     with pytest.raises(DreamEmitError, match="lacks arena.dream_gate provenance"):
-        emit_dream(path, tmp_path / "dream.md")
+        emit_dream(path, tmp_path / "experiment.md")
+
+
+def test_unreviewed_map_renders_caveat() -> None:
+    text = render_dream_markdown(_doc([_dream()], reviewed=False))
+
+    assert text.startswith("# Experiment Proposals")
+    assert "Premised on an auto-generated, operator-unreviewed capability map." in text
+    assert "Judge these at output or in downstream evaluation" in text
+    assert "only that cited premises resolve" in text
+
+    reviewed_text = render_dream_markdown(_doc([_dream()], reviewed=True))
+    assert "Premised on an operator-reviewed capability map." in reviewed_text
+    assert "auto-generated, operator-unreviewed capability map" not in reviewed_text
+
+
+def test_schema_accepts_unreviewed_capability_map(tmp_path: Path) -> None:
+    loaded = load_gated_dreams(_write(tmp_path, _doc([_dream()], reviewed=False)))
+
+    assert loaded["capabilityMap"]["reviewed"] is False
 
 
 def test_render_orders_neighbor_backed_carrier_swap_first() -> None:

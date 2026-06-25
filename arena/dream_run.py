@@ -2,9 +2,10 @@
 
 This is a thin, fail-closed driver parallel to the proposal lane. It wires
 existing/new stage CLIs through subprocess boundaries and preserves the workdir on
-any failed or review-blocked run. The generated capability map is intentionally
-unreviewed by default, so a normal first run stops at exit 4 until the operator
-reviews/edits the map; tests inject stages to exercise the full offline path.
+any failed run. The capability map is auto-generated and used without a mid-run
+human review gate; the lane runs end-to-end to the emitted output, which carries
+an honest provenance label when the map is operator-unreviewed. Tests inject
+stages to exercise the full offline path.
 """
 
 from __future__ import annotations
@@ -26,7 +27,6 @@ EXIT_OK = 0
 EXIT_STAGE_FAILURE = 1
 EXIT_NO_DREAM = 2
 EXIT_USAGE = 3
-EXIT_UNREVIEWED_CAPABILITY_MAP = 4
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 _DECOMPOSE_MODULE = "arena.project_model_cli"
@@ -205,20 +205,6 @@ def _live_stage_flags(config: RunConfig) -> list[str]:
     return flags
 
 
-def _require_reviewed(capability_map_path: Path, workdir: Path) -> None:
-    try:
-        capability_map = json.loads(capability_map_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise DreamRunError(f"cannot read capability map: {exc}", EXIT_STAGE_FAILURE) from exc
-    if not isinstance(capability_map, dict):
-        raise DreamRunError("capability map must be a JSON object", EXIT_STAGE_FAILURE)
-    if capability_map.get("review", {}).get("reviewed") is not True:
-        raise DreamRunError(
-            f"capability map is not operator-reviewed; edit {capability_map_path} so review.reviewed is true, then rerun. Workdir preserved at {workdir}",
-            EXIT_UNREVIEWED_CAPABILITY_MAP,
-        )
-
-
 def _dream_count(path: Path) -> int:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -261,7 +247,6 @@ def _execute_stages(config: RunConfig, target: Path, workdir: Path, stage_runner
         capability_map = config.capability_map.expanduser().resolve()
         if not capability_map.is_file():
             raise DreamRunError(f"capability map not found: {capability_map}", EXIT_USAGE)
-    _require_reviewed(capability_map, workdir)
 
     raw_dreams = workdir / "raw-dreams.json"
     generate = stage_runner(
@@ -335,7 +320,7 @@ def _execute_stages(config: RunConfig, target: Path, workdir: Path, stage_runner
     if emit.returncode != 0:
         raise _fail_stage("dream_emit", emit, workdir)
     if not config.output.is_file():
-        raise _fail_stage("dream_emit", StageResult(0, stderr="dream.md not written"), workdir)
+        raise _fail_stage("dream_emit", StageResult(0, stderr="output file not written"), workdir)
     return EXIT_OK
 
 
@@ -365,9 +350,9 @@ def run(config: RunConfig, *, stage_runner: StageRunner = _subprocess_stage, git
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="dream")
     sub = parser.add_subparsers(dest="command", required=True)
-    run_parser = sub.add_parser("run", help="emit advisory dream.md for a repository")
+    run_parser = sub.add_parser("run", help="emit advisory experiment.md for a repository")
     run_parser.add_argument("repo", help="local path or git URL of the target repository")
-    run_parser.add_argument("--output", default="dream.md", help="output path (default dream.md)")
+    run_parser.add_argument("--output", default="experiment.md", help="output path (default experiment.md)")
     run_parser.add_argument("--profile", default="new-project", help="intake profile passthrough")
     run_parser.add_argument("--decompose-live", action="store_true", help="use live AI decomposition (else fixture)")
     run_parser.add_argument("--live-model", help="model id for generation/research; required")
@@ -376,7 +361,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--live-base-url", help="provider base URL override")
     run_parser.add_argument("--workdir", help="override workdir (default mkdtemp)")
     run_parser.add_argument("--keep-workdir", action="store_true", help="retain intermediates even on success")
-    run_parser.add_argument("--capability-map", help="use an existing reviewed capability-map.json")
+    run_parser.add_argument("--capability-map", help="use an existing capability-map.json")
     return parser
 
 
