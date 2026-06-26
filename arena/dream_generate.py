@@ -59,7 +59,7 @@ def generate_dreams(
             model=live_model,
             require_explicit_model=True,
         )
-        client = OpenAICompatibleChatClient(provider_config, temperature=0.7, max_tokens=4096)
+        client = OpenAICompatibleChatClient(provider_config, temperature=0.2, max_tokens=4096)
         result = client.complete(
             messages=[
                 {"role": "system", "content": "Return only JSON with a top-level dreams array."},
@@ -180,20 +180,70 @@ def _conclusion(value: Any) -> dict[str, Any]:
 
 
 def _generation_prompt(project_model: dict[str, Any], capability_map: dict[str, Any], scorecard: dict[str, Any]) -> str:
+    capability_ids = [
+        _clean(capability.get("id"))
+        for capability in capability_map.get("capabilities", [])
+        if isinstance(capability, dict) and _clean(capability.get("id"))
+    ]
     compact = {
         "projectId": _project_id(project_model, capability_map),
+        "allowedCapabilityIds": capability_ids,
         "capabilities": capability_map.get("capabilities", []),
+        "anchorCatalog": _anchor_catalog(project_model, capability_map),
         "componentProfiles": _get(project_model, "iterationReadiness", "componentProfiles", default=[]),
         "nearNeighborAlternatives": _get(project_model, "snapshot", "near_neighbor_alternatives", default=[]),
         "topFindings": scorecard.get("findings", [])[:8] if isinstance(scorecard.get("findings"), list) else [],
+        "requiredDreamShape": {
+            "id": "dream.short-stable-id",
+            "mode": "carrier_swap or function_remap",
+            "idea": "one sentence",
+            "targetCapabilityIds": ["copy one or more exact strings from allowedCapabilityIds"],
+            "citedEvidence": [
+                {
+                    "anchorKind": "copy from anchorCatalog",
+                    "anchorId": "copy from anchorCatalog",
+                    "contentHash": "copy from anchorCatalog",
+                    "claim": "short current-state claim",
+                }
+            ],
+            "rationale": "why this architectural experiment is worth trying",
+            "conclusionConfidence": {"band": "low or medium", "value": "number between 0 and 0.7"},
+            "validationRecipe": {
+                "action": "concrete downstream trial",
+                "observable": "measurable result",
+                "expectedDirection": "decrease, increase, unchanged, or tests_pass",
+            },
+        },
     }
     return (
         "Generate advisory tier-3 dream proposals for Build Arena. Return JSON only: "
         "{\"dreams\":[...]}. Include at least one carrier_swap and one function_remap when possible. "
+        "For targetCapabilityIds, copy exact ids from allowedCapabilityIds. Do not abbreviate component as comp. "
+        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from anchorCatalog; do not invent hashes. "
         "Every dream must include mode, idea, targetCapabilityIds, citedEvidence with anchorKind/anchorId/contentHash/claim, "
-        "rationale, conclusionConfidence capped at medium/0.7, and validationRecipe. Current facts:\n"
+        "rationale, conclusionConfidence as an object capped at medium/0.7, and validationRecipe with action, observable, "
+        "and expectedDirection one of decrease, increase, unchanged, tests_pass. Current facts:\n"
         + json.dumps(compact, sort_keys=True, ensure_ascii=False)
     )
+
+
+def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, str]]:
+    anchors: list[tuple[str, dict[str, Any]]] = []
+    for capability in capability_map.get("capabilities", []):
+        if isinstance(capability, dict):
+            anchors.append(("capability", capability))
+    for component in _get(project_model, "snapshot", "components", default=[]):
+        if isinstance(component, dict):
+            anchors.append(("component", component))
+    for gap in _get(project_model, "snapshot", "verification_gaps", default=[]):
+        if isinstance(gap, dict):
+            anchors.append(("verificationGap", gap))
+    return [_anchor_record(kind, anchor) for kind, anchor in anchors if _clean(anchor.get("id"))]
+
+
+def _anchor_record(kind: str, anchor: dict[str, Any]) -> dict[str, str]:
+    encoded = json.dumps(anchor, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    return {"anchorKind": kind, "anchorId": _clean(anchor.get("id")), "contentHash": hashlib.sha256(encoded).hexdigest()}
 
 
 def _parse_model_json(text: str) -> dict[str, Any]:
