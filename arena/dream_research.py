@@ -185,7 +185,14 @@ def _provenance(
 
 
 def _research_prompt(project_model: dict[str, Any], capability_map: dict[str, Any], raw_doc: dict[str, Any]) -> str:
+    capability_ids = [
+        _clean(capability.get("id"))
+        for capability in capability_map.get("capabilities", [])
+        if isinstance(capability, dict) and _clean(capability.get("id"))
+    ]
     compact = {
+        "allowedCapabilityIds": capability_ids,
+        "anchorCatalog": _anchor_catalog(project_model, capability_map),
         "capabilities": capability_map.get("capabilities", []),
         "components": _get(project_model, "snapshot", "components", default=[]),
         "contracts": _get(project_model, "snapshot", "contracts", default=[]),
@@ -198,9 +205,37 @@ def _research_prompt(project_model: dict[str, Any], capability_map: dict[str, An
     return (
         "Research these raw tier-3 dream proposals into concrete current-state claims. "
         "Do not claim benefit certainty. Preserve novelty, add/check citedEvidence anchors, and return JSON only: {\"dreams\":[...]}. "
-        "Every citedEvidence contentHash must be the SHA-256 of the canonical JSON for the cited anchor object. Current model:\n"
+        "For targetCapabilityIds, copy exact ids from allowedCapabilityIds. Do not abbreviate component as comp. "
+        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from anchorCatalog; do not invent or recompute hashes. "
+        "Every conclusionConfidence must be an object capped at medium/0.7. Every validationRecipe must include action, "
+        "observable, and expectedDirection one of decrease, increase, unchanged, tests_pass. Current model:\n"
         + json.dumps(compact, sort_keys=True, ensure_ascii=False)
     )
+
+
+def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, str]]:
+    anchors: list[tuple[str, dict[str, Any]]] = []
+    for capability in capability_map.get("capabilities", []):
+        if isinstance(capability, dict):
+            anchors.append(("capability", capability))
+    for component in _get(project_model, "snapshot", "components", default=[]):
+        if isinstance(component, dict):
+            anchors.append(("component", component))
+    for contract in _get(project_model, "snapshot", "contracts", default=[]):
+        if isinstance(contract, dict):
+            anchors.append(("contract", contract))
+    for gap in _get(project_model, "snapshot", "verification_gaps", default=[]):
+        if isinstance(gap, dict):
+            anchors.append(("verificationGap", gap))
+    for neighbor in _get(project_model, "snapshot", "near_neighbor_alternatives", default=[]):
+        if isinstance(neighbor, dict):
+            anchors.append(("nearNeighborAlternative", neighbor))
+    return [_anchor_record(kind, anchor) for kind, anchor in anchors if _clean(anchor.get("id"))]
+
+
+def _anchor_record(kind: str, anchor: dict[str, Any]) -> dict[str, str]:
+    encoded = json.dumps(anchor, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    return {"anchorKind": kind, "anchorId": _clean(anchor.get("id")), "contentHash": hashlib.sha256(encoded).hexdigest()}
 
 
 def _conclusion(value: Any) -> dict[str, Any]:
