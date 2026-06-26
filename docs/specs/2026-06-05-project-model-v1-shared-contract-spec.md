@@ -5,24 +5,20 @@ Status: implemented Build Arena primary contract slice with cross-repo adoption 
 
 ## Purpose
 
-Project Model v1 is the primary enriched project-model contract for Build Arena AI decomposer snapshots. It resolves the previous sidecar ambiguity by naming one authoritative artifact, `project-model-v1.json`, that binds the graph, model snapshot, gate report, provenance, hashes, models, and derived-artifact strategy into one versioned contract.
-
-Project Model v0 remains available as a legacy compatibility projection. Downstream consumers should migrate to v1 when they need provenance, contracts, held-out probes, verification gaps, graph nodes/edges, gate reports, or artifact hashes.
+Project Model v1 is the primary enriched project-model contract for Build Arena AI decomposer snapshots. It resolves sidecar ambiguity by naming one authoritative artifact, `project-model-v1.json`, that binds the graph, model snapshot, provenance, and required iteration-readiness data into one versioned contract.
 
 ## Contract boundary
 
 Build Arena owns and emits `project-model/v1`. The artifact is produced from filesystem and git truth during the AI decomposer path. Cached or prior sidecars are not authoritative unless their input hashes match the current graph and snapshot.
 
-The primary AI decomposer output directory now contains both:
+The primary AI decomposer output directory contains:
 
 - `project-model-v1.json` as the primary enriched contract.
-- `project-model-v0.json` as the legacy compatibility projection.
 
 `manifest.json` names the primary path through:
 
 - `project_model_primary_path: project-model-v1.json`
 - `project_model_v1_path: project-model-v1.json`
-- `project_model_v0_path: project-model-v0.json`
 
 ## Machine-readable schema
 
@@ -34,9 +30,22 @@ Schema version constant:
 
 - `project-model/v1`
 
-The schema validates the emitted v1 artifact and rejects legacy v0-shaped JSON.
+The schema validates the emitted v1 artifact and rejects non-v1 JSON.
 
 ## Required top-level fields
+
+Top-level fields are required only when a core proposal-loop consumer reads them. Advisory-only fields and metadata read only by experiment-lane consumers stay optional.
+
+Required by core consumers:
+
+- `schemaVersion` — contract discriminator.
+- `id` — read by `arena/project_intake_scorecard.py` for `snapshotId`.
+- `snapshot` — read by `arena/project_intake_scorecard.py` and `arena/proposal_planner.py` for components, checks, verification gaps, and advisory backlog material.
+- `projectGraph` — read by `arena/project_intake_scorecard.py` for node-path evidence and by advisory capability/experiment consumers for graph hash and nodes.
+- `provenance` — read by `arena/project_intake_scorecard.py` for `repoHead`.
+- `iterationReadiness` — read by `arena/project_intake_scorecard.py`, `arena/proposal_planner.py`, `arena/proposal_domains.py`, and `arena/proposer_handoff.py` for component profiles, quality gates, open questions, and readiness-path handling.
+
+Optional top-level metadata remains defined by the schema but is not required: `project`, `gateReport`, `hashes`, `models`, and `derivedArtifacts`.
 
 ### `schemaVersion`
 
@@ -46,18 +55,9 @@ Constant `project-model/v1`.
 
 The frozen `ProjectModelSnapshot.snapshot_id`. Build Arena run-loop events should reference this id plus hashes.
 
-### `project`
-
-Human-readable project identity and intent:
-
-- `projectId`
-- `projectRoot`
-- `goal`
-- `nonGoals`
-
 ### `snapshot`
 
-The full internal `ProjectModelSnapshot` payload. It currently carries `schema_version: project-model-snapshot/v0.1`; that internal version is preserved so existing gate code and v0 projection do not regress.
+The full internal `ProjectModelSnapshot` payload. It currently carries `schema_version: project-model-snapshot/v0.1`; that internal version is preserved for existing gate code.
 
 The snapshot includes:
 
@@ -85,10 +85,6 @@ The graph evidence bundle:
 
 Each node/edge carries `ProvenanceRef` records rather than unsupported prose claims.
 
-### `gateReport`
-
-The deterministic `GateReport` for the same snapshot and graph. A v1 artifact can exist with `passed: false`; this is intentional. Failed gate output is evidence, not acceptance.
-
 ### `provenance`
 
 Git and provenance policy metadata:
@@ -103,38 +99,18 @@ Git and provenance policy metadata:
 
 Dirty-state fingerprint is derived from head OID, dirty flag, and dirty paths. It prevents silent reuse of a snapshot across changed worktrees.
 
-### `hashes`
+### `iterationReadiness`
 
-Hash namespaces:
+Required block for iteration selection and proposal planning. It carries:
 
-- `inputHashes`
-- `promptHashes`
-- `outputHashes`
-- `artifactHashes`
-
-### `models`
-
-Model identities:
-
-- primary decomposer model
-- independent probe-builder model ids when present
-
-Probe result booleans in the embedded snapshot are not advisory prose. A passed probe result requires a `proof_artifact`; otherwise consumers must treat the missing/failed probe as a verification gap. Empty `probeBuilders` is valid for deterministic read-only snapshots when the snapshot carries an explicit semantic/probe-validation gap.
-
-### `derivedArtifacts`
-
-Strategy records for derived artifacts. The default contract names:
-
-- JSONL events as canonical future run-loop state.
-- SQLite projections as query-only derived state.
-- Markdown summaries as generated human-readable views.
-
-### `compatibility`
-
-Legacy v0 projection path and role:
-
-- `projectModelV0Path`
-- `projectModelV0Role`
+- `summary`
+- `componentProfiles`
+- `runtimeContracts`
+- `externalSurfaces`
+- `productInvariants`
+- `qualityGates`
+- `priorityBacklog`
+- `openQuestions`
 
 ## Implementation scope completed in Build Arena
 
@@ -142,9 +118,9 @@ Implemented in this slice:
 
 - `arena/project_model_v1.py` builds `project-model/v1` from a `ProjectModelSnapshot`, `ProjectGraph`, and `GateReport`.
 - `arena/project_decomposer_ai.py` writes `project-model-v1.json` for every AI decomposer snapshot.
-- The manifest marks v1 as the primary project-model artifact and keeps v0 as compatibility output.
+- The manifest marks v1 as the primary project-model artifact.
 - `docs/schemas/project-model-v1.schema.json` validates the v1 artifact.
-- `tests/test_project_model_v1_contract.py` proves the emitted v1 validates, the v0 projection still exists, and a legacy v0 shape is rejected by the v1 schema.
+- `tests/test_project_model_v1_contract.py` proves the emitted v1 validates, the required `iterationReadiness` block is enforced, the off/noop path emits schema-valid v1, and a non-v1 shape is rejected by the v1 schema.
 
 ## Live-action policy for verification gaps
 

@@ -2,21 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://arena.local/schemas/project-model-v1.schema.json",
   "title": "Project Model v1",
-  "description": "Primary enriched project-model contract for Build Arena AI decomposer snapshots; v0 remains a legacy compatibility projection.",
+  "description": "Primary enriched project-model contract for Build Arena AI decomposer snapshots.",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
     "id",
-    "project",
     "snapshot",
     "projectGraph",
-    "gateReport",
     "provenance",
-    "hashes",
-    "models",
-    "derivedArtifacts",
-    "compatibility"
+    "iterationReadiness"
   ],
   "properties": {
     "schemaVersion": {
@@ -52,9 +47,6 @@
       "items": {
         "$ref": "#/$defs/derivedArtifact"
       }
-    },
-    "compatibility": {
-      "$ref": "#/$defs/compatibility"
     },
     "iterationReadiness": {
       "type": "object",
@@ -1255,22 +1247,6 @@
           "$ref": "#/$defs/nonEmptyString"
         },
         "strategy": {
-          "$ref": "#/$defs/nonEmptyString"
-        }
-      }
-    },
-    "compatibility": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "projectModelV0Path",
-        "projectModelV0Role"
-      ],
-      "properties": {
-        "projectModelV0Path": {
-          "$ref": "#/$defs/nonEmptyString"
-        },
-        "projectModelV0Role": {
           "$ref": "#/$defs/nonEmptyString"
         }
       }

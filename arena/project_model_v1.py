@@ -22,7 +22,6 @@ def project_model_v1_from_snapshot(
     gate_report: GateReport,
     *,
     artifact_hashes: dict[str, str] | None = None,
-    compatibility_v0_path: str = "project-model-v0.json",
     derived_artifacts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     graph_dict = graph_to_dict(graph)
@@ -87,10 +86,6 @@ def project_model_v1_from_snapshot(
         },
         "derivedArtifacts": derived_artifacts or default_derived_artifacts,
         "iterationReadiness": build_iteration_readiness(snapshot, graph),
-        "compatibility": {
-            "projectModelV0Path": compatibility_v0_path,
-            "projectModelV0Role": "legacy compatibility projection; project-model/v1 is primary for enriched AI decomposer artifacts",
-        },
     }
 
 

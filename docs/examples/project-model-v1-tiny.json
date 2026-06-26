@@ -1,0 +1,1255 @@
+{
+  "derivedArtifacts": [
+    {
+      "artifactType": "jsonl-events",
+      "path": "events.jsonl",
+      "strategy": "Canonical future run-loop events reference this project-model/v1 snapshot by id and hash."
+    },
+    {
+      "artifactType": "sqlite-projection",
+      "path": "events.sqlite",
+      "strategy": "SQLite is a query projection derived from JSONL events and project-model/v1 artifacts, not authoritative state."
+    },
+    {
+      "artifactType": "markdown-summary",
+      "path": "summary.md",
+      "strategy": "Markdown summaries are generated human-readable views and must carry snapshot id/hash provenance."
+    }
+  ],
+  "gateReport": {
+    "passed": true,
+    "violations": []
+  },
+  "hashes": {
+    "artifactHashes": {
+      "gate_report": "0adf2161214843baf9b6ed41e8cfad06e2c8474843e04ca775077787e2174b89",
+      "graph_file": "a1de0128678c8c4bc2fe85f2d96b3d1139e73a39faac2e54e4d8093ed9ebc0e3",
+      "import_contract_closure": "b6ba066cbd305747245d8abaa9b84e9862a6f73d93a43fbeae132d2faeb513ae",
+      "snapshot": "6baebd43907efd1fb0763c12d61c35231142986b3ebc2effaef04c9ec7a6f15d"
+    },
+    "inputHashes": {
+      "graph": "de8b7887fcc7d6f02332d6cc99e3501ce1dd3af09252c0f657215d4c42fc1768"
+    },
+    "outputHashes": {
+      "decomposer": "b140e4338ceffb1ef0d2b69349ef2939b162098bf5a13f570e33f97ba5179443"
+    },
+    "promptHashes": {
+      "decomposer": "5c670e72718603ed85ea9471d8b6ea884427d45969874073b2a4c97db81b45c7"
+    }
+  },
+  "id": "snapshot-660292a8717b91d7",
+  "iterationReadiness": {
+    "componentProfiles": [
+      {
+        "behavioralTags": [],
+        "componentId": "component.pkg-core",
+        "keySymbols": [
+          "add_one"
+        ],
+        "ownedNodeIds": [
+          "node:6e9656b31e1a775d1036",
+          "node:72423a36df9156d74f2f",
+          "node:7dc099dc59b71626b405"
+        ],
+        "priorityRank": 1,
+        "provenanceRefs": [
+          "prov:111bfe446e48c799",
+          "prov:7123fc18386d7300",
+          "prov:c14ba60212f89b59"
+        ],
+        "responsibilitySummary": "Provide `pkg.core.add_one` behavior through source symbols add_one.",
+        "riskLevel": "low",
+        "whyPriority": "Risk score 0 from 4 source lines and symbol coverage."
+      },
+      {
+        "behavioralTags": [],
+        "componentId": "component.pkg-worker",
+        "keySymbols": [
+          "one"
+        ],
+        "ownedNodeIds": [
+          "node:433388ca1c937f3bb96f",
+          "node:4f4a73986b0cf7f78577",
+          "node:e2a9dcb1d533bdd79014"
+        ],
+        "priorityRank": 2,
+        "provenanceRefs": [
+          "prov:d0e61d00de412fc2",
+          "prov:e5fd599f2f2cb87f"
+        ],
+        "responsibilitySummary": "Provide `pkg.worker` behavior through source symbols one.",
+        "riskLevel": "low",
+        "whyPriority": "Risk score 0 from 2 source lines and symbol coverage."
+      },
+      {
+        "behavioralTags": [],
+        "componentId": "component.workspace-tooling",
+        "keySymbols": [],
+        "ownedNodeIds": [
+          "node:f297e5cb198d1f626af5"
+        ],
+        "priorityRank": 3,
+        "provenanceRefs": [
+          "prov:e8848f13064d9353"
+        ],
+        "responsibilitySummary": "Represent the source-backed `workspace.tooling` runtime responsibility.",
+        "riskLevel": "low",
+        "whyPriority": "Risk score 0 from 3 source lines and symbol coverage."
+      },
+      {
+        "behavioralTags": [],
+        "componentId": "component.workspace-verification",
+        "keySymbols": [
+          "test_add_one"
+        ],
+        "ownedNodeIds": [
+          "node:2ed887a154d9f8588b4a",
+          "node:d5230453a7bd8da84d13",
+          "node:fb5a935faa0391969beb"
+        ],
+        "priorityRank": 4,
+        "provenanceRefs": [
+          "prov:2bce6a672105c18e",
+          "prov:45ea6e28f647a9c2",
+          "prov:c3e3b944ffb744be"
+        ],
+        "responsibilitySummary": "Provide `tests.test_core` behavior through source symbols test_add_one.",
+        "riskLevel": "low",
+        "whyPriority": "Risk score 0 from 4 source lines and symbol coverage."
+      }
+    ],
+    "externalSurfaces": [],
+    "openQuestions": [],
+    "priorityBacklog": [],
+    "productInvariants": [],
+    "qualityGates": [
+      {
+        "command": "uv run python -m pytest -q",
+        "id": "check.workspace-python-tests",
+        "includedInAcceptance": false,
+        "mode": "test",
+        "provenanceRefs": [
+          "prov:e8848f13064d9353"
+        ],
+        "safeToRunByDefault": true,
+        "source": "snapshot_observable_check"
+      }
+    ],
+    "runtimeContracts": [
+      {
+        "description": "Workspace Pkg Core behavior imports Workspace Pkg Worker behavior",
+        "fromComponentId": "component.pkg-core",
+        "id": "runtime.contract-component-pkg-core-imports-component-pkg-worker",
+        "kind": "imports",
+        "provenanceRefs": [
+          "prov:c14ba60212f89b59",
+          "prov:e5fd599f2f2cb87f",
+          "prov:f8a75c4f574d54cf"
+        ],
+        "supportingEdgeIds": [
+          "edge:4fcbc3e5b14db719e695",
+          "edge:6d60001efbd30b1612e4"
+        ],
+        "supportingNodeIds": [],
+        "toComponentId": "component.pkg-worker"
+      },
+      {
+        "description": "Workspace Verification support imports Workspace Pkg Core behavior",
+        "fromComponentId": "component.workspace-verification",
+        "id": "runtime.contract-component-workspace-verification-imports-component-pkg-core",
+        "kind": "imports",
+        "provenanceRefs": [
+          "prov:2bce6a672105c18e",
+          "prov:7741be8b4f15a149",
+          "prov:c14ba60212f89b59"
+        ],
+        "supportingEdgeIds": [
+          "edge:3bd330f85996bccd922e",
+          "edge:808b1130868c6ca24122"
+        ],
+        "supportingNodeIds": [],
+        "toComponentId": "component.pkg-core"
+      }
+    ],
+    "summary": "Iteration guidance covers 4 components, 0 product invariants, 0 external surfaces, and 1 local quality gates. Highest-risk components: none."
+  },
+  "models": {
+    "primary": "fixture-meta-decomposer",
+    "probeBuilders": []
+  },
+  "project": {
+    "goal": "decompose tiny example repo",
+    "nonGoals": [
+      "no buckets"
+    ],
+    "projectId": "tiny-v1-example",
+    "projectRoot": "/tmp/tmp.EtdxoWvfkM/tiny-v1-example"
+  },
+  "projectGraph": {
+    "edges": [
+      {
+        "confidence": "heuristic",
+        "derived_by": "python_ast",
+        "from_node_id": "node:fb5a935faa0391969beb",
+        "id": "edge:0bcba0f4a2b1ef5df3f2",
+        "kind": "calls",
+        "label": "tests.test_core.test_add_one calls pkg.core.add_one",
+        "provenance_refs": [
+          {
+            "confidence": "heuristic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:2772aca7687664ba",
+            "line_end": 4,
+            "line_start": 4,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:6e9656b31e1a775d1036"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:e02bb9841e6806e8c75f",
+        "id": "edge:3366c3dd5aff199dc651",
+        "kind": "contains",
+        "label": "contains",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "3d44d304e77deac5a9c596eb4601c4e36413b2de8810458f2ff30b66a7613b93",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e8848f13064d9353",
+            "line_end": 3,
+            "line_start": 1,
+            "path": "pyproject.toml",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:f297e5cb198d1f626af5"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:fb5a935faa0391969beb",
+        "id": "edge:346c8cc8098a3c1e2331",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:2bce6a672105c18e",
+            "line_end": 4,
+            "line_start": 3,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:2ed887a154d9f8588b4a"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:d5230453a7bd8da84d13",
+        "id": "edge:3bd330f85996bccd922e",
+        "kind": "imports",
+        "label": "pkg.core.add_one",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7741be8b4f15a149",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:python_import:pkg.core.add_one"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:72423a36df9156d74f2f",
+        "id": "edge:4fcbc3e5b14db719e695",
+        "kind": "imports",
+        "label": "pkg.worker",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:f8a75c4f574d54cf",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:python_import:pkg.worker"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:e2a9dcb1d533bdd79014",
+        "id": "edge:678d8db7bc84210e7ead",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e5fd599f2f2cb87f",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:4f4a73986b0cf7f78577"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:72423a36df9156d74f2f",
+        "id": "edge:6d60001efbd30b1612e4",
+        "kind": "imports",
+        "label": "pkg.worker.one",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:f8a75c4f574d54cf",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:python_import:pkg.worker.one"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:e02bb9841e6806e8c75f",
+        "id": "edge:7eb7daf724e93bd2ec49",
+        "kind": "contains",
+        "label": "contains",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:111bfe446e48c799",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:7dc099dc59b71626b405"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:d5230453a7bd8da84d13",
+        "id": "edge:808b1130868c6ca24122",
+        "kind": "imports",
+        "label": "pkg.core",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7741be8b4f15a149",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:python_import:pkg.core"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:6e9656b31e1a775d1036",
+        "id": "edge:8d82f639d3afca918fa3",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7123fc18386d7300",
+            "line_end": 4,
+            "line_start": 3,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:7dc099dc59b71626b405"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:72423a36df9156d74f2f",
+        "id": "edge:a686d29004e6f32602fd",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c14ba60212f89b59",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:7dc099dc59b71626b405"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:2ed887a154d9f8588b4a",
+        "id": "edge:b2abbf0edd4da7fdc60c",
+        "kind": "tests",
+        "label": "tests inferred module",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c3e3b944ffb744be",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:72423a36df9156d74f2f"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:e02bb9841e6806e8c75f",
+        "id": "edge:bbbcb970ea96fc71a3cd",
+        "kind": "contains",
+        "label": "contains",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c3e3b944ffb744be",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:2ed887a154d9f8588b4a"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:2ed887a154d9f8588b4a",
+        "id": "edge:bcd8f1fd29dd29dda5c5",
+        "kind": "tests",
+        "label": "tests inferred module",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c3e3b944ffb744be",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:d5230453a7bd8da84d13"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:e02bb9841e6806e8c75f",
+        "id": "edge:dd1867764ee445bc865a",
+        "kind": "contains",
+        "label": "contains",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:d0e61d00de412fc2",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:4f4a73986b0cf7f78577"
+      },
+      {
+        "confidence": "heuristic",
+        "derived_by": "python_ast",
+        "from_node_id": "node:6e9656b31e1a775d1036",
+        "id": "edge:e463a47ff25306be4983",
+        "kind": "calls",
+        "label": "pkg.core.add_one calls pkg.worker.one",
+        "provenance_refs": [
+          {
+            "confidence": "heuristic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:13f1294869d89deb",
+            "line_end": 4,
+            "line_start": 4,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:e2a9dcb1d533bdd79014"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:d5230453a7bd8da84d13",
+        "id": "edge:e6f594db51c69261a148",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:45ea6e28f647a9c2",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:2ed887a154d9f8588b4a"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:433388ca1c937f3bb96f",
+        "id": "edge:f901f93bdbf99ab86eb0",
+        "kind": "defined_in",
+        "label": "defined_in",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e5fd599f2f2cb87f",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:4f4a73986b0cf7f78577"
+      },
+      {
+        "confidence": "deterministic",
+        "derived_by": "project_graph",
+        "from_node_id": "node:f297e5cb198d1f626af5",
+        "id": "edge:ffe68e9119f87278bde6",
+        "kind": "configures",
+        "label": "configures",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "3d44d304e77deac5a9c596eb4601c4e36413b2de8810458f2ff30b66a7613b93",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e8848f13064d9353",
+            "line_end": 3,
+            "line_start": 1,
+            "path": "pyproject.toml",
+            "source_type": "file"
+          }
+        ],
+        "to_node_id": "node:e02bb9841e6806e8c75f"
+      }
+    ],
+    "graphHash": "de8b7887fcc7d6f02332d6cc99e3501ce1dd3af09252c0f657215d4c42fc1768",
+    "nodes": [
+      {
+        "id": "node:2ed887a154d9f8588b4a",
+        "kind": "test_file",
+        "label": "tests/test_core.py",
+        "path": "tests/test_core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c3e3b944ffb744be",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": null,
+        "tags": []
+      },
+      {
+        "id": "node:433388ca1c937f3bb96f",
+        "kind": "python_module",
+        "label": "pkg.worker",
+        "path": "pkg/worker.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e5fd599f2f2cb87f",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.worker",
+        "tags": []
+      },
+      {
+        "id": "node:4f4a73986b0cf7f78577",
+        "kind": "file",
+        "label": "pkg/worker.py",
+        "path": "pkg/worker.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:d0e61d00de412fc2",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": null,
+        "tags": []
+      },
+      {
+        "id": "node:6e9656b31e1a775d1036",
+        "kind": "python_function",
+        "label": "add_one",
+        "path": "pkg/core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7123fc18386d7300",
+            "line_end": 4,
+            "line_start": 3,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.core.add_one",
+        "tags": []
+      },
+      {
+        "id": "node:72423a36df9156d74f2f",
+        "kind": "python_module",
+        "label": "pkg.core",
+        "path": "pkg/core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:c14ba60212f89b59",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.core",
+        "tags": []
+      },
+      {
+        "id": "node:7dc099dc59b71626b405",
+        "kind": "file",
+        "label": "pkg/core.py",
+        "path": "pkg/core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:111bfe446e48c799",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": null,
+        "tags": []
+      },
+      {
+        "id": "node:d5230453a7bd8da84d13",
+        "kind": "python_module",
+        "label": "tests.test_core",
+        "path": "tests/test_core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:45ea6e28f647a9c2",
+            "line_end": 4,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "tests.test_core",
+        "tags": []
+      },
+      {
+        "id": "node:e02bb9841e6806e8c75f",
+        "kind": "project",
+        "label": "tiny-v1-example",
+        "path": null,
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "98c831338e5c2706ed77439e64e8687ca188aaba85180d8bfcfdfe304d8ce086",
+            "derived_by": "git",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:project:98c831338e5c2706",
+            "line_end": null,
+            "line_start": null,
+            "path": null,
+            "source_type": "git"
+          }
+        ],
+        "symbol": null,
+        "tags": []
+      },
+      {
+        "id": "node:e2a9dcb1d533bdd79014",
+        "kind": "python_function",
+        "label": "one",
+        "path": "pkg/worker.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "73871eb581f58498f79e8e6ee32d2573e6d330f458d30ba71c06310d2ee9a100",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e5fd599f2f2cb87f",
+            "line_end": 2,
+            "line_start": 1,
+            "path": "pkg/worker.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.worker.one",
+        "tags": []
+      },
+      {
+        "id": "node:f297e5cb198d1f626af5",
+        "kind": "config",
+        "label": "pyproject.toml",
+        "path": "pyproject.toml",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "3d44d304e77deac5a9c596eb4601c4e36413b2de8810458f2ff30b66a7613b93",
+            "derived_by": "filesystem",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:e8848f13064d9353",
+            "line_end": 3,
+            "line_start": 1,
+            "path": "pyproject.toml",
+            "source_type": "file"
+          }
+        ],
+        "symbol": null,
+        "tags": []
+      },
+      {
+        "id": "node:fb5a935faa0391969beb",
+        "kind": "python_function",
+        "label": "test_add_one",
+        "path": "tests/test_core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:2bce6a672105c18e",
+            "line_end": 4,
+            "line_start": 3,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "tests.test_core.test_add_one",
+        "tags": []
+      },
+      {
+        "id": "node:python_import:pkg.core",
+        "kind": "python_import",
+        "label": "pkg.core",
+        "path": "tests/test_core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7741be8b4f15a149",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.core",
+        "tags": []
+      },
+      {
+        "id": "node:python_import:pkg.core.add_one",
+        "kind": "python_import",
+        "label": "pkg.core.add_one",
+        "path": "tests/test_core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "e8c67f92bb4f8b40079f6c8b116d1411225ad216cbc64c24ac5208901d45ce4e",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:7741be8b4f15a149",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "tests/test_core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.core.add_one",
+        "tags": []
+      },
+      {
+        "id": "node:python_import:pkg.worker",
+        "kind": "python_import",
+        "label": "pkg.worker",
+        "path": "pkg/core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:f8a75c4f574d54cf",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.worker",
+        "tags": []
+      },
+      {
+        "id": "node:python_import:pkg.worker.one",
+        "kind": "python_import",
+        "label": "pkg.worker.one",
+        "path": "pkg/core.py",
+        "provenance_refs": [
+          {
+            "confidence": "deterministic",
+            "content_hash": "d41f172b96d794bc884f31c33706cc55d2172ed2c053d585e485d5aba953fd99",
+            "derived_by": "python_ast",
+            "dirty": false,
+            "git_oid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+            "id": "prov:f8a75c4f574d54cf",
+            "line_end": 1,
+            "line_start": 1,
+            "path": "pkg/core.py",
+            "source_type": "file"
+          }
+        ],
+        "symbol": "pkg.worker.one",
+        "tags": []
+      }
+    ],
+    "projectRoot": "/tmp/tmp.EtdxoWvfkM/tiny-v1-example",
+    "schemaVersion": "project-graph/v0.1"
+  },
+  "provenance": {
+    "git": {
+      "available": true,
+      "dirty": false,
+      "dirtyPaths": [],
+      "dirtyStateFingerprint": "3c85a3ba68f940c7edb4d7563ad165bf2d54c389e2147472c36297b79cdfa744",
+      "headOid": "677cbb6e6812d21fa46b6a5c693be317c6d46253",
+      "root": "/tmp/tmp.EtdxoWvfkM/tiny-v1-example"
+    },
+    "provenanceRefStrategy": "All graph, component, contract, check, probe, and gap claims must resolve to ProjectGraph ProvenanceRef ids or be declared as verification gaps."
+  },
+  "schemaVersion": "project-model/v1",
+  "snapshot": {
+    "acceptance_command_allowlist": [
+      "local-pytest",
+      "uv run python -m pytest -q"
+    ],
+    "components": [
+      {
+        "check_ids": [
+          "check.workspace-python-tests"
+        ],
+        "contract_ids": [
+          "contract.component-pkg-core-imports-component-pkg-worker",
+          "contract.component-workspace-verification-imports-component-pkg-core"
+        ],
+        "id": "component.pkg-core",
+        "name": "Workspace Pkg Core behavior",
+        "owned_node_ids": [
+          "node:6e9656b31e1a775d1036",
+          "node:72423a36df9156d74f2f",
+          "node:7dc099dc59b71626b405"
+        ],
+        "provenance_refs": [
+          "prov:c14ba60212f89b59",
+          "prov:7123fc18386d7300",
+          "prov:111bfe446e48c799"
+        ],
+        "responsibility": "Provide the pkg-core responsibility within the python project root using graph-resolved source evidence.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.workspace-python-tests"
+        ],
+        "contract_ids": [
+          "contract.component-pkg-core-imports-component-pkg-worker"
+        ],
+        "id": "component.pkg-worker",
+        "name": "Workspace Pkg Worker behavior",
+        "owned_node_ids": [
+          "node:433388ca1c937f3bb96f",
+          "node:4f4a73986b0cf7f78577",
+          "node:e2a9dcb1d533bdd79014"
+        ],
+        "provenance_refs": [
+          "prov:e5fd599f2f2cb87f",
+          "prov:d0e61d00de412fc2"
+        ],
+        "responsibility": "Provide the pkg-worker responsibility within the python project root using graph-resolved source evidence.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.workspace-python-tests"
+        ],
+        "contract_ids": [],
+        "id": "component.workspace-tooling",
+        "name": "Workspace Tooling support",
+        "owned_node_ids": [
+          "node:f297e5cb198d1f626af5"
+        ],
+        "provenance_refs": [
+          "prov:e8848f13064d9353"
+        ],
+        "responsibility": "Support the tooling responsibility for the python project root with manifest, test, or documentation evidence.",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [
+          "check.workspace-python-tests"
+        ],
+        "contract_ids": [
+          "contract.component-workspace-verification-imports-component-pkg-core"
+        ],
+        "id": "component.workspace-verification",
+        "name": "Workspace Verification support",
+        "owned_node_ids": [
+          "node:2ed887a154d9f8588b4a",
+          "node:d5230453a7bd8da84d13",
+          "node:fb5a935faa0391969beb"
+        ],
+        "provenance_refs": [
+          "prov:2bce6a672105c18e",
+          "prov:45ea6e28f647a9c2",
+          "prov:c3e3b944ffb744be"
+        ],
+        "responsibility": "Support the verification responsibility for the python project root with manifest, test, or documentation evidence.",
+        "verification_gap_ids": []
+      }
+    ],
+    "contracts": [
+      {
+        "from_component_id": "component.pkg-core",
+        "id": "contract.component-pkg-core-imports-component-pkg-worker",
+        "name": "Workspace Pkg Core behavior imports Workspace Pkg Worker behavior",
+        "near_neighbor_alternative_ids": [],
+        "provenance_refs": [
+          "prov:c14ba60212f89b59",
+          "prov:e5fd599f2f2cb87f",
+          "prov:f8a75c4f574d54cf"
+        ],
+        "supporting_edge_ids": [
+          "edge:4fcbc3e5b14db719e695",
+          "edge:6d60001efbd30b1612e4"
+        ],
+        "to_component_id": "component.pkg-worker"
+      },
+      {
+        "from_component_id": "component.workspace-verification",
+        "id": "contract.component-workspace-verification-imports-component-pkg-core",
+        "name": "Workspace Verification support imports Workspace Pkg Core behavior",
+        "near_neighbor_alternative_ids": [],
+        "provenance_refs": [
+          "prov:2bce6a672105c18e",
+          "prov:7741be8b4f15a149",
+          "prov:c14ba60212f89b59"
+        ],
+        "supporting_edge_ids": [
+          "edge:3bd330f85996bccd922e",
+          "edge:808b1130868c6ca24122"
+        ],
+        "to_component_id": "component.pkg-core"
+      }
+    ],
+    "created_at_utc": "1970-01-01T00:00:00Z",
+    "cross_cutting_concerns": [
+      {
+        "category": "anti_fabrication",
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [
+          "contract.component-pkg-core-imports-component-pkg-worker",
+          "contract.component-workspace-verification-imports-component-pkg-core"
+        ],
+        "description": "Accepted decomposition claims must trace to deterministic graph provenance.",
+        "id": "concern.anti-fabrication",
+        "provenance_refs": [
+          "prov:c3e3b944ffb744be"
+        ],
+        "triggered_by": []
+      },
+      {
+        "category": "determinism",
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [],
+        "description": "Root discovery, component grouping, contracts, and checks are sorted and reproducible.",
+        "id": "concern.determinism",
+        "provenance_refs": [
+          "prov:c3e3b944ffb744be"
+        ],
+        "triggered_by": []
+      },
+      {
+        "category": "provenance",
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [
+          "contract.component-pkg-core-imports-component-pkg-worker",
+          "contract.component-workspace-verification-imports-component-pkg-core"
+        ],
+        "description": "Every component, contract, check, and gap is backed by graph/file provenance.",
+        "id": "concern.provenance",
+        "provenance_refs": [
+          "prov:c3e3b944ffb744be"
+        ],
+        "triggered_by": []
+      },
+      {
+        "category": "no_live_paid_api_acceptance",
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [],
+        "description": "Generated checks are local candidates and are not acceptance-allowlisted without proof.",
+        "id": "concern.no-live-paid-api",
+        "provenance_refs": [
+          "prov:c3e3b944ffb744be"
+        ],
+        "triggered_by": []
+      }
+    ],
+    "goal": "decompose tiny example repo",
+    "graph_hash": "de8b7887fcc7d6f02332d6cc99e3501ce1dd3af09252c0f657215d4c42fc1768",
+    "held_out_probes": [],
+    "input_hashes": {
+      "graph": "de8b7887fcc7d6f02332d6cc99e3501ce1dd3af09252c0f657215d4c42fc1768"
+    },
+    "model_output_hashes": {
+      "decomposer": "b140e4338ceffb1ef0d2b69349ef2939b162098bf5a13f570e33f97ba5179443"
+    },
+    "near_neighbor_alternatives": [
+      {
+        "alternative": "Treat adjacent files as a polished bucket without responsibility evidence.",
+        "id": "near.file-bucket-boundary",
+        "provenance_refs": [
+          "prov:c3e3b944ffb744be"
+        ],
+        "target_id": "contract.component-pkg-core-imports-component-pkg-worker",
+        "why_not_primary": "Rejected for this project goal: decompose tiny example repo. It also violates the stated non-goal: no buckets. A file bucket is not responsibility-bearing evidence."
+      }
+    ],
+    "non_goals": [
+      "no buckets"
+    ],
+    "observable_checks": [
+      {
+        "acceptance_command_id": null,
+        "command": "uv run python -m pytest -q",
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [],
+        "description": "Run root-local Python tests discovered from generic project metadata.",
+        "execution_dir": ".",
+        "execution_status": "statically_validated",
+        "id": "check.workspace-python-tests",
+        "proof_artifact": null,
+        "provenance_refs": [
+          "prov:e8848f13064d9353"
+        ],
+        "requires_network": false,
+        "requires_paid_api": false,
+        "safe_to_run_by_default": true,
+        "safety_status": "safe_by_default",
+        "verification_gap_ids": []
+      }
+    ],
+    "primary_model_id": "fixture-meta-decomposer",
+    "project_id": "tiny-v1-example",
+    "project_root": "/tmp/tmp.EtdxoWvfkM/tiny-v1-example",
+    "prompt_hashes": {
+      "decomposer": "5c670e72718603ed85ea9471d8b6ea884427d45969874073b2a4c97db81b45c7"
+    },
+    "schema_version": "project-model-snapshot/v0.1",
+    "snapshot_id": "snapshot-660292a8717b91d7",
+    "verification_gaps": [
+      {
+        "component_ids": [
+          "component.pkg-core",
+          "component.pkg-worker",
+          "component.workspace-tooling",
+          "component.workspace-verification"
+        ],
+        "contract_ids": [
+          "contract.component-pkg-core-imports-component-pkg-worker",
+          "contract.component-workspace-verification-imports-component-pkg-core"
+        ],
+        "description": "Semantic component quality has not been independently probe-validated; deterministic graph grounding constrains project claims, but no planted-negative/golden-control probe artifacts were run.",
+        "id": "gap.semantic-understanding-not-independently-validated",
+        "proposed_closure_check": "Run independent planted-negative and golden-control probe artifacts, capture the proof outputs, and rerun the deterministic gate.",
+        "provenance_refs": [
+          "prov:c14ba60212f89b59",
+          "prov:7123fc18386d7300",
+          "prov:111bfe446e48c799",
+          "prov:e5fd599f2f2cb87f",
+          "prov:d0e61d00de412fc2"
+        ],
+        "severity": "medium"
+      }
+    ]
+  }
+}

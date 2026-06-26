@@ -141,7 +141,8 @@ def test_readme_describes_ai_first_v1_and_bounded_live_status() -> None:
         "AI-first decomposer",
         "Project Model v1",
         "project-model-v1.json",
-        "project-model-v0.json",
+        "iterationReadiness",
+        "docs/project-model-v1.md",
         "uv run python -m arena.decomposer",
         "uv run python -m arena.project_model_cli snapshot",
         "uv run python -m arena.project_model_cli graph",
@@ -193,7 +194,7 @@ def test_agents_current_status_reflects_post_phase4_decomposer_and_readiness() -
         "AI-first decomposer",
         "Project Model v1",
         "project-model-v1.json",
-        "project-model-v0.json",
+        "iterationReadiness",
         "LiveProjectModelLLM",
         "pre-live readiness register",
         "not_ready_blockers_remain",
@@ -239,7 +240,7 @@ def test_project_brief_current_status_matches_implemented_foundation() -> None:
         "AI-first decomposer",
         "Project Model v1",
         "project-model-v1.json",
-        "project-model-v0.json",
+        "iterationReadiness",
         "LiveProjectModelLLM",
         "--allow-live",
         "not_ready_blockers_remain",
@@ -349,7 +350,7 @@ def test_docs_describe_bounded_real_run_attempt_as_safe_failed_not_unqualified_r
 
 
 def test_failed_live_decomposition_report_does_not_use_unqualified_accept_verdict() -> None:
-    report = _read("reports/2026-06-15-grok43-verification-results.md")
+    report = _read("docs/archive/reports/2026-06-15-grok43-verification-results.md")
 
     assert "bounded live Grok 4.3 project-model attempt" in report
     assert "smoke" not in report.lower()
@@ -454,7 +455,7 @@ def test_documented_cli_surfaces_exist() -> None:
     checks = [
         (
             ["uv", "run", "python", "-m", "arena.decomposer", "--help"],
-            ["--project", "--output", "--format", "project-model-v0"],
+            ["--project", "--output", "--fail-on-gap"],
         ),
         (
             ["uv", "run", "python", "-m", "arena.project_model_cli", "--help"],

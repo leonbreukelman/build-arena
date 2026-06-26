@@ -143,7 +143,6 @@ class FakeStages:
                     "snapshot_id": self.SNAPSHOT_ID,
                     "project_model_primary_path": "project-model-v1.json",
                     "project_model_v1_path": "project-model-v1.json",
-                    "project_model_v0_path": "project-model-v0.json",
                 }
             ),
             encoding="utf-8",

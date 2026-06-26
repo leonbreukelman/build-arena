@@ -231,8 +231,8 @@ Minimum Build Arena acceptance:
 
 ## 7. Non-regression requirements
 
-1. v0 compatibility output remains present.
-2. Existing v1 top-level fields remain unchanged; `iterationReadiness` is additive and optional for legacy schema validation but mandatory for this emitter's new artifacts.
+1. Project Model v1 remains the active shared contract emitted by the decomposer.
+2. Existing v1 top-level data remains stable; `iterationReadiness` is mandatory for this emitter's new artifacts and for core intake/proposal consumers.
 3. The deterministic gate still rejects stale graph hashes, file buckets, missing provenance, unsafe acceptance commands, missing edge coverage, and protected/generated ownership.
 4. No generated files under `arena/generated/` are hand-edited.
 5. No root `schema/` files are modified.
