@@ -26,8 +26,6 @@ def main(argv: list[str] | None = None) -> int:
     snapshot.add_argument("--project-id")
     snapshot.add_argument("--goal")
     snapshot.add_argument("--non-goal", dest="non_goals", action="append", default=[])
-    snapshot.add_argument("--source-task", default="AI-first project decomposition")
-    snapshot.add_argument("--primary-backlog-item", default="local-snapshot")
     snapshot.add_argument("--llm-mode", choices=["fixture", "recorded", "live", "off"], default="fixture")
     snapshot.add_argument("--model-output")
     snapshot.add_argument("--allow-live", action="store_true")
@@ -77,8 +75,6 @@ def _snapshot(args: argparse.Namespace) -> int:
             project_id=args.project_id,
             goal=args.goal,
             non_goals=args.non_goals or None,
-            source_task=args.source_task,
-            primary_backlog_item=args.primary_backlog_item,
             llm_mode=args.llm_mode,
             model_output_path=args.model_output,
             live_provider=args.live_provider,

@@ -1,5 +1,7 @@
 # F3 Project Model Mentor Runbook
 
+> Archived historical runbook: this document describes the removed Project Model v0 compatibility workflow and may reference deleted modules/schemas. It is retained only as point-in-time context; use `docs/project-model-v1.md` for the active contract.
+
 Audience: a build-arena agent collaborating with Leon on a primary backlog task.
 
 Purpose: guide the agent from backlog-item understanding through Project Model v0 decomposition, Elenchus advisory preflight, implementation, verification, and calibration feedback, while acting as a mentor. The agent should explain what is happening, why each step matters, and what is interesting or surprising at each milestone.

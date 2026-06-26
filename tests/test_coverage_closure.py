@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import ast
 import asyncio
-import builtins
 import json
 import runpy
 import sqlite3
@@ -45,7 +44,6 @@ from arena.loop import (
     _structural_ok,
     run_loop,
 )
-from arena.project_model_v0 import QualityGateFinding, _first_cycle, evaluate_quality_gate
 from arena.router import RunnerRouter
 from arena.runners.base import ApplyResult, CreditExhausted, RouterEvent, RunnerError
 from arena.runners.claude_code import ClaudeCodeRunner, ClaudeStreamGuard, _tool_file_path
@@ -752,161 +750,16 @@ def test_verifier_and_calibration_edge_cases() -> None:
     assert report.meets_targets is True
 
 
-def test_project_model_v0_quality_gate_edge_cases(monkeypatch: pytest.MonkeyPatch) -> None:
-    report = evaluate_quality_gate(
-        {
-            "schemaVersion": "project-model/v9",
-            "source": {"task": "x", "primaryBacklogItem": "x"},
-            "goal": "x",
-            "components": "not-list",
-            "observableChecks": "not-list",
-        }
-    )
-    codes = {finding.code for finding in report.findings}
-    assert "unsupported_schema_version" in codes
-    assert "missing_components" in codes
-    assert "missing_observable_checks" in codes
-
-    vague = evaluate_quality_gate(
-        {
-            "schemaVersion": "project-model/v0",
-            "source": {"task": "x", "primaryBacklogItem": "x"},
-            "goal": "x",
-            "components": [
-                {
-                    "id": "component_a",
-                    "name": "Component A",
-                    "kind": "source",
-                    "responsibilities": ["handle stuff"],
-                    "ownedSurfaces": ["repo"],
-                    "observableCheckIds": ["check_a"],
-                }
-            ],
-            "observableChecks": [
-                {"id": "check_a", "componentId": "component_a", "mode": "test", "description": "pytest", "evidenceRequired": ["output"]}
-            ],
-        }
-    )
-    assert "vague_decomposition" in {finding.code for finding in vague.findings}
-    assert _first_cycle({"a": {"c"}, "b": {"c"}, "c": set()}) == []
-
-    real_set = builtins.set
-    set_calls = 0
-
-    class ContainsGhost:
-        def __contains__(self, item: object) -> bool:
-            return item == "ghost"
-
-        def add(self, item: object) -> None:
-            return None
-
-        def remove(self, item: object) -> None:
-            return None
-
-    def fake_set(*args: object) -> object:
-        nonlocal set_calls
-        set_calls += 1
-        if set_calls == 1:
-            return ContainsGhost()
-        return real_set(*args)
-
-    monkeypatch.setattr(builtins, "set", fake_set)
-    assert _first_cycle({"ghost": real_set()}) == ["ghost"]
-
-
 def test_decomposer_private_and_cli_edge_cases(tmp_path: Path, capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch) -> None:
-    assert decomposer._identifier("", "fallback") == "fallback"
-    assert decomposer._identifier("123 value", "fallback") == "fallback_123_value"
-    used = {"dup"}
-    assert decomposer._unique_identifier("dup", used, "fallback") == "dup_2"
-    verification_component = decomposer.Component(
-        id="verify",
-        name="Verify",
-        kind="verification",
-        owned_files=["tests/test_x.py"],
-        responsibilities=["verify"],
-    )
-    artifact_component = verification_component.model_copy(update={"id": "artifact", "kind": "artifact"})
-    weird_component = verification_component.model_copy(update={"id": "weird", "kind": "bespoke"})
-    assert decomposer._component_kind_for_v0(verification_component) == "test"
-    assert decomposer._component_kind_for_v0(artifact_component) == "data"
-    assert decomposer._component_kind_for_v0(weird_component) == "unknown"
-    assert decomposer._observable_mode_for_check(decomposer.MechanicalCheck(id="sim", command="tool --dry-run")) == "simulation"
-    assert decomposer._observable_mode_for_check(decomposer.MechanicalCheck(id="inspect", command="manual review")) == "inspection"
-    assert decomposer._component_risk_level(verification_component, [decomposer.VerificationGap(id="risk", component_id="verify", severity="high", evidence=["e"], proposed_check="check")]) == "high"
     assert len(decomposer._arena_contracts(set(), ["arena/fixtures.py"])) == 0
-    assert decomposer._contract_description(
-        decomposer.Contract(id="c", producer_component_id="a", consumer_component_id="b", assumes=[], guarantees=[])
-    ) == (
-        "Assumes: no explicit assumptions. Guarantees: no explicit guarantees."
-    )
-
-    assert decomposer.main([
-        "--project",
-        str(tmp_path),
-        "--format",
-        "project-model-v0",
-        "--primary-backlog-item",
-        "item",
-    ]) == 2
-    assert "required" in capsys.readouterr().err
 
     docs = tmp_path / "docs-only"
     docs.mkdir()
     (docs / "README.md").write_text("# docs\n", encoding="utf-8")
-    assert decomposer.main([
-        "--project",
-        str(docs),
-        "--output",
-        "-",
-        "--format",
-        "project-model-v0",
-        "--source-task",
-        "Document the operating model.",
-        "--primary-backlog-item",
-        "item",
-        "--fail-on-gap",
-    ]) == 3
-    captured = capsys.readouterr()
-    assert json.loads(captured.out)["schemaVersion"] == "project-model/v0"
-    assert "verification gap" in captured.err
 
     output = tmp_path / "scanner.json"
     assert decomposer.main(["--project", str(docs), "--output", str(output)]) == 0
-    assert json.loads(output.read_text(encoding="utf-8"))["schema_version"] == "project-model/v0.1"
-
-    valid_v0 = decomposer.decompose_project_model_v0(
-        docs,
-        source_task="Document the operating model.",
-        primary_backlog_item="item",
-    )
-    monkeypatch.setattr(decomposer, "decompose_project_model_v0", lambda *args, **kwargs: valid_v0)
-    monkeypatch.setattr(
-        decomposer,
-        "validate_project_model_v0",
-        lambda model: decomposer.QualityGateReport(
-            passed=False,
-            findings=[
-                QualityGateFinding(
-                    code="coverage_probe",
-                    severity="error",
-                    location="components[0]",
-                    message="forced quality-gate failure",
-                )
-            ],
-        ),
-    )
-    assert decomposer.main([
-        "--project",
-        str(docs),
-        "--format",
-        "project-model-v0",
-        "--source-task",
-        "task",
-        "--primary-backlog-item",
-        "item",
-    ]) == 2
-    assert "project model v0 quality gate failed" in capsys.readouterr().err
+    assert json.loads(output.read_text(encoding="utf-8"))["schema_version"] == "project-scanner/v0.1"
 
     scanner_model = decomposer.decompose_project(docs)
     monkeypatch.setattr(decomposer, "decompose_project", lambda *args, **kwargs: scanner_model)
@@ -1020,71 +873,10 @@ def test_decomposer_validation_reports_all_error_families(tmp_path: Path) -> Non
     assert "git tree was dirty" in joined
 
 
-def test_decomposer_v0_mapping_fallbacks_and_unclassified_surface(tmp_path: Path) -> None:
-    component_a = decomposer.Component(
-        id="alpha",
-        name="Alpha",
-        kind="source",
-        owned_files=["alpha.py"],
-        responsibilities=["alpha"],
-        checks=[decomposer.MechanicalCheck(id="alpha-check", command="python -m compileall .")],
-    )
-    component_b = decomposer.Component(
-        id="beta",
-        name="Beta",
-        kind="source",
-        owned_files=["beta.py"],
-        responsibilities=["beta"],
-        checks=[decomposer.MechanicalCheck(id="beta-check", command="python -m compileall .")],
-    )
-    model = decomposer.ProjectModel(
-        project_id="mapping",
-        project_root=str(tmp_path),
-        git=decomposer.GitState(available=False, inventory_mode="filesystem"),
-        file_inventory=decomposer.FileInventory(
-            included_files=[
-                decomposer.FileRecord(path="alpha.py", sha256="0" * 64, kind="source"),
-                decomposer.FileRecord(path="beta.py", sha256="1" * 64, kind="source"),
-            ]
-        ),
-        components=[component_a, component_b],
-        contracts=[
-            decomposer.Contract(id="alpha_to_beta", producer_component_id="alpha", consumer_component_id="beta", assumes=["alpha exists"], guarantees=["beta receives alpha"]),
-            decomposer.Contract(id="ignored", producer_component_id="missing", consumer_component_id="alpha", assumes=[], guarantees=[]),
-        ],
-        verification_gaps=[decomposer.VerificationGap(id="alpha_gap", component_id="alpha", severity="high", evidence=["manual review"], proposed_check="review alpha risk")],
-        cross_cutting_concerns=[decomposer.CrossCuttingConcern(id="unmapped", description="unmapped", affected_components=["missing"])],
-        coverage=decomposer.CoverageReport(
-            total_files=2,
-            included_files=2,
-            excluded_files=0,
-            owned_included_files=2,
-            coverage_numerator=2,
-            coverage_denominator=2,
-        ),
-    )
-    v0 = decomposer.project_model_v0_from_decomposition(model, source_task="task", primary_backlog_item="item")
-    assert any(dependency.id == "alpha_to_beta" for dependency in v0.dependencies)
-    assert any(probe.componentId == "alpha" for probe in v0.heldOutProbes)
-    assert all(invariant.id != "unmapped" for invariant in v0.invariants)
-
-    fallback_dependencies = decomposer._default_dependencies_for_v0(
-        [component_a, component_b],
-        {"alpha": "alpha", "beta": "beta"},
-        {},
-        set(),
-    )
-    assert fallback_dependencies[0].id == "alpha_informs_beta"
-
+def test_decomposer_generic_unclassified_surface(tmp_path: Path) -> None:
     loose = tmp_path / "loose"
     loose.mkdir()
     (loose / "image.png").write_bytes(b"png")
     generic = decomposer.decompose_project(loose)
     assert "unclassified_project_surface" in {component.id for component in generic.components}
     assert any(gap.id == "unclassified_project_surface_gap" for gap in generic.verification_gaps)
-    v0_generic = decomposer.decompose_project_model_v0(
-        loose,
-        source_task="Classify loose files.",
-        primary_backlog_item="local/loose",
-    )
-    assert v0_generic.unclassifiedProjectSurface

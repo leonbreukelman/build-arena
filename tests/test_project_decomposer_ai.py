@@ -37,7 +37,7 @@ def _write_repo(root: Path) -> None:
     _init_repo(root)
 
 
-def test_build_project_model_snapshot_writes_sidecars_and_v0_projection(tmp_path: Path) -> None:
+def test_build_project_model_snapshot_writes_v1_sidecars(tmp_path: Path) -> None:
     repo = tmp_path / "repo"
     repo.mkdir()
     _write_repo(repo)
@@ -64,7 +64,7 @@ def test_build_project_model_snapshot_writes_sidecars_and_v0_projection(tmp_path
         "encyclopedia/manifest.json",
         "snapshot.json",
         "gate-report.json",
-        "project-model-v0.json",
+        "project-model-v1.json",
         "prompts/decomposer-prompt.txt",
         "model-outputs/decomposer.raw.json",
         "model-outputs/skeptic-review.raw.json",
@@ -74,9 +74,11 @@ def test_build_project_model_snapshot_writes_sidecars_and_v0_projection(tmp_path
         "acceptance-command-allowlist.json",
     ]:
         assert (result.snapshot_dir / rel).exists(), rel
-    v0 = json.loads((result.snapshot_dir / "project-model-v0.json").read_text(encoding="utf-8"))
-    assert v0["schemaVersion"] == "project-model/v0"
-    assert v0["id"] == "api-project"
+    v1 = json.loads((result.snapshot_dir / "project-model-v1.json").read_text(encoding="utf-8"))
+    assert v1["schemaVersion"] == "project-model/v1"
+    assert v1["id"] == result.snapshot.snapshot_id
+    assert result.manifest["project_model_primary_path"] == "project-model-v1.json"
+    assert "compatibility" not in v1
     assert result.snapshot.contracts
     assert result.snapshot.observable_checks[0].command == "uv run python -m pytest -q"
     assert "local-pytest" in result.snapshot.acceptance_command_allowlist

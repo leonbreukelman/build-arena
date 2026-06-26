@@ -422,7 +422,7 @@ Existing snapshots without execution-directory fields may be read as legacy arti
 
 ### 10.3 Projection behavior
 
-Project Model v0 compatibility output should preserve or explain check execution directory information where the older schema lacks a native field.
+The active Project Model v1 artifact must expose check execution-directory information directly; removed compatibility projections must not be required for that data.
 
 ## 11. Gate behavior
 

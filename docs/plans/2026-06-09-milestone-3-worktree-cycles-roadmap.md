@@ -52,7 +52,7 @@ Do **not** build these in Milestone 3:
 - dashboard
 - bandit learning
 - decomposition-informed target selection
-- Project Model v0/v1 cross-repo adoption
+- Project Model cross-repo adoption
 - weighted intake scorecard integration
 - multi-repo autonomous operation
 - autonomous promotion/merge to main

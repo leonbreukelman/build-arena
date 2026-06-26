@@ -22,14 +22,10 @@ from arena.decomposer import (
     RollbackBoundary,
     VerificationGap,
     canonical_project_model_json,
-    canonical_project_model_v0_json,
     decompose_project,
-    decompose_project_model_v0,
     main,
     validate_project_model,
-    validate_project_model_v0,
 )
-from arena.project_model_v0 import ProjectModelV0
 
 
 def _run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
@@ -84,39 +80,6 @@ def test_decomposer_generates_valid_canonical_model_for_synthetic_git_project(tm
     second = canonical_project_model_json(decompose_project(tmp_path, project_id="synthetic"))
     assert first == second
     json.loads(first)
-
-
-def test_decomposer_emits_valid_project_model_v0_from_primary_task(tmp_path: Path) -> None:
-    _write_synthetic_python_project(tmp_path)
-    _init_git_repo(tmp_path)
-
-    model = decompose_project_model_v0(
-        tmp_path,
-        source_task="Emit Project Model v0 before implementation work begins.",
-        primary_backlog_item="https://github.com/leonbreukelman/build-arena/issues/3",
-        project_id="synthetic",
-        repo="leonbreukelman/build-arena",
-        issue="https://github.com/leonbreukelman/build-arena/issues/3",
-    )
-    report = validate_project_model_v0(model)
-
-    assert model.schemaVersion == "project-model/v0"
-    assert model.source.task == "Emit Project Model v0 before implementation work begins."
-    assert model.source.primaryBacklogItem == "https://github.com/leonbreukelman/build-arena/issues/3"
-    assert {component.id for component in model.components} >= {
-        "python_package",
-        "regression_tests",
-        "documentation_and_operator_guidance",
-        "project_configuration",
-    }
-    assert report.passed, [f"{finding.code}: {finding.message}" for finding in report.findings]
-    assert model.verificationGaps
-
-    payload = json.loads(canonical_project_model_v0_json(model))
-    assert payload["schemaVersion"] == "project-model/v0"
-    assert "schema_version" not in payload
-    assert "project_id" not in payload
-    ProjectModelV0.model_validate(payload)
 
 
 def test_git_subdirectory_resolves_to_repo_toplevel(tmp_path: Path) -> None:
@@ -469,42 +432,6 @@ def test_cli_outputs_canonical_json_to_stdout_and_file(tmp_path: Path) -> None:
     assert json.loads(stdout_run.stdout)["project_id"] == tmp_path.name
 
 
-def test_cli_outputs_project_model_v0_when_requested_without_changing_default(
-    tmp_path: Path,
-) -> None:
-    _write_synthetic_python_project(tmp_path)
-    _init_git_repo(tmp_path)
-
-    run = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "arena.decomposer",
-            "--project",
-            str(tmp_path),
-            "--output",
-            "-",
-            "--format",
-            "project-model-v0",
-            "--source-task",
-            "Emit v0 model before planning.",
-            "--primary-backlog-item",
-            "https://github.com/leonbreukelman/build-arena/issues/3",
-        ],
-        cwd=Path(__file__).resolve().parents[1],
-        text=True,
-        capture_output=True,
-        check=True,
-    )
-
-    payload = json.loads(run.stdout)
-    assert payload["schemaVersion"] == "project-model/v0"
-    assert payload["source"]["task"] == "Emit v0 model before planning."
-    assert payload["source"]["primaryBacklogItem"] == "https://github.com/leonbreukelman/build-arena/issues/3"
-    assert "project_id" not in payload
-    assert validate_project_model_v0(payload).passed
-
-
 def test_cli_fail_on_gap_returns_nonzero_for_gap_model(tmp_path: Path) -> None:
     docs_only = tmp_path / "docs-only"
     docs_only.mkdir()
@@ -519,67 +446,6 @@ def test_cli_fail_on_gap_returns_nonzero_for_gap_model(tmp_path: Path) -> None:
 
     assert run.returncode != 0
     assert json.loads(run.stdout)["verification_gaps"]
-
-
-def test_cli_project_model_v0_fail_on_gap_uses_quality_gate_and_surfaces_gaps(
-    tmp_path: Path,
-) -> None:
-    docs_only = tmp_path / "docs-only"
-    docs_only.mkdir()
-    (docs_only / "README.md").write_text("# docs only\n", encoding="utf-8")
-
-    run = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "arena.decomposer",
-            "--project",
-            str(docs_only),
-            "--output",
-            "-",
-            "--format",
-            "project-model-v0",
-            "--source-task",
-            "Decide a documentation-only operating strategy before implementation.",
-            "--primary-backlog-item",
-            "local-backlog/docs-only",
-            "--fail-on-gap",
-        ],
-        cwd=Path(__file__).resolve().parents[1],
-        text=True,
-        capture_output=True,
-    )
-
-    payload = json.loads(run.stdout)
-    assert run.returncode == 3
-    assert payload["schemaVersion"] == "project-model/v0"
-    assert payload["verificationGaps"]
-    assert "verification gap" in run.stderr
-
-
-def test_project_model_v0_validation_flags_vague_and_missing_responsibilities(
-    tmp_path: Path,
-) -> None:
-    _write_synthetic_python_project(tmp_path)
-    _init_git_repo(tmp_path)
-    model = decompose_project_model_v0(
-        tmp_path,
-        source_task="Emit Project Model v0 before implementation work begins.",
-        primary_backlog_item="https://github.com/leonbreukelman/build-arena/issues/3",
-    )
-    payload = json.loads(canonical_project_model_v0_json(model))
-    payload["components"][0]["id"] = "misc"
-    payload["components"][0]["name"] = "Misc"
-    payload["components"][0]["responsibilities"] = []
-    payload["components"][0]["observableCheckIds"] = []
-
-    report = validate_project_model_v0(payload)
-    codes = {finding.code for finding in report.findings}
-
-    assert not report.passed
-    assert "missing_component_responsibilities" in codes
-    assert "component_without_observable_check" in codes
-    assert "vague_decomposition" in codes
 
 
 def test_arena_calibration_checkout_model_is_ready_when_available() -> None:

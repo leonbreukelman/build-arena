@@ -127,15 +127,15 @@ Verified by git history and project docs.
 
 Current status: implemented in repo history. Not the current limiting factor.
 
-### 2. Project Model v0 and deterministic decomposer
+### 2. Legacy compatibility projection and deterministic decomposer
 
-The project gained a deterministic repo scanner and Project Model v0 compatibility output. Earlier conversations correctly identified this as too shallow for the intended Build Arena direction.
+The project gained a deterministic repo scanner and an earlier compatibility projection. Earlier conversations correctly identified that projection as too shallow for the intended Build Arena direction.
 
-Current status: v0 compatibility remains. It is no longer the whole story.
+Current status: the active runtime now emits Project Model v1 as the shared contract. The old compatibility projection is archived historical context, not an active output.
 
 ### 3. AI-first decomposer and Project Model v1 readiness
 
-Later work added graph/encyclopedia/snapshot/gate surfaces and Project Model v1 as primary enriched artifact while preserving v0 compatibility.
+Later work added graph/encyclopedia/snapshot/gate surfaces and Project Model v1 as the primary enriched artifact.
 
 Current status: implemented and covered by tests from earlier work. Broad live autonomy still not implied.
 

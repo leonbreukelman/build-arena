@@ -29,10 +29,10 @@ Phase 1-4 foundation is implemented and verified against the synthetic calibrati
 
 The post-Phase-4 AI-first decomposer is also implemented:
 
-- `arena/decomposer.py` emits the deterministic scanner model and Project Model v0 compatibility output.
+- `arena/decomposer.py` emits the deterministic scanner model.
 - `arena/project_graph.py`, `arena/project_snapshot.py`, `arena/project_encyclopedia.py`, and `arena/project_model_gate.py` build the graph, snapshot, encyclopedia, and deterministic gate sidecars from git/filesystem truth.
-- `arena/project_decomposer_ai.py` creates snapshot bundles and writes `project-model-v1.json` as the primary Project Model v1 enriched artifact plus `project-model-v0.json` as compatibility output for v0 consumers.
-- `arena/project_model_v1.py` wraps the enriched snapshot, graph, gate report, provenance, hashes, model IDs, derived-artifact strategy, and v0 compatibility pointer in the shared v1 contract.
+- `arena/project_decomposer_ai.py` creates snapshot bundles and writes `project-model-v1.json` as the primary Project Model v1 enriched artifact.
+- `arena/project_model_v1.py` wraps the enriched snapshot, graph, gate report, provenance, hashes, model IDs, derived-artifact strategy, and required `iterationReadiness` block in the shared v1 contract.
 - `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path, backed by the shared OpenAI-compatible client. Live credentials may come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, and live paths require an explicit model ID plus a strict served-model match.
 - `arena/runners/diff_proposer.py` contains the deterministic diff proposer runner plus an OpenAI-compatible proposal transport. The shared LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration; the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, and `gate`; live mode is guarded by `--allow-live` and refuses routine live spend without that explicit flag.
@@ -67,11 +67,11 @@ Build Arena is not ready for broad autonomous live loops. The pre-live readiness
 
 ### Project modeling and decomposer
 
-The deterministic scanner path in `arena/decomposer.py` reads git/filesystem state only. It can emit the internal scanner model or the shared Project Model v0 compatibility contract.
+The deterministic scanner path in `arena/decomposer.py` reads git/filesystem state only and emits the internal scanner model.
 
-The AI-first path starts with a mechanically built graph, asks an LLM path only to enrich/decompose that graph, then runs deterministic gates against provenance. The primary artifact is Project Model v1; v0 is retained as a compatibility projection for downstream repositories that have not adopted v1.
+The AI-first path starts with a mechanically built graph, asks an LLM path only to enrich/decompose that graph, then runs deterministic gates against provenance. The primary and only active shared project-model artifact is Project Model v1.
 
-The snapshot bundle contains `graph.json`, `snapshot.json`, `gate-report.json`, `project-model-v1.json`, `project-model-v0.json`, prompts, model outputs, held-out probes, planted negatives, near-neighbor alternatives, and a manifest with paths and hashes.
+The snapshot bundle contains `graph.json`, `snapshot.json`, `gate-report.json`, `project-model-v1.json`, prompts, model outputs, held-out probes, planted negatives, near-neighbor alternatives, and a manifest with paths and hashes.
 
 ### Intake → proposal → loop pipeline (implemented; ranking advisory, promotion operator-gated)
 
@@ -112,7 +112,6 @@ Deterministic decomposer:
 
 ```bash
 uv run python -m arena.decomposer --project <repo> --output <model.json>
-uv run python -m arena.decomposer --project <repo> --format project-model-v0 --source-task <task> --output <model-v0.json>
 ```
 
 AI-first snapshot and sidecars without live provider calls:
@@ -137,7 +136,7 @@ Provider/base URL/API-key-env are operator-switchable with `--live-provider`, `-
 
 - Verification must be rebuilt from filesystem and git ground truth. Cached projections and stale generated outputs are never authoritative.
 - F3/generalization is pre-code proposal reasoning: goal, decomposition, process, architecture, spec, and action should be tested for generalization before code is treated as the only artifact. Elenchus Core is advisory, not a standalone truth oracle.
-- Project Model v0 remains useful as a compatibility layer, but Project Model v1 is now the primary enriched artifact for the AI-first decomposer.
+- Project Model v1 is the active shared contract for the AI-first decomposer. Its required `iterationReadiness` block drives core intake/proposal consumers.
 - Live provider paths are intentionally bounded. The code has a direct xAI/OpenAI-compatible adapter, but routine broad loops must stay on fixture/recorded/off modes until readiness blockers are resolved.
 - Historical docs and verification artifacts may describe earlier calibration-only states. Treat dated artifacts as evidence for their point in time, not as current status unless AGENTS.md, README.md, and this brief agree with them.
 
@@ -152,7 +151,7 @@ Blockers before broad live autonomy:
 3. Dashboard control plane is not implemented.
 4. Rollback endpoint is not implemented.
 5. Live subscription-CLI subprocess execution is not implemented.
-6. Related downstream repos that consume Project Model v0 still need v1 adoption plans.
+6. Related downstream repos that consumed older project-model compatibility output still need v1 adoption plans.
 
 Near-term useful work:
 
@@ -185,7 +184,7 @@ Near-term useful work:
 - This brief — orientation and current architecture map.
 - `docs/verification/2026-06-05-pre-live-readiness-register.json` — current readiness register and blocker status.
 - `docs/specs/2026-06-05-project-model-v1-shared-contract-spec.md` — Project Model v1 contract context.
-- `docs/project-model-v0.md` and `docs/schemas/project-model-v0.schema.json` — compatibility contract for existing v0 consumers.
+- `docs/project-model-v1.md` and `docs/schemas/project-model-v1.schema.json` — active Project Model v1 contract and schema.
 - `schema/arena.yaml` — source schema for generated models.
 - `arena/project_intake_scorecard.py`, `arena/proposal_planner.py`, `arena/proposal_candidate_runner.py`, `arena/repo_facts.py`, `arena/markdown_links.py` — the implemented advisory intake → proposal pipeline (`proposal-plan/v0`); see the architecture map's intake → proposal section and epic #25.
 - `tests/test_project_status_docs.py` — guardrails for active documentation/status alignment.

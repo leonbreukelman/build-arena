@@ -7,7 +7,7 @@ Repo identity: this main loop/system repo is `build-arena`. Internal
 repo identity. The separate `arena-calibration` repo is the smaller public
 calibration harness.
 
-Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer now writes `project-model-v1.json` as the primary Project Model v1 enriched artifact and also writes `project-model-v0.json` as the compatibility projection for existing v0 consumers. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. The proposal path is operator-switchable by provider/base URL/model/API-key-env and supports explicit live controls such as `--live-api-key-env XAI_API_KEY` and `--live-max-calls`. The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing: live decomposition, model gate, freshness, and synced intake worked; the selected docs proposal failed safely at the Markdown link gate; the target repo was not mutated. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
+Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal loop reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. The proposal path is operator-switchable by provider/base URL/model/API-key-env and supports explicit live controls such as `--live-api-key-env XAI_API_KEY` and `--live-max-calls`. The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing: live decomposition, model gate, freshness, and synced intake worked; the selected docs proposal failed safely at the Markdown link gate; the target repo was not mutated. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
 
 Implemented acceptance gates:
 
@@ -37,18 +37,18 @@ Implemented acceptance gates:
 Post-Phase-4 decomposer status:
 
 - The AI-first decomposer builds a graph, wiki/encyclopedia, snapshot, deterministic gate report, and sidecar manifest from git/filesystem truth.
-- AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact and `project-model-v0.json` as compatibility output.
-- The v1 manifest records the primary, v1, and v0 artifact paths plus hashes and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
+- AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact.
+- The v1 manifest records the primary v1 artifact path, hash, and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
 - The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, truncated, and strict served-model match failures and remains guarded by `--allow-live` for bounded read-only smoke only. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key.
 - The shared OpenAI-compatible LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration. Live surfaces require an explicit model ID, enforce served-model match checks, and the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model before handing output to the deterministic patch gate.
 - The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing. It proved live decomposition, freshness, synced intake, and safe gate failure; it did not prove a production improvement or broad unattended autonomy. Any future live run still needs an explicit model ID, explicit credential env such as `--live-api-key-env XAI_API_KEY`, and an explicit planned-call budget such as `--live-max-calls 2`.
-- Elenchus Core and Arena Calibration remain v0-only follow-up repos for v1 adoption.
+- Downstream consumers should read Project Model v1 directly; compatibility projection output has been removed from the active runtime.
 
 No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation and readiness register blockers remain green/closed.
 
 ## Project decomposition
 
-### Deterministic scanner and Project Model v0 compatibility
+### Deterministic scanner and Project Model v1
 
 The deterministic decomposer can be called before the normal optimization loop to emit a mechanically checkable scanner model:
 
@@ -58,22 +58,7 @@ uv run python -m arena.decomposer --project /path/to/project --output /tmp/proje
 
 Use `--output -` for canonical JSON on stdout, and `--fail-on-gap` when a caller wants explicit verification gaps to fail the command. The Python API is `arena.decomposer.decompose_project()` plus `validate_project_model()`.
 
-To emit the shared cross-repo Project Model v0 compatibility contract from a primary task/backlog item before planning begins, request the v0 format explicitly:
-
-```bash
-uv run python -m arena.decomposer \
-  --project /path/to/project \
-  --format project-model-v0 \
-  --source-task "Implement the primary task" \
-  --primary-backlog-item "https://github.com/owner/repo/issues/123" \
-  --output /tmp/project-model-v0.json
-```
-
-The default output remains the internal deterministic scanner model (`schema_version: project-model/v0.1`) for compatibility. Downstream repositories that still use Project Model v0 should consume the explicit v0 output (`schemaVersion: project-model/v0`) and run the deterministic quality gate via `arena.decomposer.validate_project_model_v0()` or `arena.project_model_v0.evaluate_quality_gate()`; ownership coverage remains separate from quality scoring. The CLI writes the JSON artifact before reporting validation failures, so non-zero output for unclassified surface or verification gaps still leaves an inspectable model for downstream triage.
-
-For cross-repo coordination, the shared Project Model v0 compatibility target is documented in `docs/project-model-v0.md` with its machine-readable schema at `docs/schemas/project-model-v0.schema.json` and worked examples under `docs/examples/`.
-
-The first Project Model v0 pilot target remains the separate `arena-calibration` checkout. A real local run should produce a model with covered components for fixture manifests, scorer, verifier, provider boundary, runner discrimination matrix, tests, docs, and configuration, plus the manifest-derived `patch_generalization_axis_missing` gap for `F3_bad_passes_tests`. Coverage is ownership accounting, not quality scoring; downstream gates should treat `verification_gaps` and any `unclassified_project_surface` component as actionable quality signals.
+The deterministic scanner output uses `schema_version: project-scanner/v0.1`. It is an internal scanner artifact, not the shared project-model contract. For the active shared contract, use `arena.project_model_cli snapshot` and consume `project-model-v1.json`. The v1 schema is `docs/schemas/project-model-v1.schema.json`; the reference is `docs/project-model-v1.md`; examples live under `docs/examples/`.
 
 ### AI-first snapshot, graph, and gate commands
 
@@ -107,7 +92,7 @@ uv run python -m arena.project_model_cli graph --project /path/to/project --outp
 uv run python -m arena.project_model_cli gate --snapshot /tmp/build-arena-snapshot/<snapshot-id>/manifest.json
 ```
 
-The AI-first snapshot command emits `project-model-v1.json` as the Project Model v1 primary artifact and `project-model-v0.json` for compatibility. Live mode is only for bounded read-only smoke under the readiness ladder; Build Arena remains not ready for broad autonomous live loops.
+The AI-first snapshot command emits `project-model-v1.json` as the Project Model v1 primary artifact. Live mode is only for bounded read-only smoke under the readiness ladder; Build Arena remains not ready for broad autonomous live loops.
 
 ## Experiment proposer lane
 
