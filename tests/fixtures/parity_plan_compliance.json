@@ -171,7 +171,7 @@
       "title": "Component Auth has no observable check",
       "target_path": "src/pkg/auth.py",
       "intent": "Add or prepare an observable, repository-grounded check for component finding code.component.untested.comp-auth: Component Auth has no observable check. Limit changes to the component target path set: src/pkg/auth.py.",
-      "success_criterion": "The component target path set (src/pkg/auth.py) is covered by a bounded change and the project's load-bearing quality gate commands pass.",
+      "success_criterion": "A test or check file exists that exercises the component target path set (src/pkg/auth.py) and asserts its observable behaviour.",
       "repo_facts_hash": "<FACTS_HASH>",
       "repo_facts_block": "Repository facts:\n- README.md exists: yes\n- Docs directory exists: no\n- Top-level files: README.md\n- Top-level directories: src\n- Existing docs markdown files: none\n- Markdown files: README.md\n- Source files: src/pkg/auth.py\n- Markdown files truncated: no\nQuality gate commands:\n- uv run ruff check .\n- uv run python -m pytest -q\nAutonomy boundaries from intake:\n- safe_to_patch_docs_only\n- needs_code_change\n- advisory_only",
       "grounding_constraints": [

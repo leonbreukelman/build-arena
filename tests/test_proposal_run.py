@@ -225,6 +225,165 @@ def test_happy_path_writes_proposal_and_cleans_temp_workdir(
     assert not temp_workdir.exists()  # temp workdir cleaned on success
 
 
+def test_component_finding_flows_through_planner_rerank_and_emit_without_live_judge(
+    tmp_path: Path, repo_dir: Path
+) -> None:
+    from arena.proposal_pairwise_reranker import JudgeResult, rerank_proposal_plan
+    from arena.proposal_planner import build_proposal_plan
+
+    (repo_dir / "src" / "pkg").mkdir(parents=True)
+    (repo_dir / "src" / "pkg" / "auth.py").write_text(
+        "def login():\n    return True\n", encoding="utf-8"
+    )
+
+    class NoCallJudge:
+        def compare(
+            self,
+            slot_a: dict[str, Any],
+            slot_b: dict[str, Any],
+            repo_context: dict[str, Any],
+        ) -> JudgeResult:
+            _ = (slot_a, slot_b, repo_context)
+            raise AssertionError("single-survivor component flow must not call the live judge")
+
+        def model_info(self) -> dict[str, Any]:
+            return {
+                "provider": "injected",
+                "requested_model": "no-call",
+                "served_model": "",
+                "temperature": 0,
+            }
+
+    calls: list[tuple[str, dict[str, str]]] = []
+
+    def component_stage(module: str, args: list[str], env: dict[str, str]) -> StageResult:
+        _ = env
+        argd = _argd(args)
+        calls.append((module, argd))
+        if module == proposal_run._DECOMPOSE_MODULE:
+            snap_dir = Path(argd["--artifacts-root"]) / "snap-component"
+            snap_dir.mkdir(parents=True, exist_ok=True)
+            (snap_dir / "project-model-v1.json").write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": "project-model/v1",
+                        "projectGraph": {
+                            "nodes": [
+                                {
+                                    "id": "node:file:src/pkg/auth.py",
+                                    "kind": "file",
+                                    "label": "src/pkg/auth.py",
+                                    "path": "src/pkg/auth.py",
+                                    "symbol": None,
+                                    "provenance_refs": [{"id": "prov:file:src/pkg/auth.py"}],
+                                }
+                            ],
+                            "edges": [],
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (snap_dir / "manifest.json").write_text(
+                json.dumps(
+                    {
+                        "snapshot_id": "snap-component",
+                        "project_model_primary_path": "project-model-v1.json",
+                        "project_model_v1_path": "project-model-v1.json",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            return StageResult(0)
+        if module == proposal_run._INTAKE_MODULE:
+            Path(argd["--output"]).write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": "project-intake-scorecard/v0",
+                        "id": "component-scorecard",
+                        "snapshotId": "snap-component",
+                        "projectRoot": str(repo_dir),
+                        "findings": [
+                            {
+                                "id": "code.component.untested.component.client",
+                                "title": "Client component lacks observable checks",
+                                "evidence": [
+                                    {"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True}
+                                ],
+                                "verification": [],
+                                "autonomyBoundary": "needs_code_change",
+                                "priorityScore": 540.0,
+                                "rank": 1,
+                            },
+                            {
+                                "id": "verification.quality-gates.present",
+                                "title": "Quality gates exist",
+                                "evidence": [
+                                    {
+                                        "kind": "project_model",
+                                        "path": "iterationReadiness.qualityGates",
+                                        "checked": True,
+                                    }
+                                ],
+                                "verification": ["uv run pytest -q"],
+                                "priorityScore": 1.0,
+                                "rank": 2,
+                            },
+                        ],
+                    },
+                    sort_keys=True,
+                ),
+                encoding="utf-8",
+            )
+            return StageResult(0)
+        if module == proposal_run._PROPOSE_MODULE:
+            plan = build_proposal_plan(
+                Path(argd["--project"]),
+                Path(argd["--scorecard"]),
+                max_candidates=int(argd["--max-candidates"]),
+            )
+            Path(argd["--output"]).write_text(
+                json.dumps(plan.to_jsonable(), sort_keys=True), encoding="utf-8"
+            )
+            return StageResult(0)
+        if module == proposal_run._RERANK_MODULE:
+            rerank_proposal_plan(
+                Path(argd["--project"]),
+                Path(argd["--plan"]),
+                Path(argd["--graph"]),
+                Path(argd["--output-plan"]),
+                Path(argd["--trace"]),
+                judge=NoCallJudge(),
+            )
+            return StageResult(0)
+        if module == proposal_run._EMIT_MODULE:
+            emit_proposal(argd["--reranked-plan"], argd["--output"])
+            return StageResult(0)
+        raise AssertionError(f"unexpected module {module}")
+
+    workdir = tmp_path / "wd"
+    output = tmp_path / "proposal.md"
+
+    rc = run(_config(repo_dir, output, workdir=workdir), stage_runner=component_stage, git_runner=_fake_git([]))
+
+    assert rc == EXIT_OK
+    modules = [module for module, _ in calls]
+    assert modules == [
+        proposal_run._DECOMPOSE_MODULE,
+        proposal_run._INTAKE_MODULE,
+        proposal_run._PROPOSE_MODULE,
+        proposal_run._RERANK_MODULE,
+        proposal_run._EMIT_MODULE,
+    ]
+    trace = json.loads((workdir / "rerank-trace.json").read_text(encoding="utf-8"))
+    assert trace["preFilter"]["survivorCount"] == 1
+    assert trace["callCount"] == 0
+    proposal = output.read_text(encoding="utf-8")
+    assert proposal.startswith("# Client component lacks observable checks")
+    assert "A test or check file exists" in proposal
+    assert "quality gate commands pass" not in proposal
+
+
 def test_stage_order_and_v1_resolved_from_manifest(
     tmp_path: Path, repo_dir: Path
 ) -> None:
