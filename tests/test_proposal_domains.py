@@ -427,6 +427,119 @@ def test_component_finding_gets_load_bearing_gate(tmp_path: Path) -> None:
     assert candidate.verification_commands == ("uv run ruff check .", "uv run pyright", "uv run pytest tests -q")
 
 
+def test_component_verification_success_criterion_is_observable_not_circular() -> None:
+    from arena.proposal_domains import ComponentVerificationDomain
+    from arena.proposal_pairwise_reranker import _is_circular_success
+
+    finding = {
+        "id": "code.component.untested.comp-auth",
+        "title": "Auth component lacks observable checks",
+        "evidence": [{"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True}],
+        "verification": ["uv run pytest -q"],
+        "autonomyBoundary": "needs_code_change",
+    }
+
+    candidate = ComponentVerificationDomain().candidates_for_finding(finding, _domain_context())[0]
+
+    assert candidate.success_criterion == (
+        "A test or check file exists that exercises the component target path set "
+        "(src/pkg/auth.py) and asserts its observable behaviour."
+    )
+    assert _is_circular_success(candidate.success_criterion) is False
+    assert "quality gate commands pass" not in candidate.success_criterion
+
+
+def test_generic_file_success_criterion_is_observable_not_circular() -> None:
+    from arena.proposal_domains import GenericFileDomain
+    from arena.proposal_pairwise_reranker import _is_circular_success
+
+    finding = {
+        "id": "code.generic.auth",
+        "title": "Auth file needs a grounded change",
+        "evidence": [{"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True}],
+        "verification": ["uv run pytest -q"],
+    }
+
+    candidate = GenericFileDomain().candidates_for_finding(finding, _domain_context())[0]
+
+    assert candidate.success_criterion == (
+        "src/pkg/auth.py exists with a bounded, repository-grounded change that its "
+        "verification commands confirm."
+    )
+    assert _is_circular_success(candidate.success_criterion) is False
+    assert "project verification remains green" not in candidate.success_criterion
+
+
+def test_component_candidate_survives_prefilter_and_emits_observable_definition_of_done(tmp_path: Path) -> None:
+    from arena.proposal_emit import emit_proposal
+    from arena.proposal_pairwise_reranker import (
+        GraphIndex,
+        build_derived_plan,
+        prefilter_candidates,
+    )
+
+    repo = _prepare_repo(tmp_path, "repo")
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(
+        json.dumps(
+            {
+                "schemaVersion": "project-intake-scorecard/v0",
+                "id": "sc",
+                "snapshotId": "snap",
+                "projectRoot": str(repo),
+                "findings": [
+                    {
+                        "id": "code.component.untested.comp-auth",
+                        "title": "Auth component lacks observable checks",
+                        "evidence": [{"kind": "owned_surface", "path": "src/pkg/auth.py", "checked": True}],
+                        "verification": ["uv run pytest -q"],
+                        "autonomyBoundary": "needs_code_change",
+                        "priorityScore": 540.0,
+                        "rank": 1,
+                    }
+                ],
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=10).to_jsonable()
+    graph = GraphIndex.from_graph(
+        {
+            "schemaVersion": "project-graph/v0",
+            "nodes": [
+                {
+                    "id": "node:file:src/pkg/auth.py",
+                    "kind": "file",
+                    "label": "src/pkg/auth.py",
+                    "path": "src/pkg/auth.py",
+                    "symbol": None,
+                    "provenance_refs": [{"id": "prov:file:src/pkg/auth.py"}],
+                }
+            ],
+            "edges": [],
+        }
+    )
+
+    survivors, dropped = prefilter_candidates(plan, graph)
+
+    assert [candidate["finding_id"] for candidate in survivors] == ["code.component.untested.comp-auth"]
+    assert dropped == []
+
+    reranked = build_derived_plan(plan, survivors[0], survivors, dropped)
+    reranked_path = tmp_path / "reranked-plan.json"
+    reranked_path.write_text(json.dumps(reranked, sort_keys=True), encoding="utf-8")
+    output = emit_proposal(reranked_path, tmp_path / "proposal.md")
+    proposal = output.read_text(encoding="utf-8")
+
+    assert (
+        "## Definition of done\n"
+        "A test or check file exists that exercises the component target path set "
+        "(src/pkg/auth.py) and asserts its observable behaviour."
+    ) in proposal
+    assert "quality gate commands pass" not in proposal
+
+
 def test_multi_file_component_produces_candidate(tmp_path: Path) -> None:
     repo = _prepare_repo(tmp_path, "repo")
     (repo / "src" / "pkg" / "entry.py").write_text("def main():\n    return True\n", encoding="utf-8")

@@ -248,8 +248,8 @@ class ComponentVerificationDomain:
             f"Limit changes to the component target path set: {joined_targets}."
         )
         success = (
-            f"The component target path set ({joined_targets}) is covered by a bounded change and the project's "
-            "load-bearing quality gate commands pass."
+            f"A test or check file exists that exercises the component target path set "
+            f"({joined_targets}) and asserts its observable behaviour."
         )
         constraints = (
             "Prefer a focused test or minimal code-facing verification improvement over broad refactors.",
@@ -321,7 +321,10 @@ class GenericFileDomain:
         finding_id = str(finding.get("id", ""))
         title = str(finding.get("title") or finding_id or target_path)
         intent = f"Prepare a grounded one-file improvement for {target_path} based on finding {finding_id}: {title}."
-        success = f"{target_path} is changed in a bounded, repository-grounded way and project verification remains green."
+        success = (
+            f"{target_path} exists with a bounded, repository-grounded change that its "
+            "verification commands confirm."
+        )
         constraints = ("Use only repository facts and current file contents; do not invent project structure, files, or commands.",)
         verification = tuple(str(command) for command in finding.get("verification", []) if str(command).strip())
         return [ProposalCandidateDraft(
