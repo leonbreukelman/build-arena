@@ -175,18 +175,46 @@ def test_prefilter_rejects_empty_or_unknown_verification_command() -> None:
     assert any(reason.startswith("verification_unknown_executable:") for reason in reasons["finding.unknown"])
 
 
-def test_prefilter_rejects_non_binding_noop_verification() -> None:
+def test_prefilter_keeps_grounded_non_binding_verification_candidate() -> None:
     graph = GraphIndex.from_graph(_graph())
     candidate = _candidate(
         "finding.nonbinding",
-        verification=["uv run pytest", "uv run ruff check ."],
-        success="src/pkg/a.py exists and is non-empty.",
+        verification=["uv run pytest -q"],
+        success="A test file exists for src/pkg/a.py with assertions covering the proposal.",
     )
 
     survivors, dropped = prefilter_candidates(_plan([candidate]), graph)
 
+    assert [item["finding_id"] for item in survivors] == ["finding.nonbinding"]
+    assert dropped == []
+
+
+def test_prefilter_rejects_shell_control_verification_command() -> None:
+    graph = GraphIndex.from_graph(_graph())
+    candidate = _candidate("finding.shell", verification=["pytest && rm -rf build"])
+
+    survivors, dropped = prefilter_candidates(_plan([candidate]), graph)
+
     assert survivors == []
-    assert "verification_non_binding_noop_passes" in dropped[0].reasons
+    assert any(reason.startswith("verification_disallowed_shell:") for reason in dropped[0].reasons)
+
+
+def test_prefilter_removed_binding_gate_reasons_are_not_emitted_for_safe_commands() -> None:
+    graph = GraphIndex.from_graph(_graph())
+    candidates = [
+        _candidate("finding.nonbinding", verification=["uv run pytest -q"]),
+        _candidate("finding.other-target", rank=2, verification=["test -s src/pkg/b.py"]),
+        _candidate("finding.unknown-family", rank=3, verification=["python3 --version"]),
+    ]
+
+    survivors, dropped = prefilter_candidates(_plan(candidates), graph)
+
+    assert [item["finding_id"] for item in survivors] == [
+        "finding.nonbinding",
+        "finding.other-target",
+        "finding.unknown-family",
+    ]
+    assert dropped == []
 
 
 def test_prefilter_keeps_missing_file_creation_target_without_requiring_graph_node() -> None:
@@ -225,7 +253,7 @@ def test_prefilter_rejects_circular_definition_of_done() -> None:
     graph = GraphIndex.from_graph(_graph())
     candidate = _candidate(
         "finding.circular",
-        success="The change addresses finding.circular in a bounded way and project verification remains green.",
+        success="The quality gate commands pass for this proposal.",
         verification=["test -s src/pkg/a.py"],
     )
 
@@ -293,14 +321,14 @@ def test_trace_records_prefilter_drops_both_orderings_reasons_and_hashes() -> No
     graph = _graph()
     keep_a = _candidate("a", rank=1)
     keep_b = _candidate("b", rank=2, target="src/pkg/b.py")
-    drop = _candidate("drop", rank=3, verification=["uv run pytest"])
+    drop = _candidate("drop", rank=3, verification=[])
     judge = SequenceJudge(["b", "b"])
 
     result = rerank_plan_payload(_plan([keep_a, keep_b, drop]), graph, judge, source_plan_path="plan.json", graph_path="graph.json")
 
     assert result.trace["preFilter"]["inputCandidateCount"] == 3
     assert result.trace["preFilter"]["survivorCount"] == 2
-    assert result.trace["preFilter"]["dropped"][0]["reasons"] == ["verification_non_binding_noop_passes"]
+    assert result.trace["preFilter"]["dropped"][0]["reasons"] == ["empty_verification"]
     matchup = result.trace["tournament"][0]
     assert matchup["call_ab"]["prompt_hash"]
     assert matchup["call_ab"]["response_hash"]
@@ -314,7 +342,7 @@ def test_no_survivors_fails_closed_without_output_plan(tmp_path: Path) -> None:
     graph_path = tmp_path / "graph.json"
     output_path = tmp_path / "reranked.json"
     trace_path = tmp_path / "trace.json"
-    plan_path.write_text(json.dumps(_plan([_candidate("drop", verification=["uv run pytest"])])), encoding="utf-8")
+    plan_path.write_text(json.dumps(_plan([_candidate("drop", verification=[])])), encoding="utf-8")
     graph_path.write_text(json.dumps(_graph()), encoding="utf-8")
 
     with pytest.raises(RerankError, match="no candidates survived"):

@@ -577,25 +577,15 @@ def _prefilter_reasons(candidate: dict[str, Any], graph: GraphIndex) -> list[str
     if not commands:
         reasons.append("empty_verification")
     else:
-        binding_found = False
-        binding_missing_target_reasons: list[str] = []
+        # Command-safety hygiene only. The proposer no longer requires a
+        # target-bound, no-op-failing verification command: verifying and
+        # implementing the change is the downstream agent's job, not a survival
+        # gate here. Unsafe or unparseable invocations are still rejected so the
+        # recipe a proposal carries is a clean command, not a shell snippet.
         for command in commands:
             parsed = _parse_command(command)
             if isinstance(parsed, str):
                 reasons.append(f"{parsed}:{command}")
-                continue
-            family = _command_family(parsed)
-            if family[0] == "unknown":
-                reasons.append(f"verification_unknown_family:{command}")
-                continue
-            if family[0] == "binding":
-                command_target = family[1]
-                if command_target in target_set:
-                    binding_found = True
-                else:
-                    binding_missing_target_reasons.append(f"verification_binding_command_missing_target:{command}")
-        if not binding_found and not any(reason.startswith("verification_unknown") or reason.startswith("verification_unparseable") or reason.startswith("verification_disallowed") for reason in reasons):
-            reasons.extend(binding_missing_target_reasons or ["verification_non_binding_noop_passes"])
     if _is_circular_success(_clean_str(candidate.get("success_criterion"))):
         reasons.append("circular_definition_of_done")
     return list(dict.fromkeys(reasons))
@@ -616,38 +606,6 @@ def _parse_command(command: str) -> list[str] | str:
     if shutil.which(executable) is None:
         return "verification_unknown_executable"
     return parts
-
-
-def _command_family(parts: list[str]) -> tuple[str, str]:
-    if parts[0] in {"test", "/usr/bin/test"}:
-        if len(parts) >= 3 and parts[1] == "-s":
-            target = _normalize_path(parts[2])
-            return ("binding", target or "")
-        return ("unknown", "")
-    if parts[0] == "uv" and len(parts) >= 2 and parts[1] == "run":
-        return ("nonbinding", "")
-    if len(parts) >= 4 and parts[0] == "python3" and parts[1] == "-m":
-        module = parts[2]
-        if module == "arena.markdown_links":
-            target = _option_value(parts, "--path")
-            return ("binding", _normalize_path(target) or "") if target else ("unknown", "")
-        if module == "arena.code_quality_gate":
-            target = _option_value(parts, "--path")
-            return ("binding", _normalize_path(target) or "") if target else ("unknown", "")
-        if module == "arena.architecture_fitness_gate":
-            target = _option_value(parts, "--contract")
-            return ("binding", _normalize_path(target) or "") if target else ("unknown", "")
-    return ("unknown", "")
-
-
-def _option_value(parts: list[str], option: str) -> str:
-    try:
-        index = parts.index(option)
-    except ValueError:
-        return ""
-    if index + 1 >= len(parts):
-        return ""
-    return parts[index + 1]
 
 
 def _raw_candidate_targets(candidate: dict[str, Any]) -> list[str]:
