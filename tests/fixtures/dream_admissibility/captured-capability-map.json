@@ -1,0 +1,66 @@
+{
+  "capabilities": [
+    {
+      "behavioralTags": [
+        "auth",
+        "concurrency",
+        "configuration",
+        "external_http",
+        "injection",
+        "pagination",
+        "rate_limit",
+        "read_only",
+        "tool_handlers"
+      ],
+      "capability": "Manage authenticated HTTP client behavior, auth/session lifecycle, concurrency back-pressure, pagination, through FMCClient, RateLimiter, __aenter__, __aexit__, __init__.",
+      "currentCarrier": "MCPClient",
+      "id": "capability.component.client",
+      "provenanceRefs": [
+        "prov:bcfd8e782d7fe500"
+      ],
+      "realizedByComponentIds": [
+        "component.client"
+      ],
+      "supportingNodeIds": [
+        "node:4042451215c279f0dca7"
+      ]
+    },
+    {
+      "behavioralTags": [
+        "entrypoint"
+      ],
+      "capability": "Coordinate runtime entrypoint with source-backed behavior in `fmc_mcp`.",
+      "currentCarrier": "EntryPoint",
+      "id": "capability.component.entry",
+      "provenanceRefs": [
+        "prov:aeec7a1dae758e4e",
+        "prov:da6e96a18d26d1cf"
+      ],
+      "realizedByComponentIds": [
+        "component.entry"
+      ],
+      "supportingNodeIds": [
+        "node:127af2b0f9d32f8164c6",
+        "node:b3d9c9b0b868f763b2b8"
+      ]
+    }
+  ],
+  "projectId": "fmc-mcp",
+  "provenance": {
+    "generatedBy": "arena.capability_lift",
+    "inputHashes": {},
+    "modelId": "captured-minimal",
+    "promptHash": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "review": {
+    "editedFromGenerated": false,
+    "reviewed": false,
+    "reviewedAtUtc": null,
+    "reviewedBy": null
+  },
+  "schemaVersion": "capability-map/v0",
+  "sourceModel": {
+    "graphHash": "726ec771082d814eb6732022e7352a5c38daa0c2fc4f559cfa2355725a4fad76",
+    "projectModelV1Path": "tests/fixtures/dream_admissibility/captured-project-model-v1.json"
+  }
+}

@@ -20,8 +20,16 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from arena.capability_lift import CapabilityLiftError, validate_capability_map
+from arena.dream_admissibility import (
+    admissibility_reasons,
+    build_anchor_indexes,
+    check_dream_admissibility,
+)
+from arena.dream_admissibility import (
+    anchor_content_hash as _admissibility_anchor_content_hash,
+)
 
-SCHEMA_VERSION = "dream/v0"
+SCHEMA_VERSION = "dream/v1"
 TRACE_SCHEMA_VERSION = "dream-gate-trace/v0"
 GATED_BY = "arena.dream_gate"
 ALLOWED_MODES = {"carrier_swap", "function_remap"}
@@ -33,9 +41,12 @@ ANCHOR_KINDS = {
     "capability",
     "verificationGap",
     "nearNeighborAlternative",
+    "priorityBacklog",
+    "productInvariant",
+    "graphStructural",
 }
 
-_SCHEMA_PATH = Path(__file__).resolve().parents[1] / "docs" / "schemas" / "dream-v0.schema.json"
+_SCHEMA_PATH = Path(__file__).resolve().parents[1] / "docs" / "schemas" / "dream-v1.schema.json"
 
 
 class DreamGateError(Exception):
@@ -53,8 +64,7 @@ class GateResult:
 def anchor_content_hash(anchor: dict[str, Any]) -> str:
     """Canonical content hash for a resolved evidence anchor."""
 
-    encoded = json.dumps(anchor, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    return hashlib.sha256(encoded).hexdigest()
+    return _admissibility_anchor_content_hash(anchor)
 
 
 def gate_dreams(
@@ -96,14 +106,17 @@ def gate_dreams(
             capability_ids=capability_ids,
             near_neighbor_ids=near_neighbor_ids,
         )
-        if not reasons and premise_confidence == "all_resolved":
+        admissibility = check_dream_admissibility(normalized, project_model=model, capability_map=capability_map)
+        all_reasons = [*reasons, *admissibility_reasons(admissibility)]
+        if not all_reasons and premise_confidence == "all_resolved":
             accepted.append(normalized)
         else:
             killed.append(
                 {
                     "id": str(raw.get("id", "<missing>")),
                     "premiseConfidence": premise_confidence,
-                    "reasons": reasons or ["premise confidence was not all_resolved"],
+                    "admissibility": admissibility.to_jsonable(),
+                    "reasons": all_reasons or ["premise confidence was not all_resolved"],
                 }
             )
 
@@ -160,7 +173,7 @@ def validate_dream_schema(document: dict[str, Any]) -> None:
     if errors:
         first = errors[0]
         location = "/".join(str(part) for part in first.path) or "<root>"
-        raise DreamGateError(f"dream/v0 failed schema validation at {location}: {first.message}")
+        raise DreamGateError(f"dream/v1 failed schema validation at {location}: {first.message}")
 
 
 def _evaluate_dream(
@@ -189,6 +202,13 @@ def _evaluate_dream(
     for capability_id in target_capabilities:
         if capability_id not in capability_ids:
             reasons.append(f"unknown target capability {capability_id}")
+
+    current_structure = _structure(dream.get("currentStructure"))
+    proposed_structure = _structure(dream.get("proposedStructure"))
+    if not current_structure:
+        reasons.append("missing currentStructure")
+    if not proposed_structure:
+        reasons.append("missing proposedStructure")
 
     raw_evidence = dream.get("citedEvidence")
     if not isinstance(raw_evidence, list) or not raw_evidence:
@@ -231,7 +251,7 @@ def _evaluate_dream(
     }
     if not validation_recipe["action"] or not validation_recipe["observable"]:
         reasons.append("validationRecipe action and observable are required")
-    if validation_recipe["expectedDirection"] not in {"decrease", "increase", "unchanged", "tests_pass"}:
+    if validation_recipe["expectedDirection"] not in {"decrease", "increase", "passes"}:
         reasons.append("validationRecipe expectedDirection is invalid")
 
     conclusion = dream.get("conclusionConfidence")
@@ -268,6 +288,8 @@ def _evaluate_dream(
         "idea": idea,
         "targetCapabilityIds": target_capabilities,
         "citedEvidence": evidence_items,
+        "currentStructure": current_structure,
+        "proposedStructure": proposed_structure,
         "rationale": rationale,
         "premiseConfidence": premise_confidence,
         "conclusionConfidence": {"band": band, "value": numeric_value},
@@ -279,17 +301,18 @@ def _evaluate_dream(
 
 
 def _anchor_indexes(model: dict[str, Any], capability_map: dict[str, Any]) -> dict[str, dict[str, dict[str, Any]]]:
-    return {
-        "graphNode": _index_by_id(_get(model, "projectGraph", "nodes", default=[])),
-        "graphEdge": _index_by_id(_get(model, "projectGraph", "edges", default=[])),
-        "component": _index_by_id(_get(model, "snapshot", "components", default=[])),
-        "contract": _index_by_id(_get(model, "snapshot", "contracts", default=[])),
-        "capability": _index_by_id(capability_map.get("capabilities", [])),
-        "verificationGap": _index_by_id(_get(model, "snapshot", "verification_gaps", default=[])),
-        "nearNeighborAlternative": _index_by_id(
-            _get(model, "snapshot", "near_neighbor_alternatives", default=[])
-        ),
-    }
+    return build_anchor_indexes(model, capability_map)
+
+
+def _structure(value: Any) -> dict[str, str]:
+    if not isinstance(value, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key in ("fromCarrier", "toCarrier", "fromBinding", "toBinding", "description"):
+        cleaned = _clean(value.get(key))
+        if cleaned:
+            out[key] = cleaned
+    return out
 
 
 def _index_by_id(items: Any) -> dict[str, dict[str, Any]]:

@@ -28,6 +28,8 @@ def _dream(**overrides: Any) -> dict[str, Any]:
                 "claim": "The runner component owns stage orchestration.",
             }
         ],
+        "currentStructure": {"fromCarrier": "stage execution in runner"},
+        "proposedStructure": {"toCarrier": "injected stage seam"},
         "rationale": "The idea specifically targets the current runner carrier, not arbitrary cleanup.",
         "premiseConfidence": "all_resolved",
         "conclusionConfidence": {"band": "medium", "value": 0.6},
@@ -44,7 +46,7 @@ def _dream(**overrides: Any) -> dict[str, Any]:
 
 def _doc(dreams: list[dict[str, Any]], *, reviewed: bool = True) -> dict[str, Any]:
     return {
-        "schemaVersion": "dream/v0",
+        "schemaVersion": "dream/v1",
         "projectId": "fixture-project",
         "sourceModel": {"projectModelV1Path": "/tmp/project-model-v1.json", "graphHash": GRAPH_HASH},
         "capabilityMap": {"path": "/tmp/capability-map.json", "reviewed": reviewed},
@@ -114,7 +116,7 @@ def test_no_dreams_fails_closed(tmp_path: Path) -> None:
 
 def test_fail_closed_bad_schema_version(tmp_path: Path) -> None:
     doc = _doc([_dream()])
-    doc["schemaVersion"] = "dream/v1"
+    doc["schemaVersion"] = "dream/v0"
     with pytest.raises(DreamEmitError, match="schemaVersion"):
         load_gated_dreams(_write(tmp_path, doc))
 

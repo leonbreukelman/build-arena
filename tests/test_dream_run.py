@@ -59,11 +59,21 @@ def _model() -> dict[str, Any]:
                     "provenance_refs": ["prov:runner"],
                     "contract_ids": [],
                     "check_ids": [],
-                    "verification_gap_ids": [],
+                    "verification_gap_ids": ["gap.dream-runner"],
                 }
             ],
             "contracts": [],
-            "verification_gaps": [],
+            "verification_gaps": [
+                {
+                    "id": "gap.dream-runner",
+                    "description": "dream runner stage behavior lacks a direct observable check",
+                    "severity": "medium",
+                    "component_ids": ["comp.runner"],
+                    "contract_ids": [],
+                    "provenance_refs": ["prov:runner"],
+                    "proposed_closure_check": "add stage-order tests",
+                }
+            ],
             "near_neighbor_alternatives": [],
         },
         "projectGraph": {"graphHash": GRAPH_HASH, "nodes": [{"id": "node.runner", "path": "arena/dream_run.py"}], "edges": []},
@@ -133,9 +143,9 @@ class FakeStages:
     def _dreams(self, argd: dict[str, str], *, bad: bool) -> StageResult:
         model = json.loads(Path(argd["--project-model"]).read_text(encoding="utf-8"))
         cap_map = json.loads(Path(argd["--capability-map"]).read_text(encoding="utf-8"))
-        component = model["snapshot"]["components"][0]
+        gap = model["snapshot"]["verification_gaps"][0]
         capability_id = cap_map["capabilities"][0]["id"]
-        anchor_id = "comp.fabricated" if bad else "comp.runner"
+        anchor_id = "gap.fabricated" if bad else "gap.dream-runner"
         document = {
             "dreams": [
                 {
@@ -145,12 +155,14 @@ class FakeStages:
                     "targetCapabilityIds": [capability_id],
                     "citedEvidence": [
                         {
-                            "anchorKind": "component",
+                            "anchorKind": "verificationGap",
                             "anchorId": anchor_id,
-                            "contentHash": anchor_content_hash(component),
-                            "claim": "Runner owns dream orchestration.",
+                            "contentHash": anchor_content_hash(gap),
+                            "claim": "Runner dream orchestration has no direct behavior check.",
                         }
                     ],
+                    "currentStructure": {"fromCarrier": "subprocess dream stage calls"},
+                    "proposedStructure": {"toCarrier": "injected dream stage seam"},
                     "rationale": "The dream targets the current orchestration carrier specifically.",
                     "premiseConfidence": "unresolved",
                     "conclusionConfidence": {"band": "medium", "value": 0.5},

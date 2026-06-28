@@ -1,0 +1,18 @@
+{
+  "decision": "ACCEPT",
+  "summary": "The divergent-hypothesis admissibility feature is correctly and deterministically implemented for dream/v1. arena/dream_admissibility.py applies four requirement checks (cited tension, structural from->to delta, measurable prediction, divergence) with a capability-only citation correctly treated as non-tension and expectedDirection restricted to {decrease, increase, passes}. The captured fmc-mcp restatement fixtures dream-1/dream-2 (which carry no currentStructure/proposedStructure) are rejected on requirement-2 structural_delta with the exact 'no proposed structure was provided' reason; the hand-authored positive carrier_swap fixture grounded in a priorityBacklog tension is accepted and mechanically promoted to all_resolved by the gate. The generate->research replay with injected offline callables yields >=1 admissible experiment, with research preserving the from->to delta from the source dream. The gate runs check_dream_admissibility and folds admissibility_reasons into the accept/kill decision before emit, so inadmissible dreams are killed and never reach dream_emit (which independently refuses non-all_resolved input and requires gate provenance). The schema bump to docs/schemas/dream-v1.schema.json adds required currentStructure/proposedStructure and the constrained expectedDirection enum. No human mid-run gate was introduced; the lane stays advisory. Protected/frozen paths (scorer/, verifier/, .arena/scorer.lock.toml, arena/generated/) are untouched. I independently re-ran the full pytest suite (exit 0), ruff (clean), and pyright (0 errors).",
+  "blockers": [],
+  "non_blocking_notes": [
+    "_observable_is_metric_like in arena/dream_admissibility.py is a permissive substring heuristic: the marker 'test' alone would let an observable like 'test coverage for MCPClient' pass measurable_prediction. This is harmless here because such restatement dreams are independently killed on structural_delta, but the heuristic could admit weak observables on a dream that is otherwise structurally valid.",
+    "The admissibility artifact uses schemaVersion 'dream-admissibility/v0' while operating over dream/v1 inputs; intentional and consistent, but worth noting the version namespaces are decoupled.",
+    "_check_divergence relies on a fixed list of prose markers (e.g. 'single-file', 'ruff --fix') to detect proposal-lane work; this is a deliberate deterministic heuristic and could miss novel single-file phrasings, but that is an advisory-lane soft signal, not a correctness gate."
+  ],
+  "checked_requirements": {
+    "captured_restatements_rejected": true,
+    "positive_fixture_accepted": true,
+    "replay_yields_admissible": true,
+    "schema_delta_v1_present": true,
+    "gate_kills_inadmissible_before_emit": true,
+    "no_protected_path_violation": true
+  }
+}

@@ -66,6 +66,8 @@ def _write_inputs(tmp_path: Path, *, reviewed: bool = True) -> tuple[Path, Path,
                 "idea": "Split orchestration roles.",
                 "targetCapabilityIds": [capability_id],
                 "citedEvidence": [{"anchorKind": "capability", "anchorId": capability_id, "contentHash": "a" * 64, "claim": "Capability exists."}],
+                "currentStructure": {"fromBinding": "combined runner orchestration"},
+                "proposedStructure": {"toBinding": "split selection and execution orchestration"},
                 "rationale": "Raw rationale.",
                 "conclusionConfidence": {"band": "low", "value": 0.2},
                 "validationRecipe": {"action": "try split", "observable": "coupling", "expectedDirection": "decrease"},
@@ -86,7 +88,7 @@ def _write_inputs(tmp_path: Path, *, reviewed: bool = True) -> tuple[Path, Path,
 
 def _fake_research(capability_id: str) -> Any:
     def _call(prompt: str) -> dict[str, Any]:
-        assert "Research these raw tier-3 dream proposals" in prompt
+        assert "Research these raw tier-3 divergent hypotheses" in prompt
         return {
             "dreams": [
                 {
@@ -98,6 +100,8 @@ def _fake_research(capability_id: str) -> Any:
                         {"anchorKind": "component", "anchorId": "comp.runner", "contentHash": "5" * 64, "claim": "Runner is the current carrier."},
                         {"anchorKind": "capability", "anchorId": capability_id, "contentHash": "6" * 64, "claim": "The capability exists in the reviewed map."},
                     ],
+                    "currentStructure": {"fromBinding": "combined runner orchestration"},
+                    "proposedStructure": {"toBinding": "split selection and execution orchestration"},
                     "rationale": "The researched claim names the specific carrier and capability boundary being redrawn.",
                     "conclusionConfidence": {"band": "medium", "value": 0.5},
                     "validationRecipe": {"action": "try the split", "observable": "runner coupling", "expectedDirection": "decrease"},

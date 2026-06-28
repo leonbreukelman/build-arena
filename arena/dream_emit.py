@@ -1,4 +1,4 @@
-"""Render gated ``dream/v0`` advisory hypotheses to ``experiment.md``.
+"""Render gated ``dream/v1`` advisory hypotheses to ``experiment.md``.
 
 Emit is deterministic and faithful. It does not call a model, does not re-rank via
 soft judgment, and refuses any input containing unresolved/partial dreams. The
@@ -16,8 +16,8 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-SCHEMA_VERSION = "dream/v0"
-_SCHEMA_PATH = Path(__file__).resolve().parents[1] / "docs" / "schemas" / "dream-v0.schema.json"
+SCHEMA_VERSION = "dream/v1"
+_SCHEMA_PATH = Path(__file__).resolve().parents[1] / "docs" / "schemas" / "dream-v1.schema.json"
 
 
 class DreamEmitError(Exception):
@@ -135,6 +135,10 @@ def _render_one(index: int, dream: dict[str, Any]) -> list[str]:
     confidence: dict[str, Any] = confidence_raw if isinstance(confidence_raw, dict) else {}
     recipe_raw = dream.get("validationRecipe")
     recipe: dict[str, Any] = recipe_raw if isinstance(recipe_raw, dict) else {}
+    current_raw = dream.get("currentStructure")
+    current: dict[str, Any] = current_raw if isinstance(current_raw, dict) else {}
+    proposed_raw = dream.get("proposedStructure")
+    proposed: dict[str, Any] = proposed_raw if isinstance(proposed_raw, dict) else {}
     lines = [
         f"## {index}. {str(dream.get('idea', '')).strip()}",
         "",
@@ -153,6 +157,10 @@ def _render_one(index: int, dream: dict[str, Any]) -> list[str]:
         lines.append(f"- {kind} `{anchor_id}` — {claim}")
     lines.extend(
         [
+            "",
+            "### Structural delta",
+            "- Current: " + _structure_summary(current),
+            "- Proposed: " + _structure_summary(proposed),
             "",
             "### Rationale",
             str(dream.get("rationale", "")).strip(),
@@ -173,6 +181,16 @@ def _render_one(index: int, dream: dict[str, Any]) -> list[str]:
         ]
     )
     return lines
+
+
+def _structure_summary(structure: dict[str, Any]) -> str:
+    preferred_keys = ("fromCarrier", "toCarrier", "fromBinding", "toBinding", "description")
+    parts = [
+        f"`{key}`={str(structure[key]).strip()}"
+        for key in preferred_keys
+        if isinstance(structure.get(key), str) and str(structure[key]).strip()
+    ]
+    return ", ".join(parts) if parts else "_not recorded_"
 
 
 def _footer(document: dict[str, Any]) -> list[str]:

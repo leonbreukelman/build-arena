@@ -6,6 +6,7 @@ Maintenance rule: when a status doc's feature or run state changes, either updat
 
 ## Active
 
+- `2026-06-27-experiment-lane-divergent-hypothesis-admissibility-status.md` — local implementation status for the dream/v1 divergent-hypothesis admissibility contract and fixture replay gate.
 - `2026-06-26-decomposer-v1-hardening-status.md` — local implementation and Opus certification status for Decomposer v1 hardening and legacy compatibility removal.
 - `2026-06-23-dream-proposer-tier3-implementation-status.md` — local implementation status for the tier-3 advisory dream proposer lane.
 - `2026-06-18-proposer-architecture-fitness-status.md` — in-progress status for the proposer architecture-fitness extension slice.
