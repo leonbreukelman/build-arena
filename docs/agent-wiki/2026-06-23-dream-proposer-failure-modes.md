@@ -51,14 +51,20 @@ Problem: every anchor resolves, but the conclusion is still wrong or not worth d
 
 Guard: do not promote conclusion confidence above `medium` / `0.7`; require a validation recipe and let the downstream repo agent/test reality judge benefit. Also remember that `citedEvidence.claim` text is rendered for human readability but is not semantically proven by the gate; the gate proves the anchor exists and has the cited content hash.
 
+### F-restatement: premise-resolved current-state summaries pass as dreams
+
+Problem: a live fmc-mcp dream run emitted `dream-1` and `dream-2` that resolved their capability anchors but only described current state. The old premise gate accepted them because it did not require a structural from -> to delta.
+
+Guard: `dream/v1` dreams must pass `arena.dream_admissibility`: cite a tension-bearing anchor, carry explicit `currentStructure` and `proposedStructure`, prove `fromCarrier != toCarrier` for `carrier_swap` or `fromBinding != toBinding` for `function_remap`, and use `expectedDirection` from `decrease|increase|passes`. Capability-only evidence and missing/identical proposed structures are killed before emit.
+
 ## Gate recipe
 
 Focused local verification for this lane:
 
 ```bash
-uv run pytest tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py -q
-uv run ruff check arena/capability_lift.py arena/dream_generate.py arena/dream_research.py arena/dream_gate.py arena/dream_emit.py arena/dream_run.py tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py
-uv run pyright arena/capability_lift.py arena/dream_generate.py arena/dream_research.py arena/dream_gate.py arena/dream_emit.py arena/dream_run.py tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py
+uv run pytest tests/test_dream_admissibility.py tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py -q
+uv run ruff check arena/dream_admissibility.py arena/capability_lift.py arena/dream_generate.py arena/dream_research.py arena/dream_gate.py arena/dream_emit.py arena/dream_run.py tests/test_dream_admissibility.py tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py
+uv run pyright arena/dream_admissibility.py arena/capability_lift.py arena/dream_generate.py arena/dream_research.py arena/dream_gate.py arena/dream_emit.py arena/dream_run.py tests/test_dream_admissibility.py tests/test_capability_lift.py tests/test_dream_generate.py tests/test_dream_research.py tests/test_dream_gate.py tests/test_dream_emit.py tests/test_dream_run.py
 ```
 
 Whole-repo gates remain `uv run pytest tests -q`, `uv run ruff check .`, `uv run pyright`, and `make generated`, but this checkout may contain unrelated dirty files from other work. Do not attribute unrelated failures to the dream lane without isolating them.

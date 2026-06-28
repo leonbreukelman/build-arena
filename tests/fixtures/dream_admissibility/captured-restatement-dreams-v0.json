@@ -1,0 +1,76 @@
+{
+  "capabilityMap": {
+    "path": "tests/fixtures/dream_admissibility/captured-capability-map.json",
+    "reviewed": false
+  },
+  "dreams": [
+    {
+      "citedEvidence": [
+        {
+          "anchorId": "capability.component.client",
+          "anchorKind": "capability",
+          "contentHash": "aaac149dec1092acf7f787c23e4f7b539d9c75de686e2de939108e65297f3e0b"
+        }
+      ],
+      "conclusionConfidence": {
+        "band": "medium",
+        "value": 0.6
+      },
+      "id": "dream-1",
+      "idea": "Current carrier of capability.component.client is MCPClient with no observable check present in source-backed behavior.",
+      "mode": "carrier_swap",
+      "premiseConfidence": "all_resolved",
+      "rationale": "Addresses high priority finding that MCPClient owns untested code preventing safe mutation.",
+      "targetCapabilityIds": [
+        "capability.component.client"
+      ],
+      "validationRecipe": {
+        "action": "Run focused pytest on client module after swap",
+        "expectedDirection": "increase",
+        "observable": "test coverage for MCPClient"
+      }
+    },
+    {
+      "citedEvidence": [
+        {
+          "anchorId": "capability.component.entry",
+          "anchorKind": "capability",
+          "contentHash": "95e7d294e8404d9272dc578f7dccf587d8f32acba24513499dcc1eaddd451fbf"
+        }
+      ],
+      "conclusionConfidence": {
+        "band": "medium",
+        "value": 0.5
+      },
+      "id": "dream-2",
+      "idea": "Current entrypoint functions in capability.component.entry expose main and lifespan with source-backed behavior in fmc_mcp.",
+      "mode": "function_remap",
+      "premiseConfidence": "all_resolved",
+      "rationale": "Enables verification of EntryPoint component which currently lacks observable checks.",
+      "targetCapabilityIds": [
+        "capability.component.entry"
+      ],
+      "validationRecipe": {
+        "action": "Execute python -m pytest on entrypoint symbols",
+        "expectedDirection": "tests_pass",
+        "observable": "test pass rate for main and lifespan"
+      }
+    }
+  ],
+  "projectId": "fmc-mcp",
+  "provenance": {
+    "gatedBy": "arena.dream_gate",
+    "generatedBy": "arena.dream_generate",
+    "inputHashes": {},
+    "modelId": "grok-4.3",
+    "promptHashes": {
+      "captured": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "researchedBy": "arena.dream_research"
+  },
+  "schemaVersion": "dream/v0",
+  "sourceModel": {
+    "graphHash": "726ec771082d814eb6732022e7352a5c38daa0c2fc4f559cfa2355725a4fad76",
+    "projectModelV1Path": "tests/fixtures/dream_admissibility/captured-project-model-v1.json"
+  }
+}

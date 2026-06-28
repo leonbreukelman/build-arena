@@ -1,0 +1,252 @@
+{
+  "capturedReplay": {
+    "acceptedDreamIds": [
+      "dream-replay-client-carrier"
+    ],
+    "admissibility": {
+      "dreams": [
+        {
+          "admissible": true,
+          "dreamId": "dream-replay-client-carrier",
+          "requirements": [
+            {
+              "passed": true,
+              "reason": "cites tension-bearing priorityBacklog backlog.document-or-split-high-risk-client-responsibilities",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": true,
+              "reason": "carrier_swap changes carrier from 'MCPClient' to 'ClientPort seam owned by server wiring'",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": true,
+              "reason": "predicts decrease on observable 'fan-in count for node:4042451215c279f0dca7'",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": true,
+              "reason": "structural from->to delta is experiment-lane shaped, not a single-file fix",
+              "requirement": "divergence"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": "dream-admissibility/v0",
+      "summary": {
+        "admissible": 1,
+        "inadmissible": 0,
+        "total": 1
+      }
+    },
+    "gateSummary": {
+      "accepted": 1,
+      "killed": 0
+    },
+    "rawDreamIds": [
+      "dream-replay-client-carrier"
+    ],
+    "researchedDreamIds": [
+      "dream-replay-client-carrier"
+    ]
+  },
+  "capturedRestatements": {
+    "admissibility": {
+      "dreams": [
+        {
+          "admissible": false,
+          "dreamId": "dream-1",
+          "requirements": [
+            {
+              "passed": false,
+              "reason": "citedEvidence resolves but is not tension-bearing: capability:capability.component.client",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": false,
+              "reason": "carrier_swap requires fromCarrier != toCarrier; no current structure was provided; no proposed structure was provided; currentStructure.fromCarrier is required; proposedStructure.toCarrier is required",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": true,
+              "reason": "predicts increase on observable 'test coverage for MCPClient'",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": false,
+              "reason": "not divergent because no valid structural from->to delta was provided",
+              "requirement": "divergence"
+            }
+          ]
+        },
+        {
+          "admissible": false,
+          "dreamId": "dream-2",
+          "requirements": [
+            {
+              "passed": false,
+              "reason": "citedEvidence resolves but is not tension-bearing: capability:capability.component.entry",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": false,
+              "reason": "function_remap requires fromBinding != toBinding; no current structure was provided; no proposed structure was provided; currentStructure.fromBinding is required; proposedStructure.toBinding is required",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": false,
+              "reason": "validationRecipe.expectedDirection must be one of decrease, increase, passes",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": false,
+              "reason": "not divergent because no valid structural from->to delta was provided",
+              "requirement": "divergence"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": "dream-admissibility/v0",
+      "summary": {
+        "admissible": 0,
+        "inadmissible": 2,
+        "total": 2
+      }
+    },
+    "gateKilledDreams": [
+      {
+        "admissibility": {
+          "admissible": false,
+          "dreamId": "dream-1",
+          "requirements": [
+            {
+              "passed": false,
+              "reason": "citedEvidence resolves but is not tension-bearing: capability:capability.component.client",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": false,
+              "reason": "carrier_swap requires fromCarrier != toCarrier; no current structure was provided; no proposed structure was provided; currentStructure.fromCarrier is required; proposedStructure.toCarrier is required",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": true,
+              "reason": "predicts increase on observable 'test coverage for MCPClient'",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": false,
+              "reason": "not divergent because no valid structural from->to delta was provided",
+              "requirement": "divergence"
+            }
+          ]
+        },
+        "id": "dream-1",
+        "premiseConfidence": "all_resolved",
+        "reasons": [
+          "missing currentStructure",
+          "missing proposedStructure",
+          "admissibility.cited_tension: citedEvidence resolves but is not tension-bearing: capability:capability.component.client",
+          "admissibility.structural_delta: carrier_swap requires fromCarrier != toCarrier; no current structure was provided; no proposed structure was provided; currentStructure.fromCarrier is required; proposedStructure.toCarrier is required",
+          "admissibility.divergence: not divergent because no valid structural from->to delta was provided"
+        ]
+      },
+      {
+        "admissibility": {
+          "admissible": false,
+          "dreamId": "dream-2",
+          "requirements": [
+            {
+              "passed": false,
+              "reason": "citedEvidence resolves but is not tension-bearing: capability:capability.component.entry",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": false,
+              "reason": "function_remap requires fromBinding != toBinding; no current structure was provided; no proposed structure was provided; currentStructure.fromBinding is required; proposedStructure.toBinding is required",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": false,
+              "reason": "validationRecipe.expectedDirection must be one of decrease, increase, passes",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": false,
+              "reason": "not divergent because no valid structural from->to delta was provided",
+              "requirement": "divergence"
+            }
+          ]
+        },
+        "id": "dream-2",
+        "premiseConfidence": "all_resolved",
+        "reasons": [
+          "missing currentStructure",
+          "missing proposedStructure",
+          "validationRecipe expectedDirection is invalid",
+          "admissibility.cited_tension: citedEvidence resolves but is not tension-bearing: capability:capability.component.entry",
+          "admissibility.structural_delta: function_remap requires fromBinding != toBinding; no current structure was provided; no proposed structure was provided; currentStructure.fromBinding is required; proposedStructure.toBinding is required",
+          "admissibility.measurable_prediction: validationRecipe.expectedDirection must be one of decrease, increase, passes",
+          "admissibility.divergence: not divergent because no valid structural from->to delta was provided"
+        ]
+      }
+    ],
+    "gateSummary": {
+      "accepted": 0,
+      "killed": 2
+    }
+  },
+  "fixtures": {
+    "capabilityMap": "tests/fixtures/dream_admissibility/captured-capability-map.json",
+    "positive": "tests/fixtures/dream_admissibility/positive-divergent-dreams-v1.json",
+    "projectModel": "tests/fixtures/dream_admissibility/captured-project-model-v1.json",
+    "restatements": "tests/fixtures/dream_admissibility/captured-restatement-dreams-v0.json",
+    "scorecard": "tests/fixtures/dream_admissibility/captured-scorecard.json"
+  },
+  "positiveFixture": {
+    "acceptedDreamIds": [
+      "dream-positive-carrier-swap"
+    ],
+    "admissibility": {
+      "dreams": [
+        {
+          "admissible": true,
+          "dreamId": "dream-positive-carrier-swap",
+          "requirements": [
+            {
+              "passed": true,
+              "reason": "cites tension-bearing priorityBacklog backlog.document-or-split-high-risk-client-responsibilities",
+              "requirement": "cited_tension"
+            },
+            {
+              "passed": true,
+              "reason": "carrier_swap changes carrier from 'MCPClient' to 'ClientPort seam owned by server wiring'",
+              "requirement": "structural_delta"
+            },
+            {
+              "passed": true,
+              "reason": "predicts decrease on observable 'fan-in count for node:4042451215c279f0dca7'",
+              "requirement": "measurable_prediction"
+            },
+            {
+              "passed": true,
+              "reason": "structural from->to delta is experiment-lane shaped, not a single-file fix",
+              "requirement": "divergence"
+            }
+          ]
+        }
+      ],
+      "schemaVersion": "dream-admissibility/v0",
+      "summary": {
+        "admissible": 1,
+        "inadmissible": 0,
+        "total": 1
+      }
+    },
+    "gateSummary": {
+      "accepted": 1,
+      "killed": 0
+    }
+  },
+  "schemaVersion": "dream-admissibility-offline-evidence/v0"
+}

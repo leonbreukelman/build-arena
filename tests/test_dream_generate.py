@@ -62,7 +62,7 @@ def _write_inputs(tmp_path: Path, *, reviewed: bool = True) -> tuple[Path, Path,
 
 def _fake_model(capability_id: str) -> Any:
     def _model_call(prompt: str) -> dict[str, Any]:
-        assert "tier-3 dream proposals" in prompt
+        assert "tier-3 divergent architectural hypotheses" in prompt
         return {
             "dreams": [
                 {
@@ -71,6 +71,8 @@ def _fake_model(capability_id: str) -> Any:
                     "idea": "Consider replacing subprocess glue with an injected stage seam.",
                     "targetCapabilityIds": [capability_id],
                     "citedEvidence": [{"anchorKind": "capability", "anchorId": capability_id, "contentHash": "a" * 64, "claim": "Runner capability exists."}],
+                    "currentStructure": {"fromCarrier": "subprocess glue"},
+                    "proposedStructure": {"toCarrier": "injected stage seam"},
                     "rationale": "The carrier swap specifically targets the runner capability.",
                     "conclusionConfidence": {"band": "medium", "value": 0.9},
                     "validationRecipe": {"action": "try the seam", "observable": "test coverage", "expectedDirection": "increase"},
@@ -82,6 +84,8 @@ def _fake_model(capability_id: str) -> Any:
                     "idea": "Consider splitting proposal selection from execution orchestration.",
                     "targetCapabilityIds": [capability_id],
                     "citedEvidence": [{"anchorKind": "capability", "anchorId": capability_id, "contentHash": "b" * 64, "claim": "Runner combines stage orchestration today."}],
+                    "currentStructure": {"fromBinding": "selection and execution in one runner"},
+                    "proposedStructure": {"toBinding": "selection separated from execution orchestration"},
                     "rationale": "The remap changes the capability boundary rather than patching one file.",
                     "conclusionConfidence": {"band": "low", "value": 0.3},
                     "validationRecipe": {"action": "try the split", "observable": "orchestration coupling", "expectedDirection": "decrease"},

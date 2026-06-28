@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arena.local/schemas/dream-v1.schema.json",
+  "title": "Dream Proposals v1",
+  "description": "Advisory divergent architectural hypotheses (tier 3). Speculative invention grounded in cited tension-bearing evidence; never a deterministic change.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "sourceModel", "capabilityMap", "dreams", "provenance"],
+  "properties": {
+    "schemaVersion": { "const": "dream/v1" },
+    "projectId": { "type": "string", "minLength": 1 },
+    "sourceModel": {
+      "type": "object", "additionalProperties": false,
+      "required": ["projectModelV1Path", "graphHash"],
+      "properties": {
+        "projectModelV1Path": { "type": "string", "minLength": 1 },
+        "graphHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "capabilityMap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "reviewed"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "reviewed": { "type": "boolean" }
+      }
+    },
+    "dreams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "mode", "idea", "targetCapabilityIds", "citedEvidence",
+          "currentStructure", "proposedStructure", "rationale", "premiseConfidence",
+          "conclusionConfidence", "validationRecipe"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "mode": {
+            "enum": ["carrier_swap", "function_remap"],
+            "description": "carrier_swap = same capability, different realization carrier. function_remap = redraw the capability/function binding. Both must carry an explicit current -> proposed structural delta."
+          },
+          "idea": { "type": "string", "minLength": 1, "description": "The divergent architectural hypothesis as 'move/split/invert X from current structure to proposed structure'." },
+          "targetCapabilityIds": {
+            "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 },
+            "description": "Each MUST equal a capabilities[].id in the capability map."
+          },
+          "citedEvidence": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["anchorKind", "anchorId", "contentHash"],
+              "properties": {
+                "anchorKind": { "enum": ["graphNode", "graphEdge", "component", "contract", "capability", "verificationGap", "nearNeighborAlternative", "priorityBacklog", "productInvariant", "graphStructural"] },
+                "anchorId": { "type": "string", "minLength": 1, "description": "MUST resolve to a real id of the named kind in the source model / capability map / computed graph-structural anchor set." },
+                "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                "claim": { "type": "string", "minLength": 1, "description": "The current-state tension this anchor is asserted to support." }
+              }
+            }
+          },
+          "currentStructure": {
+            "type": "object", "additionalProperties": false,
+            "description": "The current structure being reshaped. carrier_swap requires fromCarrier; function_remap requires fromBinding.",
+            "properties": {
+              "fromCarrier": { "type": "string", "minLength": 1 },
+              "fromBinding": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 }
+            }
+          },
+          "proposedStructure": {
+            "type": "object", "additionalProperties": false,
+            "description": "The different proposed structure. carrier_swap requires toCarrier; function_remap requires toBinding.",
+            "properties": {
+              "toCarrier": { "type": "string", "minLength": 1 },
+              "toBinding": { "type": "string", "minLength": 1 },
+              "description": { "type": "string", "minLength": 1 }
+            }
+          },
+          "rationale": {
+            "type": "string", "minLength": 1,
+            "description": "Why the cited tension supports this exact structural mutation, not just any local fix."
+          },
+          "premiseConfidence": {
+            "enum": ["all_resolved", "partial", "unresolved"],
+            "description": "MECHANICAL. Set by the gate: all_resolved iff every citedEvidence anchor resolves and the dream is admissible. dream_emit renders only all_resolved."
+          },
+          "conclusionConfidence": {
+            "type": "object", "additionalProperties": false,
+            "required": ["band", "value"],
+            "properties": {
+              "band": { "enum": ["low", "medium"], "description": "SOFT and CAPPED. 'high' is forbidden pre-emission: benefit is structurally unverifiable before the repo agent tries it." },
+              "value": { "type": "number", "minimum": 0, "maximum": 0.7 }
+            }
+          },
+          "validationRecipe": {
+            "type": "object", "additionalProperties": false,
+            "required": ["action", "observable", "expectedDirection"],
+            "properties": {
+              "action": { "type": "string", "minLength": 1, "description": "What the repo agent should TRY, e.g. 'move auth/session handling behind a ClientPort seam while preserving public tools'." },
+              "observable": { "type": "string", "minLength": 1, "description": "Named computable axis/metric or buildable fitness function, e.g. 'fan-in count for node X', 'import-cycle count', 'test-seam count'." },
+              "expectedDirection": { "enum": ["decrease", "increase", "passes"] }
+            }
+          },
+          "neighborAlternativeId": { "type": ["string", "null"], "description": "For carrier_swap: the snapshot.near_neighbor_alternatives[].id this swap corresponds to, if any. Raises rank (cheaper to validate)." }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generatedBy", "researchedBy", "promptHashes", "modelId", "inputHashes"],
+      "properties": {
+        "generatedBy": { "type": "string", "minLength": 1 },
+        "researchedBy": { "type": "string", "minLength": 1 },
+        "gatedBy": { "type": "string", "minLength": 1 },
+        "promptHashes": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+        "modelId": { "type": "string", "minLength": 1 },
+        "inputHashes": { "type": "object", "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
+      }
+    }
+  }
+}

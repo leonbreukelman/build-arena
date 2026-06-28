@@ -1,7 +1,8 @@
 """Research raw dream proposals into premise-dense advisory hypotheses.
 
-This is the tier-3 to tier-2 handoff: a soft model maps each divergent idea onto
-concrete current-state claims. The output is still untrusted; the deterministic
+This is the tier-3 to tier-2 handoff: a soft model grounds each divergent idea
+against cited tensions and measurable observables while preserving the explicit
+from -> to structural mutation. The output is still untrusted; the deterministic
 ``dream_gate`` must resolve every cited anchor before emit.
 """
 
@@ -15,11 +16,12 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from arena.dream_admissibility import anchor_catalog_records
 from arena.llm_adapter import OpenAICompatibleChatClient, resolve_provider_config
 
-SCHEMA_VERSION = "dream/v0"
+SCHEMA_VERSION = "dream/v1"
 RESEARCHED_BY = "arena.dream_research"
-PROMPT_VERSION = "dream-research-v0"
+PROMPT_VERSION = "dream-research-v1"
 ALLOWED_MODES = {"carrier_swap", "function_remap"}
 
 DreamResearchModel = Callable[[str], dict[str, Any]]
@@ -74,7 +76,9 @@ def research_dreams(
             raise DreamResearchError("injected model must return a JSON object")
         model_id = _clean(raw_doc.get("provenance", {}).get("modelId")) or "injected-model"
 
-    dreams = _researched_dreams(researched.get("dreams", []), capability_map=capability_map)
+    dreams = _researched_dreams(
+        researched.get("dreams", []), capability_map=capability_map, source_dreams=raw_doc.get("dreams", [])
+    )
     if not dreams:
         raise DreamResearchError("research produced no dreams with required premise surface")
     return {
@@ -115,13 +119,19 @@ def write_researched_dreams(
     return output
 
 
-def _researched_dreams(raw_dreams: Any, *, capability_map: dict[str, Any]) -> list[dict[str, Any]]:
+def _researched_dreams(raw_dreams: Any, *, capability_map: dict[str, Any], source_dreams: Any) -> list[dict[str, Any]]:
     if not isinstance(raw_dreams, list):
         return []
     capability_ids = {
         str(item.get("id"))
         for item in capability_map.get("capabilities", [])
         if isinstance(item, dict) and item.get("id")
+    }
+    source_items: list[Any] = source_dreams if isinstance(source_dreams, list) else []
+    source_by_id = {
+        _clean(item.get("id")): item
+        for item in source_items
+        if isinstance(item, dict) and _clean(item.get("id"))
     }
     out: list[dict[str, Any]] = []
     for raw in raw_dreams:
@@ -135,12 +145,17 @@ def _researched_dreams(raw_dreams: Any, *, capability_map: dict[str, Any]) -> li
             continue
         if any(target not in capability_ids for target in targets):
             continue
+        source = source_by_id.get(_clean(raw.get("id")), {})
+        current_structure = _structure(source.get("currentStructure")) or _structure(raw.get("currentStructure"))
+        proposed_structure = _structure(source.get("proposedStructure")) or _structure(raw.get("proposedStructure"))
         normalized = {
             "id": _clean(raw.get("id")) or f"dream-{len(out) + 1}",
             "mode": mode,
             "idea": _clean(raw.get("idea")),
             "targetCapabilityIds": targets,
             "citedEvidence": evidence,
+            "currentStructure": current_structure,
+            "proposedStructure": proposed_structure,
             "rationale": _clean(raw.get("rationale")),
             "premiseConfidence": _clean(raw.get("premiseConfidence")) or "unresolved",
             "conclusionConfidence": _conclusion(raw.get("conclusionConfidence")),
@@ -152,7 +167,13 @@ def _researched_dreams(raw_dreams: Any, *, capability_map: dict[str, Any]) -> li
         }
         if raw.get("neighborAlternativeId") is not None:
             normalized["neighborAlternativeId"] = _clean(raw.get("neighborAlternativeId")) or None
-        if normalized["idea"] and normalized["rationale"] and normalized["validationRecipe"]["observable"]:
+        if (
+            normalized["idea"]
+            and normalized["rationale"]
+            and normalized["validationRecipe"]["observable"]
+            and normalized["currentStructure"]
+            and normalized["proposedStructure"]
+        ):
             out.append(normalized)
     return out
 
@@ -190,12 +211,16 @@ def _research_prompt(project_model: dict[str, Any], capability_map: dict[str, An
         for capability in capability_map.get("capabilities", [])
         if isinstance(capability, dict) and _clean(capability.get("id"))
     ]
+    anchors = _anchor_catalog(project_model, capability_map)
     compact = {
         "allowedCapabilityIds": capability_ids,
-        "anchorCatalog": _anchor_catalog(project_model, capability_map),
+        "anchorCatalog": anchors,
+        "tensionAnchorCatalog": [anchor for anchor in anchors if anchor.get("tensionBearing") is True],
         "capabilities": capability_map.get("capabilities", []),
         "components": _get(project_model, "snapshot", "components", default=[]),
         "contracts": _get(project_model, "snapshot", "contracts", default=[]),
+        "priorityBacklog": _get(project_model, "iterationReadiness", "priorityBacklog", default=[]),
+        "productInvariants": _get(project_model, "iterationReadiness", "productInvariants", default=[]),
         "verificationGaps": _get(project_model, "snapshot", "verification_gaps", default=[]),
         "nearNeighborAlternatives": _get(project_model, "snapshot", "near_neighbor_alternatives", default=[]),
         "graphNodes": _get(project_model, "projectGraph", "nodes", default=[]),
@@ -203,39 +228,32 @@ def _research_prompt(project_model: dict[str, Any], capability_map: dict[str, An
         "rawDreams": raw_doc.get("dreams", []),
     }
     return (
-        "Research these raw tier-3 dream proposals into concrete current-state claims. "
-        "Do not claim benefit certainty. Preserve novelty, add/check citedEvidence anchors, and return JSON only: {\"dreams\":[...]}. "
+        "Research these raw tier-3 divergent hypotheses without collapsing their mutation. "
+        "The currentStructure -> proposedStructure delta in each raw dream is invariant: preserve it exactly. "
+        "Do not turn the hypothesis into a current-state restatement. Do not claim benefit certainty. "
+        "Ground the cited tension and predicted observable, add/check citedEvidence anchors only from tensionAnchorCatalog, "
+        "and return JSON only: {\"dreams\":[...]}. "
         "For targetCapabilityIds, copy exact ids from allowedCapabilityIds. Do not abbreviate component as comp. "
-        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from anchorCatalog; do not invent or recompute hashes. "
+        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from tensionAnchorCatalog; do not invent or recompute hashes. "
         "Every conclusionConfidence must be an object capped at medium/0.7. Every validationRecipe must include action, "
-        "observable, and expectedDirection one of decrease, increase, unchanged, tests_pass. Current model:\n"
+        "observable, and expectedDirection one of decrease, increase, passes. Current model:\n"
         + json.dumps(compact, sort_keys=True, ensure_ascii=False)
     )
 
 
-def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, str]]:
-    anchors: list[tuple[str, dict[str, Any]]] = []
-    for capability in capability_map.get("capabilities", []):
-        if isinstance(capability, dict):
-            anchors.append(("capability", capability))
-    for component in _get(project_model, "snapshot", "components", default=[]):
-        if isinstance(component, dict):
-            anchors.append(("component", component))
-    for contract in _get(project_model, "snapshot", "contracts", default=[]):
-        if isinstance(contract, dict):
-            anchors.append(("contract", contract))
-    for gap in _get(project_model, "snapshot", "verification_gaps", default=[]):
-        if isinstance(gap, dict):
-            anchors.append(("verificationGap", gap))
-    for neighbor in _get(project_model, "snapshot", "near_neighbor_alternatives", default=[]):
-        if isinstance(neighbor, dict):
-            anchors.append(("nearNeighborAlternative", neighbor))
-    return [_anchor_record(kind, anchor) for kind, anchor in anchors if _clean(anchor.get("id"))]
+def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, Any]]:
+    return anchor_catalog_records(project_model, capability_map)
 
 
-def _anchor_record(kind: str, anchor: dict[str, Any]) -> dict[str, str]:
-    encoded = json.dumps(anchor, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    return {"anchorKind": kind, "anchorId": _clean(anchor.get("id")), "contentHash": hashlib.sha256(encoded).hexdigest()}
+def _structure(value: Any) -> dict[str, str]:
+    if not isinstance(value, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key in ("fromCarrier", "toCarrier", "fromBinding", "toBinding", "description"):
+        cleaned = _clean(value.get(key))
+        if cleaned:
+            out[key] = cleaned
+    return out
 
 
 def _conclusion(value: Any) -> dict[str, Any]:

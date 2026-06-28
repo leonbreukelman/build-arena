@@ -16,11 +16,12 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from arena.dream_admissibility import anchor_catalog_records
 from arena.llm_adapter import OpenAICompatibleChatClient, resolve_provider_config
 
-SCHEMA_VERSION = "dream/v0"
+SCHEMA_VERSION = "dream/v1"
 GENERATED_BY = "arena.dream_generate"
-PROMPT_VERSION = "dream-generate-v0"
+PROMPT_VERSION = "dream-generate-v1"
 ALLOWED_MODES = {"carrier_swap", "function_remap"}
 
 DreamModel = Callable[[str], dict[str, Any]]
@@ -152,6 +153,8 @@ def _minimum_grounded_dreams(raw_dreams: Any, *, capability_map: dict[str, Any])
             "idea": _clean(raw.get("idea")),
             "targetCapabilityIds": targets,
             "citedEvidence": evidence,
+            "currentStructure": _structure(raw.get("currentStructure")),
+            "proposedStructure": _structure(raw.get("proposedStructure")),
             "rationale": _clean(raw.get("rationale")),
             "premiseConfidence": _clean(raw.get("premiseConfidence")) or "unresolved",
             "conclusionConfidence": _conclusion(raw.get("conclusionConfidence")),
@@ -163,7 +166,13 @@ def _minimum_grounded_dreams(raw_dreams: Any, *, capability_map: dict[str, Any])
         }
         if raw.get("neighborAlternativeId") is not None:
             normalized["neighborAlternativeId"] = _clean(raw.get("neighborAlternativeId")) or None
-        if normalized["idea"] and normalized["rationale"] and normalized["validationRecipe"]["action"]:
+        if (
+            normalized["idea"]
+            and normalized["rationale"]
+            and normalized["validationRecipe"]["action"]
+            and normalized["currentStructure"]
+            and normalized["proposedStructure"]
+        ):
             out.append(normalized)
     return out
 
@@ -185,12 +194,20 @@ def _generation_prompt(project_model: dict[str, Any], capability_map: dict[str, 
         for capability in capability_map.get("capabilities", [])
         if isinstance(capability, dict) and _clean(capability.get("id"))
     ]
+    anchors = _anchor_catalog(project_model, capability_map)
     compact = {
         "projectId": _project_id(project_model, capability_map),
+        "goal": _get(project_model, "snapshot", "goal", default=""),
+        "nonGoals": _get(project_model, "snapshot", "non_goals", default=[]),
         "allowedCapabilityIds": capability_ids,
         "capabilities": capability_map.get("capabilities", []),
-        "anchorCatalog": _anchor_catalog(project_model, capability_map),
+        "anchorCatalog": anchors,
+        "tensionAnchorCatalog": [anchor for anchor in anchors if anchor.get("tensionBearing") is True],
         "componentProfiles": _get(project_model, "iterationReadiness", "componentProfiles", default=[]),
+        "priorityBacklog": _get(project_model, "iterationReadiness", "priorityBacklog", default=[]),
+        "productInvariants": _get(project_model, "iterationReadiness", "productInvariants", default=[]),
+        "verificationGaps": _get(project_model, "snapshot", "verification_gaps", default=[]),
+        "graphStructuralSummary": _graph_structural_summary(anchors),
         "nearNeighborAlternatives": _get(project_model, "snapshot", "near_neighbor_alternatives", default=[]),
         "topFindings": scorecard.get("findings", [])[:8] if isinstance(scorecard.get("findings"), list) else [],
         "requiredDreamShape": {
@@ -200,50 +217,69 @@ def _generation_prompt(project_model: dict[str, Any], capability_map: dict[str, 
             "targetCapabilityIds": ["copy one or more exact strings from allowedCapabilityIds"],
             "citedEvidence": [
                 {
-                    "anchorKind": "copy from anchorCatalog",
-                    "anchorId": "copy from anchorCatalog",
-                    "contentHash": "copy from anchorCatalog",
-                    "claim": "short current-state claim",
+                    "anchorKind": "copy from tensionAnchorCatalog",
+                    "anchorId": "copy from tensionAnchorCatalog",
+                    "contentHash": "copy from tensionAnchorCatalog",
+                    "claim": "short current-state tension claim",
                 }
             ],
+            "currentStructure": {"fromCarrier": "required for carrier_swap", "fromBinding": "required for function_remap"},
+            "proposedStructure": {"toCarrier": "required for carrier_swap", "toBinding": "required for function_remap"},
             "rationale": "why this architectural experiment is worth trying",
             "conclusionConfidence": {"band": "low or medium", "value": "number between 0 and 0.7"},
             "validationRecipe": {
                 "action": "concrete downstream trial",
-                "observable": "measurable result",
-                "expectedDirection": "decrease, increase, unchanged, or tests_pass",
+                "observable": "named computable metric/axis or buildable fitness function",
+                "expectedDirection": "decrease, increase, or passes",
             },
         },
     }
     return (
-        "Generate advisory tier-3 dream proposals for Build Arena. Return JSON only: "
-        "{\"dreams\":[...]}. Include at least one carrier_swap and one function_remap when possible. "
+        "Generate advisory tier-3 divergent architectural hypotheses for Build Arena. Return JSON only: "
+        "{\"dreams\":[...]}. Include at least one carrier_swap and one function_remap when possible, "
+        "but each dream must start from exactly one cited tension anchor. "
         "For targetCapabilityIds, copy exact ids from allowedCapabilityIds. Do not abbreviate component as comp. "
-        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from anchorCatalog; do not invent hashes. "
+        "For citedEvidence, copy exact anchorKind/anchorId/contentHash triples from tensionAnchorCatalog; do not invent hashes. "
+        "Citing only a capability is inadmissible. Respect goal and nonGoals. "
+        "Every dream must propose a concrete structural mutation as an explicit from -> to delta: "
+        "carrier_swap requires currentStructure.fromCarrier and proposedStructure.toCarrier with different values; "
+        "function_remap requires currentStructure.fromBinding and proposedStructure.toBinding with different values. "
+        "Do not restate current state. Do not propose a single-file finding fix; that belongs to the proposal lane. "
         "Every dream must include mode, idea, targetCapabilityIds, citedEvidence with anchorKind/anchorId/contentHash/claim, "
-        "rationale, conclusionConfidence as an object capped at medium/0.7, and validationRecipe with action, observable, "
-        "and expectedDirection one of decrease, increase, unchanged, tests_pass. Current facts:\n"
+        "currentStructure, proposedStructure, rationale, conclusionConfidence as an object capped at medium/0.7, "
+        "and validationRecipe with action, observable, and expectedDirection one of decrease, increase, passes. "
+        "The observable must name a computable axis/metric (for example coupling, fan-in, import-cycle count, test-seam count) "
+        "or a buildable fitness function. Current facts:\n"
         + json.dumps(compact, sort_keys=True, ensure_ascii=False)
     )
 
 
-def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, str]]:
-    anchors: list[tuple[str, dict[str, Any]]] = []
-    for capability in capability_map.get("capabilities", []):
-        if isinstance(capability, dict):
-            anchors.append(("capability", capability))
-    for component in _get(project_model, "snapshot", "components", default=[]):
-        if isinstance(component, dict):
-            anchors.append(("component", component))
-    for gap in _get(project_model, "snapshot", "verification_gaps", default=[]):
-        if isinstance(gap, dict):
-            anchors.append(("verificationGap", gap))
-    return [_anchor_record(kind, anchor) for kind, anchor in anchors if _clean(anchor.get("id"))]
+def _anchor_catalog(project_model: dict[str, Any], capability_map: dict[str, Any]) -> list[dict[str, Any]]:
+    return anchor_catalog_records(project_model, capability_map)
 
 
-def _anchor_record(kind: str, anchor: dict[str, Any]) -> dict[str, str]:
-    encoded = json.dumps(anchor, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
-    return {"anchorKind": kind, "anchorId": _clean(anchor.get("id")), "contentHash": hashlib.sha256(encoded).hexdigest()}
+def _graph_structural_summary(anchor_catalog: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "anchorKind": anchor.get("anchorKind"),
+            "anchorId": anchor.get("anchorId"),
+            "contentHash": anchor.get("contentHash"),
+            "tensionKind": anchor.get("tensionKind"),
+        }
+        for anchor in anchor_catalog
+        if anchor.get("anchorKind") == "graphStructural"
+    ]
+
+
+def _structure(value: Any) -> dict[str, str]:
+    if not isinstance(value, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key in ("fromCarrier", "toCarrier", "fromBinding", "toBinding", "description"):
+        cleaned = _clean(value.get(key))
+        if cleaned:
+            out[key] = cleaned
+    return out
 
 
 def _parse_model_json(text: str) -> dict[str, Any]:

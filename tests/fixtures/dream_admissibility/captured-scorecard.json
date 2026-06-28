@@ -1,0 +1,96 @@
+{
+  "findings": [
+    {
+      "autonomyBoundary": "needs_code_change",
+      "confidence": "high",
+      "dimension": "reproducible_verification",
+      "docKnowledgeGain": 1,
+      "estimatedEffort": "medium",
+      "evidence": [
+        {
+          "checked": true,
+          "componentId": "component.client",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/client.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:bcfd8e782d7fe500"
+        }
+      ],
+      "id": "code.component.untested.component.client",
+      "impactOnFutureIteration": 5,
+      "priorityScore": 540.0,
+      "rank": 1,
+      "recommendedAction": "Add an observable check (e.g. a focused test) covering MCPClient before mutating it.",
+      "riskReduction": 4,
+      "severity": "high",
+      "title": "Component MCPClient has no observable check",
+      "verification": [],
+      "verificationGain": 5,
+      "whyItMatters": "Component MCPClient owns code with no observable check, so a proposer cannot verify changes to it."
+    },
+    {
+      "autonomyBoundary": "needs_code_change",
+      "confidence": "high",
+      "dimension": "reproducible_verification",
+      "docKnowledgeGain": 1,
+      "estimatedEffort": "medium",
+      "evidence": [
+        {
+          "checked": true,
+          "componentId": "component.entry",
+          "kind": "component"
+        },
+        {
+          "checked": true,
+          "kind": "absence",
+          "path": "iterationReadiness.componentProfiles"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/__init__.py"
+        },
+        {
+          "checked": true,
+          "kind": "owned_surface",
+          "path": "src/fmc_mcp/__main__.py"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:aeec7a1dae758e4e"
+        },
+        {
+          "checked": true,
+          "kind": "provenance",
+          "ref": "prov:da6e96a18d26d1cf"
+        }
+      ],
+      "id": "code.component.untested.component.entry",
+      "impactOnFutureIteration": 5,
+      "priorityScore": 180.0,
+      "rank": 8,
+      "recommendedAction": "Add an observable check (e.g. a focused test) covering EntryPoint before mutating it.",
+      "riskReduction": 4,
+      "severity": "low",
+      "title": "Component EntryPoint has no observable check",
+      "verification": [],
+      "verificationGain": 5,
+      "whyItMatters": "Component EntryPoint owns code with no observable check, so a proposer cannot verify changes to it."
+    }
+  ],
+  "projectRoot": "fmc-mcp",
+  "schemaVersion": "project-intake-scorecard/v0"
+}

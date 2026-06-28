@@ -105,7 +105,7 @@ def _write_inputs(tmp_path: Path) -> tuple[Path, Path, dict[str, Any], dict[str,
 
 
 def _dream(model: dict[str, Any], cap_map: dict[str, Any], **overrides: Any) -> dict[str, Any]:
-    component = model["snapshot"]["components"][0]
+    gap = model["snapshot"]["verification_gaps"][0]
     dream = {
         "id": "dream.runner-carrier",
         "mode": "carrier_swap",
@@ -113,12 +113,14 @@ def _dream(model: dict[str, Any], cap_map: dict[str, Any], **overrides: Any) -> 
         "targetCapabilityIds": [cap_map["capabilities"][0]["id"]],
         "citedEvidence": [
             {
-                "anchorKind": "component",
-                "anchorId": "comp.runner",
-                "contentHash": anchor_content_hash(component),
-                "claim": "The runner component owns stage orchestration today.",
+                "anchorKind": "verificationGap",
+                "anchorId": "gap.behaviour",
+                "contentHash": anchor_content_hash(gap),
+                "claim": "The runner has a behavior verification gap.",
             }
         ],
+        "currentStructure": {"fromCarrier": "subprocess-only stage wiring"},
+        "proposedStructure": {"toCarrier": "injected stage seam"},
         "rationale": "The seam targets the runner capability specifically rather than arbitrary cleanup.",
         "premiseConfidence": "unresolved",
         "conclusionConfidence": {"band": "medium", "value": 0.6},
@@ -160,7 +162,7 @@ def test_planted_fabricated_anchor_is_killed(tmp_path: Path) -> None:
 
     assert result.accepted_count == 0
     assert result.trace["killedDreams"][0]["premiseConfidence"] == "unresolved"
-    assert "unresolved component comp.fabricated" in result.trace["killedDreams"][0]["reasons"][0]
+    assert "unresolved verificationGap comp.fabricated" in result.trace["killedDreams"][0]["reasons"][0]
 
 
 def test_missing_recipe_is_killed(tmp_path: Path) -> None:

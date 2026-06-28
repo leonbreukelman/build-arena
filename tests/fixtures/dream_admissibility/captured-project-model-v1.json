@@ -1,0 +1,259 @@
+{
+  "id": "fmc-mcp-captured-minimal",
+  "iterationReadiness": {
+    "componentProfiles": [
+      {
+        "behavioralTags": [
+          "auth",
+          "concurrency",
+          "configuration",
+          "external_http",
+          "injection",
+          "pagination",
+          "rate_limit",
+          "read_only",
+          "tool_handlers"
+        ],
+        "componentId": "component.client",
+        "keySymbols": [
+          "MCPClient",
+          "FMCClient",
+          "RateLimiter"
+        ],
+        "ownedNodeIds": [
+          "node:4042451215c279f0dca7"
+        ],
+        "priorityRank": 1,
+        "provenanceRefs": [
+          "prov:bcfd8e782d7fe500"
+        ],
+        "responsibilitySummary": "stateful authenticated FMC client",
+        "riskLevel": "high",
+        "whyPriority": "High-risk stateful client combines auth, retry, rate limiting, pagination, and endpoint wrappers."
+      },
+      {
+        "behavioralTags": [
+          "entrypoint"
+        ],
+        "componentId": "component.entry",
+        "keySymbols": [
+          "main",
+          "lifespan"
+        ],
+        "ownedNodeIds": [
+          "node:127af2b0f9d32f8164c6",
+          "node:b3d9c9b0b868f763b2b8"
+        ],
+        "priorityRank": 8,
+        "provenanceRefs": [
+          "prov:aeec7a1dae758e4e",
+          "prov:da6e96a18d26d1cf"
+        ],
+        "responsibilitySummary": "runtime entrypoint",
+        "riskLevel": "low",
+        "whyPriority": "Entrypoint lacks observable checks."
+      }
+    ],
+    "externalSurfaces": [],
+    "openQuestions": [],
+    "priorityBacklog": [
+      {
+        "componentIds": [
+          "component.client"
+        ],
+        "id": "backlog.document-or-split-high-risk-client-responsibilities",
+        "provenanceRefs": [
+          "prov:bcfd8e782d7fe500"
+        ],
+        "rank": 4,
+        "rationale": "High-risk stateful client code combines auth, retry, rate limiting, pagination, and endpoint wrappers.",
+        "relatedInvariantIds": [],
+        "relatedSurfaceIds": [],
+        "suggestedVerification": "Targeted unit tests for each client sub-responsibility.",
+        "title": "Document or split high-risk client responsibilities"
+      },
+      {
+        "componentIds": [
+          "component.client"
+        ],
+        "id": "backlog.verify-read-only-external-behavior",
+        "provenanceRefs": [
+          "prov:bcfd8e782d7fe500"
+        ],
+        "rank": 1,
+        "rationale": "Add or run checks proving domain FMC operations stay read-only while auth token POST remains allowed.",
+        "relatedInvariantIds": [
+          "invariant.read-only-external-operations"
+        ],
+        "relatedSurfaceIds": [],
+        "suggestedVerification": "Static scan or mocked client test for HTTP methods.",
+        "title": "Verify read-only external behavior"
+      }
+    ],
+    "productInvariants": [
+      {
+        "category": "read_only_external_operations",
+        "componentIds": [
+          "component.client"
+        ],
+        "description": "FMC domain operations are modeled as read-oriented external calls; auth-token POSTs are separate from domain mutation behavior.",
+        "enforcement": "modeled",
+        "externalSurfaceIds": [],
+        "id": "invariant.read-only-external-operations",
+        "provenanceRefs": [
+          "prov:bcfd8e782d7fe500"
+        ]
+      },
+      {
+        "category": "live_test_boundary",
+        "componentIds": [
+          "component.client",
+          "component.entry"
+        ],
+        "description": "Credentialed live tests must remain outside default local acceptance unless explicitly enabled.",
+        "enforcement": "gap",
+        "externalSurfaceIds": [],
+        "id": "invariant.live-test-boundary",
+        "provenanceRefs": [
+          "prov:bcfd8e782d7fe500",
+          "prov:aeec7a1dae758e4e"
+        ]
+      }
+    ],
+    "qualityGates": [],
+    "runtimeContracts": [],
+    "summary": "captured minimal fmc-mcp model for dream admissibility replay"
+  },
+  "project": {
+    "projectId": "fmc-mcp"
+  },
+  "projectGraph": {
+    "edges": [
+      {
+        "from_node_id": "node:caller.a",
+        "id": "edge.client.a",
+        "kind": "calls",
+        "provenance_refs": [
+          "prov:a"
+        ],
+        "to_node_id": "node:4042451215c279f0dca7"
+      },
+      {
+        "from_node_id": "node:caller.b",
+        "id": "edge.client.b",
+        "kind": "calls",
+        "provenance_refs": [
+          "prov:b"
+        ],
+        "to_node_id": "node:4042451215c279f0dca7"
+      },
+      {
+        "from_node_id": "node:caller.c",
+        "id": "edge.client.c",
+        "kind": "calls",
+        "provenance_refs": [
+          "prov:c"
+        ],
+        "to_node_id": "node:4042451215c279f0dca7"
+      }
+    ],
+    "graphHash": "726ec771082d814eb6732022e7352a5c38daa0c2fc4f559cfa2355725a4fad76",
+    "nodes": [
+      {
+        "id": "node:4042451215c279f0dca7",
+        "kind": "module",
+        "label": "client",
+        "path": "src/fmc_mcp/client.py"
+      },
+      {
+        "id": "node:127af2b0f9d32f8164c6",
+        "kind": "module",
+        "label": "entry-init",
+        "path": "src/fmc_mcp/__init__.py"
+      },
+      {
+        "id": "node:b3d9c9b0b868f763b2b8",
+        "kind": "module",
+        "label": "entry-main",
+        "path": "src/fmc_mcp/__main__.py"
+      },
+      {
+        "id": "node:caller.a",
+        "kind": "function",
+        "label": "caller_a",
+        "path": "src/fmc_mcp/server.py"
+      },
+      {
+        "id": "node:caller.b",
+        "kind": "function",
+        "label": "caller_b",
+        "path": "src/fmc_mcp/resources.py"
+      },
+      {
+        "id": "node:caller.c",
+        "kind": "function",
+        "label": "caller_c",
+        "path": "src/fmc_mcp/tools.py"
+      }
+    ]
+  },
+  "schemaVersion": "project-model/v1",
+  "snapshot": {
+    "components": [
+      {
+        "check_ids": [],
+        "contract_ids": [],
+        "id": "component.client",
+        "name": "MCPClient",
+        "owned_node_ids": [
+          "node:4042451215c279f0dca7"
+        ],
+        "provenance_refs": [
+          "prov:bcfd8e782d7fe500"
+        ],
+        "responsibility": "handle HTTP client connections and API interactions",
+        "verification_gap_ids": []
+      },
+      {
+        "check_ids": [],
+        "contract_ids": [],
+        "id": "component.entry",
+        "name": "EntryPoint",
+        "owned_node_ids": [
+          "node:127af2b0f9d32f8164c6",
+          "node:b3d9c9b0b868f763b2b8"
+        ],
+        "provenance_refs": [
+          "prov:aeec7a1dae758e4e",
+          "prov:da6e96a18d26d1cf"
+        ],
+        "responsibility": "provide package initialization and CLI execution entry",
+        "verification_gap_ids": []
+      }
+    ],
+    "contracts": [],
+    "goal": "build-arena dream run",
+    "graph_hash": "726ec771082d814eb6732022e7352a5c38daa0c2fc4f559cfa2355725a4fad76",
+    "near_neighbor_alternatives": [],
+    "non_goals": [
+      "do not treat file buckets as final components"
+    ],
+    "observable_checks": [],
+    "project_id": "fmc-mcp",
+    "verification_gaps": [
+      {
+        "component_ids": [
+          "component.server"
+        ],
+        "contract_ids": [],
+        "description": "no held-out probe execution for semantic validation",
+        "id": "gap.probe-semantic",
+        "proposed_closure_check": "Add a deterministic local check or independent review artifact.",
+        "provenance_refs": [
+          "prov:d10dbb159e6fb524"
+        ],
+        "severity": "medium"
+      }
+    ]
+  }
+}

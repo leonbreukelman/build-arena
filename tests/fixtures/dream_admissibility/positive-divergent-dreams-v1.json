@@ -1,0 +1,58 @@
+{
+  "capabilityMap": {
+    "path": "tests/fixtures/dream_admissibility/captured-capability-map.json",
+    "reviewed": false
+  },
+  "dreams": [
+    {
+      "citedEvidence": [
+        {
+          "anchorId": "backlog.document-or-split-high-risk-client-responsibilities",
+          "anchorKind": "priorityBacklog",
+          "claim": "The backlog records a tension: MCPClient combines several high-risk responsibilities that should be split or documented.",
+          "contentHash": "0ac66d88a9b6ecb808e9e91dededffda205350b08c275c415001b707e9bed370"
+        }
+      ],
+      "conclusionConfidence": {
+        "band": "medium",
+        "value": 0.6
+      },
+      "currentStructure": {
+        "description": "stateful client class carries auth, retry, rate limiting, pagination, and endpoint wrappers",
+        "fromCarrier": "MCPClient"
+      },
+      "id": "dream-positive-carrier-swap",
+      "idea": "Move the high-risk client responsibilities behind a ClientPort seam owned by server wiring.",
+      "mode": "carrier_swap",
+      "premiseConfidence": "unresolved",
+      "proposedStructure": {
+        "description": "server wiring depends on a narrow client port while sub-responsibilities become separately testable",
+        "toCarrier": "ClientPort seam owned by server wiring"
+      },
+      "rationale": "The cited high-risk multi-responsibility tension supports moving behavior to a different carrier seam rather than adding one local test.",
+      "targetCapabilityIds": [
+        "capability.component.client"
+      ],
+      "validationRecipe": {
+        "action": "build a ClientPort seam and measure graph fan-in before and after",
+        "expectedDirection": "decrease",
+        "observable": "fan-in count for node:4042451215c279f0dca7"
+      }
+    }
+  ],
+  "projectId": "fmc-mcp",
+  "provenance": {
+    "generatedBy": "fixture",
+    "inputHashes": {},
+    "modelId": "fixture",
+    "promptHashes": {
+      "fixture": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "researchedBy": "fixture"
+  },
+  "schemaVersion": "dream/v1",
+  "sourceModel": {
+    "graphHash": "726ec771082d814eb6732022e7352a5c38daa0c2fc4f559cfa2355725a4fad76",
+    "projectModelV1Path": "tests/fixtures/dream_admissibility/captured-project-model-v1.json"
+  }
+}
