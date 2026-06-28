@@ -1,5 +1,11 @@
 # Proposal registry, lineage, and repair-loop mechanics — 2026-06-15
 
+> Superseded for target mutation (2026-06-27): the target apply/promote roots
+> were removed by `docs/specs/2026-06-27-propose-only-remediation.md`.
+> This page remains historical evidence for why the old loop was unsafe to rely
+> on. Do not use its `repo_goal_loop`, `diff_proposer`, or
+> `proposal_candidate_runner` commands as runnable guidance.
+
 ## Why this page exists
 
 The 2026-06-15 `fmc-mcp` live production pass failed safely but exposed autonomy gaps that were not visible enough to future runs:

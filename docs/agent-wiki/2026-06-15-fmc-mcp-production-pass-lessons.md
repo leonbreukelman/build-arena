@@ -1,5 +1,10 @@
 # fmc-mcp Production Pass Lessons — 2026-06-15
 
+> Superseded for target mutation (2026-06-27): the target apply/promote roots
+> were removed by `docs/specs/2026-06-27-propose-only-remediation.md`.
+> This page remains historical evidence for the retired production loop's
+> failure modes, not runnable guidance for future target mutation.
+
 Source run: `/home/leonb/projects/build-arena/.arena/runs/fmc-mcp-production-20260615T001605Z`
 
 Primary analysis: `docs/specs/2026-06-15-full-autonomy-gap-analysis.md`

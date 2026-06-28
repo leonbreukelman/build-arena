@@ -26,11 +26,9 @@ STALE_ACTIVE_STATUS_RE = re.compile(
 INTAKE_PROPOSAL_MODULES = (
     "project_intake_scorecard",
     "proposal_planner",
-    "proposal_candidate_runner",
     "proposal_domains",
     "proposal_ranker",
     "code_quality_gate",
-    "repo_goal_loop",
     "repo_facts",
     "markdown_links",
 )
@@ -325,15 +323,15 @@ def test_june5_final_report_records_committed_outcome_not_precommit_state() -> N
     assert "not pushed, merged, deployed" in report
 
 
-def test_docs_describe_bounded_real_run_attempt_as_safe_failed_not_unqualified_readiness() -> None:
+def test_docs_describe_propose_only_remediation_not_apply_promote_readiness() -> None:
     required_markers = [
         "operator-switchable",
         "OpenAI-compatible",
         "proposal",
-        "2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing",
-        "safe gate failure",
-        "did not prove a production improvement or broad unattended autonomy",
-        "--live-max-calls",
+        "propose-only",
+        "target apply/promote",
+        "arena.proposal_run",
+        "arena.dream_run",
         "--live-api-key-env XAI_API_KEY",
     ]
     for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
@@ -342,8 +340,10 @@ def test_docs_describe_bounded_real_run_attempt_as_safe_failed_not_unqualified_r
         assert missing == [], f"{relative} missing {missing}"
         assert "provider acceptance remains unverified until live smoke" not in text
         assert "Build Arena is ready to perform one bounded local fmc-mcp production run" not in text
+        assert "--allow-promotion" not in text
+        assert "--apply-mode" not in text
         lowered = text.lower().replace(
-            "2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing",
+            "not ready for broad autonomous live loops",
             "",
         )
         assert "ready for a real run" not in lowered
@@ -368,20 +368,17 @@ def test_pre_live_register_scopes_bounded_fmc_mcp_production_run_without_broad_o
 
     assert register["overallStatus"] == "not_ready_blockers_remain"
     bounded = register["boundedFmcMcpProductionRun"]
-    assert bounded["status"] == "ready_after_operator_authorization"
-    assert "one local CLI run" in bounded["scope"]
-    assert "--decompose-mode live" in bounded["requiredCommandFlags"]
-    assert "--apply-mode live_diff" in bounded["requiredCommandFlags"]
-    assert "--live-max-calls 2" in bounded["requiredCommandFlags"]
-    assert "--live-api-key-env XAI_API_KEY" in bounded["requiredCommandFlags"]
-    assert "operator live spend and local mutation authorization" in bounded["remainingOperatorGates"]
+    assert bounded["status"] == "retired_after_propose_only_remediation"
+    assert "historical exception retired" in bounded["scope"]
+    assert bounded["requiredCommandFlags"] == "none; target apply/promote command surface removed"
+    assert "none for target mutation; the lane is retired" in bounded["remainingOperatorGates"]
     assert "broad unattended autonomy" in bounded["notProofOf"]
-    assert "live code-promotion was proven" in bounded["notProofOf"]
+    assert "target mutation or promotion capability" in bounded["notProofOf"]
 
     by_id = {issue["id"]: issue for issue in register["issues"]}
     assert by_id["RCA-002"]["blocksBoundedFmcMcpProductionRun"] is False
-    assert "Grok Build wrapper" in by_id["RCA-002"]["boundedFmcMcpScope"]
-    assert by_id["M3-001"]["blocksBoundedFmcMcpProductionRun"] is False
+    assert "no longer runnable" in by_id["RCA-002"]["boundedFmcMcpScope"]
+    assert by_id["M3-001"]["blocksBoundedFmcMcpProductionRun"] is True
     assert by_id["M3-001"]["blocksWorktreeOnlyPatchCycle"] is False
     assert by_id["GAP-001"]["blocksBoundedFmcMcpProductionRun"] is False
     assert by_id["LIVE-002"]["blocksBoundedFmcMcpProductionRun"] is False
@@ -558,16 +555,16 @@ def test_documented_intake_proposal_cli_surfaces_exist() -> None:
             ["--project", "--scorecard", "--output", "--max-candidates"],
         ),
         (
-            ["uv", "run", "python", "-m", "arena.proposal_candidate_runner", "--help"],
-            ["--worktree", "--proposal-plan", "--candidate-rank", "--model"],
+            ["uv", "run", "python", "-m", "arena.proposal_run", "--help"],
+            ["run"],
         ),
         (
             ["uv", "run", "python", "-m", "arena.markdown_links", "--help"],
             ["--repo", "--path", "--require-source-references"],
         ),
         (
-            ["uv", "run", "python", "-m", "arena.repo_goal_loop", "--help"],
-            ["--allow-live", "--live-model", "--live-api-key-env", "--live-max-tokens", "--live-max-calls"],
+            ["uv", "run", "python", "-m", "arena.dream_run", "--help"],
+            ["run"],
         ),
     ]
     for command, expected_flags in checks:

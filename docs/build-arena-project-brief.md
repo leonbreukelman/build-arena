@@ -8,7 +8,7 @@ Read order each session: `AGENTS.md` and `docs/build-arena-constitution.md` for 
 
 ## What Build Arena is
 
-Build Arena is a local-first autonomous iterative-improvement loop for software projects. A project is decomposed into responsibility-bearing units, each unit is improved through a bounded propose-verify-promote cycle, and cross-unit contracts are modeled explicitly instead of being left as agent intuition. The operator defines the goal and scoring dimensions; the loop proposes changes, applies them in isolated worktrees, verifies them mechanically, and advances the internal baseline only through a safe promotion path.
+Build Arena is a local-first propose-only improvement system for software projects. A project is decomposed into responsibility-bearing units, candidate improvements are ranked into proposal artifacts, and cross-unit contracts are modeled explicitly instead of being left as agent intuition. The operator defines the goal and scoring dimensions; `arena.proposal_run` emits `proposal.md` and `arena.dream_run` emits advisory `experiment.md` artifacts, but target apply/promote machinery is retired and no entrypoint may mutate a target repo.
 
 The governing axiom is unchanged: every claim the agent makes must be verifiable by something that is not the agent. Verification is mechanical first, not cognitive. LLM output can help propose or decompose, but it is not allowed to be the load-bearing proof that a change is correct.
 
@@ -23,7 +23,7 @@ Phase 1-4 foundation is implemented and verified against the synthetic calibrati
 - Phase 1 scorer calibration: `.arena/scorer.lock.toml`, the deterministic `scorer/engine.py`, scorer-lock validation in `scorer/lock.py`, and a 13-diff synthetic calibration catalog with positive, negative, and neutral patches rebuilt by `scripts/rebuild_calibration.py`. The scorer is configurable through each target's per-repo goal config, but genericity depends on protecting read-only measurement surfaces such as `benchmarks/runtime_proxy.py`.
 - Phase 2 verifier calibration: `verifier/engine.py`, `verifier/ablation.py`, `verifier/config.py`, and `verifier/calibration.py`. Verification combines score delta, test status, pinned regressions, and a deterministic ablation quorum. The deterministic no-API stand-in is not a live Lanham ablation gate; its replacement decision is `docs/decisions/2026-06-11-ablation-runner-replacement.md`.
 - Phase 3 runner-selection primitives: `arena/fingerprints.py`, `arena/ledger.py`, `arena/hypothesizer.py`, `arena/router.py`, and runner adapters under `arena/runners/`. Fingerprints are deterministic, model-scoped, and target-order-insensitive.
-- Phase 4 loop foundation: `arena/loop.py`, `arena/events.py`, `arena/budget.py`, `arena/divergence.py`, and `arena/worktrees.py`. The loop uses append-only JSONL as canonical state, rebuildable SQLite event projections, live wall-clock budget checks, hard divergence halts, locked git worktrees, and ff-only promotion mechanics.
+- Phase 4 loop foundation: `arena/loop.py`, `arena/events.py`, `arena/budget.py`, `arena/divergence.py`, and `arena/worktrees.py`. The historical/internal calibration loop uses append-only JSONL as canonical state, rebuildable SQLite event projections, live wall-clock budget checks, hard divergence halts, locked git worktrees, and ff-only internal-baseline mechanics. It is not a target-repo apply/promote surface.
 - Boundary protection: `arena/boundary.py` rejects hypotheses that target scorer/verifier/schema/generated surfaces or `.arena/scorer.lock.toml` before runner spawn.
 - Generated LinkML models: `arena/generated/` is produced from `schema/arena.yaml` by `make generated` and must not be hand-edited.
 
@@ -34,10 +34,9 @@ The post-Phase-4 AI-first decomposer is also implemented:
 - `arena/project_decomposer_ai.py` creates snapshot bundles and writes `project-model-v1.json` as the primary Project Model v1 enriched artifact.
 - `arena/project_model_v1.py` wraps the enriched snapshot, graph, gate report, provenance, hashes, model IDs, derived-artifact strategy, and required `iterationReadiness` block in the shared v1 contract.
 - `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path, backed by the shared OpenAI-compatible client. Live credentials may come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, and live paths require an explicit model ID plus a strict served-model match.
-- `arena/runners/diff_proposer.py` contains the deterministic diff proposer runner plus an OpenAI-compatible proposal transport. The shared LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration; the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model and then hands the output to the deterministic patch gate.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, and `gate`; live mode is guarded by `--allow-live` and refuses routine live spend without that explicit flag.
 
-The shared OpenAI-compatible proposal path is operator-switchable by provider/base URL/model/API-key-env configuration and supports explicit live controls such as `--live-api-key-env XAI_API_KEY` and `--live-max-calls`. The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing. It proved live decomposition, freshness, synced intake, and safe gate failure; it did not prove a production improvement or broad unattended autonomy. Any future live run still needs an explicit model ID, explicit credential env such as `--live-api-key-env XAI_API_KEY`, and an explicit planned-call budget such as `--live-max-calls 2`.
+The shared OpenAI-compatible proposal path is operator-switchable by provider/base URL/model/API-key-env configuration and supports explicit live controls such as `--live-api-key-env XAI_API_KEY`. The 2026-06-27 propose-only remediation removed the target apply/promote roots after a local `fmc-mcp` run showed the old production loop could mutate a target outside the propose-only policy. Historical production-run reports remain evidence for their point in time, not runnable guidance.
 
 Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain` for broad autonomy while recording a scoped `boundedFmcMcpProductionRun` exception. The dashboard control plane, rollback endpoint, multi-cycle unattended production autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
 
@@ -55,11 +54,11 @@ Build Arena is not ready for broad autonomous live loops. The pre-live readiness
 
 ### Autonomous loop foundation
 
-`arena/loop.py` is the async state machine: scan → hypothesize → apply → verify → promote or discard. It emits events for each transition and halts on budget or divergence breaches.
+`arena/loop.py` is the historical/internal async state machine for the calibration foundation: scan → hypothesize → apply → verify → promote or discard. It emits events for each transition and halts on budget or divergence breaches. It is not exposed as a target-repo apply/promote entrypoint.
 
 `arena/events.py` is the canonical state layer. JSONL events are append-only and fsynced. SQLite is only a rebuildable projection and can be deleted without changing loop truth.
 
-`arena/worktrees.py` owns cycle worktree creation, locking, teardown, runtime-artifact cleanup, and ff-only promotion from the cycle branch into the main checkout.
+`arena/worktrees.py` owns cycle worktree creation, locking, teardown, runtime-artifact cleanup, and historical/internal ff-only baseline mechanics.
 
 `arena/budget.py` enforces wall-clock, cycle-count, and runner-credit caps. `arena/divergence.py` halts on repeated boundary violations, failed fingerprint clusters, and scorer/verifier disagreement streaks.
 
@@ -73,25 +72,23 @@ The AI-first path starts with a mechanically built graph, asks an LLM path only 
 
 The snapshot bundle contains `graph.json`, `snapshot.json`, `gate-report.json`, `project-model-v1.json`, prompts, model outputs, held-out probes, planted negatives, near-neighbor alternatives, and a manifest with paths and hashes.
 
-### Intake → proposal → loop pipeline (implemented; ranking advisory, promotion operator-gated)
+### Intake → proposal pipeline (implemented; ranking advisory, target apply/promote retired)
 
-Downstream of the Project Model, a deterministic intake → proposal → loop pipeline is implemented. Intake and ranking are advisory (they rank and propose); autonomous mutation happens only in the loop's explicitly operator-authorized, fail-closed promotion path. The stage chain is `Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → candidate runner (worktree apply + domain gate verify) → repo-goal loop (dry-run record / authorized ff-only promote)`.
+Downstream of the Project Model, a deterministic intake → proposal pipeline is implemented. Intake and ranking are advisory (they rank and propose); generated outputs are proposals or experiments only. The stage chain is `Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → proposal_run/dream_run emit`. The retired target apply/promote roots (`arena.repo_goal_loop`, `arena.patch_gate`, `arena.runners.diff_proposer`, and `arena.proposal_candidate_runner`) must remain absent.
 
 - `arena/project_intake_scorecard.py` reads a Project Model snapshot and emits ranked, evidence-backed findings using the explainable priority formula (dimension weight × severity × confidence × gains / effort) and profile weights (`new-project`, `active-development`, `production`, `documentation-first`). It now emits component-scoped non-doc findings from the decomposer's `componentProfiles` (high-risk untested components) and `code.quality.lint.<path>` findings, not only hardcoded documentation absence targets. Output is advisory ranking only.
 - `arena/proposal_domains.py` is the multi-domain proposal contract: each improvement domain (documentation, code_quality, generic_file) implements `find_candidates`/`first_candidate` behind a shared registry, so documentation is one domain rather than the whole component.
 - `arena/proposal_planner.py` converts the scorecard into a deterministic `proposal-plan/v0` artifact (`docs/schemas/proposal-plan-v0.schema.json`) via the domain registry: ranked single-file candidates carrying grounded intent, a repo-facts block, success criterion, verification commands, and skipped-finding accounting.
 - `arena/proposal_ranker.py` is the cross-domain ranker: it produces one `ranked-proposals/v0` artifact (`docs/schemas/ranked-proposals-v0.schema.json`) spanning all domains, ranked by the same weighted formula with an auditable per-entry score breakdown, scored from the scorecard's stored weights so the artifact stays faithful to the intake run. Profile weighting demonstrably re-ranks security/verification above documentation on a `production` profile.
-- `arena/code_quality_gate.py` is the load-bearing code-quality gate: it compares ruff violation counts for one file between git HEAD and the worktree and accepts only a real reduction with public-symbol preservation and no new suppressions (per-line or file-level `ruff:`/`flake8:` noqa, `type: ignore`). Documented KNOWN BOUNDARY: lint-delta + symbol preservation, not full behaviour.
+- `arena/code_quality_gate.py` is the load-bearing code-quality check used in proposal success criteria: it compares ruff violation counts for one file between git HEAD and a worktree and accepts only a real reduction with public-symbol preservation and no new suppressions (per-line or file-level `ruff:`/`flake8:` noqa, `type: ignore`). Documented KNOWN BOUNDARY: lint-delta + symbol preservation, not full behaviour. It is not an apply/promote entrypoint.
 - `arena/repo_facts.py` collects deterministic repository facts (top-level files/dirs, docs and markdown inventory with truncation flags) to ground proposal prompts so a proposer cannot invent structure.
-- `arena/proposal_candidate_runner.py` selects a ranked candidate, drives `arena/runners/diff_proposer.py`, applies the unified diff inside a cycle worktree, and runs the candidate's verification gate. Live transport requires an explicit `--model` and otherwise fails closed; tests use `--fake-diff-file`.
-- `arena/repo_goal_loop.py` is the repo-scale `/goal` loop (the epic #25 capstone): each cycle decomposes → intake → cross-domain rank → selects the top promotable candidate → boundary-checks → applies a deterministic offline fix in an isolated worktree (`ruff --fix` for `.py`, a grounded generator for `.md`) → runs the domain gate → records (dry-run) or ff-only promotes (operator-authorized) → re-decomposes. It reuses `arena/budget.py`, `arena/divergence.py`, `arena/boundary.py`, and `arena/worktrees.py`. Promotion is fail-closed: a code change requires a configured+passing behaviour/test gate; promotion stages only the boundary-approved target and re-checks the boundary before the ff-only merge; dry-run is the default and never touches the repo.
 - `arena/markdown_links.py` is the deterministic documentation gate: it validates that local Markdown links resolve to real files and, with `--require-source-references`, that documentation candidates cite an existing source. The planner now uses this source-reference gate for docs candidates by default.
 
-Status (epic #25, children #26–#31, all merged): the proposal component is **no longer documentation-only**. It produces and verifies real code-quality changes alongside documentation, ranks them cross-domain with an auditable breakdown, and runs them in a closed dry-run loop. Promotion (baseline mutation) is operator-gated and fail-closed; the default loop path is dry-run, deterministic, and offline (no live model). Broad live autonomy remains governed by the pre-live readiness register.
+Status (epic #25, children #26–#31, all merged): the proposal component is **no longer documentation-only**. It ranks code-quality and documentation findings cross-domain with an auditable breakdown and emits grounded proposal artifacts. Build Arena no longer runs target apply/promote loops. Broad live autonomy remains governed by the pre-live readiness register.
 
 ### Safety boundaries
 
-Autonomous runners must not write outside their cycle worktree. They must not modify `scorer/`, `verifier/`, `schema/`, `.arena/scorer.lock.toml`, or generated artifacts as part of a hypothesis. Promotion is a separate step and must be ff-only. These rules are encoded in AGENTS.md and partially enforced in `arena/boundary.py` and `arena/worktrees.py`.
+Autonomous runners must not write outside their cycle worktree. They must not modify `scorer/`, `verifier/`, `schema/`, `.arena/scorer.lock.toml`, or generated artifacts as part of a hypothesis. Target apply/promote entrypoints are retired and must not be reintroduced. These rules are encoded in AGENTS.md and partially enforced in `arena/boundary.py` and `arena/worktrees.py`.
 
 ---
 
@@ -172,7 +169,7 @@ Near-term useful work:
 - Do not hand-edit generated artifacts. Run `make generated` after intentional schema changes.
 - Do not run live Build Arena provider/decomposition calls unless explicitly authorized.
 - Do not claim broad loop readiness while `not_ready_blockers_remain` is still present in the readiness register. Treat the current verifier ablation keyword gate as advisory for real cycles until a real ablation runner exists.
-- Keep commits and promotions separate: normal repo commits are operator/agent packaging; arena promotions must use the promoter path and ff-only merge semantics.
+- Keep normal repo commits and historical/internal calibration baseline mechanics separate. Target apply/promote entrypoints are retired.
 
 ---
 
@@ -186,5 +183,5 @@ Near-term useful work:
 - `docs/specs/2026-06-05-project-model-v1-shared-contract-spec.md` — Project Model v1 contract context.
 - `docs/project-model-v1.md` and `docs/schemas/project-model-v1.schema.json` — active Project Model v1 contract and schema.
 - `schema/arena.yaml` — source schema for generated models.
-- `arena/project_intake_scorecard.py`, `arena/proposal_planner.py`, `arena/proposal_candidate_runner.py`, `arena/repo_facts.py`, `arena/markdown_links.py` — the implemented advisory intake → proposal pipeline (`proposal-plan/v0`); see the architecture map's intake → proposal section and epic #25.
+- `arena/project_intake_scorecard.py`, `arena/proposal_planner.py`, `arena/repo_facts.py`, `arena/markdown_links.py` — the implemented advisory intake → proposal pipeline (`proposal-plan/v0`); see the architecture map's intake → proposal section and epic #25.
 - `tests/test_project_status_docs.py` — guardrails for active documentation/status alignment.

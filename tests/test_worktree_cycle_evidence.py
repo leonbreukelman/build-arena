@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import json
 import subprocess
-from dataclasses import replace
 from pathlib import Path
 
 from arena.budget import BudgetController
@@ -14,14 +13,7 @@ from arena.generated.models import Baseline, HaltReason, Run, RunnerName, Worktr
 from arena.hypothesizer import Arm, SymbolicHypothesizer, UCB1Bandit
 from arena.ledger import FingerprintFailureLedger
 from arena.loop import LoopContext, run_loop
-from arena.proposer_hypothesizer import TargetSelectionHypothesizer
 from arena.router import RunnerRouter
-from arena.runners.diff_proposer import (
-    DiffProposalRequest,
-    DiffProposalResponse,
-    DiffProposerRunner,
-)
-from arena.target_picker import TargetSelection, select_targets
 from arena.worktrees import CandidatePackager, WorktreeManager
 from scorer.engine import Scorer, ScoreRecord, ScoreVector
 from verifier.engine import Verifier
@@ -126,20 +118,6 @@ class CalibrationPatchRunner:
     async def apply(self, hypothesis, worktree: Path) -> Path:
         subprocess.run(["git", "apply", str(self.patch_path)], cwd=worktree, check=True, capture_output=True, text=True)
         return self.patch_path
-
-
-class StaticDiffTransport:
-    def __init__(self, diff_text: str) -> None:
-        self.diff_text = diff_text
-        self.requests: list[DiffProposalRequest] = []
-
-    def propose(self, request: DiffProposalRequest) -> DiffProposalResponse:
-        self.requests.append(request)
-        return DiffProposalResponse(
-            diff_text=self.diff_text,
-            intent="score improves because runtime drops",
-            provenance={"transport": "static-test-fixture"},
-        )
 
 
 def test_missing_goal_config_boundary_fallback_is_evented(tmp_path: Path) -> None:
@@ -264,70 +242,6 @@ def test_worktree_cycle_packages_candidate_branch_and_writes_mechanical_evidence
     assert payload["patch"]["added_lines"] > 0
     assert payload["events"][0]["type"] == "RUN_STARTED"
     assert "success claim" not in json.dumps(payload).lower()
-
-
-def test_target_picker_diff_proposer_cycle_packages_candidate_branch(
-    project_root: Path,
-    calibration_repo: Path,
-    tmp_path: Path,
-) -> None:
-    scorer = Scorer(project_root)
-    score_before = scorer.score_repo(calibration_repo)
-    run = _run_model(score_before.git_oid)
-    log = EventLog(tmp_path / "run-diff-proposer", run_id=run.id)
-    worktree_root = tmp_path / "worktrees"
-    raw_selection = select_targets(calibration_repo, max_candidates=5)
-    core_candidate = next(candidate for candidate in raw_selection.candidates if candidate.path == "src/validatorlib/core.py")
-    selection = TargetSelection(
-        id=f"{raw_selection.id}-core",
-        version=raw_selection.version,
-        git_oid=raw_selection.git_oid,
-        goal_config_sha=raw_selection.goal_config_sha,
-        goal_config_schema_version=raw_selection.goal_config_schema_version,
-        candidate_count=1,
-        omitted_count=0,
-        candidates=(replace(core_candidate, rank=1),),
-    )
-    patch_text = (project_root / ".arena" / "calibration" / "diffs" / "positive" / "P-1.patch").read_text(
-        encoding="utf-8"
-    )
-    transport = StaticDiffTransport(patch_text)
-    runner = DiffProposerRunner(
-        transport=transport,
-        success_criterion="score improves because runtime drops",
-    )
-    ctx = LoopContext(
-        event_log=log,
-        budget=BudgetController(wall_clock_seconds_cap=14400, cycle_count_cap=60),
-        divergence=DivergenceDetector(log),
-        worktrees=WorktreeManager(repo=calibration_repo, worktree_root=worktree_root),
-        scanner=NoopScanner(),
-        scorer=scorer,
-        hypothesizer=TargetSelectionHypothesizer(
-            selection=selection,
-            success_criterion="score improves because runtime drops",
-        ),
-        router=RunnerRouter(primary=runner, fallback=runner),
-        verifier=Verifier(),
-        promoter=CandidatePackager(main_repo=calibration_repo),
-        active_baseline=_baseline(run.id, score_before.git_oid, score_before.id),
-        active_score=score_before,
-        stop_after_promotions=1,
-        evidence_writer=CycleEvidenceWriter(root=tmp_path / "evidence", worktree_root=worktree_root),
-    )
-
-    result = asyncio.run(run_loop(run, ctx))
-
-    assert result.promotions_total == 1
-    assert len(transport.requests) == 1
-    assert transport.requests[0].target_path == "src/validatorlib/core.py"
-    assert transport.requests[0].goal_config_sha == selection.goal_config_sha
-    assert transport.requests[0].success_criterion == "score improves because runtime drops"
-    assert _git(calibration_repo, "rev-parse", "arena/candidate/cycle-1")
-    payload = json.loads((tmp_path / "evidence" / "cycle-1.json").read_text(encoding="utf-8"))
-    assert payload["candidate"]["branch"] == "arena/candidate/cycle-1"
-    assert payload["patch"]["path"].endswith(".patch")
-    assert payload["patch"]["sha256"] is not None
 
 
 def test_loop_records_failures_through_failure_ledger_interface(

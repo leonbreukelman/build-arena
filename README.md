@@ -7,7 +7,7 @@ Repo identity: this main loop/system repo is `build-arena`. Internal
 repo identity. The separate `arena-calibration` repo is the smaller public
 calibration harness.
 
-Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal loop reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. The proposal path is operator-switchable by provider/base URL/model/API-key-env and supports explicit live controls such as `--live-api-key-env XAI_API_KEY` and `--live-max-calls`. The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing: live decomposition, model gate, freshness, and synced intake worked; the selected docs proposal failed safely at the Markdown link gate; the target repo was not mutated. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
+Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal pipeline reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Advisory proposal and dream stages are operator-switchable by provider/base URL/model/API-key-env and require explicit live controls such as `--live-api-key-env XAI_API_KEY`. Target apply/promote machinery was retired after the 2026-06-28 local `fmc-mcp` run proved the old production loop could mutate a target outside the propose-only policy. Build Arena is now propose-only: `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits `experiment.md`, and no Build Arena entrypoint may apply or promote code to a target repo. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, and live subscription-CLI subprocess execution remain blocked or unimplemented.
 
 Implemented acceptance gates:
 
@@ -30,8 +30,8 @@ Implemented acceptance gates:
 - Phase 4 event storage writes append-only, fsynced JSONL as canonical state and mirrors/replays into a SQLite projection.
 - Phase 4 budget checks run from the loop with live wall-clock time and convert breaches into `HaltRecord`s.
 - Phase 4 divergence detection halts on boundary-attempt thresholds, failed fingerprint clusters, and wired scorer/verifier disagreement streaks.
-- Phase 4 worktree management creates locked git worktrees and promotes verified changes via ff-only merge after runtime-artifact cleanup.
-- Phase 4 loop glue is a plain async `match state:` orchestrator and the calibration E2E promotes at least one positive patch. Unexpected loop exceptions are converted into `HaltRecord` evidence and active worktree teardown is attempted before halt.
+- Phase 4 worktree management creates locked git worktrees for the synthetic calibration foundation and keeps historical ff-only internal-baseline mechanics covered by tests.
+- Phase 4 loop glue is a plain async `match state:` orchestrator for the synthetic calibration foundation. Unexpected loop exceptions are converted into `HaltRecord` evidence and active worktree teardown is attempted before halt.
 - `make generated`, `ruff`, `pyright`, and `pytest` are green.
 
 Post-Phase-4 decomposer status:
@@ -40,8 +40,8 @@ Post-Phase-4 decomposer status:
 - AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact.
 - The v1 manifest records the primary v1 artifact path, hash, and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
 - The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, truncated, and strict served-model match failures and remains guarded by `--allow-live` for bounded read-only smoke only. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key.
-- The shared OpenAI-compatible LLM path is operator-switchable for decomposition and proposal transport by provider/base URL/model/API-key-env configuration. Live surfaces require an explicit model ID, enforce served-model match checks, and the proposal transport can request a unified diff from an explicit Grok/OpenAI-compatible model before handing output to the deterministic patch gate.
-- The 2026-06-15 bounded `fmc-mcp` live production pass executed but promoted nothing. It proved live decomposition, freshness, synced intake, and safe gate failure; it did not prove a production improvement or broad unattended autonomy. Any future live run still needs an explicit model ID, explicit credential env such as `--live-api-key-env XAI_API_KEY`, and an explicit planned-call budget such as `--live-max-calls 2`.
+- The shared OpenAI-compatible LLM path is operator-switchable for read-only decomposition and advisory proposal/dream stages by provider/base URL/model/API-key-env configuration. Live surfaces require an explicit model ID and enforce served-model match checks.
+- The target apply/promote roots were removed in the 2026-06-27 propose-only remediation. Historical production-run reports remain evidence for their point in time, not runnable guidance.
 - Downstream consumers should read Project Model v1 directly; compatibility projection output has been removed from the active runtime.
 
 No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation and readiness register blockers remain green/closed.
@@ -110,3 +110,14 @@ The capability map is the intent-anchoring artifact. `arena.capability_lift` wri
 The deterministic boundary is the gated `dream/v1` artifact. Generation and research are live model stages and require an explicit `--live-model`; `arena.dream_gate` then kills any experiment proposal whose cited anchors or target capabilities do not resolve against the real Project Model v1 and capability map, stamps gate provenance, rejects capability maps whose graph hash no longer matches the model, and runs `arena.dream_admissibility` so premise-resolved current-state restatements are not emitted. `arena.dream_emit` renders only gate-marked `premiseConfidence == all_resolved` proposals, with premise confidence, speculative conclusion confidence, explicit structural delta, validation recipe, and the capability-map provenance label shown separately.
 
 Exit codes: `0` success (`experiment.md` written); `1` stage failure; `2` no proposal survived the premise gate; `3` usage/preflight error.
+
+## Ticket-ready proposal lane
+
+`arena.proposal_run` is the propose-only lane for ticket-ready improvements. It chains snapshot/decompose → intake → proposal plan → pairwise rerank → emit and writes `proposal.md`. It never applies a patch, promotes a branch, or mutates the target repository.
+
+```bash
+uv run python -m arena.proposal_run run /path/to/target-repo \
+  --live-model <explicit-model> \
+  --live-api-key-env XAI_API_KEY \
+  --output proposal.md
+```
