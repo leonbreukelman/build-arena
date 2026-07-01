@@ -531,6 +531,105 @@ def test_component_covered_only_by_observable_check_is_not_flagged(tmp_path: Pat
     assert not any(f["id"] == "code.component.untested.comp-svc" for f in scorecard["findings"])
 
 
+def test_workspace_scoped_check_does_not_suppress_component_candidate(tmp_path: Path) -> None:
+    from arena.proposal_pairwise_reranker import GraphIndex, prefilter_candidates
+    from arena.proposal_planner import build_proposal_plan
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "src" / "pkg").mkdir(parents=True)
+    (repo / "src" / "pkg" / "svc.py").write_text("def handle():\n    return True\n", encoding="utf-8")
+    snapshot = _component_snapshot(
+        tmp_path / "pm.json",
+        repo,
+        nodes=[{"id": "node.svc", "kind": "python_module", "path": "src/pkg/svc.py"}],
+        components=[
+            {
+                "id": "comp-svc",
+                "name": "Svc",
+                "responsibility": "Service layer handling requests end to end.",
+                "owned_node_ids": ["node.svc"],
+                "provenance_refs": ["prov.svc"],
+                "contract_ids": [],
+                "check_ids": ["check.workspace-python-tests"],
+                "verification_gap_ids": [],
+            }
+        ],
+        observable_checks=[
+            {
+                "id": "check.workspace-python-tests",
+                "description": "workspace pytest",
+                "command": "uv run pytest tests -q",
+                "component_ids": ["comp-svc"],
+                "contract_ids": [],
+                "provenance_refs": ["prov.workspace"],
+            }
+        ],
+        profiles=[
+            {
+                "componentId": "comp-svc",
+                "ownedNodeIds": ["node.svc"],
+                "responsibilitySummary": "svc",
+                "keySymbols": [],
+                "behavioralTags": [],
+                "riskLevel": "high",
+                "priorityRank": 1,
+                "whyPriority": "x",
+                "provenanceRefs": ["prov.svc"],
+            }
+        ],
+    )
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+    findings = [f for f in scorecard["findings"] if f["id"] == "code.component.untested.comp-svc"]
+    assert len(findings) == 1
+    assert findings[0]["verification"] == ["python3 -m ast src/pkg/svc.py"]
+    scorecard_path = tmp_path / "scorecard.json"
+    scorecard_path.write_text(json.dumps(scorecard, sort_keys=True), encoding="utf-8")
+
+    plan = build_proposal_plan(repo, scorecard_path, max_candidates=20).to_jsonable()
+    component_candidates = [
+        candidate for candidate in plan["candidates"] if candidate["finding_id"] == "code.component.untested.comp-svc"
+    ]
+    assert len(component_candidates) == 1
+    assert component_candidates[0]["target_paths"] == ["src/pkg/svc.py"]
+    assert component_candidates[0]["verification_commands"] == ["python3 -m ast src/pkg/svc.py"]
+    graph = GraphIndex.from_graph({"nodes": [{"id": "node.svc", "path": "src/pkg/svc.py"}], "edges": []})
+
+    survivors, dropped = prefilter_candidates({**plan, "candidates": component_candidates}, graph)
+
+    assert [candidate["finding_id"] for candidate in survivors] == ["code.component.untested.comp-svc"]
+    assert dropped == []
+
+
+def test_workspace_scoped_check_covering_all_components_does_not_count_as_per_component(tmp_path: Path) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    (repo / "src").mkdir()
+    (repo / "src" / "a.py").write_text("a = 1\n", encoding="utf-8")
+    (repo / "src" / "b.py").write_text("b = 2\n", encoding="utf-8")
+    snapshot = _component_snapshot(
+        tmp_path / "pm.json",
+        repo,
+        nodes=[{"id": "node.a", "kind": "python_module", "path": "src/a.py"}, {"id": "node.b", "kind": "python_module", "path": "src/b.py"}],
+        components=[
+            {"id": "comp-a", "name": "A", "responsibility": "A service.", "owned_node_ids": ["node.a"], "provenance_refs": ["prov.a"], "contract_ids": [], "check_ids": [], "verification_gap_ids": []},
+            {"id": "comp-b", "name": "B", "responsibility": "B service.", "owned_node_ids": ["node.b"], "provenance_refs": ["prov.b"], "contract_ids": [], "check_ids": [], "verification_gap_ids": []},
+        ],
+        observable_checks=[{"id": "check.all", "description": "all tests", "command": "uv run pytest tests -q", "component_ids": ["comp-a", "comp-b"], "contract_ids": [], "provenance_refs": ["prov.tests"]}],
+        profiles=[
+            {"componentId": "comp-a", "ownedNodeIds": ["node.a"], "responsibilitySummary": "a", "keySymbols": [], "behavioralTags": [], "riskLevel": "high", "priorityRank": 1, "whyPriority": "x", "provenanceRefs": ["prov.a"]},
+            {"componentId": "comp-b", "ownedNodeIds": ["node.b"], "responsibilitySummary": "b", "keySymbols": [], "behavioralTags": [], "riskLevel": "high", "priorityRank": 2, "whyPriority": "x", "provenanceRefs": ["prov.b"]},
+        ],
+    )
+
+    scorecard = build_project_intake_scorecard(repo, snapshot, profile="active-development")
+
+    ids = {finding["id"] for finding in scorecard["findings"]}
+    assert "code.component.untested.comp-a" in ids
+    assert "code.component.untested.comp-b" in ids
+
+
 def test_extensionless_single_owned_surface_does_not_become_doc_candidate(tmp_path: Path) -> None:
     """A component whose only owned surface is extension-less (e.g. Dockerfile)
     must not be turned into a fabricated <path>/index.md documentation candidate."""

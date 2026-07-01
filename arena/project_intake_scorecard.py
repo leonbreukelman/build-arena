@@ -344,10 +344,11 @@ def _component_findings(snapshot: dict[str, Any], weights: dict[str, int]) -> li
         # rewritten by the planner to "<path>/index.md" and silently routed back
         # into the documentation contract — fabricating a path and regressing to
         # docs-only. Drop those here so the finding can only point at real files.
-        owned_paths = [path for path in owned_paths if PurePosixPath(path).suffix]
+        owned_paths = list(dict.fromkeys(path for path in owned_paths if PurePosixPath(path).suffix))
         if not owned_paths:
             # No resolvable, concretely-targetable source surface.
             continue
+        verification = _component_verification_commands(owned_paths)
         severity = _risk_level_to_severity(str(profile.get("riskLevel", "")))
         provenance_refs = [str(ref) for ref in profile.get("provenanceRefs", [])]
         evidence: list[dict[str, Any]] = [
@@ -368,7 +369,7 @@ def _component_findings(snapshot: dict[str, Any], weights: dict[str, int]) -> li
                 evidence,
                 f"Component {name} owns code with no observable check, so a proposer cannot verify changes to it.",
                 f"Add an observable check (e.g. a focused test) covering {name} before mutating it.",
-                [],
+                verification,
                 "needs_code_change",
                 "medium",
                 weights,
@@ -379,6 +380,18 @@ def _component_findings(snapshot: dict[str, Any], weights: dict[str, int]) -> li
             )
         )
     return findings
+
+
+def _component_verification_commands(owned_paths: list[str]) -> list[str]:
+    """Return safe, source-bound verification for an untested component finding.
+
+    The finding's definition of done remains "add an observable check"; this
+    command is the narrow mechanical smoke that keeps the proposal candidate
+    runnable and bound to the component's owned source surface without inventing
+    a test file that does not exist yet.
+    """
+    python_paths = [path for path in owned_paths if path.endswith(".py")]
+    return [f"python3 -m ast {path}" for path in python_paths]
 
 
 def _graph_node_paths(snapshot: dict[str, Any]) -> dict[str, str]:
@@ -396,15 +409,47 @@ def _graph_node_paths(snapshot: dict[str, Any]) -> dict[str, str]:
 
 def _components_with_checks(snapshot: dict[str, Any]) -> set[str]:
     checked: set[str] = set()
-    for component in _get(snapshot, "snapshot", "components") or []:
-        if isinstance(component, dict) and component.get("check_ids"):
+    components = [component for component in _get(snapshot, "snapshot", "components") or [] if isinstance(component, dict)]
+    all_component_ids = {str(component.get("id")) for component in components if component.get("id")}
+    observable_checks = [check for check in _get(snapshot, "snapshot", "observable_checks") or [] if isinstance(check, dict)]
+    workspace_check_ids = {
+        str(check.get("id"))
+        for check in observable_checks
+        if _is_workspace_scoped_check(check, all_component_ids)
+    }
+    for component in components:
+        check_ids = [str(check_id) for check_id in component.get("check_ids", [])]
+        if any(check_id and check_id not in workspace_check_ids and not _is_workspace_check_id(check_id) for check_id in check_ids):
             checked.add(str(component.get("id")))
-    for check in _get(snapshot, "snapshot", "observable_checks") or []:
-        if not isinstance(check, dict):
+    for check in observable_checks:
+        if _is_workspace_scoped_check(check, all_component_ids):
             continue
         for component_id in check.get("component_ids", []):
             checked.add(str(component_id))
     return checked
+
+
+def _is_workspace_scoped_check(check: dict[str, Any], all_component_ids: set[str]) -> bool:
+    check_id = str(check.get("id", ""))
+    if _is_workspace_check_id(check_id):
+        return True
+    provenance_refs = [str(ref) for ref in check.get("provenance_refs", []) or check.get("provenanceRefs", [])]
+    if any("workspace" in ref.lower() for ref in provenance_refs):
+        return True
+    component_ids = {str(component_id) for component_id in check.get("component_ids", []) if str(component_id)}
+    if len(all_component_ids) > 1 and component_ids and component_ids >= all_component_ids:
+        return True
+    command = str(check.get("command", "")).strip()
+    return len(component_ids) > 1 and _looks_repo_wide_command(command)
+
+
+def _is_workspace_check_id(check_id: str) -> bool:
+    return check_id.startswith("check.workspace-") or check_id.startswith("workspace.")
+
+
+def _looks_repo_wide_command(command: str) -> bool:
+    lowered = command.lower()
+    return any(marker in lowered for marker in ("ruff check .", "pytest tests", "pytest -q", "pyright", "mypy ."))
 
 
 def _absence_findings(project: Path, weights: dict[str, int]) -> list[dict[str, Any]]:
