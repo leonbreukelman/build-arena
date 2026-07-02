@@ -7,7 +7,10 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 
+from arena import proposal_pairwise_reranker
+from arena.llm_adapter import OpenAICompatibleChatClient
 from arena.proposal_pairwise_reranker import (
+    DefaultLLMProposalJudge,
     GraphIndex,
     JudgeResult,
     RerankError,
@@ -401,3 +404,72 @@ def test_schema_invalid_judge_response_fails_closed() -> None:
 
     assert stable_plan_hash(_plan([_candidate("a")]))
     assert load_graph({"projectGraph": _graph()}) == _graph()
+
+
+def test_default_llm_judge_requires_explicit_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    for env_name in ["BUILD_ARENA_LLM_MODEL", "BUILD_ARENA_XAI_MODEL", "XAI_MODEL"]:
+        monkeypatch.delenv(env_name, raising=False)
+
+    with pytest.raises(ValueError, match="explicit model"):
+        DefaultLLMProposalJudge.create()
+
+    monkeypatch.setenv("BUILD_ARENA_XAI_MODEL", "grok-explicit")
+    judge = DefaultLLMProposalJudge.create()
+
+    assert judge.client.config.model == "grok-explicit"
+    assert judge.client.require_served_model_match is True
+
+
+def test_default_llm_judge_rejects_served_model_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+    monkeypatch.setenv("BUILD_ARENA_XAI_MODEL", "grok-requested")
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeResponse:
+        _ = request, timeout
+        return _FakeResponse(
+            {
+                "model": "unexpected-served-model",
+                "choices": [
+                    {
+                        "finish_reason": "stop",
+                        "message": {
+                            "content": json.dumps(
+                                {
+                                    "winner_slot": "A",
+                                    "winner_finding_id": "a",
+                                    "candidate_a_evidence_cited": ["target_path:src/pkg/a.py"],
+                                    "candidate_b_evidence_cited": ["target_path:src/pkg/b.py"],
+                                    "reason": "A is better grounded, more specific, and more verifiable.",
+                                }
+                            )
+                        },
+                    }
+                ],
+            }
+        )
+
+    def client_factory(*, config: Any, **kwargs: Any) -> OpenAICompatibleChatClient:
+        return OpenAICompatibleChatClient(config=config, urlopen=fake_urlopen, **kwargs)
+
+    monkeypatch.setattr(proposal_pairwise_reranker, "OpenAICompatibleChatClient", client_factory)
+    judge = DefaultLLMProposalJudge.create()
+    candidate_a = build_candidate_payload(_candidate("a", target="src/pkg/a.py"))
+    candidate_b = build_candidate_payload(_candidate("b", target="src/pkg/b.py"))
+
+    with pytest.raises(ValueError, match="served unexpected model"):
+        judge.compare(candidate_a, candidate_b, {"projectRoot": "/tmp/repo"})
+
+
+class _FakeResponse:
+    def __init__(self, payload: dict[str, Any]) -> None:
+        self.status = 200
+        self._payload = payload
+
+    def __enter__(self) -> _FakeResponse:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        return None
+
+    def read(self) -> bytes:
+        return json.dumps(self._payload).encode()

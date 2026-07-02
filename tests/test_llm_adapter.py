@@ -285,3 +285,34 @@ def test_chat_client_strict_served_model_match_fails_closed(monkeypatch: pytest.
 
     with pytest.raises(ValueError, match="served unexpected model"):
         client.complete(messages=[{"role": "user", "content": "hello"}])
+
+
+def test_chat_client_strict_served_model_match_rejects_missing_model_field(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeHTTPResponse:
+        _ = request, timeout
+        return _FakeHTTPResponse(
+            {
+                "choices": [{"finish_reason": "stop", "message": {"content": "visible text"}}],
+            }
+        )
+
+    strict_client = OpenAICompatibleChatClient(
+        config=resolve_provider_config("xai", model="grok-requested"),
+        urlopen=fake_urlopen,
+        require_served_model_match=True,
+    )
+    with pytest.raises(ValueError, match="served unexpected model"):
+        strict_client.complete(messages=[{"role": "user", "content": "hello"}])
+
+    non_strict_client = OpenAICompatibleChatClient(
+        config=resolve_provider_config("xai", model="grok-requested"),
+        urlopen=fake_urlopen,
+    )
+    result = non_strict_client.complete(messages=[{"role": "user", "content": "hello"}])
+
+    assert result.model == "grok-requested"
+    assert result.metadata["served_model_matches_requested"] is True

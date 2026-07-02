@@ -195,7 +195,7 @@ def _fake_git(_record: list[list[str]]) -> dream_run.GitRunner:
 
 
 def _config(repo: Path, output: Path, **overrides: Any) -> RunConfig:
-    values: dict[str, Any] = {"repo": str(repo), "output": output, "live_model": "grok-test"}
+    values: dict[str, Any] = {"repo": str(repo), "output": output, "live_model": "grok-test", "allow_live": True}
     values.update(overrides)
     return RunConfig(**values)
 
@@ -310,6 +310,22 @@ def test_preflight_requires_live_model(tmp_path: Path, repo_dir: Path) -> None:
     assert stages.calls == []
 
 
+def test_main_refuses_live_model_without_allow_live_before_stages(
+    tmp_path: Path,
+    repo_dir: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    def forbidden_key_resolution(_env: str) -> Any:
+        raise AssertionError("API key must not be resolved without --allow-live")
+
+    monkeypatch.setattr(dream_run, "resolve_api_key_with_source", forbidden_key_resolution)
+    rc = main(["run", str(repo_dir), "--live-model", "grok-test", "--output", str(tmp_path / "experiment.md")])
+
+    assert rc == EXIT_USAGE
+    assert "--allow-live" in capsys.readouterr().err
+
+
 def test_preflight_missing_key_is_usage_error(tmp_path: Path, repo_dir: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     def _raise(_env: str) -> Any:
         raise ValueError("missing key")
@@ -344,6 +360,6 @@ def test_main_maps_errors(monkeypatch: pytest.MonkeyPatch, capsys: pytest.Captur
         raise DreamRunError("boom", EXIT_STAGE_FAILURE)
 
     monkeypatch.setattr(dream_run, "run", _fake_run)
-    rc = main(["run", "/repo", "--live-model", "m"])
+    rc = main(["run", "/repo", "--allow-live", "--live-model", "m"])
     assert rc == EXIT_STAGE_FAILURE
     assert "boom" in capsys.readouterr().err

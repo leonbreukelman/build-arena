@@ -204,12 +204,14 @@ class OpenAICompatibleChatClient:
         content = _visible_content(message.get("content"))
         if not content.strip():
             raise ValueError(f"live model provider returned empty content with finish_reason={finish_reason!r}")
-        served_model = str(packet.get("model") or self.config.model)
+        served_model_value = packet.get("model")
+        served_model = str(served_model_value) if served_model_value else self.config.model
         served_model_matches_requested = served_model == self.config.model
-        if self.require_served_model_match and not served_model_matches_requested:
+        strict_served_model = str(served_model_value) if served_model_value else ""
+        if self.require_served_model_match and strict_served_model != self.config.model:
             raise ValueError(
                 "live model provider served unexpected model: "
-                f"requested {self.config.model!r}, served {served_model!r}"
+                f"requested {self.config.model!r}, served {strict_served_model!r}"
             )
         prompt_hash = hashlib.sha256(json.dumps(messages, sort_keys=True).encode()).hexdigest()
         content_hash = hashlib.sha256(content.encode()).hexdigest()
