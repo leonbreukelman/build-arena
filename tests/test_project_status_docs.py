@@ -185,14 +185,15 @@ def test_readme_describes_ai_first_v1_and_bounded_live_status() -> None:
     assert [phrase for phrase in forbidden_overclaims if phrase in lowered_for_overclaim_scan] == []
 
 
-def test_agents_current_status_reflects_post_phase4_decomposer_and_readiness() -> None:
-    agents = _read("AGENTS.md")
+def test_current_state_doc_carries_volatile_status_markers() -> None:
+    current_state = _read("docs/build-arena-current-state.md")
 
     required_markers = [
         "AI-first decomposer",
         "Project Model v1",
         "project-model-v1.json",
         "iterationReadiness",
+        "docs/project-model-v1.md",
         "LiveProjectModelLLM",
         "pre-live readiness register",
         "not_ready_blockers_remain",
@@ -201,11 +202,33 @@ def test_agents_current_status_reflects_post_phase4_decomposer_and_readiness() -
         "rollback endpoint",
         "live subscription-CLI subprocess execution",
     ]
+    missing = [marker for marker in required_markers if marker not in current_state]
+    assert missing == []
+
+
+def test_agents_status_section_reframed_to_stable_capabilities() -> None:
+    agents = _read("AGENTS.md")
+
+    required_markers = [
+        "## Capabilities you must not contradict",
+        "propose-only",
+        "no entrypoint applies, promotes, or mutates a target repo",
+        "arena.proposal_run",
+        "arena.dream_run",
+        "target apply/promote remains retired",
+        "arena.project_intake_scorecard",
+        "implemented and advisory",
+        "not ready for broad autonomous live loops",
+        "--allow-live",
+        "--live-model",
+        "served-model mismatch fails closed",
+        "not a live Lanham ablation gate",
+    ]
     missing = [marker for marker in required_markers if marker not in agents]
     assert missing == []
 
     assert "## Current phase" not in agents
-    assert "## Current implementation status" in agents
+    assert "## Current implementation status" not in agents
 
     stale_identifiers = [
         "XAIProvider",
@@ -324,7 +347,7 @@ def test_june5_final_report_records_committed_outcome_not_precommit_state() -> N
 
 
 def test_docs_describe_propose_only_remediation_not_apply_promote_readiness() -> None:
-    required_markers = [
+    full_required_markers = [
         "operator-switchable",
         "OpenAI-compatible",
         "proposal",
@@ -334,7 +357,17 @@ def test_docs_describe_propose_only_remediation_not_apply_promote_readiness() ->
         "arena.dream_run",
         "--live-api-key-env XAI_API_KEY",
     ]
-    for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
+    agents_required_markers = [
+        marker
+        for marker in full_required_markers
+        if marker not in {"operator-switchable", "OpenAI-compatible"}
+    ]
+    docs = {
+        "README.md": full_required_markers,
+        "AGENTS.md": agents_required_markers,
+        "docs/build-arena-project-brief.md": full_required_markers,
+    }
+    for relative, required_markers in docs.items():
         text = _read(relative)
         missing = [marker for marker in required_markers if marker not in text]
         assert missing == [], f"{relative} missing {missing}"
@@ -392,10 +425,23 @@ def test_live_provider_docs_disclose_credentials_and_model_enforcement() -> None
         "explicit model ID",
         "served-model match",
     ]
-    for relative in ("README.md", "AGENTS.md", "docs/build-arena-project-brief.md"):
+    for relative in (
+        "README.md",
+        "docs/build-arena-current-state.md",
+        "docs/build-arena-project-brief.md",
+    ):
         text = _read(relative)
         missing = [marker for marker in required_markers if marker not in text]
         assert missing == [], f"{relative} missing {missing}"
+
+    agents = _read("AGENTS.md")
+    agents_required_markers = [
+        "--allow-live",
+        "--live-model",
+        "served-model mismatch fails closed",
+    ]
+    missing = [marker for marker in agents_required_markers if marker not in agents]
+    assert missing == [], f"AGENTS.md missing {missing}"
 
 
 def test_docs_caveat_ablation_stand_in_and_replacement_decision() -> None:
@@ -512,11 +558,11 @@ def test_agents_md_does_not_claim_scorecard_unimplemented() -> None:
     assert "advisory" in agents.lower()
 
 
-def test_agents_md_documents_intake_proposal_pipeline() -> None:
-    agents = _read("AGENTS.md")
-    missing = [module for module in INTAKE_PROPOSAL_MODULES if module not in agents]
-    assert missing == [], f"AGENTS.md does not document pipeline modules: {missing}"
-    assert "proposal-plan/v0" in agents
+def test_current_state_doc_documents_intake_proposal_pipeline() -> None:
+    current_state = _read("docs/build-arena-current-state.md")
+    missing = [module for module in INTAKE_PROPOSAL_MODULES if module not in current_state]
+    assert missing == [], f"current-state doc does not document pipeline modules: {missing}"
+    assert "proposal-plan/v0" in current_state
 
 
 def test_project_brief_documents_intake_proposal_pipeline() -> None:
