@@ -41,6 +41,7 @@ def research_dreams(
     live_base_url: str | None = None,
     live_model: str | None = None,
     live_api_key_env: str = "XAI_API_KEY",
+    allow_live: bool = False,
 ) -> dict[str, Any]:
     model_path = Path(project_model_path).resolve()
     cap_path = Path(capability_map_path).resolve()
@@ -51,6 +52,8 @@ def research_dreams(
 
     prompt = _research_prompt(project_model, capability_map, raw_doc)
     if model is None:
+        if not allow_live:
+            raise DreamResearchError("--allow-live is required for dream research")
         if not live_model:
             raise DreamResearchError("--live-model is required for dream research")
         provider_config = resolve_provider_config(
@@ -60,7 +63,12 @@ def research_dreams(
             model=live_model,
             require_explicit_model=True,
         )
-        client = OpenAICompatibleChatClient(provider_config, temperature=0.2, max_tokens=4096)
+        client = OpenAICompatibleChatClient(
+            provider_config,
+            temperature=0.2,
+            max_tokens=4096,
+            require_served_model_match=True,
+        )
         result = client.complete(
             messages=[
                 {"role": "system", "content": "Return only JSON with a top-level dreams array."},
@@ -102,6 +110,7 @@ def write_researched_dreams(
     live_base_url: str | None = None,
     live_model: str | None = None,
     live_api_key_env: str = "XAI_API_KEY",
+    allow_live: bool = False,
 ) -> Path:
     document = research_dreams(
         project_model_path=project_model_path,
@@ -112,6 +121,7 @@ def write_researched_dreams(
         live_base_url=live_base_url,
         live_model=live_model,
         live_api_key_env=live_api_key_env,
+        allow_live=allow_live,
     )
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -338,6 +348,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--live-provider", default="xai")
     parser.add_argument("--live-base-url")
     parser.add_argument("--live-api-key-env", default="XAI_API_KEY")
+    parser.add_argument("--allow-live", action="store_true")
     args = parser.parse_args(argv)
     try:
         output = write_researched_dreams(
@@ -349,10 +360,11 @@ def main(argv: list[str] | None = None) -> int:
             live_base_url=args.live_base_url,
             live_model=args.live_model,
             live_api_key_env=args.live_api_key_env,
+            allow_live=args.allow_live,
         )
     except (DreamResearchError, OSError, json.JSONDecodeError, ValueError) as exc:
         print(f"dream research failed: {exc}", file=sys.stderr)
-        return 3 if "--live-model" in str(exc) else 1
+        return 3 if "--live-model" in str(exc) or "--allow-live" in str(exc) else 1
     print(str(output))
     return 0
 

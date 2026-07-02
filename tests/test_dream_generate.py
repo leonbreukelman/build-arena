@@ -6,8 +6,10 @@ from typing import Any
 
 import pytest
 
+from arena import dream_generate
 from arena.capability_lift import build_capability_map
 from arena.dream_generate import DreamGenerateError, generate_dreams, write_generated_dreams
+from arena.llm_adapter import OpenAICompatibleChatClient
 
 GRAPH_HASH = "1" * 64
 
@@ -147,3 +149,84 @@ def test_generate_drops_ungrounded_model_items_and_fails_if_none_remain(tmp_path
 
     with pytest.raises(DreamGenerateError, match="no dreams"):
         generate_dreams(project_model_path=model_path, capability_map_path=cap_path, scorecard_path=scorecard, model=fake)
+
+
+def test_main_refuses_live_model_without_allow_live_before_client_construction(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    model_path, cap_path, scorecard, _capability_id = _write_inputs(tmp_path)
+
+    def forbidden_resolve(*_args: Any, **_kwargs: Any) -> None:
+        raise AssertionError("provider config must not be resolved without --allow-live")
+
+    def forbidden_client(*_args: Any, **_kwargs: Any) -> None:
+        raise AssertionError("client must not be constructed without --allow-live")
+
+    monkeypatch.setattr(dream_generate, "resolve_provider_config", forbidden_resolve)
+    monkeypatch.setattr(dream_generate, "OpenAICompatibleChatClient", forbidden_client)
+
+    rc = dream_generate.main(
+        [
+            "--project-model",
+            str(model_path),
+            "--capability-map",
+            str(cap_path),
+            "--scorecard",
+            str(scorecard),
+            "--output",
+            str(tmp_path / "raw.json"),
+            "--live-model",
+            "grok-requested",
+        ]
+    )
+
+    assert rc == 3
+    assert "--allow-live" in capsys.readouterr().err
+
+
+def test_generate_live_client_rejects_served_model_mismatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("XAI_API_KEY", "test-key")
+    model_path, cap_path, scorecard, _capability_id = _write_inputs(tmp_path)
+
+    def fake_urlopen(request: Any, timeout: int) -> _FakeResponse:
+        _ = request, timeout
+        return _FakeResponse(
+            {
+                "model": "unexpected-served-model",
+                "choices": [{"finish_reason": "stop", "message": {"content": "{\"dreams\": []}"}}],
+            }
+        )
+
+    def client_factory(config: Any, **kwargs: Any) -> OpenAICompatibleChatClient:
+        return OpenAICompatibleChatClient(config=config, urlopen=fake_urlopen, **kwargs)
+
+    monkeypatch.setattr(dream_generate, "OpenAICompatibleChatClient", client_factory)
+
+    with pytest.raises(ValueError, match="served unexpected model"):
+        generate_dreams(
+            project_model_path=model_path,
+            capability_map_path=cap_path,
+            scorecard_path=scorecard,
+            live_model="grok-requested",
+            allow_live=True,
+        )
+
+
+class _FakeResponse:
+    def __init__(self, payload: dict[str, Any]) -> None:
+        self.status = 200
+        self._payload = payload
+
+    def __enter__(self) -> _FakeResponse:
+        return self
+
+    def __exit__(self, *exc: object) -> None:
+        return None
+
+    def read(self) -> bytes:
+        return json.dumps(self._payload).encode()

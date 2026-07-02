@@ -203,8 +203,8 @@ class DefaultLLMProposalJudge:
 
     @classmethod
     def create(cls) -> DefaultLLMProposalJudge:
-        config = resolve_provider_config("xai")
-        return cls(OpenAICompatibleChatClient(config=config, temperature=0))
+        config = resolve_provider_config("xai", require_explicit_model=True)
+        return cls(OpenAICompatibleChatClient(config=config, temperature=0, require_served_model_match=True))
 
     def model_info(self) -> dict[str, Any]:
         if self._last_model_info is not None:

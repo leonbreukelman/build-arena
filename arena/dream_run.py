@@ -56,6 +56,7 @@ class RunConfig:
     profile: str = "new-project"
     decompose_live: bool = False
     live_model: str | None = None
+    allow_live: bool = False
     live_api_key_env: str = "XAI_API_KEY"
     live_provider: str = "xai"
     live_base_url: str | None = None
@@ -128,6 +129,11 @@ def _subprocess_env(config: RunConfig) -> dict[str, str]:
 
 
 def _preflight(config: RunConfig) -> None:
+    if not config.allow_live:
+        raise DreamRunError(
+            "--allow-live is required: generation and research are live model stages",
+            EXIT_USAGE,
+        )
     if not config.live_model:
         raise DreamRunError("--live-model is required: generation and research are live model stages", EXIT_USAGE)
     try:
@@ -199,7 +205,15 @@ def _decompose_args(config: RunConfig, target: Path, snap_root: Path) -> list[st
 
 
 def _live_stage_flags(config: RunConfig) -> list[str]:
-    flags = ["--live-model", str(config.live_model), "--live-provider", config.live_provider, "--live-api-key-env", config.live_api_key_env]
+    flags = [
+        "--allow-live",
+        "--live-model",
+        str(config.live_model),
+        "--live-provider",
+        config.live_provider,
+        "--live-api-key-env",
+        config.live_api_key_env,
+    ]
     if config.live_base_url:
         flags += ["--live-base-url", config.live_base_url]
     return flags
@@ -355,6 +369,7 @@ def _build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--output", default="experiment.md", help="output path (default experiment.md)")
     run_parser.add_argument("--profile", default="new-project", help="intake profile passthrough")
     run_parser.add_argument("--decompose-live", action="store_true", help="use live AI decomposition (else fixture)")
+    run_parser.add_argument("--allow-live", action="store_true", help="confirm live generation/research spend")
     run_parser.add_argument("--live-model", help="model id for generation/research; required")
     run_parser.add_argument("--live-api-key-env", default="XAI_API_KEY", help="env var holding the provider key")
     run_parser.add_argument("--live-provider", default="xai", help="OpenAI-compatible provider")
@@ -371,6 +386,7 @@ def _config_from_args(args: argparse.Namespace) -> RunConfig:
         output=Path(args.output).expanduser().resolve(),
         profile=args.profile,
         decompose_live=args.decompose_live,
+        allow_live=args.allow_live,
         live_model=args.live_model,
         live_api_key_env=args.live_api_key_env,
         live_provider=args.live_provider,
