@@ -353,9 +353,9 @@ def test_budget_boundary_fingerprint_and_ledger_edge_cases(tmp_path: Path) -> No
     budget.check(now=5.0)
     budget.record_runner_credit("codex", 2)
     budget.record_runner_credit("copilot_premium", 3)
-    zero_cap = BudgetController(wall_clock_seconds_cap=10, cycle_count_cap=10, claude_code_credits_cap=0)
-    zero_cap.record_runner_credit("claude_code", 999)
-    zero_cap.check(now=1.0)
+    unlimited_credit_cap = BudgetController(wall_clock_seconds_cap=10, cycle_count_cap=10, claude_code_credits_cap=None)
+    unlimited_credit_cap.record_runner_credit("claude_code", 999)
+    unlimited_credit_cap.check(now=1.0)
     with pytest.raises(ValueError, match="unknown credit runner"):
         budget.record_runner_credit("unknown")
 
