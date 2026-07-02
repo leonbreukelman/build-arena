@@ -49,8 +49,6 @@ class BudgetController:
         for name, used, cap in checks:
             if cap is None:
                 continue
-            if cap == 0 and name.endswith("_credits"):
-                continue
             if used >= cap:
                 detail = f"{name} budget exhausted: used={used} cap={cap} promotions={self.promotions_total}"
                 raise BudgetBreach(self._halt_reason(), detail)

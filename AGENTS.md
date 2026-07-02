@@ -8,7 +8,7 @@ Current posture: **propose-only** (no entrypoint may apply / promote / mutate a 
 - The system is **propose-only**: no entrypoint applies, promotes, or mutates a target repo. `arena.proposal_run` emits proposals and `arena.dream_run` emits advisory experiments; target apply/promote remains retired.
 - The intake scorecard (`arena.project_intake_scorecard`) is implemented and advisory; never describe it as unimplemented.
 - Build Arena is **not ready for broad autonomous live loops**.
-- Live provider calls require explicit `--allow-live` and explicit `--live-model`; served-model mismatch fails closed.
+- Invoking a live command with an explicitly named live model is operator approval to spend. No command may spend on a model the operator did not explicitly name; served-model mismatch fails closed.
 - The deterministic no-API stand-in for verifier/ablation is a coherence check only, not a live Lanham ablation gate.
 
 ## Anti-fabrication (highest priority)
@@ -48,7 +48,7 @@ Done only when ALL pass — run them, don't assert:
 ## Operating rules
 - **Intake first.** For any task that consumes / decomposes / audits / prioritizes / plans a project, apply the `weighted-project-intake-prioritization` Hermes skill before selecting the first improvement (lightweight mode for trivial edits). Spec: `docs/specs/2026-06-07-weighted-project-intake-prioritization.md`. Scorecard output is advisory ranking only — it never overrides anti-fabrication, boundaries, or live-auth gates.
 - **Agent wiki.** Before any production pass, proposal run, live-proposer change, or autonomy-loop work, read `docs/agent-wiki/index.md` and the relevant linked pages. Record new failure modes, gate recipes, and registry lessons there — not only in chat or run logs.
-- **Live provider calls** require explicit `--allow-live` and an explicit `--live-model`. Served-model mismatch fails closed. Metadata records `api_key_source` only.
+- **Live provider calls:** an explicitly named live model is operator approval to spend. Existing `--allow-live` guards stay where implemented, but the enforceable spend invariant is that no command may spend on a model the operator did not explicitly name and no response from a different served model may be accepted. Metadata records `api_key_source` only.
 
 ## Experiment lane (`arena.dream_run` — advisory; autonomous emit; no mid-run human gate)
 1. Advisory-only: never applies / promotes / mutates a target; `dream_emit` never writes `proposal.md`.

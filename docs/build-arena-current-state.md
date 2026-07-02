@@ -49,7 +49,7 @@ Relevant modules:
 - `arena/project_model_llm.py` contains fixture, recorded, off/noop, and live LLM adapters. `LiveProjectModelLLM` is the direct xAI/OpenAI-compatible live path backed by the shared OpenAI-compatible client.
 - `arena/project_model_cli.py` exposes `snapshot`, `graph`, `gate`, and `freshness`.
 
-Live model paths are bounded. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key. Live surfaces require an explicit model ID and strict served-model match checks. `project_model_cli snapshot --llm-mode live` is guarded by `--allow-live` and refuses routine live spend without explicit authorization.
+Live model paths are bounded. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key. Live surfaces require an explicit model ID and strict served-model match checks. Naming an explicit live model is operator approval to spend on that model only. `project_model_cli snapshot --llm-mode live` keeps its existing `--allow-live` guard, but `--allow-live` is not the general consent invariant for every live command.
 
 ## Intake → proposal pipeline
 

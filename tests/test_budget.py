@@ -45,3 +45,33 @@ def test_runner_credit_cap_uses_zero_promotion_reason_until_first_promotion() ->
 
     assert exc_info.value.reason == HaltReason.BUDGET_EXHAUSTED_ZERO_PROMOTIONS
     assert "claude_code_credits" in exc_info.value.detail
+
+
+def test_zero_runner_credit_cap_breaches_on_first_spend() -> None:
+    budget = BudgetController(
+        wall_clock_seconds_cap=999,
+        cycle_count_cap=99,
+        claude_code_credits_cap=0,
+        start_ts=0.0,
+    )
+
+    budget.record_runner_credit("claude_code", 1)
+
+    with pytest.raises(BudgetBreach) as exc_info:
+        budget.check(now=1.0)
+
+    assert exc_info.value.reason == HaltReason.BUDGET_EXHAUSTED_ZERO_PROMOTIONS
+    assert "claude_code_credits" in exc_info.value.detail
+
+
+def test_none_runner_credit_cap_is_unlimited() -> None:
+    budget = BudgetController(
+        wall_clock_seconds_cap=999,
+        cycle_count_cap=99,
+        claude_code_credits_cap=None,
+        start_ts=0.0,
+    )
+
+    budget.record_runner_credit("claude_code", 10_000)
+
+    budget.check(now=1.0)

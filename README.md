@@ -7,7 +7,7 @@ Repo identity: this main loop/system repo is `build-arena`. Internal
 repo identity. The separate `arena-calibration` repo is the smaller public
 calibration harness.
 
-Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal pipeline reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Advisory proposal and dream stages are operator-switchable by provider/base URL/model/API-key-env and require explicit live controls such as `--live-api-key-env XAI_API_KEY`. Target apply/promote machinery was retired after the 2026-06-28 local `fmc-mcp` run proved the old production loop could mutate a target outside the propose-only policy. Build Arena is now propose-only: `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits `experiment.md`, and no Build Arena entrypoint may apply or promote code to a target repo. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, and live subscription-CLI subprocess execution remain blocked or unimplemented.
+Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal pipeline reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Advisory proposal and dream stages are operator-switchable by provider/base URL/model/API-key-env. Invoking a live command with an explicitly named live model is operator approval to spend; no command may spend on an unnamed/default model or accept a response from a different served model. Target apply/promote machinery was retired after the 2026-06-28 local `fmc-mcp` run proved the old production loop could mutate a target outside the propose-only policy. Build Arena is now propose-only: `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits `experiment.md`, and no Build Arena entrypoint may apply or promote code to a target repo. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, and live subscription-CLI subprocess execution remain blocked or unimplemented.
 
 Implemented acceptance gates:
 
@@ -39,8 +39,8 @@ Post-Phase-4 decomposer status:
 - The AI-first decomposer builds a graph, wiki/encyclopedia, snapshot, deterministic gate report, and sidecar manifest from git/filesystem truth.
 - AI decomposer snapshots write `project-model-v1.json` as the primary enriched artifact.
 - The v1 manifest records the primary v1 artifact path, hash, and provenance so downstream consumers do not have to infer the authoritative model from sidecars.
-- The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, truncated, and strict served-model match failures and remains guarded by `--allow-live` for bounded read-only smoke only. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key.
-- The shared OpenAI-compatible LLM path is operator-switchable for read-only decomposition and advisory proposal/dream stages by provider/base URL/model/API-key-env configuration. Live surfaces require an explicit model ID and enforce served-model match checks.
+- The direct xAI/OpenAI-compatible adapter is fail-closed for cancelled, empty, invalid, truncated, and strict served-model match failures and remains behind existing live CLI gates where implemented. Credentials can come from the environment or `~/.hermes/.env`; provider metadata records only `api_key_source`, never the key.
+- The shared OpenAI-compatible LLM path is operator-switchable for read-only decomposition and advisory proposal/dream stages by provider/base URL/model/API-key-env configuration. Live surfaces treat an explicit model ID as spend approval, require that model to be named, and enforce served-model match checks.
 - The target apply/promote roots were removed in the 2026-06-27 propose-only remediation. Historical production-run reports remain evidence for their point in time, not runnable guidance.
 - Downstream consumers should read Project Model v1 directly; compatibility projection output has been removed from the active runtime.
 
@@ -73,7 +73,7 @@ uv run python -m arena.project_model_cli snapshot \
   --llm-mode fixture
 ```
 
-A bounded read-only live smoke is guarded by `--allow-live` and live mode. Provider settings are operator-switchable with `--live-provider`, `--live-base-url`, `--live-model`, and `--live-api-key-env`. An explicit `--live-model` should be used for any real attempt; broad loops must not use this path until readiness blockers close:
+A bounded read-only decomposer live smoke still uses the existing `--allow-live` and live-mode guard. Provider settings are operator-switchable with `--live-provider`, `--live-base-url`, `--live-model`, and `--live-api-key-env`. An explicit `--live-model` is required for any real attempt and constitutes spend approval for that named model only; broad loops must not use this path until readiness blockers close:
 
 ```bash
 uv run python -m arena.project_model_cli snapshot \
@@ -82,6 +82,7 @@ uv run python -m arena.project_model_cli snapshot \
   --project-id example-project \
   --goal "Read-only live decomposition smoke" \
   --llm-mode live \
+  --live-model <explicit-model> \
   --allow-live
 ```
 

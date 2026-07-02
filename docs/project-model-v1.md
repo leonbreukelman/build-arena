@@ -21,7 +21,7 @@ uv run python -m arena.project_model_cli snapshot \
 
 The snapshot directory contains `project-model-v1.json` and a `manifest.json` whose `project_model_primary_path` points at that same v1 artifact. The runtime no longer emits a compatibility projection alongside it.
 
-`fixture`, `recorded`, `live`, and `off` modes all flow through the same v1 builder. Live mode remains operator-gated by `--allow-live` and an explicit model ID.
+`fixture`, `recorded`, `live`, and `off` modes all flow through the same v1 builder. The decomposer live mode keeps its existing `--allow-live` guard, and an explicit model ID is required. Naming that live model is the operator's approval to spend on that model only; served-model mismatch fails closed.
 
 ## Required top-level fields
 
