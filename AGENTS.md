@@ -4,12 +4,12 @@ Operating contract for any coding agent in this repo. Loaded at session start. D
 
 Current posture: **propose-only** (no entrypoint may apply / promote / mutate a target repo) and **not ready for broad live autonomy**. Authoritative status lives in `docs/build-arena-current-state.md` and the readiness register under `docs/verification/` — read those; do not restate status here.
 
-## Current implementation status pointers (do not narrate here)
-- Current-state details live in `docs/build-arena-current-state.md`: AI-first decomposer, Project Model v1, `project-model-v1.json`, `iterationReadiness`, `LiveProjectModelLLM`, pre-live readiness register, `not_ready_blockers_remain`, broad autonomous live loops, dashboard control plane, rollback endpoint, live subscription-CLI subprocess execution.
-- Propose-only remediation details live in `docs/specs/2026-06-27-propose-only-remediation.md`: operator-switchable OpenAI-compatible proposal/dream paths, `arena.proposal_run`, `arena.dream_run`, `--live-api-key-env XAI_API_KEY`, target apply/promote retirement.
-- Live-provider details live in `docs/build-arena-current-state.md` and `docs/build-arena-project-brief.md`: `~/.hermes/.env`, `api_key_source`, explicit model ID, served-model match.
-- Verifier caveat details live in `docs/decisions/2026-06-11-ablation-runner-replacement.md`: deterministic no-API stand-in, not a live Lanham ablation gate.
-- Intake/proposal module names retained only as anchors; the module catalog lives in `docs/build-arena-current-state.md`: `project_intake_scorecard`, `proposal_planner`, `proposal_domains`, `proposal_ranker`, `code_quality_gate`, `repo_facts`, `markdown_links`.
+## Capabilities you must not contradict
+- The system is **propose-only**: no entrypoint applies, promotes, or mutates a target repo. `arena.proposal_run` emits proposals and `arena.dream_run` emits advisory experiments; target apply/promote remains retired.
+- The intake scorecard (`arena.project_intake_scorecard`) is implemented and advisory; never describe it as unimplemented.
+- Build Arena is **not ready for broad autonomous live loops**.
+- Live provider calls require explicit `--allow-live` and explicit `--live-model`; served-model mismatch fails closed.
+- The deterministic no-API stand-in for verifier/ablation is a coherence check only, not a live Lanham ablation gate.
 
 ## Anti-fabrication (highest priority)
 1. NEVER reason from an imagined file. Read the exact path in the current turn before quoting or editing it.

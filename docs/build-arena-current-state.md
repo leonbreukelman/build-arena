@@ -12,14 +12,14 @@ The current system posture is:
 
 - Phase 1-4 foundation is implemented and verified against the synthetic calibration repo.
 - The post-Phase-4 AI-first decomposer is implemented locally.
-- `project-model-v1.json` is the primary Project Model v1 enriched artifact.
+- `project-model-v1.json` is the primary Project Model v1 enriched artifact; `docs/project-model-v1.md` is the human reference.
 - `iterationReadiness` is required in v1 because the core intake/proposal loop reads it.
 - `arena.proposal_run` emits `proposal.md`.
 - `arena.dream_run` emits `experiment.md`.
 - Target apply/promote machinery is retired. No Build Arena entrypoint may apply or promote code to a target repo.
 - Build Arena is not ready for broad autonomous live loops while the readiness register under `docs/verification/` reports `not_ready_blockers_remain`.
 
-The proposal-only remediation record is `docs/specs/2026-06-27-propose-only-remediation.md`. The readiness register is `docs/verification/2026-06-05-pre-live-readiness-register.json` until a stable index/latest readiness artifact exists.
+The proposal-only remediation record is `docs/specs/2026-06-27-propose-only-remediation.md`. The pre-live readiness register is `docs/verification/2026-06-05-pre-live-readiness-register.json` until a stable index/latest readiness artifact exists.
 
 ## Phase 1-4 foundation
 
@@ -98,10 +98,10 @@ The readiness register at `docs/verification/2026-06-05-pre-live-readiness-regis
 
 Current broad-autonomy blockers include:
 
-- Dashboard control plane is not implemented.
-- Rollback endpoint is not implemented.
+- dashboard control plane is not implemented.
+- rollback endpoint is not implemented.
 - Multi-cycle unattended production autonomy remains unproven.
-- Live subscription-CLI subprocess execution is not implemented.
+- live subscription-CLI subprocess execution is not implemented.
 - Related downstream repos that consumed older project-model compatibility output still need v1 adoption plans.
 
 The current ablation keyword gate is advisory for real cycles until a real ablation runner exists. The verifier uses a deterministic no-API stand-in, not a live Lanham ablation gate, and it must not be treated as a load-bearing semantic gate for broad autonomy.
