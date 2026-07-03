@@ -7,7 +7,7 @@ Repo identity: this main loop/system repo is `build-arena`. Internal
 repo identity. The separate `arena-calibration` repo is the smaller public
 calibration harness.
 
-Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal pipeline reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Advisory proposal and dream stages are operator-switchable by provider/base URL/model/API-key-env. Invoking a live command with an explicitly named live model is operator approval to spend; no command may spend on an unnamed/default model or accept a response from a different served model. Target apply/promote machinery was retired after the 2026-06-28 local `fmc-mcp` run proved the old production loop could mutate a target outside the propose-only policy. Build Arena is now propose-only: `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits `experiment.md`, and no Build Arena entrypoint may apply or promote code to a target repo. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, and dashboard rollback, broad multi-cycle autonomy, and live subscription-CLI subprocess execution remain blocked or unimplemented.
+Current implementation status: Phase 1-4 foundation is implemented and verified against the synthetic calibration repo, and the post-Phase-4 AI-first decomposer is implemented locally. The AI decomposer writes `project-model-v1.json` as the primary Project Model v1 enriched artifact; `iterationReadiness` is a required v1 field because the core intake/proposal pipeline reads it. The human reference is `docs/project-model-v1.md`, with an example instance under `docs/examples/`. `LiveProjectModelLLM` provides a bounded read-only xAI/OpenAI-compatible live path behind the CLI `--allow-live` guard. Advisory proposal and dream stages are operator-switchable by provider/base URL/model/API-key-env. Invoking a live command with an explicitly named live model is operator approval to spend; no command may spend on an unnamed/default model or accept a response from a different served model. Target apply/promote machinery was retired after the 2026-06-28 local `fmc-mcp` run proved the old production loop could mutate a target outside the propose-only policy. Build Arena is now propose-only and issue-oriented: `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits `experiment.md`, and `arena.package_issue` can render or explicitly open a GitHub issue for the target project's coding agent to accept or reject. Build Arena must never open a PR, push a branch, apply code, promote code, or otherwise mutate a target repo. Build Arena is not ready for broad autonomous live loops: the pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` still reports `not_ready_blockers_remain`, but that register scopes retired broad-autonomy / target-mutation concepts rather than the current issue-only proposal artifact lane.
 
 Implemented acceptance gates:
 
@@ -44,7 +44,7 @@ Post-Phase-4 decomposer status:
 - The target apply/promote roots were removed in the 2026-06-27 propose-only remediation. Historical production-run reports remain evidence for their point in time, not runnable guidance.
 - Downstream consumers should read Project Model v1 directly; compatibility projection output has been removed from the active runtime.
 
-No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented yet; those are later phases after the loop foundation and readiness register blockers remain green/closed.
+No dashboard control plane, rollback endpoint, or live subscription-CLI subprocess execution is implemented; those are stale broad-autonomy concepts for the current issue-only proposal artifact lane unless the operator explicitly reopens a target-mutation product goal.
 
 ## Project decomposition
 
@@ -114,7 +114,7 @@ Exit codes: `0` success (`experiment.md` written); `1` stage failure; `2` no pro
 
 ## Ticket-ready proposal lane
 
-`arena.proposal_run` is the propose-only lane for ticket-ready improvements. It chains snapshot/decompose → intake → proposal plan → pairwise rerank → emit and writes `proposal.md`. It never applies a patch, promotes a branch, or mutates the target repository.
+`arena.proposal_run` is the propose-only lane for GitHub-issue-ready improvement signals. It chains snapshot/decompose → intake → proposal plan → pairwise rerank → emit and writes `proposal.md`. It never applies a patch, promotes a branch, opens a PR, pushes a branch, or mutates the target repository. The target project's coding agent owns analysis, acceptance/rejection, implementation, and any PRs in that target project.
 
 ```bash
 uv run python -m arena.proposal_run run /path/to/target-repo \

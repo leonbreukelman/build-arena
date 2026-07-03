@@ -79,7 +79,7 @@ Follow METHOD.md escalation ladder. Scope insufficiency is SCOPE-DELTA, not impr
 
 ## Report back
 
-Return the evidence ledger per METHOD.md §7, including escalation log and operator value summary.
+Return the evidence ledger per METHOD.md §8, including escalation log and operator value summary.
 
 ## Known boundaries and open items
 

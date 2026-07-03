@@ -333,7 +333,7 @@ def run(
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="proposal")
     sub = parser.add_subparsers(dest="command", required=True)
-    run_parser = sub.add_parser("run", help="emit a ticket-ready proposal.md for a repository")
+    run_parser = sub.add_parser("run", help="emit a GitHub-issue-ready proposal.md for a repository")
     run_parser.add_argument("repo", help="local path or git URL of the target repository")
     run_parser.add_argument("--output", default="proposal.md", help="output path (default proposal.md)")
     run_parser.add_argument("--profile", default="new-project", help="intake profile passthrough")

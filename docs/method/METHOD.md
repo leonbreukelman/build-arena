@@ -90,11 +90,46 @@ On discovering the locked scope is insufficient, stop and return a SCOPE-DELTA:
 
 No work on the delta before the ruling.
 
-## 6. Failure record
+## 6. Documentation and decision discipline
+
+The repo's durable memory lives in docs artifacts, not chat and not root context-file drift.
+
+Use this topology unless `PROJECT.md` declares stricter local paths:
+
+- `docs/specs/YYYY-MM-DD-<slug>.md` — scoped task, feature, strategy, or handoff specs.
+- `docs/decisions/YYYY-MM-DD-<slug>.md` — durable ADR/decision records.
+- `docs/status/` — current-state claims, readiness summaries, multi-phase progress, blockers, next actions.
+- `docs/verification/` — evidence that proves status/spec claims: command output summaries, reviewer packets, audit ledgers, CI/API readbacks, run manifests, screenshots metadata.
+- `reports/` — optional bulky generated reports/logs; if used, cite or summarize them from `docs/verification/`.
+- `docs/method/DESIGN-RECORD.md` — rationale/history for changes to this method, scaffold, lifecycle mode, or governance process.
+
+Filename slugs are local-date plus short kebab-case: `YYYY-MM-DD-short-kebab-slug.md`.
+
+### Decisions / ADRs
+
+Before a structural/product/API/governance-adjacent change, read relevant prior decision records. After making a durable decision, write or update a decision record.
+
+Use `docs/decisions/` for product and architecture decisions that future agents must not re-litigate, especially changes to component boundaries, public API/CLI/schema/config behavior, protected/generated/security-sensitive paths, external connector assumptions, deployment assumptions, or long-lived product direction.
+
+Tie-break: method/scaffold/governance/lifecycle-mode changes go first in `docs/method/DESIGN-RECORD.md`. If the same change also makes a product/architecture/API decision, write the ADR under `docs/decisions/` and cross-link it from `DESIGN-RECORD.md`.
+
+### Status vs verification
+
+Status states the claim. Verification stores the proof.
+
+A CI readback, reviewer JSON, command log, or audit ledger belongs in `docs/verification/`. The readiness conclusion citing that proof belongs in `docs/status/` or the repo-specific current-state file named by `PROJECT.md`.
+
+Never use `AGENTS.md` as a status log. Keep root context files stable: operating constraints and pointers only.
+
+### Secrets
+
+No secret values, tokens, passwords, credential material, or connection strings belong in repo docs. Use env-var names only, and redact any accidental values as `[REDACTED]`.
+
+## 7. Failure record
 
 Blocked or rejected turns write a `docs/specs/YYYY-MM-DD-<slug>.BLOCKED.md` record or mark the active spec `Status: blocked`. Include attempts, blocker, escalation log, and last grounded state.
 
-## 7. Evidence ledger
+## 8. Evidence ledger
 
 Required evidence depends on mode.
 
@@ -105,6 +140,7 @@ For `local-scaffold`:
 - `PROJECT.md` mode and repo facts;
 - structural checks output;
 - local git diff/status if git exists;
+- docs/decision/status/verification artifacts touched, if any;
 - open decisions.
 
 For `github-pr`:
@@ -116,6 +152,7 @@ For `github-pr`:
 - CI check-run conclusion read from API;
 - escalation log;
 - certification statement;
+- docs/decision/status/verification artifacts touched, if any;
 - protected paths untouched;
 - operator value summary.
 
@@ -125,13 +162,13 @@ For `protected-production`:
 - explicit list of production/irreversible actions not taken;
 - operator approvals for any gated action that was taken.
 
-## 8. Anti-fabrication
+## 9. Anti-fabrication
 
 Done means the named artifact exists and the mode-appropriate evidence proves it. Self-reported summaries and local test text are not enough for `github-pr`; API-read merge/check/file evidence is required.
 
 If the goal names code and only a doc ships, that is not done. If the goal names a doc/scaffold and that artifact exists with structural checks, that can be done in `local-scaffold` mode.
 
-## 9. Operator gates
+## 10. Operator gates
 
 Stop for Leon before:
 
@@ -141,10 +178,10 @@ Stop for Leon before:
 - credential, auth, privacy, or security judgment;
 - public-state change not explicitly in scope.
 
-## 10. Control words
+## 11. Control words
 
 - `scope`: halt drift and return to the scope lock.
 - `SCOPE-DELTA`: request scope expansion.
 - `BLOCKED`: no honest path within current scope/mode.
 
-Load `docs/method/PROJECT.md` now for this repo's mode, gates, protected paths, connector scope, and pairing.
+Load `docs/method/PROJECT.md` now for this repo's mode, gates, protected paths, connector scope, docs paths, and pairing.
