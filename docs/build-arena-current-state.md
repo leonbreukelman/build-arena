@@ -6,7 +6,7 @@ Last reconciled: 2026-06-30.
 
 ## Current posture
 
-Build Arena is a local-first, propose-only improvement system. A project is decomposed into responsibility-bearing units, candidate improvements are ranked into proposal artifacts, and cross-unit contracts are modeled explicitly instead of being left as agent intuition.
+Build Arena is a local-first, propose-only, issue-oriented improvement-signal system. A project is decomposed into responsibility-bearing units, candidate improvements are ranked into proposal artifacts, and cross-unit contracts are modeled explicitly instead of being left as agent intuition. The output is a GitHub issue for the target project's coding agent to analyze, accept or reject, and implement. Build Arena itself is not harnessed to code in the target repository.
 
 The current system posture is:
 
@@ -16,8 +16,10 @@ The current system posture is:
 - `iterationReadiness` is required in v1 because the core intake/proposal loop reads it.
 - `arena.proposal_run` emits `proposal.md`.
 - `arena.dream_run` emits `experiment.md`.
+- `arena.package_issue` renders an issue body by default and can open a GitHub issue only with explicit operator authorization.
+- `arena.package_pr` / PR packaging is retired. Build Arena must never push a branch, open a PR, apply code, promote code, or otherwise mutate a target repo.
 - Target apply/promote machinery is retired. No Build Arena entrypoint may apply or promote code to a target repo.
-- Build Arena is not ready for broad autonomous live loops while the readiness register under `docs/verification/` reports `not_ready_blockers_remain`.
+- Build Arena is not ready for broad autonomous live loops while the readiness register under `docs/verification/` reports `not_ready_blockers_remain`; that readiness register is scoped to stale broad-autonomy / target-mutation concepts, not the current issue-only artifact lane.
 
 The proposal-only remediation record is `docs/specs/2026-06-27-propose-only-remediation.md`. The pre-live readiness register is `docs/verification/2026-06-05-pre-live-readiness-register.json` until a stable index/latest readiness artifact exists.
 
@@ -57,7 +59,7 @@ A deterministic intake → proposal pipeline is implemented downstream of the Pr
 
 Stage chain:
 
-`Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → proposal_run/dream_run emit`
+`Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → proposal_run/dream_run emit → optional package_issue handoff`
 
 Retired target apply/promote roots must remain absent:
 
@@ -80,6 +82,19 @@ Active intake/proposal modules:
 
 Status: the proposal component is no longer documentation-only. It ranks code-quality and documentation findings cross-domain and emits grounded proposal artifacts. Build Arena no longer runs target apply/promote loops.
 
+## GitHub issue handoff boundary
+
+Build Arena's handoff unit is a GitHub issue, not a pull request. Issues may be bug reports, feature requests, or improvement requests. The target project's coding agent is responsible for implementation and any target-repo branches or PRs after it accepts the issue.
+
+Current issue-handoff surfaces:
+
+- `proposal.md` and `experiment.md` are local artifacts designed to be pasted or packaged into a target GitHub issue.
+- `arena.proposer_handoff` emits an advisory `proposer-handoff/v0` packet; it explicitly does not authorize mutation.
+- `arena.package_issue` renders a traceable issue body by default and can run `gh issue create` only with explicit `--open-issue --allow-gh` authorization.
+- `arena.package_pr` is retired and exits with guidance to use `arena.package_issue`.
+
+The handoff boundary is intentionally one-way: Build Arena emits signals; it does not decide acceptance, edit the target repo, open PRs, or merge anything.
+
 ## Experiment proposer lane
 
 `arena.dream_run` is the tier-3 advisory experiment lane. Modules are currently named `arena.dream_*` pending a rename. The lane generates advisory experiment proposals autonomously and writes `experiment.md`.
@@ -92,11 +107,11 @@ Hard constraints:
 4. Trust that a proposal is worth acting on comes from the mechanical gate plus the downstream evaluation loop: attempt → measure the declared observable → verdict. Judgment happens at the output or in evaluation, never as a mandatory mid-run stop.
 5. Do not reintroduce a mid-run human review gate in this lane. If a future change needs operator review, it must be opt-in, default off, and non-blocking.
 
-## Broad-autonomy blockers
+## Broad-autonomy blockers (not blockers for issue-only handoff)
 
 The readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain` for broad autonomy while recording a scoped historical `boundedFmcMcpProductionRun` exception that is now retired after propose-only remediation.
 
-Current broad-autonomy blockers include:
+These blockers are retained as historical context for any future target-mutation product goal. They are not blockers for the current issue-only proposal artifact lane:
 
 - dashboard control plane is not implemented.
 - rollback endpoint is not implemented.

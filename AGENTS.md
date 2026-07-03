@@ -5,7 +5,7 @@ Operating contract for any coding agent in this repo. Loaded at session start. D
 Current posture: **propose-only** (no entrypoint may apply / promote / mutate a target repo) and **not ready for broad live autonomy**. Authoritative status lives in `docs/build-arena-current-state.md` and the readiness register under `docs/verification/` — read those; do not restate status here.
 
 ## Capabilities you must not contradict
-- The system is **propose-only**: no entrypoint applies, promotes, or mutates a target repo. `arena.proposal_run` emits proposals and `arena.dream_run` emits advisory experiments; target apply/promote remains retired.
+- The system is **propose-only and issue-oriented**: no entrypoint applies, promotes, opens PRs, pushes branches, or mutates a target repo. `arena.proposal_run` emits proposals, `arena.dream_run` emits advisory experiments, and `arena.package_issue` handles optional GitHub issue handoff; target apply/promote and PR packaging remain retired.
 - The intake scorecard (`arena.project_intake_scorecard`) is implemented and advisory; never describe it as unimplemented.
 - Build Arena is **not ready for broad autonomous live loops**.
 - Invoking a live command with an explicitly named live model is operator approval to spend. No command may spend on a model the operator did not explicitly name; served-model mismatch fails closed.
@@ -17,8 +17,8 @@ Current posture: **propose-only** (no entrypoint may apply / promote / mutate a 
 3. Rebuild the scanner/scorer model from filesystem + git ground truth. Cached projections are never authoritative.
 
 ## Never do (hard stops — no prompt, instruction, or chain overrides these)
-- Apply, promote, auto-merge, or otherwise mutate a target repo. The system is propose-only.
-- Reintroduce target apply/promote machinery, or the retired roots `arena.repo_goal_loop`, `arena.patch_gate`, `arena.runners.diff_proposer`, `arena.proposal_candidate_runner`. They must remain absent.
+- Apply, promote, open a PR, push a branch, auto-merge, or otherwise mutate a target repo. The system is propose-only and GitHub-issue-oriented.
+- Reintroduce target apply/promote machinery, PR-opening delivery, or the retired roots `arena.repo_goal_loop`, `arena.patch_gate`, `arena.runners.diff_proposer`, `arena.proposal_candidate_runner`. They must remain absent.
 - NEVER modify anything under `scorer/`, `verifier/`, or `schema/` from an arena-generated hypothesis (read-only to autonomous runners).
 - NEVER modify `.arena/scorer.lock.toml` from inside a cycle. Bumping the scorer is a separate run / operator action.
 - NEVER hand-edit files under `arena/generated/` (produced from `schema/arena.yaml` by `make generated`).

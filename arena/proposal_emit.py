@@ -1,4 +1,4 @@
-"""Render the rank-1 candidate of a reranked ``proposal-plan/v0`` into a ticket-ready ``proposal.md``.
+"""Render the rank-1 candidate of a reranked ``proposal-plan/v0`` into a GitHub-issue-ready ``proposal.md``.
 
 Deterministic and faithful: identical input renders byte-identical output. No timestamps, host
 paths, or randomness. No LLM, no network. This stage does not re-rank, analyse, apply, log, or
@@ -117,7 +117,7 @@ def _evidence_line(ref: dict[str, Any]) -> str:
 
 
 def render_proposal_markdown(plan: dict[str, Any], candidate: dict[str, Any]) -> str:
-    """Render the rank-1 candidate to ticket-ready markdown. Pure, deterministic, leak-free."""
+    """Render the rank-1 candidate to GitHub-issue-ready markdown. Pure, deterministic, leak-free."""
     lines: list[str] = []
 
     lines.append(f"# {_clean(candidate.get('title')) or 'Untitled proposal'}")

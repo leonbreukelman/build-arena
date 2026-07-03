@@ -6,22 +6,18 @@ from pathlib import Path
 
 import pytest
 
-from arena.ledger import FingerprintFailureLedger
-from arena.pr_packager import (
+from arena.issue_packager import (
     FabricatedClaimError,
+    IssuePackageResult,
     OperatorAuthorizationError,
-    RemoteTargetError,
-    package_candidate_pr,
+    package_candidate_issue,
     record_owner_outcome,
-    render_pr_body,
+    render_issue_body,
 )
+from arena.ledger import FingerprintFailureLedger
 
 
-def _git(cwd: Path, *args: str) -> str:
-    return subprocess.check_output(["git", *args], cwd=cwd, text=True).strip()
-
-
-def _init_repo(path: Path, remote_url: str) -> Path:
+def _init_repo(path: Path, remote_url: str = "git@github.com:example/target.git") -> Path:
     path.mkdir(parents=True)
     subprocess.run(["git", "init", "-q"], cwd=path, check=True)
     subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=path, check=True)
@@ -40,7 +36,7 @@ def _evidence(path: Path) -> Path:
         "cycle_id": "cycle-1",
         "worktree_root": "/tmp/worktrees",
         "worktree": {"id": "cycle-1", "path": "/tmp/worktrees/cycle-1", "base_git_oid": "a" * 40},
-        "budget": {"cycle_count_cap": 60, "promotions_total": 1},
+        "budget": {"cycle_count_cap": 60, "promotions_total": 0},
         "score_before": {
             "id": "score-before",
             "git_oid": "a" * 40,
@@ -74,7 +70,7 @@ def _evidence(path: Path) -> Path:
         "verdict": {
             "id": "verdict-1",
             "hypothesis_id": "hyp-1",
-            "outcome": "PROMOTED",
+            "outcome": "PROPOSED",
             "reject_reason": None,
             "score_before_id": "score-before",
             "score_after_id": "score-after",
@@ -103,7 +99,6 @@ def _evidence(path: Path) -> Path:
                 "payload_json_sha": "2" * 64,
                 "payload": {"hypothesis_id": "hyp-1", "fingerprint_id": "fp-1"},
             },
-            {"type": "CANDIDATE_PACKAGED", "payload_json_sha": "3" * 64, "payload": {}},
         ],
     }
     path.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n", encoding="utf-8")
@@ -116,51 +111,45 @@ class RecordingRunner:
 
     def __call__(self, args: list[str], *, cwd: Path) -> subprocess.CompletedProcess[str]:
         self.calls.append((args, cwd))
-        stdout = "https://github.com/example/repo/pull/1\n" if args[:3] == ["gh", "pr", "create"] else ""
+        stdout = "https://github.com/example/repo/issues/1\n" if args[:3] == ["gh", "issue", "create"] else ""
         return subprocess.CompletedProcess(args=args, returncode=0, stdout=stdout, stderr="")
 
 
-def test_dry_run_renders_traceable_pr_body_without_gh(tmp_path: Path) -> None:
+def test_dry_run_renders_traceable_issue_body_without_gh(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
-    target_repo = _init_repo(tmp_path / "target", "git@github.com:example/target.git")
-    build_arena_repo = _init_repo(tmp_path / "build-arena", "git@github.com:example/build-arena.git")
+    target_repo = _init_repo(tmp_path / "target")
     runner = RecordingRunner()
 
-    result = package_candidate_pr(
+    result = package_candidate_issue(
         evidence_path=evidence,
         target_repo=target_repo,
-        build_arena_repo=build_arena_repo,
         dry_run=True,
         command_runner=runner,
     )
 
-    assert result.mode == "dry-run"
-    assert result.pr_url is None
+    assert result == IssuePackageResult(mode="dry-run", body=result.body)
     assert runner.calls == []
-    assert "arena/candidate/cycle-1" in result.body
+    assert "Build Arena improvement signal" in result.body
+    assert "does not implement, push a branch, open a PR, or merge code" in result.body
     assert "#/candidate/git_oid" in result.body
-    assert "#/score_after/vector/composite" in result.body
-    assert "No automatic merge" in result.body
 
 
 def test_fabricated_claim_fixture_fails(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
 
     with pytest.raises(FabricatedClaimError, match="fabricated"):
-        render_pr_body(evidence, extra_claims=("This improves user delight by 40%",))
+        render_issue_body(evidence, extra_claims=("This improves user delight by 40%",))
 
 
-def test_open_pr_requires_explicit_operator_authorization(tmp_path: Path) -> None:
+def test_open_issue_requires_explicit_operator_authorization(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
-    target_repo = _init_repo(tmp_path / "target", "git@github.com:example/target.git")
-    build_arena_repo = _init_repo(tmp_path / "build-arena", "git@github.com:example/build-arena.git")
+    target_repo = _init_repo(tmp_path / "target")
     runner = RecordingRunner()
 
     with pytest.raises(OperatorAuthorizationError):
-        package_candidate_pr(
+        package_candidate_issue(
             evidence_path=evidence,
             target_repo=target_repo,
-            build_arena_repo=build_arena_repo,
             dry_run=False,
             allow_gh=False,
             command_runner=runner,
@@ -169,42 +158,24 @@ def test_open_pr_requires_explicit_operator_authorization(tmp_path: Path) -> Non
     assert runner.calls == []
 
 
-def test_open_pr_rejects_build_arena_remote_for_different_target(tmp_path: Path) -> None:
+def test_open_issue_uses_gh_issue_create_without_git_push_or_pr(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
-    remote = "git@github.com:example/build-arena.git"
-    target_repo = _init_repo(tmp_path / "target", remote)
-    build_arena_repo = _init_repo(tmp_path / "build-arena", remote)
-
-    with pytest.raises(RemoteTargetError):
-        package_candidate_pr(
-            evidence_path=evidence,
-            target_repo=target_repo,
-            build_arena_repo=build_arena_repo,
-            dry_run=False,
-            allow_gh=True,
-            command_runner=RecordingRunner(),
-        )
-
-
-def test_open_pr_uses_git_push_and_gh_create_when_authorized(tmp_path: Path) -> None:
-    evidence = _evidence(tmp_path / "cycle-1.json")
-    target_repo = _init_repo(tmp_path / "target", "git@github.com:example/target.git")
-    build_arena_repo = _init_repo(tmp_path / "build-arena", "git@github.com:example/build-arena.git")
+    target_repo = _init_repo(tmp_path / "target")
     runner = RecordingRunner()
 
-    result = package_candidate_pr(
+    result = package_candidate_issue(
         evidence_path=evidence,
         target_repo=target_repo,
-        build_arena_repo=build_arena_repo,
         dry_run=False,
         allow_gh=True,
         command_runner=runner,
     )
 
     assert result.mode == "opened"
-    assert result.pr_url == "https://github.com/example/repo/pull/1"
-    assert any(call[0][:2] == ["git", "push"] for call in runner.calls)
-    assert any(call[0][:3] == ["gh", "pr", "create"] for call in runner.calls)
+    assert result.issue_url == "https://github.com/example/repo/issues/1"
+    assert any(call[0][:3] == ["gh", "issue", "create"] for call in runner.calls)
+    assert all(call[0][:2] != ["git", "push"] for call in runner.calls)
+    assert all(call[0][:3] != ["gh", "pr", "create"] for call in runner.calls)
     assert all("merge" not in call[0] for call in runner.calls)
 
 
@@ -212,7 +183,7 @@ def test_owner_outcome_records_back_to_ledger(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
     ledger = FingerprintFailureLedger(tmp_path / "ledger.jsonl")
 
-    record_owner_outcome(ledger, evidence, outcome="rejected", pr_url="https://github.com/example/repo/pull/1")
+    record_owner_outcome(ledger, evidence, outcome="rejected", issue_url="https://github.com/example/repo/issues/1")
 
     rows = ledger.iter_records()
     assert rows == [
@@ -221,15 +192,14 @@ def test_owner_outcome_records_back_to_ledger(tmp_path: Path) -> None:
             "fingerprint_id": "fp-1",
             "hypothesis_id": "hyp-1",
             "outcome": "OWNER_REJECTED",
-            "pr_url": "https://github.com/example/repo/pull/1",
+            "issue_url": "https://github.com/example/repo/issues/1",
         }
     ]
 
 
-def test_cli_dry_run_prints_body_without_pushing(tmp_path: Path) -> None:
+def test_package_issue_cli_dry_run_prints_body_without_pushing(tmp_path: Path) -> None:
     evidence = _evidence(tmp_path / "cycle-1.json")
-    target_repo = _init_repo(tmp_path / "target", "git@github.com:example/target.git")
-    build_arena_repo = _init_repo(tmp_path / "build-arena", "git@github.com:example/build-arena.git")
+    target_repo = _init_repo(tmp_path / "target")
 
     completed = subprocess.run(
         [
@@ -237,13 +207,11 @@ def test_cli_dry_run_prints_body_without_pushing(tmp_path: Path) -> None:
             "run",
             "python",
             "-m",
-            "arena.package_pr",
+            "arena.package_issue",
             "--evidence",
             str(evidence),
             "--target-repo",
             str(target_repo),
-            "--build-arena-repo",
-            str(build_arena_repo),
             "--dry-run",
         ],
         cwd=Path(__file__).resolve().parents[1],
@@ -252,5 +220,20 @@ def test_cli_dry_run_prints_body_without_pushing(tmp_path: Path) -> None:
         check=True,
     )
 
-    assert "arena/candidate/cycle-1" in completed.stdout
+    assert "Build Arena improvement signal" in completed.stdout
     assert "Dry-run only" in completed.stdout
+    assert "no gh issue create, git push, PR, merge, or target mutation" in completed.stdout
+
+
+def test_package_pr_cli_is_retired() -> None:
+    completed = subprocess.run(
+        ["uv", "run", "python", "-m", "arena.package_pr"],
+        cwd=Path(__file__).resolve().parents[1],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert completed.returncode == 2
+    assert "retired" in completed.stderr
+    assert "package_issue" in completed.stderr

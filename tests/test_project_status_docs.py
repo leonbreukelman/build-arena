@@ -39,7 +39,11 @@ def _read(relative: str) -> str:
 
 
 def _status_docs() -> list[Path]:
-    return sorted(p for p in STATUS_DIR.glob("*.md") if p.name != STATUS_INDEX.name)
+    return sorted(
+        p
+        for p in STATUS_DIR.glob("*.md")
+        if p.name not in {STATUS_INDEX.name, "README.md"}
+    )
 
 
 def _status_index_sections() -> dict[str, list[tuple[str, str | None]]]:
@@ -212,10 +216,11 @@ def test_agents_status_section_reframed_to_stable_capabilities() -> None:
     required_markers = [
         "## Capabilities you must not contradict",
         "propose-only",
-        "no entrypoint applies, promotes, or mutates a target repo",
+        "no entrypoint applies, promotes, opens PRs, pushes branches, or mutates a target repo",
         "arena.proposal_run",
         "arena.dream_run",
-        "target apply/promote remains retired",
+        "target apply/promote and PR packaging remain retired",
+        "arena.package_issue",
         "arena.project_intake_scorecard",
         "implemented and advisory",
         "not ready for broad autonomous live loops",
@@ -611,6 +616,10 @@ def test_documented_intake_proposal_cli_surfaces_exist() -> None:
         (
             ["uv", "run", "python", "-m", "arena.dream_run", "--help"],
             ["run"],
+        ),
+        (
+            ["uv", "run", "python", "-m", "arena.package_issue", "--help"],
+            ["--evidence", "--target-repo", "--open-issue", "--allow-gh"],
         ),
     ]
     for command, expected_flags in checks:

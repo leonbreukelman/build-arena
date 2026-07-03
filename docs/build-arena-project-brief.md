@@ -8,7 +8,7 @@ Read order each session: `AGENTS.md` and `docs/build-arena-constitution.md` for 
 
 ## What Build Arena is
 
-Build Arena is a local-first propose-only improvement system for software projects. A project is decomposed into responsibility-bearing units, candidate improvements are ranked into proposal artifacts, and cross-unit contracts are modeled explicitly instead of being left as agent intuition. The operator defines the goal and scoring dimensions; `arena.proposal_run` emits `proposal.md` and `arena.dream_run` emits advisory `experiment.md` artifacts, but target apply/promote machinery is retired and no entrypoint may mutate a target repo.
+Build Arena is a local-first propose-only improvement-signal system for software projects. A project is decomposed into responsibility-bearing units, candidate improvements are ranked into proposal artifacts, and cross-unit contracts are modeled explicitly instead of being left as agent intuition. The operator defines the goal and scoring dimensions; `arena.proposal_run` emits `proposal.md`, `arena.dream_run` emits advisory `experiment.md` artifacts, and `arena.package_issue` can render or explicitly open a GitHub issue for the target project's coding agent. Target apply/promote machinery is retired, PR packaging is retired, and no entrypoint may push a branch, open a PR, apply code, promote code, or otherwise mutate a target repo.
 
 The governing axiom is unchanged: every claim the agent makes must be verifiable by something that is not the agent. Verification is mechanical first, not cognitive. LLM output can help propose or decompose, but it is not allowed to be the load-bearing proof that a change is correct.
 
@@ -38,7 +38,7 @@ The post-Phase-4 AI-first decomposer is also implemented:
 
 The shared OpenAI-compatible proposal path is operator-switchable by provider/base URL/model/API-key-env configuration and supports explicit live controls such as `--live-api-key-env XAI_API_KEY`. The 2026-06-27 propose-only remediation removed the target apply/promote roots after a local `fmc-mcp` run showed the old production loop could mutate a target outside the propose-only policy. Historical production-run reports remain evidence for their point in time, not runnable guidance.
 
-Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain` for broad autonomy while recording a scoped `boundedFmcMcpProductionRun` exception. The dashboard control plane, rollback endpoint, multi-cycle unattended production autonomy, proposal registry/lineage, and live subscription-CLI subprocess execution remain blocked or unimplemented.
+Build Arena is not ready for broad autonomous live loops. The pre-live readiness register at `docs/verification/2026-06-05-pre-live-readiness-register.json` remains `not_ready_blockers_remain` for broad autonomy while recording a scoped `boundedFmcMcpProductionRun` exception. Those broad-autonomy blockers are historical context for a target-mutation goal, not blockers for the current issue-only artifact lane. The dashboard control plane, rollback endpoint, multi-cycle unattended production autonomy, and live subscription-CLI subprocess execution are not part of the current product goal unless the operator explicitly reopens target mutation.
 
 ---
 
@@ -72,9 +72,9 @@ The AI-first path starts with a mechanically built graph, asks an LLM path only 
 
 The snapshot bundle contains `graph.json`, `snapshot.json`, `gate-report.json`, `project-model-v1.json`, prompts, model outputs, held-out probes, planted negatives, near-neighbor alternatives, and a manifest with paths and hashes.
 
-### Intake → proposal pipeline (implemented; ranking advisory, target apply/promote retired)
+### Intake → proposal → issue handoff pipeline (implemented; ranking advisory, target apply/promote and PR packaging retired)
 
-Downstream of the Project Model, a deterministic intake → proposal pipeline is implemented. Intake and ranking are advisory (they rank and propose); generated outputs are proposals or experiments only. The stage chain is `Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → proposal_run/dream_run emit`. The retired target apply/promote roots (`arena.repo_goal_loop`, `arena.patch_gate`, `arena.runners.diff_proposer`, and `arena.proposal_candidate_runner`) must remain absent.
+Downstream of the Project Model, a deterministic intake → proposal pipeline is implemented. Intake and ranking are advisory (they rank and propose); generated outputs are proposals, experiments, or GitHub issue bodies only. The stage chain is `Project Model v1 → intake scorecard → cross-domain ranker → proposal plan → proposal_run/dream_run emit → optional package_issue handoff`. The retired target apply/promote roots (`arena.repo_goal_loop`, `arena.patch_gate`, `arena.runners.diff_proposer`, and `arena.proposal_candidate_runner`) must remain absent.
 
 - `arena/project_intake_scorecard.py` reads a Project Model snapshot and emits ranked, evidence-backed findings using the explainable priority formula (dimension weight × severity × confidence × gains / effort) and profile weights (`new-project`, `active-development`, `production`, `documentation-first`). It now emits component-scoped non-doc findings from the decomposer's `componentProfiles` (high-risk untested components) and `code.quality.lint.<path>` findings, not only hardcoded documentation absence targets. Output is advisory ranking only.
 - `arena/proposal_domains.py` is the multi-domain proposal contract: each improvement domain (documentation, code_quality, generic_file) implements `find_candidates`/`first_candidate` behind a shared registry, so documentation is one domain rather than the whole component.
@@ -83,12 +83,14 @@ Downstream of the Project Model, a deterministic intake → proposal pipeline is
 - `arena/code_quality_gate.py` is the load-bearing code-quality check used in proposal success criteria: it compares ruff violation counts for one file between git HEAD and a worktree and accepts only a real reduction with public-symbol preservation and no new suppressions (per-line or file-level `ruff:`/`flake8:` noqa, `type: ignore`). Documented KNOWN BOUNDARY: lint-delta + symbol preservation, not full behaviour. It is not an apply/promote entrypoint.
 - `arena/repo_facts.py` collects deterministic repository facts (top-level files/dirs, docs and markdown inventory with truncation flags) to ground proposal prompts so a proposer cannot invent structure.
 - `arena/markdown_links.py` is the deterministic documentation gate: it validates that local Markdown links resolve to real files and, with `--require-source-references`, that documentation candidates cite an existing source. The planner now uses this source-reference gate for docs candidates by default.
+- `arena/issue_packager.py` and `arena/package_issue.py` render a traceable GitHub issue body by default and can run `gh issue create` only with explicit `--open-issue --allow-gh` authorization. The issue is the handoff artifact for the target project's coding agent; Build Arena does not open PRs.
+- `arena/package_pr.py` and `arena/pr_packager.py` are retired compatibility surfaces. They must not push branches or open PRs.
 
-Status (epic #25, children #26–#31, all merged): the proposal component is **no longer documentation-only**. It ranks code-quality and documentation findings cross-domain with an auditable breakdown and emits grounded proposal artifacts. Build Arena no longer runs target apply/promote loops. Broad live autonomy remains governed by the pre-live readiness register.
+Status (epic #25, children #26–#31, all merged): the proposal component is **no longer documentation-only**. It ranks code-quality and documentation findings cross-domain with an auditable breakdown and emits grounded proposal artifacts. Build Arena no longer runs target apply/promote loops or PR delivery. Broad live autonomy remains governed by the pre-live readiness register, but that is not the readiness target for the current issue-only lane.
 
 ### Safety boundaries
 
-Autonomous runners must not write outside their cycle worktree. They must not modify `scorer/`, `verifier/`, `schema/`, `.arena/scorer.lock.toml`, or generated artifacts as part of a hypothesis. Target apply/promote entrypoints are retired and must not be reintroduced. These rules are encoded in AGENTS.md and partially enforced in `arena/boundary.py` and `arena/worktrees.py`.
+Autonomous runners must not write outside their cycle worktree. They must not modify `scorer/`, `verifier/`, `schema/`, `.arena/scorer.lock.toml`, or generated artifacts as part of a hypothesis. Target apply/promote entrypoints and PR-opening entrypoints are retired and must not be reintroduced. These rules are encoded in AGENTS.md and partially enforced in `arena/boundary.py` and `arena/worktrees.py`.
 
 ---
 
@@ -141,10 +143,10 @@ Provider/base URL/API-key-env are operator-switchable with `--live-provider`, `-
 
 ## Current blockers and backlog
 
-Blockers before broad live autonomy:
+Historical blockers before broad live autonomy (not blockers for issue-only handoff):
 
 1. Broad multi-cycle live autonomy remains unproven; only one bounded local fmc-mcp production run is scoped as ready after explicit operator authorization.
-2. Remote/reproducible handoff still requires pushing or PR'ing the local Build Arena and fmc-mcp commits.
+2. Remote/reproducible issue handoff still needs either a documented manual `gh issue create` runbook or a verified `arena.package_issue --open-issue --allow-gh` path for the target repo.
 3. Dashboard control plane is not implemented.
 4. Rollback endpoint is not implemented.
 5. Live subscription-CLI subprocess execution is not implemented.
@@ -155,7 +157,7 @@ Near-term useful work:
 1. Keep doc/status tests guarding active orientation docs against calibration-era drift.
 2. Exercise fixture-mode AI-first snapshots against this repo and held-out repos without live spend.
 3. Define the dry-run hypothesis-generation contract over Project Model v1.
-4. Prove the Milestone 3 naive worktree-only pilot with no promotion first, then evaluate decomposition-informed/v1 cycles and promotion only after their separate blockers close.
+4. Keep target implementation and PR creation out of Build Arena; the target repo's coding agent owns those after accepting an issue.
 5. Update dated current-state artifacts or mark them historical when they conflict with README.md, AGENTS.md, or this brief.
 
 ---
@@ -168,8 +170,8 @@ Near-term useful work:
 - Do not run `git checkout`, `git branch -f`, `git reset --hard`, `git rebase`, or `git push` inside a cycle worktree.
 - Do not hand-edit generated artifacts. Run `make generated` after intentional schema changes.
 - Do not run live Build Arena provider/decomposition calls unless explicitly authorized.
-- Do not claim broad loop readiness while `not_ready_blockers_remain` is still present in the readiness register. Treat the current verifier ablation keyword gate as advisory for real cycles until a real ablation runner exists.
-- Keep normal repo commits and historical/internal calibration baseline mechanics separate. Target apply/promote entrypoints are retired.
+- Do not use `not_ready_blockers_remain` as a blocker for the current issue-only lane; it is broad-autonomy / target-mutation context. Do not claim broad loop readiness while it remains present. Treat the current verifier ablation keyword gate as advisory for real cycles until a real ablation runner exists.
+- Keep normal repo commits and historical/internal calibration baseline mechanics separate. Target apply/promote and PR-opening entrypoints are retired.
 
 ---
 

@@ -36,7 +36,7 @@ Mode-appropriate evidence plus `<test/check>` covering <assertion>.
 
 ## Report back
 
-Ledger per METHOD.md §7. Track-L ledgers may be short but omit nothing required by the selected mode.
+Ledger per METHOD.md §8. Track-L ledgers may be short but omit nothing required by the selected mode.
 
 ## Stop clause
 
