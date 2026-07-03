@@ -1,0 +1,8 @@
+{
+  "allowed": true,
+  "execution": "not_run",
+  "reasons": [],
+  "runtime": "openshell_planned",
+  "verification_owner": "hermes",
+  "verification_status": "not_verified"
+}

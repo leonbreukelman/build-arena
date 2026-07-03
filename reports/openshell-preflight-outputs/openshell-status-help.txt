@@ -1,0 +1,15 @@
+Show gateway status and information
+
+USAGE
+  openshell status [OPTIONS]
+
+GATEWAY FLAGS:
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata) [env: OPENSHELL_GATEWAY=]
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+GLOBAL FLAGS:
+  -v, --verbose...  Increase verbosity (-v, -vv, -vvv)
+  -h, --help        Print help
+  -V, --version     Print version

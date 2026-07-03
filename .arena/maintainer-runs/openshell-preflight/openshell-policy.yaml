@@ -1,0 +1,41 @@
+# GENERATED DRAFT: Build Arena maintainer dry-run OpenShell policy intent.
+# NOT APPLIED: this artifact does not create or enter a live OpenShell sandbox.
+# Hermes policy is semantic authorization; OpenShell is the future runtime enforcement layer.
+version: openshell-policy-draft/v0
+status: generated_draft_not_applied
+runtime:
+  kind: openshell_planned
+  execution: not_run
+filesystem:
+  read_intent:
+    - "AGENTS.md"
+    - "docs/method/METHOD.md"
+    - "docs/method/PROJECT.md"
+    - "README.md"
+    - "docs/specs/2026-07-02-hermes-openshell-delegation-packet.md"
+  write_intent:
+    - ".arena/maintainer-runs/openshell-preflight"
+    - "docs/examples/maintainer-openshell-preflight-packet.json"
+    - "reports/2026-07-02-maintainer-openshell-preflight-dogfood.md"
+  forbidden_path_intent:
+    - "scorer"
+    - "verifier"
+    - "schema"
+    - "arena/generated"
+    - ".arena/scorer.lock.toml"
+network:
+  egress_intent: none
+  allow_github: false
+inference:
+  routing_intent: delegated_worker_no_live_provider_call_in_this_slice
+  live_model_required: false
+process_restrictions:
+  dry_run_only: true
+  execute_openshell: false
+  execute_openhands: false
+  git_push: false
+  auto_merge: false
+  target_apply_or_promote: false
+verification:
+  owner: hermes
+  status: not_verified

@@ -1,0 +1,40 @@
+{
+  "allowed_paths": [
+    ".arena/maintainer-runs/openshell-preflight",
+    "docs/examples/maintainer-openshell-preflight-packet.json",
+    "reports/2026-07-02-maintainer-openshell-preflight-dogfood.md"
+  ],
+  "forbidden_paths": [
+    "scorer",
+    "verifier",
+    "schema",
+    "arena/generated",
+    ".arena/scorer.lock.toml"
+  ],
+  "mode": "dry_run",
+  "objective": "Run a read-only OpenShell CLI preflight and record evidence without creating a sandbox, starting a gateway, applying policy, calling GitHub, or mutating a target repository.",
+  "required_commands": [
+    "uv run python -m arena.maintainer.cli prepare --packet docs/examples/maintainer-openshell-preflight-packet.json --out .arena/maintainer-runs/openshell-preflight --force",
+    "openshell --help",
+    "openshell policy --help",
+    "openshell status --help",
+    "openshell doctor --help",
+    "openshell doctor check"
+  ],
+  "required_reads": [
+    "AGENTS.md",
+    "docs/method/METHOD.md",
+    "docs/method/PROJECT.md",
+    "README.md",
+    "docs/specs/2026-07-02-hermes-openshell-delegation-packet.md"
+  ],
+  "schema_version": "maintainer-task-packet/v0",
+  "stop_conditions": [
+    "stop before any sandbox create command",
+    "stop before any gateway start command",
+    "stop before any policy set command",
+    "stop before any GitHub call",
+    "stop before any push, merge, apply, or promote request",
+    "stop before executing OpenHands or a live OpenShell sandbox"
+  ]
+}

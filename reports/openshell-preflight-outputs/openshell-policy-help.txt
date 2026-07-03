@@ -1,0 +1,30 @@
+Manage sandbox policy
+
+USAGE
+  openshell policy [OPTIONS] [COMMAND]
+
+COMMANDS
+  set   Update policy on a live sandbox
+  get   Show current active policy for a sandbox
+  list  List policy history for a sandbox
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata) [env: OPENSHELL_GATEWAY=]
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata [env: OPENSHELL_GATEWAY_ENDPOINT=]
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+  -h, --help
+          Print help
+  -V, --version
+          Print version
+
+
+ALIAS
+  pol
+
+EXAMPLES
+  $ openshell policy get my-sandbox
+  $ openshell policy set my-sandbox --policy policy.yaml
+  $ openshell policy list my-sandbox

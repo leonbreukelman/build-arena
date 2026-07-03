@@ -90,3 +90,5 @@ Done only when ALL pass — run them, don't assert:
 - `uv run python -m arena.proposal_ranker --project <repo> --scorecard <scorecard.json> --output <ranked-proposals.json> --max-candidates 10` — cross-domain ranked-proposals/v0 with per-entry score breakdowns.
 - `uv run python -m arena.code_quality_gate --repo <repo> --path <file.py>` — load-bearing code-quality gate (HEAD vs worktree ruff delta, public-symbol preservation, no new suppressions).
 - `uv run python -m arena.markdown_links --repo <repo> --path <doc.md> --require-source-references` — deterministic Markdown local-link / source-reference gate for docs proposals.
+
+Before starting any task, load docs/method/METHOD.md then docs/method/PROJECT.md and treat both as binding.

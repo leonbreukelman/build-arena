@@ -1,0 +1,51 @@
+Diagnose gateway issues.
+
+Inspect logs, run commands inside the gateway container, and get AI-assisted debugging guidance. If you are a coding agent, run `openshell doctor llm.txt` for a full diagnostic prompt.
+
+USAGE
+  openshell doctor [OPTIONS] [COMMAND]
+
+COMMANDS
+  logs     Fetch logs from the gateway container
+  exec     Run a command inside the gateway container
+  llm.txt  Print a diagnostic prompt for AI-assisted gateway debugging
+  check    Validate system prerequisites for running a gateway
+
+FLAGS
+  -g, --gateway <GATEWAY>
+          Gateway name to operate on (resolved from stored metadata)
+
+          [env: OPENSHELL_GATEWAY=]
+
+      --gateway-endpoint <GATEWAY_ENDPOINT>
+          Gateway endpoint URL (e.g. <https://gateway.example.com>). Connects directly without looking up gateway metadata
+
+          [env: OPENSHELL_GATEWAY_ENDPOINT=]
+
+  -v, --verbose...
+          Increase verbosity (-v, -vv, -vvv)
+
+  -h, --help
+          Print help
+
+  -V, --version
+          Print version
+
+
+ALIAS
+  dr
+
+EXAMPLES
+  $ openshell doctor check
+  $ openshell doctor logs --lines 100
+  $ openshell doctor exec -- kubectl get pods -A
+  $ openshell doctor llm.txt
+
+AI AGENT USAGE
+  If you are a coding agent (LLM) diagnosing a gateway issue, run:
+
+    openshell doctor llm.txt
+
+  This prints a detailed diagnostic prompt with step-by-step instructions
+  for debugging gateway clusters using `openshell doctor logs` and
+  `openshell doctor exec`.
