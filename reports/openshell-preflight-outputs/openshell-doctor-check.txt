@@ -1,0 +1,6 @@
+Checking system prerequisites...
+
+  Docker ............. ok (version 29.1.3)
+  DOCKER_HOST ........ (not set, using default socket)
+
+All checks passed.
