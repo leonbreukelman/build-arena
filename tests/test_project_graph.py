@@ -3,6 +3,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+from arena.architecture_fitness import import_cycles
+from arena.graph_slice import fresh_graph_slice
 from arena.project_graph import build_project_graph, canonical_graph_json
 
 
@@ -423,6 +425,83 @@ def test_graph_resolves_python_package_import_aliases_to_owned_modules(tmp_path:
 
     assert "node:python_import:pkg.resources" in import_targets
     assert "node:python_import:pkg.tools" in import_targets
+    assert "node:python_import:pkg" not in import_targets
+
+
+def test_graph_resolves_from_package_import_submodule_without_package_self_edge(tmp_path: Path) -> None:
+    (tmp_path / "pkgA").mkdir(parents=True)
+    (tmp_path / "pkgA" / "__init__.py").write_text("from pkgA.a import thing\n", encoding="utf-8")
+    (tmp_path / "pkgA" / "a.py").write_text("from pkgA import b\n", encoding="utf-8")
+    (tmp_path / "pkgA" / "b.py").write_text("thing = 1\n", encoding="utf-8")
+    _init_git_repo(tmp_path)
+
+    graph = build_project_graph(tmp_path)
+    node_by_id = {node.id: node for node in graph.nodes}
+    import_pairs = {
+        (node_by_id[edge.from_node_id].symbol, node_by_id[edge.to_node_id].symbol)
+        for edge in graph.edges
+        if edge.kind == "imports"
+    }
+    cycles = import_cycles(fresh_graph_slice(tmp_path))
+
+    assert ("pkgA", "pkgA.a") in import_pairs
+    assert ("pkgA.a", "pkgA.b") in import_pairs
+    assert ("pkgA.a", "pkgA") not in import_pairs
+    assert cycles == ()
+
+
+def test_graph_excludes_type_checking_imports_from_runtime_import_edges(tmp_path: Path) -> None:
+    (tmp_path / "pkgB").mkdir(parents=True)
+    (tmp_path / "pkgB" / "__init__.py").write_text("", encoding="utf-8")
+    (tmp_path / "pkgB" / "c.py").write_text(
+        "from typing import TYPE_CHECKING\n"
+        "\n"
+        "if TYPE_CHECKING:\n"
+        "    from pkgB.d import Thing\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "pkgB" / "d.py").write_text("class Thing:\n    pass\n", encoding="utf-8")
+    _init_git_repo(tmp_path)
+
+    graph = build_project_graph(tmp_path)
+    node_by_id = {node.id: node for node in graph.nodes}
+    import_pairs = {
+        (node_by_id[edge.from_node_id].symbol, node_by_id[edge.to_node_id].symbol)
+        for edge in graph.edges
+        if edge.kind == "imports"
+    }
+    cycles = import_cycles(fresh_graph_slice(tmp_path))
+
+    assert ("pkgB.c", "pkgB.d") not in import_pairs
+    assert cycles == ()
+
+
+def test_graph_keeps_runtime_imports_under_not_type_checking_guard(tmp_path: Path) -> None:
+    (tmp_path / "pkgC").mkdir(parents=True)
+    (tmp_path / "pkgC" / "__init__.py").write_text("", encoding="utf-8")
+    (tmp_path / "pkgC" / "runtime.py").write_text("value = 1\n", encoding="utf-8")
+    (tmp_path / "pkgC" / "types.py").write_text("class Thing:\n    pass\n", encoding="utf-8")
+    (tmp_path / "pkgC" / "c.py").write_text(
+        "from typing import TYPE_CHECKING\n"
+        "\n"
+        "if not TYPE_CHECKING:\n"
+        "    import pkgC.runtime\n"
+        "else:\n"
+        "    from pkgC.types import Thing\n",
+        encoding="utf-8",
+    )
+    _init_git_repo(tmp_path)
+
+    graph = build_project_graph(tmp_path)
+    node_by_id = {node.id: node for node in graph.nodes}
+    import_pairs = {
+        (node_by_id[edge.from_node_id].symbol, node_by_id[edge.to_node_id].symbol)
+        for edge in graph.edges
+        if edge.kind == "imports"
+    }
+
+    assert ("pkgC.c", "pkgC.runtime") in import_pairs
+    assert ("pkgC.c", "pkgC.types") not in import_pairs
 
 
 def test_graph_records_symlink_identity_without_following_targets(tmp_path: Path) -> None:

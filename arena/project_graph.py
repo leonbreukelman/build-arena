@@ -298,14 +298,21 @@ def _javascript_module_name(rel_path: str) -> str:
     return ".".join(part for part in parts if part)
 
 
-def _resolve_python_import(current_module: str, rel_path: str, node: ast.ImportFrom) -> list[str]:
+def _resolve_python_import(current_module: str, rel_path: str, node: ast.ImportFrom, module_symbols: set[str]) -> list[str]:
     def _module_alias_targets(module_name: str) -> list[str]:
-        targets = [module_name]
+        targets: list[str] = []
+        needs_module_target = False
         for alias in node.names:
             if alias.name == "*":
+                needs_module_target = True
                 continue
-            if alias.name and alias.name[0].islower():
-                targets.append(f"{module_name}.{alias.name}")
+            submodule = f"{module_name}.{alias.name}" if module_name else alias.name
+            if submodule in module_symbols:
+                targets.append(submodule)
+            else:
+                needs_module_target = True
+        if needs_module_target and module_name:
+            targets.insert(0, module_name)
         return list(dict.fromkeys(targets))
 
     if node.level == 0:
@@ -324,7 +331,59 @@ def _resolve_python_import(current_module: str, rel_path: str, node: ast.ImportF
     if node.module:
         suffix = node.module.split(".")
         return _module_alias_targets(".".join([*base, *suffix]))
-    return [".".join([*base, alias.name]) for alias in node.names if alias.name != "*"]
+    targets: list[str] = []
+    base_module = ".".join(base)
+    for alias in node.names:
+        if alias.name == "*":
+            continue
+        submodule = ".".join([*base, alias.name])
+        if submodule in module_symbols:
+            targets.append(submodule)
+        elif base_module:
+            targets.append(base_module)
+        else:
+            targets.append(alias.name)
+    return list(dict.fromkeys(targets))
+
+
+def _type_checking_guard_polarity(node: ast.AST) -> bool | None:
+    if isinstance(node, ast.Name):
+        return True if node.id == "TYPE_CHECKING" else None
+    if isinstance(node, ast.Attribute):
+        return True if node.attr == "TYPE_CHECKING" else None
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+        polarity = _type_checking_guard_polarity(node.operand)
+        return None if polarity is None else not polarity
+    return None
+
+
+class _RuntimeImportCollector(ast.NodeVisitor):
+    def __init__(self) -> None:
+        self.imports: list[ast.Import | ast.ImportFrom] = []
+
+    def visit_Import(self, node: ast.Import) -> None:
+        self.imports.append(node)
+
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        self.imports.append(node)
+
+    def visit_If(self, node: ast.If) -> None:
+        polarity = _type_checking_guard_polarity(node.test)
+        if polarity is True:
+            for child in node.orelse:
+                self.visit(child)
+            return
+        if polarity is False:
+            for child in node.body:
+                self.visit(child)
+            return
+        self.generic_visit(node)
+
+
+def _runtime_imports(tree: ast.AST) -> list[ast.Import | ast.ImportFrom]:
+    collector = _RuntimeImportCollector()
+    collector.visit(tree)
+    return collector.imports
 
 
 def _resolve_javascript_import(rel_path: str, imported: str) -> str:
@@ -520,7 +579,7 @@ def _python_import_bindings(
 ) -> tuple[dict[str, set[str]], set[str]]:
     aliases: dict[str, set[str]] = {}
     imported_modules: set[str] = set()
-    for child in sorted(ast.walk(tree), key=lambda item: (getattr(item, "lineno", 0), getattr(item, "col_offset", 0), type(item).__name__)):
+    for child in sorted(_runtime_imports(tree), key=lambda item: (getattr(item, "lineno", 0), getattr(item, "col_offset", 0), type(item).__name__)):
         if isinstance(child, ast.Import):
             for alias in child.names:
                 imported_modules.add(alias.name)
@@ -1135,6 +1194,7 @@ def _add_python_nodes(
     data_hash: str,
     git: GitState,
     file_node: GraphNode,
+    module_symbols: set[str],
     nodes: dict[str, GraphNode],
     edges: dict[str, GraphEdge],
 ) -> None:
@@ -1166,17 +1226,17 @@ def _add_python_nodes(
                 class_nodes_by_name.setdefault(child.name, []).append(sym_node)
             else:
                 function_nodes_by_name.setdefault(child.name, []).append(sym_node)
-        elif isinstance(child, (ast.Import, ast.ImportFrom)):
-            names: list[str] = []
-            if isinstance(child, ast.Import):
-                names = [alias.name for alias in child.names]
-            elif isinstance(child, ast.ImportFrom):
-                names = _resolve_python_import(module, rel_path, child)
-            for imported in names:
-                prov = _prov(rel_path=rel_path, data_hash=data_hash, git=git, derived_by="python_ast", line_start=child.lineno, line_end=getattr(child, "end_lineno", child.lineno))
-                import_node = _node(kind="python_import", label=imported, rel_path=rel_path, symbol=imported, provenance_refs=[prov])
-                nodes[import_node.id] = import_node
-                edges[_edge("imports", module_node.id, import_node.id, [prov], label=imported).id] = _edge("imports", module_node.id, import_node.id, [prov], label=imported)
+    for child in _runtime_imports(tree):
+        names: list[str] = []
+        if isinstance(child, ast.Import):
+            names = [alias.name for alias in child.names]
+        elif isinstance(child, ast.ImportFrom):
+            names = _resolve_python_import(module, rel_path, child, module_symbols)
+        for imported in names:
+            prov = _prov(rel_path=rel_path, data_hash=data_hash, git=git, derived_by="python_ast", line_start=child.lineno, line_end=getattr(child, "end_lineno", child.lineno))
+            import_node = _node(kind="python_import", label=imported, rel_path=rel_path, symbol=imported, provenance_refs=[prov])
+            nodes[import_node.id] = import_node
+            edges[_edge("imports", module_node.id, import_node.id, [prov], label=imported).id] = _edge("imports", module_node.id, import_node.id, [prov], label=imported)
     _add_python_inheritance_edges(
         rel_path=rel_path,
         data_hash=data_hash,
@@ -1285,6 +1345,13 @@ def build_project_graph(project_root: str | Path) -> ProjectGraph:
         if kind == "generated_surface":
             edges[_edge("generated_from", file_node.id, project.id, [prov]).id] = _edge("generated_from", file_node.id, project.id, [prov])
     _add_generated_directory_sentinels(root, git, nodes, edges, project.id)
+    python_module_symbols = {
+        _module_name(rel_path)
+        for rel_path, file_node in file_nodes.items()
+        if rel_path.endswith(".py")
+        and not any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"})
+        and _is_parseable_regular_file(root / rel_path)
+    }
     # Parse after file nodes exist so inferred test edges can find target modules independent of order.
     for rel_path, file_node in sorted(file_nodes.items()):
         path = root / rel_path
@@ -1292,7 +1359,7 @@ def build_project_graph(project_root: str | Path) -> ProjectGraph:
             continue
         data_hash = file_node.provenance_refs[0].content_hash if file_node.provenance_refs else _sha256_bytes(_file_identity_bytes(path))
         if rel_path.endswith(".py") and not any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
-            _add_python_nodes(root=root, rel_path=rel_path, path=path, data_hash=data_hash, git=git, file_node=file_node, nodes=nodes, edges=edges)
+            _add_python_nodes(root=root, rel_path=rel_path, path=path, data_hash=data_hash, git=git, file_node=file_node, module_symbols=python_module_symbols, nodes=nodes, edges=edges)
         if rel_path.endswith((".js", ".mjs", ".cjs", ".ts", ".tsx")) and not any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
             _add_javascript_nodes(rel_path=rel_path, path=path, data_hash=data_hash, git=git, file_node=file_node, nodes=nodes, edges=edges)
         if rel_path.endswith(".md") and not any(tag in file_node.tags for tag in {"excluded_from_primary_context", "protected", "generated"}):
