@@ -55,7 +55,8 @@
                 "anchorKind": { "enum": ["graphNode", "graphEdge", "component", "contract", "capability", "verificationGap", "nearNeighborAlternative", "priorityBacklog", "productInvariant", "graphStructural"] },
                 "anchorId": { "type": "string", "minLength": 1, "description": "MUST resolve to a real id of the named kind in the source model / capability map / computed graph-structural anchor set." },
                 "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-                "claim": { "type": "string", "minLength": 1, "description": "The current-state tension this anchor is asserted to support." }
+                "claim": { "type": "string", "minLength": 1, "description": "The current-state tension this anchor is asserted to support." },
+                "provenanceClass": { "enum": ["deterministic", "llm_derived"], "description": "Set by the gate for resolved evidence. Label only; not an acceptance gate." }
               }
             }
           },

@@ -17,9 +17,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from arena.architecture_fitness import import_cycles
+from arena.graph_slice import graph_slice_from_graph_data
+
 ALLOWED_DIRECTIONS = {"decrease", "increase", "passes"}
 TENSION_ANCHOR_KINDS = {"verificationGap", "priorityBacklog", "productInvariant", "graphStructural"}
 GRAPH_STRUCTURAL_KIND = "graphStructural"
+DETERMINISTIC = "deterministic"
+LLM_DERIVED = "llm_derived"
 MULTI_TAG_THRESHOLD = 5
 HIGH_FAN_IN_THRESHOLD = 3
 
@@ -106,12 +111,32 @@ def anchor_catalog_records(model: dict[str, Any], capability_map: dict[str, Any]
                 "anchorKind": anchor_kind,
                 "anchorId": anchor_id,
                 "contentHash": anchor_content_hash(anchor),
+                "provenanceClass": anchor_provenance_class(anchor_kind, anchor),
                 "tensionBearing": tension,
             }
             if tension:
                 record["tensionKind"] = _tension_kind(anchor_kind, anchor, indexes)
             records.append(record)
     return records
+
+
+def anchor_provenance_class(anchor_kind: str, anchor: dict[str, Any]) -> str:
+    """Classify anchor provenance by its weakest source link.
+
+    ``deterministic`` means every link from filesystem/git/AST truth to the
+    anchor content is deterministic code. Any LLM-authored link in the chain
+    makes the anchor ``llm_derived``; deterministic thresholding or lifting over
+    LLM-authored data stays ``llm_derived``.
+    """
+
+    if anchor_kind in {"graphNode", "graphEdge"}:
+        return DETERMINISTIC
+    if anchor_kind == GRAPH_STRUCTURAL_KIND:
+        structural_kind = _clean(anchor.get("kind"))
+        if structural_kind in {"high_fan_in", "import_cycle"}:
+            return DETERMINISTIC
+        return LLM_DERIVED
+    return LLM_DERIVED
 
 
 def check_dream_admissibility(
@@ -378,17 +403,13 @@ def _graph_structural_anchors(model: dict[str, Any]) -> list[dict[str, Any]]:
     edges = _get(model, "projectGraph", "edges", default=[])
     node_index = _index_by_id(nodes)
     incoming: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    adjacency: dict[str, set[str]] = defaultdict(set)
     if isinstance(edges, list):
         for edge in edges:
             if not isinstance(edge, dict):
                 continue
-            source = _clean(edge.get("from_node_id")) or _clean(edge.get("fromNodeId"))
             target = _clean(edge.get("to_node_id")) or _clean(edge.get("toNodeId"))
             if target:
                 incoming[target].append(edge)
-            if source and target:
-                adjacency[source].add(target)
     for node_id, node_edges in sorted(incoming.items()):
         if len(node_edges) >= HIGH_FAN_IN_THRESHOLD:
             node = node_index.get(node_id, {})
@@ -422,19 +443,35 @@ def _graph_structural_anchors(model: dict[str, Any]) -> list[dict[str, Any]]:
                     "provenanceRefs": _string_list(profile.get("provenanceRefs")),
                 }
             )
-    for source, targets in sorted(adjacency.items()):
-        for target in sorted(targets):
-            if source < target and source in adjacency.get(target, set()):
-                anchors.append(
-                    {
-                        "id": f"graph.importCycle.{source}.{target}",
-                        "kind": "import_cycle_pair",
-                        "nodeIds": [source, target],
-                        "cycleLength": 2,
-                        "provenanceRefs": [],
-                    }
-                )
+    graph_data = _get(model, "projectGraph", default={})
+    if isinstance(graph_data, dict):
+        graph_slice = graph_slice_from_graph_data(graph_data)
+        module_by_symbol = {module.symbol: module for module in graph_slice.modules}
+        seen_cycles: set[tuple[str, ...]] = set()
+        for cycle in import_cycles(graph_slice):
+            canonical = _canonical_module_cycle(cycle)
+            if not canonical or canonical in seen_cycles:
+                continue
+            seen_cycles.add(canonical)
+            anchors.append(
+                {
+                    "id": "graph.importCycle." + "->".join(canonical),
+                    "kind": "import_cycle",
+                    "moduleSymbols": list(canonical),
+                    "cycleLength": len(canonical),
+                    "nodeIds": [module_by_symbol[symbol].node_id for symbol in canonical],
+                    "provenanceRefs": [],
+                }
+            )
     return anchors
+
+
+def _canonical_module_cycle(cycle: tuple[str, ...]) -> tuple[str, ...]:
+    symbols = tuple(symbol for symbol in cycle if symbol)
+    if not symbols:
+        return ()
+    rotations = [symbols[index:] + symbols[:index] for index in range(len(symbols))]
+    return min(rotations)
 
 
 def _observable_is_metric_like(value: str) -> bool:

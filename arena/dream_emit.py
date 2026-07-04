@@ -154,7 +154,9 @@ def _render_one(index: int, dream: dict[str, Any]) -> list[str]:
         kind = str(evidence.get("anchorKind", "")).strip()
         anchor_id = str(evidence.get("anchorId", "")).strip()
         claim = str(evidence.get("claim", "")).strip() or "current-state premise resolved"
-        lines.append(f"- {kind} `{anchor_id}` — {claim}")
+        provenance_class = str(evidence.get("provenanceClass", "")).strip()
+        provenance_suffix = f" (provenance: {provenance_class})" if provenance_class else ""
+        lines.append(f"- {kind} `{anchor_id}` — {claim}{provenance_suffix}")
     lines.extend(
         [
             "",

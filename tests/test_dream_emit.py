@@ -26,6 +26,7 @@ def _dream(**overrides: Any) -> dict[str, Any]:
                 "anchorId": "comp.runner",
                 "contentHash": CONTENT_HASH,
                 "claim": "The runner component owns stage orchestration.",
+                "provenanceClass": "llm_derived",
             }
         ],
         "currentStructure": {"fromCarrier": "stage execution in runner"},
@@ -75,7 +76,7 @@ def test_all_resolved_dream_renders_readable_sections(tmp_path: Path) -> None:
     assert text.startswith("# Experiment Proposals")
     assert "Advisory tier-3 experiment proposals" in text
     assert "Premised on an operator-reviewed capability map." in text
-    assert "component `comp.runner` — The runner component owns stage orchestration." in text
+    assert "component `comp.runner` — The runner component owns stage orchestration. (provenance: llm_derived)" in text
     assert "Premise confidence (mechanical): `all_resolved`" in text
     assert "Conclusion confidence (speculative/capped): `medium` (0.6)" in text
     assert "To validate, try `try an injected runner seam`; check `stage-order coverage` moves `increase`." in text
