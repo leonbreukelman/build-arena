@@ -5,6 +5,9 @@ from pathlib import Path
 from typing import Any
 
 from arena.dream_admissibility import (
+    anchor_catalog_records,
+    anchor_provenance_class,
+    build_anchor_indexes,
     check_document_admissibility,
     check_document_admissibility_from_paths,
 )
@@ -24,6 +27,108 @@ def _load(path: Path) -> dict[str, Any]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert isinstance(payload, dict)
     return payload
+
+
+def _cycle_model(edges: list[tuple[str, str]]) -> dict[str, Any]:
+    modules = {
+        "pkg.a": "node.a",
+        "pkg.b": "node.b",
+        "pkg.c": "node.c",
+    }
+    return {
+        "snapshot": {"components": [], "contracts": [], "verification_gaps": [], "near_neighbor_alternatives": []},
+        "projectGraph": {
+            "graphHash": "a" * 64,
+            "nodes": [
+                {
+                    "id": node_id,
+                    "kind": "python_module",
+                    "symbol": symbol,
+                    "label": symbol,
+                    "path": f"{symbol.replace('.', '/')}.py",
+                }
+                for symbol, node_id in modules.items()
+            ],
+            "edges": [
+                {
+                    "id": f"edge.{source}.{target}",
+                    "kind": "imports",
+                    "from_node_id": modules[source],
+                    "to_node_id": modules[target],
+                    "label": target,
+                    "provenance_refs": [],
+                }
+                for source, target in edges
+            ],
+        },
+        "iterationReadiness": {"componentProfiles": []},
+    }
+
+
+def test_graph_structural_import_cycle_anchor_detects_three_node_cycle() -> None:
+    indexes = build_anchor_indexes(_cycle_model([("pkg.a", "pkg.b"), ("pkg.b", "pkg.c"), ("pkg.c", "pkg.a")]), {})
+
+    cycle_anchors = [anchor for anchor in indexes["graphStructural"].values() if anchor["kind"] == "import_cycle"]
+
+    assert cycle_anchors == [
+        {
+            "id": "graph.importCycle.pkg.a->pkg.b->pkg.c",
+            "kind": "import_cycle",
+            "moduleSymbols": ["pkg.a", "pkg.b", "pkg.c"],
+            "cycleLength": 3,
+            "nodeIds": ["node.a", "node.b", "node.c"],
+            "provenanceRefs": [],
+        }
+    ]
+
+
+def test_graph_structural_import_cycle_anchor_preserves_two_node_parity() -> None:
+    indexes = build_anchor_indexes(_cycle_model([("pkg.a", "pkg.b"), ("pkg.b", "pkg.a")]), {})
+
+    cycle_anchors = [anchor for anchor in indexes["graphStructural"].values() if anchor["kind"] == "import_cycle"]
+
+    assert cycle_anchors == [
+        {
+            "id": "graph.importCycle.pkg.a->pkg.b",
+            "kind": "import_cycle",
+            "moduleSymbols": ["pkg.a", "pkg.b"],
+            "cycleLength": 2,
+            "nodeIds": ["node.a", "node.b"],
+            "provenanceRefs": [],
+        }
+    ]
+
+
+def test_graph_structural_import_cycle_anchor_absent_for_dag() -> None:
+    indexes = build_anchor_indexes(_cycle_model([("pkg.a", "pkg.b"), ("pkg.b", "pkg.c")]), {})
+
+    assert [anchor for anchor in indexes["graphStructural"].values() if anchor["kind"] == "import_cycle"] == []
+
+
+def test_anchor_catalog_records_include_provenance_class() -> None:
+    model = _cycle_model([("pkg.a", "pkg.b"), ("pkg.b", "pkg.c"), ("pkg.c", "pkg.a")])
+    model["iterationReadiness"]["componentProfiles"] = [
+        {
+            "componentId": "comp.many-tags",
+            "behavioralTags": ["a", "b", "c", "d", "e"],
+            "provenanceRefs": ["prov:profile"],
+        }
+    ]
+    model["snapshot"]["components"] = [{"id": "comp.snapshot", "name": "Snapshot-authored component"}]
+
+    records = anchor_catalog_records(model, {})
+    by_id = {record["anchorId"]: record for record in records}
+
+    assert by_id["graph.importCycle.pkg.a->pkg.b->pkg.c"]["provenanceClass"] == "deterministic"
+    assert by_id["graph.multiTagComponent.comp.many-tags"]["provenanceClass"] == "llm_derived"
+    assert by_id["comp.snapshot"]["provenanceClass"] == "llm_derived"
+
+
+def test_anchor_provenance_class_mapping_is_pinned() -> None:
+    assert anchor_provenance_class("graphStructural", {"kind": "import_cycle"}) == "deterministic"
+    assert anchor_provenance_class("graphStructural", {"kind": "high_fan_in"}) == "deterministic"
+    assert anchor_provenance_class("graphStructural", {"kind": "multi_tag_component"}) == "llm_derived"
+    assert anchor_provenance_class("component", {"id": "comp.snapshot"}) == "llm_derived"
 
 
 def _prompt_json(prompt: str, marker: str) -> dict[str, Any]:

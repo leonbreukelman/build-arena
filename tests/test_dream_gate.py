@@ -150,6 +150,7 @@ def test_grounded_dream_passes_with_all_resolved(tmp_path: Path) -> None:
     accepted = result.document["dreams"][0]
     assert accepted["premiseConfidence"] == "all_resolved"
     assert accepted["targetCapabilityIds"] == [cap_map["capabilities"][0]["id"]]
+    assert accepted["citedEvidence"][0]["provenanceClass"] == "llm_derived"
     assert result.document["provenance"]["gatedBy"] == "arena.dream_gate"
 
 

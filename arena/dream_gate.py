@@ -22,6 +22,7 @@ from jsonschema import Draft202012Validator
 from arena.capability_lift import CapabilityLiftError, validate_capability_map
 from arena.dream_admissibility import (
     admissibility_reasons,
+    anchor_provenance_class,
     build_anchor_indexes,
     check_dream_admissibility,
 )
@@ -237,6 +238,7 @@ def _evaluate_dream(
         elif content_hash != anchor_content_hash(anchor):
             reasons.append(f"citedEvidence[{index}] contentHash mismatch for {anchor_kind} {anchor_id}")
         else:
+            normalized_evidence["provenanceClass"] = anchor_provenance_class(anchor_kind, anchor)
             resolved_count += 1
         evidence_items.append(normalized_evidence)
 
